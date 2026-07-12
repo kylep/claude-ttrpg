@@ -1,6 +1,6 @@
 # ky-ttrpg Design
 
-Status: draft, under review
+Status: open questions resolved, ready for implementation planning
 Date: 2026-07-12
 
 ## Purpose
@@ -40,7 +40,7 @@ A game definition contains three layers.
 
 ### Ruleset (reusable across worlds)
 
-- **Core resolution mechanic** — how any attempt succeeds or fails
+- Core resolution mechanic — how any attempt succeeds or fails
   (die + modifier vs. difficulty, or equivalent). Combat, skill checks,
   saves, and social encounters all build on this primitive.
 - Attributes
@@ -73,6 +73,23 @@ A game definition contains three layers.
 
 Languages, alignment, crafting, weather, multiclassing.
 
+## Reference game
+
+The template game that ships in `games/`:
+
+- **Resolution**: d20 + modifier vs. difficulty class. Natural 20 crits,
+  natural 1 fumbles.
+- **Attributes**: the classic six — STR, DEX, CON, INT, WIS, CHA — with
+  standard modifier scaling. Names and mechanics are not copyrightable;
+  all text is written fresh.
+- **Classes**: Fighter, Rogue, Cleric, Wizard — one per archetype,
+  matching the v1 four-PC party.
+- **Progression**: levels 1–3 authored for v1. Higher levels are additive
+  content, not engine work.
+
+Finer-grained numbers (spell lists, price tables, monster stats) are
+content authoring inside `games/reference/`, not design decisions.
+
 ## Maps and movement
 
 Two scales, each fit for purpose:
@@ -82,6 +99,38 @@ Two scales, each fit for purpose:
   terrain tags, which double as prompts for image generation.
 - **Combat maps** are optional square grids for positioning, range, and
   movement speed during encounters.
+
+### Combat grid representation
+
+Encounters store grids as sparse coordinates: the encounter file declares
+grid width × height, then lists combatants and terrain features each with
+an (x, y). There is no cell matrix to keep in sync — distance, range, and
+movement checks are arithmetic the engine owns.
+
+```yaml
+grid: {width: 12, height: 8}
+terrain:
+  - {type: wall, cells: [[4,0],[4,1],[4,2]]}
+  - {type: difficult, cells: [[7,5],[8,5]]}
+combatants:
+  pc-brin:  {pos: [2, 3]}
+  goblin-1: {pos: [9, 4]}
+```
+
+### Rendering
+
+Three layers over the same grid model:
+
+1. **ASCII** — `engine map render` prints a deterministic grid with a
+   legend in the session terminal. This is the v1 contract: positions
+   shown always match state.
+2. **SVG** — the same render module writes stamped files
+   (`renders/<in-world-date>-<encounter>-r<round>.svg`) and maintains a
+   static `renders/index.html` gallery, newest first, openable from a
+   chat link. `renders/` is gitignored: renders are derived artifacts,
+   always regenerable from `state/` and `timeline/`.
+3. **Claude narration** — Claude describes the scene on top of the
+   engine's render; it is never the source of truth for positions.
 
 ## Persistence: three tiers
 
@@ -109,6 +158,7 @@ timeline/           # append-only event log ordered by in-world date
   1203-04-17-001.yaml   # event: in-world date, session, type,
                         #   mechanical deltas, GM-override flag
 sessions/           # per-session transcripts and summaries
+renders/            # derived map renders + index.html gallery (gitignored)
 ```
 
 `state/` is the truth for "now". `timeline/` is the audit log and
@@ -149,6 +199,52 @@ are branches, a fork inherits every insert authored before the fork
 point — deep history stays shared across all timelines; only post-fork
 play diverges.
 
+## Engine interface
+
+The engine is Python 3.12+, managed with uv, built on Typer, living in
+`engine/`. It exposes a single CLI entrypoint with subcommands:
+
+```
+$ engine roll d20+5 --vs 14
+{"roll": 11, "total": 16, "vs": 14, "success": true, "crit": null}
+
+$ engine attack --attacker goblin-2 --target pc-brin
+{"hit": true, "damage": 4, "target_hp": [9, 13], "events": ["1203-04-17-014"]}
+```
+
+Contract:
+
+- Structured JSON on stdout; invalid operations return a JSON error
+  object and a nonzero exit code.
+- Mutating commands update `state/` and append the corresponding
+  `timeline/` event atomically in one invocation.
+- The engine locates its world git-style: walk up from cwd to find
+  `world.yaml`. Sessions launch inside the world repo; `--world PATH`
+  overrides for tooling.
+- One entrypoint means one permission-allowlist entry, `--help`
+  discoverability, and testability without Claude in the loop.
+
+## Canon sync
+
+Two mechanisms keep `canon/` current:
+
+- **Continuous during play**: Claude updates `canon/` live as narrative
+  facts land — an NPC met, a secret revealed, a faction stance shifted.
+- **`session end` — the dreaming pass**: at session close, Claude
+  re-reads the session's full canon diff (session-start commit → now)
+  plus the transcript, then autonomously: (1) writes a structured
+  summary into `sessions/`, (2) reconciles contradictions and plot
+  holes introduced during play — fixing directly and reporting what
+  changed, escalating to the operator only when a fix would alter
+  something load-bearing, (3) prunes low-value detail that will never
+  matter again. The pass concludes with a single git commit — the
+  formal session boundary. Anything pruned or rewritten remains
+  recoverable in git history.
+
+Dreaming touches `canon/` and `sessions/` only. `timeline/` is
+append-only audit and is never pruned; `state/` is engine-owned. Claude
+curates narrative memory; the mechanical record stays untouchable.
+
 ## Claude integration
 
 Sessions launch with a dedicated agent (`claude --agent gm` or similar)
@@ -166,13 +262,13 @@ established facts.
 One short full adventure, end to end: town → travel → dungeon → boss,
 with rests, loot, leveling, and NPC dialogue. Real dice via scripts,
 state persisting to a world repo, playable in auto-GM mode with manual
-override available.
+override available. Four player characters, 0 to 4 played as humans.
 
 ## Open questions
 
-- Reference game contents — the actual ruleset numbers (attributes, dice
-  system, class list) are unwritten.
-- Script language and interface contract between Claude and the engine
-  (likely Python; exact CLI shape TBD in `docs/dev/`).
-- Combat grid representation and rendering.
-- How session transcripts feed back into `canon/` summaries.
+None currently. Resolved 2026-07-12: reference game contents (see
+"Reference game"), engine language and CLI contract ("Engine
+interface"), combat grid representation and rendering ("Maps and
+movement"), and transcript→canon flow ("Canon sync"). Exact CLI
+subcommand inventory and ruleset numbers land in `docs/dev/` and
+`games/reference/` during implementation.
