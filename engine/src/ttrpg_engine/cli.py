@@ -4,7 +4,7 @@ from pathlib import Path
 
 import typer
 
-from ttrpg_engine import chargen, checks, dice, game as game_mod, timeline, worldfs
+from ttrpg_engine import chargen, checks, dice, game as game_mod, render, timeline, worldfs
 from ttrpg_engine.errors import EngineError
 
 app = typer.Typer(add_completion=False, no_args_is_help=True)
@@ -189,3 +189,18 @@ def char_create(
     sheet = guard(chargen.create, root, g, name=name, cls_name=cls, race_name=race,
                   assign=parse_kv_ints(assign), skills=[s.strip() for s in skills.split(",")])
     emit({"sheet": sheet})
+
+
+map_app = typer.Typer()
+app.add_typer(map_app, name="map")
+
+
+@map_app.command("render")
+def map_render(svg: bool = typer.Option(False, "--svg")):
+    root = require_root()
+    enc = guard(render.load_encounter, root)
+    payload = {"map": render.ascii_map(enc), "round": enc["round"],
+               "turn": enc["order"][enc["turn"]]}
+    if svg:
+        payload["svg"] = str(guard(render.write_svg, root, enc))
+    emit(payload)
