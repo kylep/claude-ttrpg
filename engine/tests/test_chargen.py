@@ -56,3 +56,11 @@ def test_cleric_gets_spells_and_slots(wroot):
     sheet = worldfs.read_yaml(wroot / "state" / "party" / "pc-mira.yaml")
     assert sheet["spells_known"] == ["sacred_flame", "cure_wounds"]
     assert sheet["spell_slots"] == {1: {"max": 2, "current": 2}}
+
+
+def test_create_rejects_duplicate_skills(wroot):
+    res = runner.invoke(app, ["char", "create", "--name", "Dup", "--class", "fighter",
+                              "--race", "human", "--assign", ASSIGN,
+                              "--skills", "athletics,athletics"])
+    assert res.exit_code == 1
+    assert json.loads(res.stdout)["error"]["code"] == "bad_skills"

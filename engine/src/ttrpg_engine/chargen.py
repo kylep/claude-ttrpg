@@ -47,7 +47,7 @@ def create(root: Path, g: dict, *, name: str, cls_name: str, race_name: str,
         raise EngineError("bad_assign", f"assign must cover exactly {ATTRS}")
     if sorted(assign.values()) != sorted(g["core"]["standard_array"]):
         raise EngineError("bad_assign", f"values must be the standard array {g['core']['standard_array']}")
-    if len(skills) != cls["skill_choices"] or not set(skills) <= set(cls["skills"]):
+    if len(set(skills)) != cls["skill_choices"] or not set(skills) <= set(cls["skills"]):
         raise EngineError("bad_skills", f"pick exactly {cls['skill_choices']} of {cls['skills']}")
     attrs = {a: assign[a] + race.get("bonuses", {}).get(a, 0) for a in ATTRS}
     prof = g["progression"]["proficiency"][1]
