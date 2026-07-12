@@ -49,20 +49,26 @@ def init_world(dest: Path, game_path: Path, name: str) -> None:
     if errors:
         raise EngineError("game_invalid", "; ".join(errors))
     g = game_mod.load(game_path)
-    dest.mkdir(parents=True, exist_ok=True)
-    write_yaml(dest / "world.yaml", {
-        "world": name,
-        "game": {"name": g["meta"]["name"], "version": str(g["meta"]["version"]),
-                 "path": str(Path(game_path).resolve())},
-        "created": datetime.date.today().isoformat(),
-    })
-    shutil.copytree(g["content_dir"], dest / "canon")
-    write_yaml(state(dest, "clock"), {"date": str(g["meta"]["start_date"]),
-                                      "hour": g["meta"]["start_hour"]})
-    write_yaml(state(dest, "party"), {"members": [], "location": g["meta"]["start_location"],
-                                      "gold": 0, "stash": []})
-    write_yaml(state(dest, "session"), {"current": 0})
-    (dest / "timeline").mkdir()
-    (dest / "sessions").mkdir()
-    (dest / "renders").mkdir()
-    (dest / ".gitignore").write_text("renders/\n")
+    try:
+        dest.mkdir(parents=True, exist_ok=True)
+        shutil.copytree(g["content_dir"], dest / "canon")
+        write_yaml(state(dest, "clock"), {"date": str(g["meta"]["start_date"]),
+                                          "hour": g["meta"]["start_hour"]})
+        write_yaml(state(dest, "party"), {"members": [], "location": g["meta"]["start_location"],
+                                          "gold": 0, "stash": []})
+        write_yaml(state(dest, "session"), {"current": 0})
+        (dest / "timeline").mkdir()
+        (dest / "sessions").mkdir()
+        (dest / "renders").mkdir()
+        (dest / ".gitignore").write_text("renders/\n")
+        # world.yaml is the commit point: write it last so a crash mid-init
+        # never leaves a manifest behind (which would make retries think the
+        # world already exists).
+        write_yaml(dest / "world.yaml", {
+            "world": name,
+            "game": {"name": g["meta"]["name"], "version": str(g["meta"]["version"]),
+                     "path": str(Path(game_path).resolve())},
+            "created": datetime.date.today().isoformat(),
+        })
+    except OSError as e:
+        raise EngineError("init_failed", f"cannot initialize {dest}: {e}")

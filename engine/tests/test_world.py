@@ -45,3 +45,33 @@ def test_state_get(wroot):
     res = runner.invoke(app, ["state", "get", "clock", "--key", "hour"])
     assert res.exit_code == 0
     assert json.loads(res.stdout) == {"path": "clock", "key": "hour", "value": 9}
+
+
+def test_cli_world_init_happy_path(tmp_path):
+    dest = tmp_path / "w2"
+    res = runner.invoke(app, ["world", "init", str(dest), "--game", str(FIXTURE_GAME), "--name", "Cliia"])
+    assert res.exit_code == 0
+    payload = json.loads(res.stdout)
+    assert "world" in payload and "path" in payload
+    assert (dest / "renders").is_dir()
+    assert (dest / "world.yaml").exists()
+
+
+def test_cli_world_init_dirty_dest_fails_cleanly(tmp_path):
+    dest = tmp_path / "dirty"
+    (dest / "canon").mkdir(parents=True)
+    res = runner.invoke(app, ["world", "init", str(dest), "--game", str(FIXTURE_GAME), "--name", "Dirtia"])
+    assert res.exit_code == 1
+    assert json.loads(res.stdout)["error"]["code"] == "init_failed"
+    assert not (dest / "world.yaml").exists()
+
+
+def test_world_override_flag(tmp_path, wroot, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    res = runner.invoke(app, ["--world", str(wroot), "state", "get", "clock", "--key", "hour"])
+    assert res.exit_code == 0
+    assert json.loads(res.stdout)["value"] == 9
+
+
+def test_load_game_for(wroot):
+    assert worldfs.load_game_for(wroot)["meta"]["name"] == "minigame"
