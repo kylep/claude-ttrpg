@@ -4,17 +4,24 @@ from pathlib import Path
 
 import typer
 
-from ttrpg_engine import dice, game as game_mod
+from ttrpg_engine import dice, game as game_mod, worldfs
 from ttrpg_engine.errors import EngineError
 
 app = typer.Typer(add_completion=False, no_args_is_help=True)
 rng = random.Random()
 
+_world_override: Path | None = None
+
 
 @app.callback()
-def _root(seed: int | None = typer.Option(None, "--seed", help="Seed the RNG (testing).")):
+def _root(
+    seed: int | None = typer.Option(None, "--seed", help="Seed the RNG (testing)."),
+    world: Path | None = typer.Option(None, "--world", help="World repo path (default: discover from cwd)."),
+):
+    global _world_override
     if seed is not None:
         rng.seed(seed)
+    _world_override = world
 
 
 def emit(payload: dict) -> None:
@@ -34,6 +41,10 @@ def guard(fn, *args, **kwargs):
         fail(e.code, e.message)
     except ValueError as e:
         fail("bad_expr", str(e))
+
+
+def require_root() -> Path:
+    return guard(worldfs.find_root, _world_override)
 
 
 def d20_roll(modifier: int, adv: bool, dis: bool) -> tuple[int, int]:
@@ -70,6 +81,31 @@ def roll(
     if vs is not None:
         payload.update(vs=vs, success=total >= vs)
     emit(payload)
+
+
+world_app = typer.Typer()
+state_app = typer.Typer()
+app.add_typer(world_app, name="world")
+app.add_typer(state_app, name="state")
+
+
+@world_app.command("init")
+def world_init(dest: Path, game: Path = typer.Option(...), name: str = typer.Option(...)):
+    guard(worldfs.init_world, dest, game, name)
+    emit({"world": name, "path": str(Path(dest).resolve())})
+
+
+@state_app.command("get")
+def state_get(path: str, key: str | None = typer.Option(None)):
+    root = require_root()
+    data = guard(worldfs.read_yaml, worldfs.state(root, path))
+    value = data
+    if key:
+        for part in key.split("."):
+            if not isinstance(value, dict) or part not in value:
+                fail("not_found", f"key {key!r} not in state/{path}.yaml")
+            value = value[part]
+    emit({"path": path, "key": key, "value": value})
 
 
 game_app = typer.Typer()
