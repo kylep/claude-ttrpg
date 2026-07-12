@@ -64,3 +64,11 @@ def test_create_rejects_duplicate_skills(wroot):
                               "--skills", "athletics,athletics"])
     assert res.exit_code == 1
     assert json.loads(res.stdout)["error"]["code"] == "bad_skills"
+
+
+def test_create_rejects_padded_duplicate_skills(wroot):
+    res = runner.invoke(app, ["char", "create", "--name", "Pad", "--class", "fighter",
+                              "--race", "human", "--assign", ASSIGN,
+                              "--skills", "athletics,athletics,perception"])
+    assert res.exit_code == 1
+    assert json.loads(res.stdout)["error"]["code"] == "bad_skills"
