@@ -4,7 +4,7 @@ from pathlib import Path
 
 import typer
 
-from ttrpg_engine import chargen, dice, game as game_mod, timeline, worldfs
+from ttrpg_engine import chargen, checks, dice, game as game_mod, timeline, worldfs
 from ttrpg_engine.errors import EngineError
 
 app = typer.Typer(add_completion=False, no_args_is_help=True)
@@ -81,6 +81,20 @@ def roll(
     if vs is not None:
         payload.update(vs=vs, success=total >= vs)
     emit(payload)
+
+
+@app.command()
+def check(
+    actor: str = typer.Option(...),
+    attr: str = typer.Option(...),
+    dc: int = typer.Option(...),
+    skill: str | None = typer.Option(None),
+    adv: bool = typer.Option(False, "--adv"),
+    dis: bool = typer.Option(False, "--dis"),
+):
+    root = require_root()
+    emit(guard(checks.run, root, actor, attr.upper(), dc,
+               skill=skill, adv=adv, dis=dis, roll_fn=d20_roll))
 
 
 world_app = typer.Typer()
