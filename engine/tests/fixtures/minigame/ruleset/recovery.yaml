@@ -1,0 +1,3 @@
+short_rest: {hours: 1}
+long_rest: {hours: 8}
+death_save: {dc: 10, fails_to_die: 3, successes_to_stable: 3}

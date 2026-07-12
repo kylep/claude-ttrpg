@@ -1,0 +1,20 @@
+sacred_flame:
+  level: 0
+  action: action
+  range: 12
+  resolve: save
+  save_attr: DEX
+  damage: 1d8
+  on_save: none
+cure_wounds:
+  level: 1
+  action: action
+  range: 1
+  resolve: auto
+  heal: 1d8+CASTMOD
+bless:
+  level: 1
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: blessed, duration: 10}

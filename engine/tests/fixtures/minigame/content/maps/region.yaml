@@ -1,0 +1,5 @@
+nodes:
+  town: {name: Town, coords: [0, 0], terrain: settlement}
+  cave: {name: Cave, coords: [8, 3], terrain: hills}
+edges:
+  - {between: [town, cave], hours: 4}

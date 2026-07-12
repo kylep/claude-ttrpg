@@ -1,9 +1,10 @@
 import json
 import random
+from pathlib import Path
 
 import typer
 
-from ttrpg_engine import dice
+from ttrpg_engine import dice, game as game_mod
 from ttrpg_engine.errors import EngineError
 
 app = typer.Typer(add_completion=False, no_args_is_help=True)
@@ -69,3 +70,17 @@ def roll(
     if vs is not None:
         payload.update(vs=vs, success=total >= vs)
     emit(payload)
+
+
+game_app = typer.Typer()
+app.add_typer(game_app, name="game")
+
+
+@game_app.command("validate")
+def game_validate(path: Path):
+    errors = game_mod.validate(path)
+    if errors:
+        emit({"valid": False, "errors": errors})
+        raise typer.Exit(1)
+    meta = game_mod.load(path)["meta"]
+    emit({"valid": True, "game": meta["name"], "errors": []})

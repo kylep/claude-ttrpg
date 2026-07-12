@@ -1,0 +1,11 @@
+name: cleric
+hit_die: 8
+cast_attr: WIS
+skill_choices: 2
+skills: [insight, medicine, persuasion, religion]
+starting_gear: [leather_armor, mace]
+starting_gold: 15
+levels:
+  1: {features: [], spells: [sacred_flame, cure_wounds], slots: {1: 2}}
+  2: {features: [], spells: [bless], slots: {1: 3}}
+  3: {features: [], spells: [], slots: {1: 4}}

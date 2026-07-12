@@ -1,0 +1,6 @@
+name: minigame
+version: 0.1.0
+description: Fixture game for engine tests.
+start_date: "1203-04-17"
+start_hour: 9
+start_location: town
