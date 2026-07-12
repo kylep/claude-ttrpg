@@ -4,7 +4,7 @@ from pathlib import Path
 
 import typer
 
-from ttrpg_engine import dice, game as game_mod, worldfs
+from ttrpg_engine import dice, game as game_mod, timeline, worldfs
 from ttrpg_engine.errors import EngineError
 
 app = typer.Typer(add_completion=False, no_args_is_help=True)
@@ -120,3 +120,29 @@ def game_validate(path: Path):
         raise typer.Exit(1)
     meta = game_mod.load(path)["meta"]
     emit({"valid": True, "game": meta["name"], "errors": []})
+
+
+session_app = typer.Typer()
+override_app = typer.Typer()
+app.add_typer(session_app, name="session")
+app.add_typer(override_app, name="override")
+
+
+@session_app.command("start")
+def session_start():
+    root = require_root()
+    sess = worldfs.read_yaml(worldfs.state(root, "session"))
+    sess["current"] += 1
+    worldfs.write_yaml(worldfs.state(root, "session"), sess)
+    (root / "sessions" / f"session-{sess['current']:03d}").mkdir(parents=True, exist_ok=True)
+    timeline.append_event(root, type_="session", summary=f"session {sess['current']} started")
+    emit({"session": sess["current"]})
+
+
+@override_app.command("log")
+def override_log(summary: str = typer.Option(...), actors: str = typer.Option("", help="comma-separated ids")):
+    root = require_root()
+    actor_list = [a for a in actors.split(",") if a]
+    event = timeline.append_event(root, type_="override", summary=summary,
+                                  actors=actor_list, override=True)
+    emit({"event": event})
