@@ -4,7 +4,7 @@ from pathlib import Path
 
 import typer
 
-from ttrpg_engine import dice, game as game_mod, timeline, worldfs
+from ttrpg_engine import chargen, dice, game as game_mod, timeline, worldfs
 from ttrpg_engine.errors import EngineError
 
 app = typer.Typer(add_completion=False, no_args_is_help=True)
@@ -146,3 +146,32 @@ def override_log(summary: str = typer.Option(...), actors: str = typer.Option(""
     event = timeline.append_event(root, type_="override", summary=summary,
                                   actors=actor_list, override=True)
     emit({"event": event})
+
+
+char_app = typer.Typer()
+app.add_typer(char_app, name="char")
+
+
+def parse_kv_ints(spec: str) -> dict[str, int]:
+    out = {}
+    for pair in spec.split(","):
+        k, _, v = pair.partition("=")
+        if not v.lstrip("-").isdigit():
+            fail("bad_assign", f"bad assignment {pair!r}")
+        out[k.strip().upper()] = int(v)
+    return out
+
+
+@char_app.command("create")
+def char_create(
+    name: str = typer.Option(...),
+    cls: str = typer.Option(..., "--class"),
+    race: str = typer.Option(...),
+    assign: str = typer.Option(..., help="e.g. DEX=15,WIS=14,INT=13,CON=12,STR=10,CHA=8"),
+    skills: str = typer.Option(..., help="comma-separated"),
+):
+    root = require_root()
+    g = guard(worldfs.load_game_for, root)
+    sheet = guard(chargen.create, root, g, name=name, cls_name=cls, race_name=race,
+                  assign=parse_kv_ints(assign), skills=[s.strip() for s in skills.split(",")])
+    emit({"sheet": sheet})
