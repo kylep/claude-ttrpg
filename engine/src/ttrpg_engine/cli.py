@@ -4,7 +4,7 @@ from pathlib import Path
 
 import typer
 
-from ttrpg_engine import chargen, checks, combat, dice, game as game_mod, render, rest as rest_mod, spells, timeline, travel as travel_mod, worldfs
+from ttrpg_engine import chargen, checks, combat, dice, game as game_mod, inventory, render, rest as rest_mod, spells, timeline, travel as travel_mod, worldfs
 from ttrpg_engine.errors import EngineError
 
 app = typer.Typer(add_completion=False, no_args_is_help=True)
@@ -302,3 +302,43 @@ def move(actor: str = typer.Option(...), to: str = typer.Option(..., help="X,Y")
 @app.command()
 def travel(to: str = typer.Option(...)):
     emit(guard(travel_mod.go, require_root(), to))
+
+
+item_app = typer.Typer()
+gold_app = typer.Typer()
+app.add_typer(item_app, name="item")
+app.add_typer(gold_app, name="gold")
+
+
+@item_app.command("add")
+def item_add(actor: str = typer.Option(...), item: str = typer.Option(...),
+             qty: int = typer.Option(1)):
+    root = require_root()
+    g = guard(worldfs.load_game_for, root)
+    emit(guard(inventory.add_item, root, g, actor, item, qty))
+
+
+@item_app.command("remove")
+def item_remove(actor: str = typer.Option(...), item: str = typer.Option(...),
+                qty: int = typer.Option(1)):
+    root = require_root()
+    g = guard(worldfs.load_game_for, root)
+    emit(guard(inventory.remove_item, root, g, actor, item, qty))
+
+
+def _gold_target(actor: str | None, party: bool) -> str:
+    if party == (actor is not None):
+        fail("bad_target", "pass exactly one of --actor or --party")
+    return "party" if party else actor
+
+
+@gold_app.command("add")
+def gold_add(amount: int = typer.Option(...), actor: str | None = typer.Option(None),
+             party: bool = typer.Option(False, "--party")):
+    emit(guard(inventory.adjust_gold, require_root(), _gold_target(actor, party), amount))
+
+
+@gold_app.command("spend")
+def gold_spend(amount: int = typer.Option(...), actor: str | None = typer.Option(None),
+               party: bool = typer.Option(False, "--party")):
+    emit(guard(inventory.adjust_gold, require_root(), _gold_target(actor, party), -amount))
