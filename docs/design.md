@@ -245,6 +245,26 @@ Dreaming touches `canon/` and `sessions/` only. `timeline/` is
 append-only audit and is never pruned; `state/` is engine-owned. Claude
 curates narrative memory; the mechanical record stays untouchable.
 
+## Quests
+
+Quests are first-class state, one file per quest under `state/quests/`,
+covering offer → accept → complete/cancel/expire. Any actor can give one:
+an NPC or a PC funds the reward from their own holdings at offer time —
+gold and items are escrowed immediately and must already be in the
+giver's possession, and neither may hand out xp. A `world`/GM-issued
+quest is the exception on both counts: it can escrow from a named NPC or
+PC holder same as any quest, or skip escrow entirely with `--spawn` and
+materialize gold/items out of nothing on completion, and it alone may
+grant xp. Deadlines are optional — a quest offered with `--deadline`
+expires and refunds its escrow automatically (checked lazily, on `quest
+list` or `accept`) once the world clock passes it; omit `--deadline` for
+an indefinite quest, useful for standing, recurring hooks the campaign
+never forces a clock on. Completion pays reward gold split evenly across
+recipients (remainder to the first), reward items to the first recipient
+only, and reward xp in full to each recipient — the same scoped-grant
+convention `xp grant` uses elsewhere, but restricted to whoever accepted
+or was explicitly named with `--to`.
+
 ## Claude integration
 
 Sessions launch with a dedicated agent (`claude --agent gm` or similar)

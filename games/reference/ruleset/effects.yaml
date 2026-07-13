@@ -31,3 +31,6 @@ oath_whisper:
 silent_step:
   impact: "GM grants --adv on the wearer's Stealth checks"
   description: "The wearer's footfalls land a half-second quieter than they should, as if the ground itself were leaning out of the way."
+gravewarded:
+  impact: "GM grants --adv on the wearer's saves and checks made to resist fear, undead influence, or grave-magic (a wail, a poison sourced from something already dead, a fright effect the restless dead cause)"
+  description: "A worn copper coin sits warm in a pocket no matter how cold the barrow or the yard gets; whatever wears it keeps its nerve when the dead come calling."

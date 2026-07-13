@@ -7,6 +7,34 @@ nothing here is loaded by the engine.
 
 DCs below cite `ruleset/core.yaml` `dcs: {easy: 10, medium: 13, hard: 16}`.
 
+## Side Quests — The Thornbury Board
+
+Thornbury keeps a standing quest board outside the moot-hall
+(`content/quest-board.md`), independent of Reeve Halda's barrow contract
+below. Introduce it in the same session 1 Thornbury scene as Beat 1,
+once the party has spoken to Halda and Bram — two notices are already
+pinned up, and the GM should run both setup commands from
+`quest-board.md` before the party leaves for the Old Road, so `engine
+quest list` shows both as `offered` from session 1 onward:
+
+```
+engine quest offer --title "Find Tuffles" --desc "..." --giver npc:farmer_tobin --gold 15 --items healing_potion --deadline 1204-04-17
+engine quest offer --title "The Graveyard Risings" --desc "..." --giver world --items graveward_coin --xp 50 --spawn
+```
+
+Neither quest gates travel to the Old Road — the party can accept
+either, both, or neither before pushing on to Act 1, and can return to
+either at any point ("Find Tuffles" has a year-long deadline; "The
+Graveyard Risings" has none). See `content/quest-board.md` for the full
+in-world notices, resolution spreads, and the two new bestiary entries
+(`content/bestiary/grave_walker.yaml`, `content/bestiary/hollow_sexton.yaml`)
+needed to run the graveyard encounter (`maps/encounters/graveyard.yaml`)
+and, if talk fails, the showdown with whatever is causing it
+(`maps/encounters/graveyard-vigil.yaml`). The graveyard is not a
+region-map node — it's Thornbury's own yard, run as a same-location
+encounter (no `engine travel` needed) directly off the `thornbury` node
+in `maps/region.yaml`, the same way a home-village skirmish would be.
+
 ## Beat 1 — Hire (Thornbury)
 
 The party meets **Reeve Halda** (`content/npcs.yaml`), who has been

@@ -1,0 +1,32 @@
+# field meanings: see bestiary/goblin.yaml
+name: Grave-Walker
+description: >
+  A single corpse clawed loose from Thornbury's own yard, dirt still
+  falling out of its shroud; it does not hunt in packs, does not flee,
+  and does not stop until something makes it stop. See `quest-board.md`
+  and `bestiary/hollow_sexton.yaml` for why there is only ever one.
+ac: 11
+hp: 18
+speed: 4
+attributes: {STR: 15, DEX: 8, CON: 14, INT: 3, WIS: 6, CHA: 5}
+attacks: [{name: rotten grip, attack_mod: 5, damage: 1d8+2, range: 1}]
+xp: 150
+loot: {gold: null, items: []}
+difficulty: medium
+notes: >
+  Deliberately swingy at level 1, forgettable by level 3+ — the design
+  leans entirely on party size and proficiency scaling, not on changing
+  the stat block. Solo vs. a level 1 PC: at attack_mod +5 it hits an
+  unarmored caster (ac ~11) on a d20 >= 6 (75%) for 1d8+2 (avg 6.5) — one
+  good hit can drop a 5-6 hp level 1 wizard outright, and even a level 1
+  fighter in chain mail (ac 16, hp ~12) is hit on a d20 >= 11 (50%) for
+  ~3.25 expected dmg/round against the fighter's own ~4.55 expected
+  dmg/round (attack +4 vs its ac 11, 1d8+2) — an even, real fight over
+  ~4 rounds either way, not a guaranteed win. Against a mixed-level party
+  (levels 3-5, per `adventure.md`'s own per-PC progression) the same
+  stat block is only moderate: 3-4 PCs at attack +5/+6 hit its ac 11 on
+  70-85% of rolls and can burn through its 18 hp in a single round of
+  focus fire, while it can only ever threaten one target per turn for a
+  small fraction of a level 3-5 PC's now much larger hp pool. Loot is
+  deliberately empty — a Grave-Walker is a symptom, not a source of
+  treasure; see `hollow_sexton.yaml` for the cause and its reward.

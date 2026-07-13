@@ -41,3 +41,18 @@ diver_wenna:
     paid, and someone else to go down the Sunken Stair; she will trade a
     hand-drawn depth map and fair warning about the "grey woman in the
     water" for 20 gp or a share of any salvage.
+
+farmer_tobin:
+  name: Farmer Tobin
+  location: thornbury
+  role: quest-giver
+  disposition: friendly
+  gold: 20
+  inventory: [{item: healing_potion, qty: 1}]
+  wants: >
+    Tobin wants his prize sow Tuffles found before something in Barrow
+    Woods finds her first. He raised her from a piglet, entered her in
+    every Thornbury fair since, and is certain she wandered off chasing
+    acorns rather than being taken. He'll pay what he can spare and
+    throw in a hedge-cleric's parting gift he's been saving for an
+    emergency, because this feels like one.

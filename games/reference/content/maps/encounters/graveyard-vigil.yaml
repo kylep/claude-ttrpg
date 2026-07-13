@@ -1,0 +1,14 @@
+# field meanings: see maps/encounters/road-ambush.yaml
+# Same ground as maps/encounters/graveyard.yaml, run instead of it when the
+# party stakes out the yard and confronts the cause directly rather than a
+# fresh Grave-Walker — see bestiary/hollow_sexton.yaml and quest-board.md.
+# Talk it down before initiative if the table would rather not roll at all.
+id: graveyard-vigil
+name: Night Watch at Thornbury's Grave-Yard
+grid: {width: 9, height: 7}
+terrain:
+  - {type: wall, cells: [[2, 1], [2, 2], [4, 4], [6, 1], [6, 5]]}
+  - {type: difficult, cells: [[3, 3], [3, 4], [5, 3], [5, 4], [7, 3]]}
+monsters:
+  - {type: hollow_sexton, pos: [7, 4]}
+pc_spawns: [[0, 3], [0, 4], [1, 3], [1, 4]]

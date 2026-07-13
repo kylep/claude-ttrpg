@@ -1,0 +1,13 @@
+# field meanings: see maps/encounters/road-ambush.yaml
+# Thornbury's own yard, not a travel node — reachable directly from the
+# thornbury region-map node, no engine travel needed. The lone Grave-Walker
+# always spawns alone; see bestiary/grave_walker.yaml and quest-board.md.
+id: graveyard
+name: Thornbury's Grave-Yard
+grid: {width: 9, height: 7}
+terrain:
+  - {type: wall, cells: [[2, 1], [2, 2], [4, 4], [6, 1], [6, 5]]}          # headstones and the lych-gate post
+  - {type: difficult, cells: [[3, 3], [3, 4], [5, 3], [5, 4], [7, 3]]}      # freshly turned, sunken plots
+monsters:
+  - {type: grave_walker, pos: [7, 5]}
+pc_spawns: [[0, 3], [0, 4], [1, 3], [1, 4]]

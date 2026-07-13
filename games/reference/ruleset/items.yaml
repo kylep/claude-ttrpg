@@ -35,3 +35,6 @@ oathlight_talisman: {type: gear, price: 150, grants_effect: {name: blessed},
   description: "A disc of tarnished silver on a leather cord, the Unshriven Judge's badge of office, still warm with whatever patience three centuries of waiting did not burn out of it; it settles over the wearer's heart like a hand that has decided, this once, to be kind."}
 wardglass_lens: {type: gear, price: 200, grants_effect: {name: shielded},
   description: "A disc of smoke-clouded glass pried from the Bound Sentinel's rune-circle, still tracing faint lines of ward-script when held to the light; a caster who keeps it close finds incoming blows arriving a half-beat later than they should."}
+# Thornbury quest-board reward — see content/quest-board.md and bestiary/hollow_sexton.yaml
+graveward_coin: {type: gear, price: 65, grants_effect: {name: gravewarded},
+  description: "A worn copper coin, its face rubbed to nothing by centuries of passing hands — payment for a toll no living tongue remembers, given over by the Hollow Sexton once someone finally answers for Thornbury's yard again."}

@@ -1,0 +1,43 @@
+# field meanings: see bestiary/goblin.yaml
+name: The Hollow Sexton
+description: >
+  A minor grave-spirit, brass-jointed and lantern-eyed, bound generations
+  back by a Vigil-trained hedge-priest to walk Thornbury's yard at night
+  and keep its ward tight over an ever-growing paupers' ground. The
+  hedge-priest died without a successor — the Vigil chapter that should
+  have sent one has gone quiet along with the rest of them
+  (`setting.md`, "the wards are going quiet") — and the Sexton has kept
+  doing its one job with nobody left to renew its instructions or its
+  own binding. About once a week it "checks" whether anyone still tends
+  the yard by walking one grave up into the world (`grave_walker.yaml`).
+  It is not malicious, just very old and very literal-minded, and it
+  speaks Common — badly, formally, and at length, having learned it
+  entirely by eavesdropping on three centuries of burials.
+ac: 13
+hp: 30
+speed: 5
+attributes: {STR: 10, DEX: 12, CON: 13, INT: 12, WIS: 14, CHA: 15}
+attacks:
+  - {name: sexton's spade, attack_mod: 4, damage: 1d6+2, range: 1}
+  - {name: grave-chill wail, attack_mod: 3, damage: 1d4, range: 8}
+xp: 400
+loot: {gold: null, items: []}
+difficulty: medium
+notes: >
+  This is the "if talks fail" stat block for `maps/encounters/graveyard-vigil.yaml`
+  — kill, scare, and parley are all meant to be live options, and the
+  fight is tuned to feel like a reluctant last resort rather than a
+  monster hunt. Sized for a level 1-2 party of up to four: at attack_mod
+  +4/+3 it hits a level 1 PC (ac 11-16) on 25-60% of rolls for modest
+  damage (1d6+2 melee, 1d4 at range), while the party's combined attacks
+  at +4-6 hit its ac 13 on 55-80% of rolls and can clear its 30 hp in
+  about 2 rounds of focus fire — comparable in weight to `barrow_hound.yaml`
+  x2. Talking it down is cheaper than fighting it: a DC 13 (medium,
+  `ruleset/core.yaml` dcs) Intimidation check scares it back into
+  dormancy for now (the risings pause but the underlying cause is
+  unresolved — the GM's call whether that's enough to complete
+  `the-graveyard-risings`), while a DC 13 (medium) Persuasion or Religion
+  check gets it to agree to hold the ward quietly once someone promises
+  to find or fund it a new hedge-priest — the clean resolution, and the
+  one that ends the risings for good. See `quest-board.md` for how each
+  resolution reports back to the quest.

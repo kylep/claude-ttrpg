@@ -60,3 +60,38 @@ those wards live from inside the water for three hundred years,
 answering for them the way a keeper answers for a gate. Nothing in the
 surviving accounts says what happens to a ward once its keeper finally
 lets go.
+
+## Eras of the valley
+
+A rough chronology, for GMs who need to place something before or after
+the barrow's fall. See `setting.md` for the wider world these eras open
+onto.
+
+- **The hill-kingdoms (to c. 903).** Small, rival hill-domains held the
+  valleys along the Aldwater by force of arms and household loyalty —
+  Hravik Coldspear's was one of a dozen. None left much behind but
+  grave-mounds and a scatter of place-names in a tongue nobody living can
+  read.
+- **The Binding (c. 903-1010).** When the hill-kingdoms broke up —
+  Hravik's household sealing its king beneath Barrowdeep is the valley's
+  own example — the Vigil of Held Oaths spread up the Aldwater behind
+  them, teaching the rite that keeps barrow-kings and oath-dead from
+  walking. Sigrun trained in that craft before she ever married into
+  Hravik's household; the wards she has held from inside the water since
+  are the Vigil's rite, not a household secret.
+- **The Ossenmark charters (c. 1010-1155).** The Kingdom of Ossenmark's
+  crown extended its writ up the valley, chartering Vantry as a
+  river-port and naming the Thornmarch a march under a crown-appointed
+  Margrave. Thornbury grew up through this period as an unremarkable
+  farming village at the charter's furthest, least-visited edge.
+- **The long neglect (c. 1155-1203).** The crown's attention has spent
+  two generations drifting seaward, toward Highcrest's docks and whatever
+  is building across the Sallow Sea. The Margrave's visits to the
+  Thornmarch grow rarer, Vigil chapter-houses along the Aldwater go
+  underfunded, and the old wards they used to tend — Thornbury's own
+  graveyard among them — have begun, quietly, to fail (`quest-board.md`).
+- **The present (1203-).** Two months before this book's adventure
+  begins, a spring flood reopens the passage into Hravik's outer
+  galleries, and the goblins already fleeing a clan war further up the
+  valley move in before Thornbury notices. Everything in `adventure.md`
+  follows from here.
