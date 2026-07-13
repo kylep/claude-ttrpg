@@ -260,3 +260,26 @@ def death_save(root: Path, actor: str, *, roll_fn) -> dict:
                               summary=f"{actor} has died")
     return {"actor": actor, "natural": natural, "result": result,
             "saves": sheet.get("death_saves")}
+
+
+def move(root: Path, actor: str, to: tuple[int, int], *, force: bool = False) -> dict:
+    enc = load_encounter(root)
+    if actor not in enc["positions"]:
+        raise EngineError("not_found", f"{actor} is not on the map")
+    src = tuple(enc["positions"][actor])
+    to = tuple(to)
+    reason = grid.blocked(enc, to)
+    if reason == "oob" or (reason and not force):
+        raise EngineError("blocked", f"cannot enter {list(to)}: {reason}")
+    _, data, _ = resolve_actor(root, actor)
+    cost = grid.chebyshev(src, to)
+    if to in grid.cells_of(enc, "difficult"):
+        cost += 1
+    if not force and cost > data["speed"]:
+        raise EngineError("too_far", f"cost {cost} exceeds speed {data['speed']}")
+    enc["positions"][actor] = list(to)
+    save_encounter(root, enc)
+    timeline.append_event(root, type_="move", actors=[actor],
+                          summary=f"{actor} moves {list(src)} -> {list(to)}")
+    return {"actor": actor, "from": list(src), "to": list(to),
+            "cost": cost, "forced": force}

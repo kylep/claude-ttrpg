@@ -272,3 +272,13 @@ def effect_remove(target: str = typer.Option(...), name: str = typer.Option(...)
 @app.command()
 def deathsave(actor: str = typer.Option(...)):
     emit(guard(combat.death_save, require_root(), actor, roll_fn=d20_roll))
+
+
+@app.command()
+def move(actor: str = typer.Option(...), to: str = typer.Option(..., help="X,Y"),
+         force: bool = typer.Option(False, "--force")):
+    try:
+        x, y = (int(v) for v in to.split(","))
+    except ValueError:
+        fail("bad_coord", f"--to must be X,Y, got {to!r}")
+    emit(guard(combat.move, require_root(), actor, (x, y), force=force))
