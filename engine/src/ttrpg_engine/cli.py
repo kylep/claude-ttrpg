@@ -227,3 +227,48 @@ def encounter_end():
     root = require_root()
     g = guard(worldfs.load_game_for, root)
     emit(guard(combat.end, root, g, rng))
+
+
+effect_app = typer.Typer()
+app.add_typer(effect_app, name="effect")
+
+
+@app.command()
+def attack(
+    attacker: str = typer.Option(...),
+    target: str = typer.Option(...),
+    attack_name: str | None = typer.Option(None, "--attack"),
+    adv: bool = typer.Option(False, "--adv"),
+    dis: bool = typer.Option(False, "--dis"),
+):
+    root = require_root()
+    emit(guard(combat.attack, root, attacker, target, attack_name=attack_name,
+               adv=adv, dis=dis, roll_fn=d20_roll, rng=rng))
+
+
+@app.command()
+def damage(target: str = typer.Option(...), amount: int = typer.Option(...),
+           source: str = typer.Option("GM")):
+    emit(guard(combat.apply_damage, require_root(), target, amount, source))
+
+
+@app.command()
+def heal(target: str = typer.Option(...), amount: int = typer.Option(...),
+         source: str = typer.Option("GM")):
+    emit(guard(combat.apply_heal, require_root(), target, amount, source))
+
+
+@effect_app.command("add")
+def effect_add(target: str = typer.Option(...), name: str = typer.Option(...),
+               duration: int = typer.Option(-1)):
+    emit(guard(combat.set_effect, require_root(), target, name, duration))
+
+
+@effect_app.command("remove")
+def effect_remove(target: str = typer.Option(...), name: str = typer.Option(...)):
+    emit(guard(combat.remove_effect, require_root(), target, name))
+
+
+@app.command()
+def deathsave(actor: str = typer.Option(...)):
+    emit(guard(combat.death_save, require_root(), actor, roll_fn=d20_roll))

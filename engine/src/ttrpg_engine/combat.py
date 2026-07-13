@@ -1,7 +1,7 @@
 from pathlib import Path
 from random import Random
 
-from ttrpg_engine import dice, timeline, worldfs
+from ttrpg_engine import dice, grid, timeline, worldfs
 from ttrpg_engine.chargen import attr_mod
 from ttrpg_engine.errors import EngineError
 from ttrpg_engine.game import bestiary_entry
@@ -113,3 +113,150 @@ def end(root: Path, g: dict, rng: Random) -> dict:
                           summary=f"encounter ended: {enc['name']} (+{total_xp} xp, +{gold} gp)",
                           delta={"party": {"gold": gold}})
     return {"xp_each": xp_each, "gold": gold, "items": items}
+
+
+def resolve_actor(root: Path, cid: str):
+    enc = None
+    if (root / "state" / "encounter.yaml").exists():
+        enc = load_encounter(root)
+    if enc and cid in enc["monsters"]:
+        return "monster", enc["monsters"][cid], enc
+    path = worldfs.state(root, f"party/{cid}")
+    if path.exists():
+        return "pc", worldfs.read_yaml(path), enc
+    raise EngineError("not_found", f"no combatant {cid}")
+
+
+def _persist(root, kind, data, enc):
+    if kind == "pc":
+        save_pc(root, data)
+        if enc is not None:
+            save_encounter(root, enc)
+    else:
+        save_encounter(root, enc)
+
+
+def apply_damage(root: Path, target: str, amount: int, source: str) -> dict:
+    kind, data, enc = resolve_actor(root, target)
+    before = data["hp"]
+    data["hp"] = max(0, before - amount)
+    dropped = data["hp"] == 0 and before > 0
+    if dropped:
+        if kind == "monster":
+            data["dead"] = True
+        else:
+            names = {e["name"] for e in data["effects"]}
+            data["effects"] += [{"name": n, "duration": -1}
+                                for n in ("unconscious", "dying") if n not in names]
+            data["death_saves"] = {"successes": 0, "fails": 0}
+    _persist(root, kind, data, enc)
+    timeline.append_event(root, type_="damage", actors=[target],
+                          summary=f"{target} takes {amount} damage ({source})",
+                          delta={target: {"hp": [before, data["hp"]]}})
+    return {"target": target, "amount": amount, "hp": [before, data["hp"]],
+            "dropped": dropped}
+
+
+def apply_heal(root: Path, target: str, amount: int, source: str) -> dict:
+    kind, data, enc = resolve_actor(root, target)
+    before = data["hp"]
+    data["hp"] = min(data["max_hp"], before + amount)
+    if kind == "pc" and data["hp"] > 0:
+        data["effects"] = [e for e in data["effects"]
+                           if e["name"] not in ("unconscious", "dying")]
+        data.pop("death_saves", None)
+    _persist(root, kind, data, enc)
+    timeline.append_event(root, type_="heal", actors=[target],
+                          summary=f"{target} heals {amount} ({source})",
+                          delta={target: {"hp": [before, data["hp"]]}})
+    return {"target": target, "amount": amount, "hp": [before, data["hp"]]}
+
+
+def attack(root: Path, attacker: str, target: str, *, attack_name: str | None,
+           adv: bool, dis: bool, roll_fn, rng: Random) -> dict:
+    _, a_data, enc = resolve_actor(root, attacker)
+    _, t_data, _ = resolve_actor(root, target)
+    attacks = a_data["attacks"]
+    atk = next((a for a in attacks if a["name"] == attack_name), attacks[0] if attacks else None)
+    if atk is None:
+        raise EngineError("no_attack", f"{attacker} has no attack {attack_name!r}")
+    if enc and attacker in enc["positions"] and target in enc["positions"]:
+        dist = grid.chebyshev(tuple(enc["positions"][attacker]),
+                              tuple(enc["positions"][target]))
+        if dist > atk.get("range", 1):
+            raise EngineError("out_of_range",
+                              f"{target} is {dist} away, range is {atk.get('range', 1)}")
+    natural, total = roll_fn(atk["attack_mod"], adv, dis)
+    crit = "hit" if natural == 20 else "fumble" if natural == 1 else None
+    hit = natural != 1 and (natural == 20 or total >= t_data["ac"])
+    damage = 0
+    if hit:
+        dmg = dice.roll(str(atk["damage"]), rng)
+        damage = dmg.total
+        if crit == "hit":
+            damage += sum(dice.roll(str(atk["damage"]), rng).rolls)  # dice again, modifier once
+    result = {"attacker": attacker, "target": target, "attack": atk["name"],
+              "natural": natural, "total": total, "vs_ac": t_data["ac"],
+              "hit": hit, "crit": crit, "damage": damage}
+    verb = "hits" if hit else "misses"
+    timeline.append_event(root, type_="attack", actors=[attacker, target],
+                          summary=f"{attacker} {verb} {target} with {atk['name']}"
+                                  + (f" for {damage}" if hit else ""))
+    if hit and damage:
+        dmg_result = apply_damage(root, target, damage, source=f"{attacker}:{atk['name']}")
+        result["target_hp"] = dmg_result["hp"]
+        result["dropped"] = dmg_result["dropped"]
+    return result
+
+
+def set_effect(root: Path, target: str, name: str, duration: int) -> dict:
+    kind, data, enc = resolve_actor(root, target)
+    data["effects"] = [e for e in data["effects"] if e["name"] != name]
+    data["effects"].append({"name": name, "duration": duration})
+    _persist(root, kind, data, enc)
+    timeline.append_event(root, type_="effect", actors=[target],
+                          summary=f"{target} gains {name} ({duration} rounds)")
+    return {"target": target, "effects": data["effects"]}
+
+
+def remove_effect(root: Path, target: str, name: str) -> dict:
+    kind, data, enc = resolve_actor(root, target)
+    data["effects"] = [e for e in data["effects"] if e["name"] != name]
+    _persist(root, kind, data, enc)
+    timeline.append_event(root, type_="effect", actors=[target],
+                          summary=f"{target} loses {name}")
+    return {"target": target, "effects": data["effects"]}
+
+
+def death_save(root: Path, actor: str, *, roll_fn) -> dict:
+    kind, sheet, enc = resolve_actor(root, actor)
+    if kind != "pc" or "dying" not in {e["name"] for e in sheet["effects"]}:
+        raise EngineError("not_dying", f"{actor} is not dying")
+    natural, _ = roll_fn(0, False, False)
+    saves = sheet.setdefault("death_saves", {"successes": 0, "fails": 0})
+    if natural == 20:
+        result = "revived"
+    elif natural >= 10:
+        saves["successes"] += 1
+        result = "stable" if saves["successes"] >= 3 else "success"
+    else:
+        saves["fails"] += 1
+        result = "dead" if saves["fails"] >= 3 else "fail"
+    if result == "revived":
+        sheet["hp"] = 1
+        sheet["effects"] = [e for e in sheet["effects"]
+                            if e["name"] not in ("unconscious", "dying")]
+        sheet.pop("death_saves", None)
+    elif result == "stable":
+        sheet["effects"] = [e for e in sheet["effects"] if e["name"] != "dying"]
+        sheet.pop("death_saves", None)
+    elif result == "dead":
+        sheet["effects"].append({"name": "dead", "duration": -1})
+    _persist(root, kind, sheet, enc)
+    timeline.append_event(root, type_="deathsave", actors=[actor],
+                          summary=f"{actor} death save: {natural} -> {result}")
+    if result == "dead":
+        timeline.append_event(root, type_="death", actors=[actor],
+                              summary=f"{actor} has died")
+    return {"actor": actor, "natural": natural, "result": result,
+            "saves": sheet.get("death_saves")}
