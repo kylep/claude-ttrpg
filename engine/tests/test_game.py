@@ -34,6 +34,15 @@ def test_validate_catches_bad_edge_and_missing_class_file(tmp_path):
     assert any("nowhere" in e for e in errors)
 
 
+def test_validate_catches_unknown_feature_tag(tmp_path):
+    broken = tmp_path / "broken"
+    shutil.copytree(FIXTURE_GAME, broken)
+    fpath = broken / "ruleset" / "classes" / "fighter.yaml"
+    fpath.write_text(fpath.read_text().replace("second_wind", "nonexistent_feature"))
+    errors = game.validate(broken)
+    assert any("class fighter: unknown feature nonexistent_feature" in e for e in errors)
+
+
 def test_cli_validate():
     res = runner.invoke(app, ["game", "validate", str(FIXTURE_GAME)])
     assert res.exit_code == 0

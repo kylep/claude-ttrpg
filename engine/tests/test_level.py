@@ -25,6 +25,19 @@ def test_grant_and_levelup_cleric(wroot):
     assert sheet["spell_slots"][1]["current"] == 3     # was full, +1 max
 
 
+def test_multilevel_slot_ladder(wroot):
+    make_pc(**CLERIC)
+    runner.invoke(app, ["xp", "grant", "--amount", "9999", "--reason", "test"])
+    runner.invoke(app, ["--seed", "1", "level", "up", "--actor", "pc-mira"])
+    res = runner.invoke(app, ["--seed", "1", "level", "up", "--actor", "pc-mira"])
+    assert res.exit_code == 0, res.stdout
+    sheet = worldfs.read_yaml(wroot / "state" / "party" / "pc-mira.yaml")
+    assert sheet["level"] == 3
+    assert sheet["spell_slots"][1]["max"] == 4
+    assert sheet["spell_slots"][1]["current"] == sheet["spell_slots"][1]["max"]
+    assert sheet["spell_slots"][2] == {"max": 1, "current": 1}  # gained fresh: current == max
+
+
 def test_level_cap(wroot):
     make_pc(**CLERIC)
     runner.invoke(app, ["xp", "grant", "--amount", "9999", "--reason", "test"])

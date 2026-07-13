@@ -5,7 +5,8 @@ import yaml
 from ttrpg_engine.errors import EngineError
 
 _RULESET_FILES = ["core", "attributes", "races", "spells", "effects",
-                  "combat", "recovery", "progression", "economy", "items"]
+                  "combat", "recovery", "progression", "economy", "items",
+                  "features"]
 ATTRS = ["STR", "DEX", "CON", "INT", "WIS", "CHA"]
 
 
@@ -47,6 +48,9 @@ def validate(path: Path) -> list[str]:
             for spell in row.get("spells", []):
                 if spell not in g["spells"]:
                     errors.append(f"class {cname}: unknown spell {spell}")
+            for tag in row.get("features", []):
+                if tag not in g["features"]:
+                    errors.append(f"class {cname}: unknown feature {tag}")
     for mname, mon in _bestiary(g).items():
         for field in ["name", "ac", "hp", "speed", "attributes", "attacks", "xp"]:
             if field not in mon:

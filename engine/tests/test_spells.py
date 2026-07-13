@@ -3,8 +3,9 @@ import random
 
 from typer.testing import CliRunner
 
-from ttrpg_engine import combat, spells, worldfs
+from ttrpg_engine import combat, dice, spells, worldfs
 from ttrpg_engine.cli import app
+from ttrpg_engine.errors import EngineError
 from conftest import make_pc
 from test_attack import fixed
 
@@ -13,6 +14,27 @@ runner = CliRunner()
 CLERIC = dict(name="Mira", cls="cleric", race="human",
               assign="WIS=15,CON=14,STR=13,DEX=12,INT=10,CHA=8",
               skills="insight,medicine")
+
+
+def _level_cleric_to_3(wroot):
+    make_pc(**CLERIC)
+    runner.invoke(app, ["xp", "grant", "--amount", "9999", "--reason", "test"])
+    runner.invoke(app, ["--seed", "1", "level", "up", "--actor", "pc-mira"])
+    res = runner.invoke(app, ["--seed", "1", "level", "up", "--actor", "pc-mira"])
+    assert res.exit_code == 0, res.stdout
+    sheet = worldfs.read_yaml(wroot / "state" / "party" / "pc-mira.yaml")
+    assert sheet["level"] == 3
+    return sheet
+
+
+def _start_encounter_adjacent_to_goblin(wroot):
+    res = runner.invoke(app, ["--seed", "9", "encounter", "start",
+                              "maps/encounters/skirmish.yaml"])
+    assert res.exit_code == 0, res.stdout
+    # holy_burst has range 6; pull pc-mira next to goblin-1 (default spawn is 8 away)
+    enc = worldfs.read_yaml(wroot / "state" / "encounter.yaml")
+    enc["positions"]["pc-mira"] = [9, 5]
+    worldfs.write_yaml(wroot / "state" / "encounter.yaml", enc)
 
 
 def test_cure_wounds_consumes_slot_and_heals(wroot):
@@ -48,6 +70,55 @@ def test_save_spell_damage_and_on_save_none(wroot):
     r2 = spells.cast(wroot, worldfs.load_game_for(wroot), "pc-mira", "sacred_flame",
                      "goblin-1", roll_fn=fixed(20), rng=random.Random(1))
     assert r2["save"]["success"] is True and r2["damage"] == 0
+
+
+def test_holy_burst_full_damage_on_failed_save(wroot):
+    _level_cleric_to_3(wroot)
+    _start_encounter_adjacent_to_goblin(wroot)
+    g = worldfs.load_game_for(wroot)
+    expected = dice.roll("3d6", random.Random(1)).total
+    r = spells.cast(wroot, g, "pc-mira", "holy_burst", "goblin-1",
+                    roll_fn=fixed(1), rng=random.Random(1))
+    assert r["save"]["success"] is False                # nat 1 + DEX mod 2 = 3 < DC 13
+    assert r["damage"] == expected
+
+
+def test_holy_burst_half_damage_on_successful_save(wroot):
+    _level_cleric_to_3(wroot)
+    _start_encounter_adjacent_to_goblin(wroot)
+    g = worldfs.load_game_for(wroot)
+    full = dice.roll("3d6", random.Random(1)).total
+    r = spells.cast(wroot, g, "pc-mira", "holy_burst", "goblin-1",
+                    roll_fn=fixed(20), rng=random.Random(1))
+    assert r["save"]["success"] is True                  # nat 20 + DEX mod 2 = 22 >= DC 13
+    assert r["damage"] == max(1, full // 2)
+
+
+def test_holy_burst_consumes_level2_slot_only(wroot):
+    sheet = _level_cleric_to_3(wroot)
+    assert sheet["spell_slots"][1]["current"] == 4
+    assert sheet["spell_slots"][2]["current"] == 1
+    _start_encounter_adjacent_to_goblin(wroot)
+    g = worldfs.load_game_for(wroot)
+    spells.cast(wroot, g, "pc-mira", "holy_burst", "goblin-1",
+               roll_fn=fixed(1), rng=random.Random(2))
+    sheet = worldfs.read_yaml(wroot / "state" / "party" / "pc-mira.yaml")
+    assert sheet["spell_slots"][2]["current"] == 0       # L2 slot consumed
+    assert sheet["spell_slots"][1]["current"] == 4       # L1 slots untouched
+
+
+def test_holy_burst_no_slots_left_fails(wroot):
+    _level_cleric_to_3(wroot)
+    _start_encounter_adjacent_to_goblin(wroot)
+    g = worldfs.load_game_for(wroot)
+    spells.cast(wroot, g, "pc-mira", "holy_burst", "goblin-1",
+               roll_fn=fixed(1), rng=random.Random(2))   # burns the only L2 slot
+    try:
+        spells.cast(wroot, g, "pc-mira", "holy_burst", "goblin-1",
+                   roll_fn=fixed(1), rng=random.Random(3))
+        raise AssertionError("should have raised")
+    except EngineError as e:
+        assert e.code == "no_slots"
 
 
 def test_unknown_spell_fails(wroot):

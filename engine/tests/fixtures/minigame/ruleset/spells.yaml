@@ -18,3 +18,11 @@ bless:
   range: 6
   resolve: auto
   effect: {name: blessed, duration: 10}
+holy_burst:
+  level: 2
+  action: action
+  range: 6
+  resolve: save
+  save_attr: DEX
+  damage: 3d6
+  on_save: half
