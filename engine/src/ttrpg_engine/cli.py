@@ -4,7 +4,7 @@ from pathlib import Path
 
 import typer
 
-from ttrpg_engine import chargen, checks, combat, dice, game as game_mod, render, timeline, worldfs
+from ttrpg_engine import chargen, checks, combat, dice, game as game_mod, render, spells, timeline, worldfs
 from ttrpg_engine.errors import EngineError
 
 app = typer.Typer(add_completion=False, no_args_is_help=True)
@@ -272,6 +272,14 @@ def effect_remove(target: str = typer.Option(...), name: str = typer.Option(...)
 @app.command()
 def deathsave(actor: str = typer.Option(...)):
     emit(guard(combat.death_save, require_root(), actor, roll_fn=d20_roll))
+
+
+@app.command()
+def cast(caster: str = typer.Option(...), spell: str = typer.Option(...),
+         target: str | None = typer.Option(None)):
+    root = require_root()
+    g = guard(worldfs.load_game_for, root)
+    emit(guard(spells.cast, root, g, caster, spell, target, roll_fn=d20_roll, rng=rng))
 
 
 @app.command()
