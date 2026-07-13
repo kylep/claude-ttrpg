@@ -4,7 +4,7 @@ from typer.testing import CliRunner
 
 from ttrpg_engine import render, worldfs
 from ttrpg_engine.cli import app
-from .test_grid_render import ENC
+from test_grid_render import ENC
 
 runner = CliRunner()
 

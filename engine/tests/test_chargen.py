@@ -34,7 +34,7 @@ def test_cli_create_fighter(wroot):
 
 
 def test_create_rejects_bad_array(wroot):
-    from .conftest import FIXTURE_GAME
+    from conftest import FIXTURE_GAME
     from ttrpg_engine import game
     g = game.load(FIXTURE_GAME)
     try:
