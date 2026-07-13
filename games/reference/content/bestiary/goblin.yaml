@@ -1,0 +1,9 @@
+name: Goblin
+ac: 13
+hp: 7
+speed: 6
+attributes: {STR: 8, DEX: 14, CON: 10, INT: 10, WIS: 8, CHA: 8}
+attacks: [{name: scimitar, attack_mod: 4, damage: 1d6+2, range: 1}]
+xp: 50
+loot: {gold: 1d6, items: []}
+difficulty: easy

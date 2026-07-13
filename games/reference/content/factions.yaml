@@ -1,0 +1,15 @@
+thornbury_moot:
+  name: The Thornbury Moot
+  goals:
+    - protect the village and the farms along the Old Road
+    - keep the road open for trade with the river towns
+    - see the Barrowdeep sealed again, permanently
+  relations: {barrow_clan: hostile}
+
+barrow_clan:
+  name: The Barrow Clan
+  goals:
+    - hold the reopened barrow in the Barrow King's name
+    - raid the Old Road for iron, grain, and captives
+    - keep outsiders from reaching the King's tomb
+  relations: {thornbury_moot: hostile}

@@ -8,3 +8,4 @@ torch: {type: gear, price: 1}
 rope: {type: gear, price: 2}
 thieves_tools: {type: gear, price: 25}
 healing_potion: {type: consumable, heal: 2d4+2, price: 50}
+kings_circlet: {type: treasure, price: 200}

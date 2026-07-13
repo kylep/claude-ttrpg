@@ -1,0 +1,38 @@
+# History of the Barrowdeep
+
+Long before Thornbury had a name, the hill folk who worked this valley
+answered to a warlord they called the Barrow King — Hravik Coldspear,
+by the old tongue's reckoning. Hravik held the river crossings by
+force and the loyalty of his household by fear, and when a fever took
+him in his forty-first year, his kin sealed him beneath the hill with
+his blade, his circlet, and enough grave goods to buy a small war.
+They call the hill Barrowdeep still, though the kingdom that raised it
+is three centuries gone and even its language has thinned to a few
+place-names on old maps.
+
+The barrow stayed shut for generations — Thornbury grew up in its
+shadow, farming the bottomland and giving the hill a wide, superstitious
+berth. Two months ago, a spring flood undercut the eastern slope and
+opened a passage that hadn't seen daylight since Hravik's household
+walled it. A band of goblins — refugees from a clan war further up the
+valley, by the tracks — found the opening before anyone from town did,
+and moved into the outer galleries. They have not simply squatted
+there: something in the deep chambers has stirred with them. Travelers
+on the Old Road report goblin raiding parties bolder and better
+organized than goblins have any right to be, as if they answer to a
+will older than their own war-band. Reeve Halda suspects, and the
+Moot fears, that whatever the flood woke in the inner tomb is using
+the goblins as much as the goblins are using the barrow.
+
+Three hooks for the table:
+
+- **The flood is not finished.** A second, worse collapse is overdue on
+  the eastern slope; if the party dawdles, Barrow Woods camp reports
+  new tremors and a rising water table in the outer galleries.
+- **The circlet remembers.** Hravik's circlet is bound to his remains;
+  whoever wears it out of the tomb draws the attention of anything
+  still loyal to his name, in this valley or the next.
+- **Not everyone wants it sealed.** A faction within the Moot has
+  quietly discussed selling barrow salvage rights to a river-town
+  broker rather than resealing the hill — a complication Reeve Halda
+  has not mentioned to the party.

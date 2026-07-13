@@ -1,0 +1,9 @@
+name: Goblin Archer
+ac: 12
+hp: 5
+speed: 6
+attributes: {STR: 8, DEX: 16, CON: 8, INT: 10, WIS: 8, CHA: 8}
+attacks: [{name: shortbow, attack_mod: 5, damage: 1d6, range: 16}]
+xp: 50
+loot: {gold: 1d4, items: []}
+difficulty: easy

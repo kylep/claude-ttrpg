@@ -1,0 +1,9 @@
+nodes:
+  thornbury: {name: Thornbury, coords: [0, 0], terrain: settlement}
+  old-road: {name: The Old Road, coords: [4, 1], terrain: road}
+  barrow-woods: {name: Barrow Woods, coords: [7, 3], terrain: forest}
+  barrowdeep: {name: Barrowdeep, coords: [8, 5], terrain: hills}
+edges:
+  - {between: [thornbury, old-road], hours: 4}
+  - {between: [old-road, barrow-woods], hours: 3}
+  - {between: [barrow-woods, barrowdeep], hours: 1}

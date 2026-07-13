@@ -1,0 +1,30 @@
+reeve_halda:
+  name: Reeve Halda
+  location: thornbury
+  role: quest-giver
+  disposition: friendly
+  wants: >
+    Halda wants the Barrowdeep sealed again before the goblin raids spreading
+    from it reach Thornbury's fields. She will hire the party to clear the
+    barrow, pay 100 gp on their return, and speak for them before the Moot.
+
+innkeep_bram:
+  name: Innkeeper Bram
+  location: thornbury
+  role: rumor-monger
+  disposition: friendly
+  wants: >
+    Bram wants a full taproom and a fresh story to tell it. He trades a
+    night's board for news from the road and will pass along everything
+    he's heard about the barrow to anyone who buys a round.
+
+pedlar_okko:
+  name: Pedlar Okko
+  location: old-road
+  role: merchant
+  disposition: neutral
+  wants: >
+    Okko wants safe passage and steady trade along the Old Road. He buys
+    and sells at the list prices in ruleset/items.yaml, and will share
+    what he's seen on the road — goblin sign, the ambush site, tracks
+    toward Barrow Woods — if the party is civil with him.

@@ -1,0 +1,11 @@
+id: road-ambush
+name: Ambush on the Old Road
+grid: {width: 14, height: 8}
+terrain:
+  - {type: wall, cells: [[5, 0], [5, 7], [10, 0], [10, 7]]}
+  - {type: difficult, cells: [[6, 3], [6, 4], [7, 4], [8, 3], [9, 5], [9, 6]]}
+monsters:
+  - {type: goblin, pos: [8, 2]}
+  - {type: goblin, pos: [9, 6]}
+  - {type: goblin_archer, pos: [12, 4]}
+pc_spawns: [[1, 3], [1, 4], [2, 3], [2, 4]]

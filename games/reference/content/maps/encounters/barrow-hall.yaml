@@ -1,0 +1,10 @@
+id: barrow-hall
+name: The Pillared Hall
+grid: {width: 12, height: 9}
+terrain:
+  - {type: wall, cells: [[3, 2], [3, 6], [6, 2], [6, 6], [9, 2], [9, 6]]}
+  - {type: difficult, cells: [[4, 4], [5, 4], [7, 4], [8, 4]]}
+monsters:
+  - {type: barrow_hound, pos: [8, 3]}
+  - {type: barrow_hound, pos: [8, 5]}
+pc_spawns: [[1, 3], [1, 4], [1, 5], [2, 4]]
