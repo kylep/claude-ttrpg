@@ -4,7 +4,7 @@ from pathlib import Path
 
 import typer
 
-from ttrpg_engine import chargen, checks, dice, game as game_mod, render, timeline, worldfs
+from ttrpg_engine import chargen, checks, combat, dice, game as game_mod, render, timeline, worldfs
 from ttrpg_engine.errors import EngineError
 
 app = typer.Typer(add_completion=False, no_args_is_help=True)
@@ -204,3 +204,26 @@ def map_render(svg: bool = typer.Option(False, "--svg")):
     if svg:
         payload["svg"] = str(guard(render.write_svg, root, enc))
     emit(payload)
+
+
+enc_app = typer.Typer()
+app.add_typer(enc_app, name="encounter")
+
+
+@enc_app.command("start")
+def encounter_start(map_rel: str):
+    root = require_root()
+    g = guard(worldfs.load_game_for, root)
+    emit(guard(combat.start, root, g, map_rel, rng))
+
+
+@enc_app.command("next")
+def encounter_next():
+    emit(guard(combat.next_turn, require_root()))
+
+
+@enc_app.command("end")
+def encounter_end():
+    root = require_root()
+    g = guard(worldfs.load_game_for, root)
+    emit(guard(combat.end, root, g, rng))
