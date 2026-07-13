@@ -4,7 +4,7 @@ from pathlib import Path
 
 import typer
 
-from ttrpg_engine import chargen, checks, combat, dice, game as game_mod, inventory, render, rest as rest_mod, spells, timeline, travel as travel_mod, worldfs
+from ttrpg_engine import chargen, checks, combat, dice, game as game_mod, inventory, level as level_mod, render, rest as rest_mod, spells, timeline, travel as travel_mod, worldfs
 from ttrpg_engine.errors import EngineError
 
 app = typer.Typer(add_completion=False, no_args_is_help=True)
@@ -342,3 +342,21 @@ def gold_add(amount: int = typer.Option(...), actor: str | None = typer.Option(N
 def gold_spend(amount: int = typer.Option(...), actor: str | None = typer.Option(None),
                party: bool = typer.Option(False, "--party")):
     emit(guard(inventory.adjust_gold, require_root(), _gold_target(actor, party), -amount))
+
+
+xp_app = typer.Typer()
+level_app = typer.Typer()
+app.add_typer(xp_app, name="xp")
+app.add_typer(level_app, name="level")
+
+
+@xp_app.command("grant")
+def xp_grant(amount: int = typer.Option(...), reason: str = typer.Option("")):
+    emit(guard(level_mod.grant_xp, require_root(), amount, reason))
+
+
+@level_app.command("up")
+def level_up(actor: str = typer.Option(...)):
+    root = require_root()
+    g = guard(worldfs.load_game_for, root)
+    emit(guard(level_mod.up, root, g, actor, rng))
