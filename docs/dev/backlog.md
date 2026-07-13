@@ -64,3 +64,12 @@ fix-later; none block play.
 - `level.grant_xp` still grants to all members regardless of splits;
   dead PCs never leave `party.members` (no retire/bury flow).
 - Equip/unequip unsupported for monster ids.
+
+## From the quests round (2026-07-13)
+
+- Canon `npcs.yaml` gold/inventory shapes unvalidated by `game validate`;
+  malformed entries raise a raw traceback instead of a JSON error.
+- Quest gold-remainder goes to the first recipient in caller-supplied
+  order; confirm or canonicalize.
+- Escrowed items pay out to the first recipient only (documented; revisit
+  if multi-recipient item splits ever matter).

@@ -65,7 +65,10 @@ attacks from what's actually worn, magic items carry boons (and
 sometimes curses — `engine item dispel` is the remedy), and the party
 can split: `travel`, `encounter start`, and `rest` all take `--pcs` to
 act on a subset, with XP flowing only to the PCs who were actually in
-the fight.
+the fight. Quests are first-class state too (`engine quest
+offer/accept/complete/cancel/list`): NPC and PC rewards are escrowed up
+front — no vaporware bounties — while world quests can spawn rewards
+and grant XP. Thornbury's quest board ships with two.
 
 ## Worlds are git repos — saves, forks, and time travel
 
