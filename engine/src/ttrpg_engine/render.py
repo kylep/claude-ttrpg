@@ -3,6 +3,8 @@ from pathlib import Path
 from ttrpg_engine import grid, worldfs
 from ttrpg_engine.errors import EngineError
 
+_CELL = 40
+
 
 def load_encounter(root: Path) -> dict:
     path = root / "state" / "encounter.yaml"
@@ -43,3 +45,47 @@ def ascii_map(enc: dict) -> str:
     rows = [f"{y:2d} " + " ".join(cells[y]) for y in range(h)]
     legend = "  ".join(f"{glyph}={cid}" for cid, glyph in syms.items())
     return "\n".join([header, *rows, "", legend, "#=wall  ~=difficult"])
+
+
+def svg_map(enc: dict) -> str:
+    w, h = enc["grid"]["width"], enc["grid"]["height"]
+    W, H = w * _CELL, h * _CELL + 30
+    parts = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" '
+             f'viewBox="0 0 {W} {H}" font-family="monospace">',
+             f'<rect width="{W}" height="{H}" fill="#fafaf7"/>']
+    for x, y in grid.cells_of(enc, "difficult"):
+        parts.append(f'<rect x="{x*_CELL}" y="{y*_CELL}" width="{_CELL}" height="{_CELL}" fill="#d8c9a3"/>')
+    for x, y in grid.cells_of(enc, "wall"):
+        parts.append(f'<rect x="{x*_CELL}" y="{y*_CELL}" width="{_CELL}" height="{_CELL}" fill="#44403c"/>')
+    for i in range(w + 1):
+        parts.append(f'<line x1="{i*_CELL}" y1="0" x2="{i*_CELL}" y2="{h*_CELL}" stroke="#ccc"/>')
+    for i in range(h + 1):
+        parts.append(f'<line x1="0" y1="{i*_CELL}" x2="{w*_CELL}" y2="{i*_CELL}" stroke="#ccc"/>')
+    syms = symbols(enc)
+    for cid, pos in enc["positions"].items():
+        if enc["monsters"].get(cid, {}).get("dead", False):
+            continue
+        x, y = pos
+        cx, cy = x * _CELL + _CELL // 2, y * _CELL + _CELL // 2
+        color = "#2563eb" if cid.startswith("pc-") else "#dc2626"
+        parts.append(f'<circle cx="{cx}" cy="{cy}" r="{_CELL//2 - 4}" fill="{color}"/>')
+        parts.append(f'<text x="{cx}" y="{cy + 5}" text-anchor="middle" fill="#fff">{syms[cid]}</text>')
+    legend = "   ".join(f"{s}={cid}" for cid, s in syms.items())
+    parts.append(f'<text x="4" y="{h*_CELL + 20}" font-size="12">{enc["name"]} — round {enc["round"]} — {legend}</text>')
+    parts.append("</svg>")
+    return "".join(parts)
+
+
+def write_svg(root: Path, enc: dict) -> Path:
+    clk = worldfs.read_yaml(worldfs.state(root, "clock"))
+    stem = f'{clk["date"]}-{enc["id"]}-r{enc["round"]:02d}'
+    out = root / "renders" / f"{stem}.svg"
+    out.parent.mkdir(exist_ok=True)
+    out.write_text(svg_map(enc))
+    entries = [f'<h3>{f.stem}</h3><img src="{f.name}" style="max-width:100%">'
+               for f in sorted(out.parent.glob("*.svg"), reverse=True)]
+    (out.parent / "index.html").write_text(
+        '<!doctype html><meta charset="utf-8"><title>Battle maps</title>'
+        '<body style="font-family:monospace;max-width:720px;margin:2rem auto">'
+        + "".join(entries) + "</body>")
+    return out

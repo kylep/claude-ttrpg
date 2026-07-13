@@ -3,7 +3,7 @@ import json
 from typer.testing import CliRunner
 
 from ttrpg_engine.cli import app
-from conftest import make_pc
+from .conftest import make_pc
 
 runner = CliRunner()
 
