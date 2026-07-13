@@ -51,6 +51,42 @@ def passive_perception(data: dict) -> int:
     return 10 + skill_mod(data, "WIS", "perception")
 
 
+def in_darkness(enc: dict | None, cid: str, data: dict) -> bool:
+    """True when cid stands in an unlit cell and carries no light of its own."""
+    if enc is None or cid not in enc["positions"]:
+        return False
+    return (grid.is_dark(enc, enc["positions"][cid])
+            and "lit" not in effect_names(data))
+
+
+def _frightened_active(root: Path, enc: dict | None, cid: str, data: dict) -> bool:
+    """Frightened bites while the recorded fear source is alive and in view;
+    a sourceless frightened effect always bites."""
+    entry = next((e for e in data.get("effects", []) if e["name"] == "frightened"), None)
+    if entry is None:
+        return False
+    src = entry.get("source")
+    if not src:
+        return True
+    if enc is None or src not in enc["positions"] or cid not in enc["positions"]:
+        return False
+    if not is_living(root, enc, src):
+        return False
+    return grid.line_of_sight(enc, tuple(enc["positions"][cid]),
+                              tuple(enc["positions"][src]))
+
+
+def self_dis_conditions(root: Path, enc: dict | None, cid: str, data: dict) -> list[str]:
+    """Conditions that put a combatant's own d20 rolls (attacks, checks,
+    contests, hiding) at disadvantage."""
+    out = []
+    if "poisoned" in effect_names(data):
+        out.append("poisoned")
+    if _frightened_active(root, enc, cid, data):
+        out.append("frightened")
+    return out
+
+
 def roll_conditions(a_eff: set[str], t_eff: set[str], kind: str) -> tuple[list[str], list[str]]:
     """Advantage/disadvantage sources an attack roll picks up from the
     engine-enforced conditions on attacker (a_eff) and target (t_eff)."""
@@ -202,6 +238,7 @@ def start(root: Path, g: dict, map_rel: str, rng: Random, pcs: list[str] | None 
     order = sorted(scores, key=lambda c: scores[c], reverse=True)
     enc = {"id": emap["id"], "name": emap["name"], "round": 1, "turn": 0,
            "order": order, "grid": emap["grid"], "terrain": emap.get("terrain", []),
+           "dark": bool(emap.get("dark")),
            "positions": positions, "monsters": monsters, "pcs": participants}
     save_encounter(root, enc)
     timeline.append_event(root, type_="encounter", actors=order,
@@ -387,6 +424,11 @@ def attack(root: Path, attacker: str, target: str, *, attack_name: str | None,
                       and adjacent_living_hostile(root, enc, attacker))
     a_eff, t_eff = effect_names(a_data), effect_names(t_data)
     adv_from, dis_from = roll_conditions(a_eff, t_eff, kind)
+    dis_from += [f"attacker_{r}" for r in self_dis_conditions(root, enc, attacker, a_data)]
+    if in_darkness(enc, target, t_data):
+        dis_from.append("target_in_darkness")
+    if in_darkness(enc, attacker, a_data):
+        adv_from.append("attacker_in_darkness")
     if adv:
         adv_from.insert(0, "caller")
     if dis:
@@ -449,13 +491,18 @@ def attack(root: Path, attacker: str, target: str, *, attack_name: str | None,
     return result
 
 
-def set_effect(root: Path, target: str, name: str, duration: int) -> dict:
+def set_effect(root: Path, target: str, name: str, duration: int,
+               source: str | None = None) -> dict:
     kind, data, enc = resolve_actor(root, target)
     data["effects"] = [e for e in data["effects"] if e["name"] != name]
-    data["effects"].append({"name": name, "duration": duration})
+    entry = {"name": name, "duration": duration}
+    if source:
+        entry["source"] = source
+    data["effects"].append(entry)
     _persist(root, kind, data, enc)
     timeline.append_event(root, type_="effect", actors=[target],
-                          summary=f"{target} gains {name} ({duration} rounds)")
+                          summary=f"{target} gains {name} ({duration} rounds)"
+                                  + (f" from {source}" if source else ""))
     return {"target": target, "effects": data["effects"]}
 
 
@@ -579,13 +626,16 @@ def hide(root: Path, g: dict, actor: str, *, roll_fn) -> dict:
             raise EngineError("held",
                               f"{actor} is {cond}; whatever holds it knows where it is")
     pos = tuple(enc["positions"][actor])
-    seen_by = sorted(cid for cid, _, cpos in _hostiles_of(root, enc, actor)
-                     if grid.line_of_sight(enc, cpos, pos))
-    if seen_by:
-        raise EngineError("seen", f"{actor} is in plain sight of {', '.join(seen_by)}")
+    dark = in_darkness(enc, actor, data)
+    if not dark:  # darkness is concealment; otherwise cover must block every hostile
+        seen_by = sorted(cid for cid, _, cpos in _hostiles_of(root, enc, actor)
+                         if grid.line_of_sight(enc, cpos, pos))
+        if seen_by:
+            raise EngineError("seen", f"{actor} is in plain sight of {', '.join(seen_by)}")
     adv_from, dis_from = [], []
     if "silent_step" in eff:
         adv_from.append("silent_step")
+    dis_from += self_dis_conditions(root, enc, actor, data)
     for line in data.get("inventory", []):
         if line.get("equipped") and g["items"][line["item"]].get("stealth_dis"):
             dis_from.append(f"noisy:{line['item']}")
@@ -600,6 +650,8 @@ def hide(root: Path, g: dict, actor: str, *, roll_fn) -> dict:
     timeline.append_event(root, type_="effect", actors=[actor],
                           summary=f"{actor} hides (stealth {total})")
     result = {"actor": actor, "natural": natural, "stealth": total, "hidden": True}
+    if dark:
+        result["in_darkness"] = True
     if adv_from:
         result["adv_from"] = adv_from
     if dis_from:
@@ -618,13 +670,33 @@ def stand(root: Path, actor: str) -> dict:
     return {"actor": actor, "effects": data["effects"]}
 
 
-def _contest(attacker_mod: int, defender_mod: int, roll_fn) -> dict:
-    """Contested check; ties go to the defender."""
-    a_nat, a_total = roll_fn(attacker_mod, False, False)
-    d_nat, d_total = roll_fn(defender_mod, False, False)
-    return {"attacker": {"natural": a_nat, "total": a_total},
-            "defender": {"natural": d_nat, "total": d_total},
-            "success": a_total > d_total}
+def _reveal_actor(root: Path, enc: dict, cid: str, data: dict, kind: str, note: str) -> bool:
+    """Strip hidden from a combatant that just gave itself away; caller persists."""
+    if "hidden" not in effect_names(data):
+        return False
+    data["effects"] = [e for e in data["effects"] if e["name"] != "hidden"]
+    enc.get("stealth", {}).pop(cid, None)
+    if kind == "pc":
+        save_pc(root, data)
+    timeline.append_event(root, type_="effect", actors=[cid],
+                          summary=f"{cid} is revealed ({note})")
+    return True
+
+
+def _contest(attacker_mod: int, defender_mod: int, roll_fn,
+             a_dis: list[str] | None = None, d_dis: list[str] | None = None) -> dict:
+    """Contested check; ties go to the defender. Each side rolls at
+    disadvantage if it carries impairing conditions (poisoned, frightened)."""
+    a_nat, a_total = roll_fn(attacker_mod, False, bool(a_dis))
+    d_nat, d_total = roll_fn(defender_mod, False, bool(d_dis))
+    out = {"attacker": {"natural": a_nat, "total": a_total},
+           "defender": {"natural": d_nat, "total": d_total},
+           "success": a_total > d_total}
+    if a_dis:
+        out["attacker"]["dis_from"] = a_dis
+    if d_dis:
+        out["defender"]["dis_from"] = d_dis
+    return out
 
 
 def _require_grabbable(enc: dict, actor: str, target: str) -> None:
@@ -662,21 +734,28 @@ def grapple(root: Path, actor: str, target: str, *, roll_fn, release: bool = Fal
         raise EngineError("invalid_target", f"{target} is down")
     if target in enc.get("grapples", {}):
         raise EngineError("already_grappled", f"{target} is already grappled")
-    _, a_data = get_combatant(root, enc, actor)
+    a_kind, a_data = get_combatant(root, enc, actor)
     tkind, tdata = get_combatant(root, enc, target)
-    contest = _contest(skill_mod(a_data, "STR", "athletics"), _escape_mod(tdata), roll_fn)
+    revealed = _reveal_actor(root, enc, actor, a_data, a_kind, "lunged from hiding")
+    contest = _contest(skill_mod(a_data, "STR", "athletics"), _escape_mod(tdata), roll_fn,
+                       a_dis=self_dis_conditions(root, enc, actor, a_data),
+                       d_dis=self_dis_conditions(root, enc, target, tdata))
     if contest["success"]:
         tdata["effects"] = [e for e in tdata["effects"] if e["name"] != "grappled"]
         tdata["effects"].append({"name": "grappled", "duration": -1})
         if tkind == "pc":
             save_pc(root, tdata)
         enc.setdefault("grapples", {})[target] = actor
+    if contest["success"] or revealed:
         save_encounter(root, enc)
     verb = "grapples" if contest["success"] else "fails to grapple"
     timeline.append_event(root, type_="effect", actors=[actor, target],
                           summary=f"{actor} {verb} {target}")
-    return {"actor": actor, "target": target, "contest": contest,
-            "grappled": contest["success"]}
+    result = {"actor": actor, "target": target, "contest": contest,
+              "grappled": contest["success"]}
+    if revealed:
+        result["revealed"] = True
+    return result
 
 
 def escape(root: Path, actor: str, *, roll_fn) -> dict:
@@ -686,7 +765,9 @@ def escape(root: Path, actor: str, *, roll_fn) -> dict:
         raise EngineError("not_grappled", f"{actor} is not grappled")
     akind, a_data = get_combatant(root, enc, actor)
     _, h_data = get_combatant(root, enc, holder)
-    contest = _contest(_escape_mod(a_data), skill_mod(h_data, "STR", "athletics"), roll_fn)
+    contest = _contest(_escape_mod(a_data), skill_mod(h_data, "STR", "athletics"), roll_fn,
+                       a_dis=self_dis_conditions(root, enc, actor, a_data),
+                       d_dis=self_dis_conditions(root, enc, holder, h_data))
     if contest["success"]:
         a_data["effects"] = [e for e in a_data["effects"] if e["name"] != "grappled"]
         if akind == "pc":
@@ -705,21 +786,28 @@ def shove(root: Path, actor: str, target: str, *, roll_fn) -> dict:
     _require_grabbable(enc, actor, target)
     if not is_living(root, enc, target):
         raise EngineError("invalid_target", f"{target} is down")
-    _, a_data = get_combatant(root, enc, actor)
+    a_kind, a_data = get_combatant(root, enc, actor)
     tkind, tdata = get_combatant(root, enc, target)
-    contest = _contest(skill_mod(a_data, "STR", "athletics"), _escape_mod(tdata), roll_fn)
+    revealed = _reveal_actor(root, enc, actor, a_data, a_kind, "lunged from hiding")
+    contest = _contest(skill_mod(a_data, "STR", "athletics"), _escape_mod(tdata), roll_fn,
+                       a_dis=self_dis_conditions(root, enc, actor, a_data),
+                       d_dis=self_dis_conditions(root, enc, target, tdata))
     if contest["success"]:
         tdata["effects"] = [e for e in tdata["effects"] if e["name"] != "prone"]
         tdata["effects"].append({"name": "prone", "duration": -1})
         if tkind == "pc":
             save_pc(root, tdata)
+    if contest["success"] or revealed:
         save_encounter(root, enc)
     verb = "shoves" if contest["success"] else "fails to shove"
     timeline.append_event(root, type_="effect", actors=[actor, target],
                           summary=f"{actor} {verb} {target}"
                                   + (" prone" if contest["success"] else ""))
-    return {"actor": actor, "target": target, "contest": contest,
-            "prone": contest["success"]}
+    result = {"actor": actor, "target": target, "contest": contest,
+              "prone": contest["success"]}
+    if revealed:
+        result["revealed"] = True
+    return result
 
 
 def move(root: Path, actor: str, to: tuple[int, int], *, force: bool = False) -> dict:
@@ -740,6 +828,13 @@ def move(root: Path, actor: str, to: tuple[int, int], *, force: bool = False) ->
         for cond in ("grappled", "restrained"):
             if cond in eff:
                 raise EngineError("held", f"{actor} is {cond} and cannot move")
+        fear = next((e for e in data.get("effects", []) if e["name"] == "frightened"), None)
+        fear_src = (fear or {}).get("source")
+        if (fear_src and fear_src in enc["positions"] and is_living(root, enc, fear_src)):
+            src_pos = tuple(enc["positions"][fear_src])
+            if grid.chebyshev(to, src_pos) < grid.chebyshev(src, src_pos):
+                raise EngineError("frightened",
+                                  f"{actor} cannot willingly move closer to {fear_src}")
         hostile_cells = (set() if aloft else
                          {pos for cid, _, pos in _hostiles_of(root, enc, actor, awake=False)
                           if not enc.get("aloft", {}).get(cid)})
@@ -771,7 +866,7 @@ def move(root: Path, actor: str, to: tuple[int, int], *, force: bool = False) ->
         result["grapple_broken"] = [holder, held]
         timeline.append_event(root, type_="effect", actors=[holder, held],
                               summary=f"{holder} loses its grip on {held}")
-    if "hidden" in eff:
+    if "hidden" in eff and not in_darkness(enc, actor, data):
         stealth = enc.get("stealth", {}).get(actor, 0)
         spotters = [cid for cid, cdata, cpos in _hostiles_of(root, enc, actor)
                     if grid.line_of_sight(enc, cpos, to)
@@ -792,6 +887,8 @@ def move(root: Path, actor: str, to: tuple[int, int], *, force: bool = False) ->
         for cid, cdata, cpos in _hostiles_of(root, enc, actor, awake=False):
             if "hidden" not in effect_names(cdata):
                 continue
+            if in_darkness(enc, cid, cdata):
+                continue  # nobody sees into darkness
             if not grid.line_of_sight(enc, to, cpos):
                 continue
             if pp < enc.get("stealth", {}).get(cid, 0):

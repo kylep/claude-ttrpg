@@ -77,6 +77,11 @@ def cells_of(enc: dict, terrain_type: str) -> set[tuple[int, int]]:
     return out
 
 
+def is_dark(enc: dict, cell: tuple[int, int]) -> bool:
+    """True in unlit cells: map-wide `dark: true`, or a `dark` terrain cell."""
+    return bool(enc.get("dark")) or tuple(cell) in cells_of(enc, "dark")
+
+
 def blocked(enc: dict, cell: tuple[int, int]) -> str | None:
     x, y = cell
     if not (0 <= x < enc["grid"]["width"] and 0 <= y < enc["grid"]["height"]):

@@ -4,6 +4,7 @@ grid: {width: 12, height: 8}
 terrain:
   - {type: wall, cells: [[5, 2], [5, 3], [5, 4], [5, 5]]}
   - {type: difficult, cells: [[7, 2], [7, 3]]}
+  - {type: dark, cells: [[8, 6], [9, 6], [10, 6]]}
 monsters:
   - {type: goblin, pos: [9, 4]}
   - {type: goblin_archer, pos: [10, 2]}

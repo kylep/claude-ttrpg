@@ -97,8 +97,12 @@ is never more than one. If the party stakes out the yard at dusk
 the **Lych-Crake** (`content/bestiary/lych_crake.yaml`), the carrion
 bird that has been getting fat on the risings. The gate wall screens
 the party's approach — nobody has line of sight to the spawns, so a
-stealthy PC can `engine hide` before anything moves — and the crake is
-the campaign's first flyer: see its bestiary `notes:` for the
+stealthy PC can `engine hide` before anything moves — and the old
+yew's dusk shadow (`terrain: dark`) is the campaign's first darkness:
+anyone standing in it unlit can hide with no cover at all and is
+attacked at disadvantage, while a lit torch (`engine equip` grants the
+`lit` effect) cancels the shadow's protection both ways. The crake is
+also the campaign's first flyer: see its bestiary `notes:` for the
 swoop-loop turns and the three counters (shoot it down for a 2d6 fall,
 ready for its landings, or grapple it grounded so it cannot take off).
 The cause is **the Hollow Sexton**

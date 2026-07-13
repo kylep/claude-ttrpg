@@ -24,7 +24,10 @@ notes: >
   over the fight — a real test of the cleric's kit, not just their armor;
   casting shield_of_faith first buys a wide safety margin. A hit that
   drops a PC to 0 hp may be narrated as the Judge finding them wanting —
-  the GM may apply frightened (`effect add --target <pc> --name
-  frightened --duration 2`) on a particularly damning verdict. On defeat
+  the GM may apply frightened with the Judge as source (`effect add
+  --target <pc> --name frightened --duration 2 --source
+  unshriven_judge-1`) on a particularly damning verdict — the engine
+  keeps the shaken cleric at disadvantage while the Judge is in view
+  and bars them from approaching it. On defeat
   it yields its talisman of office: see `oathlight_talisman` in
   ruleset/items.yaml and adventure.md Act 3.

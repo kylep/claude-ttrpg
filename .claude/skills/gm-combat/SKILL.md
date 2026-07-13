@@ -44,6 +44,17 @@ description: Use when combat starts in a claude-ttrpg session - runs the encount
      grappled creatures cannot move or take off), `engine escape
      --actor B`, `engine grapple ... --release`, and `engine shove
      --actor A --target B` to knock prone.
+   - Poisoned/frightened: apply via `engine effect add`; the engine
+     rolls the sufferer's attacks, checks, and contests at
+     disadvantage. Give frightened a `--source <cid>` and it only
+     bites while that combatant is alive and in view — and the victim
+     cannot willingly move closer to it.
+   - Darkness: `dark` terrain cells (or a map-wide `dark: true`) hide
+     whoever stands in them unlit — attacks against them take
+     disadvantage, attacks by them gain advantage, and they can
+     `engine hide` with no cover. An equipped torch grants `lit`,
+     which cancels all of it; monsters get light via
+     `effect add --name lit`.
    - Flying: `engine ascend` / `engine land`; a flyer forced down takes
      fall damage automatically (dropped to 0 hp aloft, or its flying
      effect removed/expired). `engine fall --actor X [--dice 2d6]` for

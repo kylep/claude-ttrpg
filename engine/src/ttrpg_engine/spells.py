@@ -126,6 +126,12 @@ def cast(root: Path, g: dict, caster: str, spell_name: str, target: str | None,
         s_kind = "ranged" if spell["range"] > 1 else "melee"
         adv_from, dis_from = combat.roll_conditions(
             combat.effect_names(sheet), combat.effect_names(t_data), s_kind)
+        dis_from += [f"attacker_{r}"
+                     for r in combat.self_dis_conditions(root, enc, caster, sheet)]
+        if combat.in_darkness(enc, target, t_data):
+            dis_from.append("target_in_darkness")
+        if combat.in_darkness(enc, caster, sheet):
+            adv_from.append("attacker_in_darkness")
         ranged_in_melee = (s_kind == "ranged" and enc is not None
                            and combat.adjacent_living_hostile(root, enc, caster))
         if ranged_in_melee:

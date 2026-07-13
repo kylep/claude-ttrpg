@@ -138,3 +138,70 @@ def test_lych_gate_flying_fight(ref_root):
     enc = worldfs.read_yaml(ref_root / "state" / "encounter.yaml")
     assert enc["aloft"]["lych_crake-1"] is False
     assert "prone" in combat.effect_names(enc["monsters"]["lych_crake-1"])
+
+
+def test_lych_gate_dusk_shadow_darkness(ref_root):
+    """The yew's dusk shadow per quest-board.md: hide with no cover, be
+    attacked at disadvantage, and lose it all to a lit torch."""
+    _make("Bron", "fighter", "human", "STR=15,CON=14,DEX=13,WIS=12,INT=10,CHA=8",
+          "athletics,perception")
+    res = runner.invoke(app, ["--seed", "7", "encounter", "start",
+                              "maps/encounters/lych-gate.yaml"])
+    assert res.exit_code == 0, res.stdout
+    enc = worldfs.read_yaml(ref_root / "state" / "encounter.yaml")
+    enc["positions"]["pc-bron"] = [8, 1]                 # dusk shadow, watched by both monsters
+    enc["positions"]["grave_walker-1"] = [8, 2]          # shambles up to arm's reach
+    worldfs.write_yaml(ref_root / "state" / "encounter.yaml", enc)
+
+    # unlit in the shadow: hideable despite the walker's sight line, hit at dis
+    r = combat.hide(ref_root, worldfs.load_game_for(ref_root), "pc-bron", roll_fn=fixed(10))
+    assert r["hidden"] is True and r["in_darkness"] is True
+    combat.remove_effect(ref_root, "pc-bron", "hidden")
+    fn, calls = spy()
+    r = combat.attack(ref_root, "grave_walker-1", "pc-bron", attack_name=None,
+                      adv=False, dis=False, roll_fn=fn, rng=random.Random(1))
+    assert "target_in_darkness" in r["dis_from"]
+
+    # strike a torch and the shadow stops helping
+    runner.invoke(app, ["item", "add", "--actor", "pc-bron", "--item", "torch"])
+    res = runner.invoke(app, ["equip", "--actor", "pc-bron", "--item", "torch"])
+    assert res.exit_code == 0, res.stdout
+    r = combat.attack(ref_root, "grave_walker-1", "pc-bron", attack_name=None,
+                      adv=False, dis=False, roll_fn=fn, rng=random.Random(1))
+    assert "dis_from" not in r
+    try:
+        combat.hide(ref_root, worldfs.load_game_for(ref_root), "pc-bron", roll_fn=fixed(10))
+        raise AssertionError("a torch-bearer cannot hide in shadow")
+    except EngineError as e:
+        assert e.code == "seen"
+
+
+def test_kings_tomb_dread_wail_frightened(ref_root):
+    """Beat 5B as written: the wail's fear is engine-enforced from the King
+    as source — disadvantage in his sight, no approach, broken by the dais."""
+    _make("Bron", "fighter", "human", "STR=15,CON=14,DEX=13,WIS=12,INT=10,CHA=8",
+          "athletics,perception")
+    res = runner.invoke(app, ["--seed", "7", "encounter", "start",
+                              "maps/encounters/kings-tomb.yaml"])
+    assert res.exit_code == 0, res.stdout
+    res = runner.invoke(app, ["effect", "add", "--target", "pc-bron", "--name", "frightened",
+                              "--duration", "2", "--source", "barrow_king-1"])
+    assert res.exit_code == 0, res.stdout
+
+    enc = worldfs.read_yaml(ref_root / "state" / "encounter.yaml")
+    enc["positions"]["pc-bron"] = [7, 4]                 # blade to blade with the King [8,4]
+    worldfs.write_yaml(ref_root / "state" / "encounter.yaml", enc)
+    fn, calls = spy()
+    r = combat.attack(ref_root, "pc-bron", "barrow_king-1", attack_name="longsword",
+                      adv=False, dis=False, roll_fn=fn, rng=random.Random(1))
+    assert "attacker_frightened" in r["dis_from"]
+
+    res = runner.invoke(app, ["move", "--actor", "pc-bron", "--to", "8,4"])
+    assert res.exit_code == 1                            # can't close on the fear itself
+    assert json.loads(res.stdout)["error"]["code"] in ("frightened", "blocked")
+
+    # duck behind the dais stonework: fear needs line of sight
+    res = runner.invoke(app, ["move", "--actor", "pc-bron", "--to", "8,1"])
+    assert res.exit_code == 0, res.stdout
+    res = runner.invoke(app, ["check", "--actor", "pc-bron", "--attr", "STR", "--dc", "13"])
+    assert "dis_from" not in json.loads(res.stdout)

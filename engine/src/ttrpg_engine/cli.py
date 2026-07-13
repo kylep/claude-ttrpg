@@ -265,8 +265,9 @@ def heal(target: str = typer.Option(...), amount: int = typer.Option(...),
 
 @effect_app.command("add")
 def effect_add(target: str = typer.Option(...), name: str = typer.Option(...),
-               duration: int = typer.Option(-1)):
-    emit(guard(combat.set_effect, require_root(), target, name, duration))
+               duration: int = typer.Option(-1),
+               source: str | None = typer.Option(None, help="Combatant causing it (frightened uses this).")):
+    emit(guard(combat.set_effect, require_root(), target, name, duration, source))
 
 
 @effect_app.command("remove")

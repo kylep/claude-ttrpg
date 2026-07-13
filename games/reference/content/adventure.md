@@ -87,12 +87,15 @@ heard from the tomb beyond (see Encounter B).
 The boss fight: **the Barrow King** with one goblin honor-guard, in
 his rubble-choked burial chamber. His dread wail (see
 `content/bestiary/barrow_king.yaml`) frightens whoever it hits; the GM
-should apply the `frightened` effect by hand
-(`effect add --target <pc> --name frightened --duration 2`) rather
-than expecting the engine to do it automatically. A DC 16 (hard)
-Athletics or Perception check finds safe footing across the rubble
-(`terrain: difficult`) and avoids the extra movement cost for one
-turn.
+applies the effect with the King as its source
+(`effect add --target <pc> --name frightened --duration 2 --source barrow_king-1`)
+and the engine enforces the rest: the shaken PC rolls at disadvantage
+while the King is in view and cannot willingly step closer to him.
+The dais walls flanking his position are the counterplay — breaking
+line of sight behind them shakes the fear off until he comes back
+into view. A DC 16 (hard) Athletics or Perception check finds safe
+footing across the rubble (`terrain: difficult`) and avoids the extra
+movement cost for one turn.
 
 ## Beat 6 — Return and Reward
 

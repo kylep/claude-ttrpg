@@ -3,7 +3,7 @@ mace: {type: weapon, damage: 1d6, finesse: false, range: 1, price: 5}
 dagger: {type: weapon, damage: 1d4, finesse: true, range: 1, price: 2}
 chain_mail: {type: armor, ac_base: 16, add_dex: false, stealth_dis: true, price: 75}
 leather_armor: {type: armor, ac_base: 11, add_dex: true, price: 10}
-torch: {type: gear, price: 1}
+torch: {type: gear, price: 1, grants_effect: {name: lit}}
 ward_ring: {type: gear, price: 100, grants_effect: {name: blessed}}
 lucky_charm: {type: gear, price: 20, grants_effect: {name: blessed}}
 fine_longsword: {type: weapon, damage: 1d8, finesse: false, range: 1, price: 100, bonus: {attack: 1, damage: 1}}

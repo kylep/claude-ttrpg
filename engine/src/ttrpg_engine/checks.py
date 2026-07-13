@@ -1,8 +1,9 @@
 from pathlib import Path
 
-from ttrpg_engine import worldfs
+from ttrpg_engine import combat, worldfs
 from ttrpg_engine.chargen import attr_mod
 from ttrpg_engine.errors import EngineError
+from ttrpg_engine.render import load_encounter
 
 
 def run(root: Path, actor: str, attr: str, dc: int, *,
@@ -13,8 +14,13 @@ def run(root: Path, actor: str, attr: str, dc: int, *,
     modifier = attr_mod(sheet["attributes"][attr])
     if skill and skill in sheet["skills"]:
         modifier += sheet["proficiency"]
-    natural, total = roll_fn(modifier, adv, dis)
+    enc = load_encounter(root) if (root / "state" / "encounter.yaml").exists() else None
+    dis_from = combat.self_dis_conditions(root, enc, actor, sheet)
+    natural, total = roll_fn(modifier, adv, dis or bool(dis_from))
     crit = "hit" if natural == 20 else "fumble" if natural == 1 else None
-    return {"actor": actor, "attr": attr, "skill": skill, "modifier": modifier,
-            "natural": natural, "total": total, "dc": dc,
-            "success": total >= dc, "crit": crit}
+    result = {"actor": actor, "attr": attr, "skill": skill, "modifier": modifier,
+              "natural": natural, "total": total, "dc": dc,
+              "success": total >= dc, "crit": crit}
+    if dis_from:
+        result["dis_from"] = dis_from
+    return result

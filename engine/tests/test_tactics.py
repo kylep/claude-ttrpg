@@ -330,6 +330,124 @@ def test_spell_requires_line_of_sight_and_keeps_slot(wroot):
 
 
 # ---------------------------------------------------------------------------
+# Poisoned / frightened
+# ---------------------------------------------------------------------------
+
+def test_poisoned_attacker_rolls_and_checks_at_disadvantage(wroot):
+    setup_fight(wroot)
+    combat.set_effect(wroot, "pc-borin", "poisoned", -1)
+    fn, calls = spy()
+    r = combat.attack(wroot, "pc-borin", "goblin-1", attack_name="longsword",
+                      adv=False, dis=False, roll_fn=fn, rng=random.Random(1))
+    assert calls[-1] == (False, True)
+    assert "attacker_poisoned" in r["dis_from"]
+    res = runner.invoke(app, ["check", "--actor", "pc-borin", "--attr", "STR", "--dc", "10"])
+    assert res.exit_code == 0, res.stdout
+    assert json.loads(res.stdout)["dis_from"] == ["poisoned"]
+
+
+def test_poisoned_contestant_rolls_at_disadvantage(wroot):
+    setup_fight(wroot)
+    combat.set_effect(wroot, "pc-borin", "poisoned", -1)
+    fn, calls = spy()
+    r = combat.grapple(wroot, "pc-borin", "goblin-1", roll_fn=fn)
+    assert calls[-2] == (False, True)                                # attacker's roll
+    assert calls[-1] == (False, False)                               # defender's roll
+    assert r["contest"]["attacker"]["dis_from"] == ["poisoned"]
+
+
+def test_frightened_without_source_always_applies(wroot):
+    make_pc()
+    combat.set_effect(wroot, "pc-borin", "frightened", -1)
+    res = runner.invoke(app, ["check", "--actor", "pc-borin", "--attr", "WIS", "--dc", "10"])
+    assert json.loads(res.stdout)["dis_from"] == ["frightened"]
+
+
+def test_frightened_source_gated_by_line_of_sight_and_life(wroot):
+    setup_fight(wroot)                                               # skirmish, wall at x=4 rows 0-2
+    res = runner.invoke(app, ["effect", "add", "--target", "pc-borin",
+                              "--name", "frightened", "--source", "goblin-1"])
+    assert res.exit_code == 0, res.stdout
+    fn, calls = spy()
+    r = combat.attack(wroot, "pc-borin", "goblin-2", attack_name="longsword",
+                      adv=False, dis=False, roll_fn=fn, rng=random.Random(1))
+    assert "attacker_frightened" in r["dis_from"]                    # goblin-1 in plain view
+
+    put_pos(wroot, "pc-borin", (3, 1))                               # wall breaks sight of goblin-1
+    res = runner.invoke(app, ["check", "--actor", "pc-borin", "--attr", "STR", "--dc", "10"])
+    assert "dis_from" not in json.loads(res.stdout)
+
+    put_pos(wroot, "pc-borin", (10, 3))                              # back in view...
+    combat.apply_damage(wroot, "goblin-1", 20, "test", rng=random.Random(1))
+    res = runner.invoke(app, ["check", "--actor", "pc-borin", "--attr", "STR", "--dc", "10"])
+    assert "dis_from" not in json.loads(res.stdout)                  # ...but the source is dead
+
+
+def test_frightened_cannot_approach_the_source(wroot):
+    setup_fight(wroot)
+    combat.set_effect(wroot, "pc-borin", "frightened", -1, source="goblin-1")
+    put_pos(wroot, "pc-borin", (5, 4))                               # goblin-1 is at [9,4]
+    res = runner.invoke(app, ["move", "--actor", "pc-borin", "--to", "7,4"])
+    assert res.exit_code == 1
+    assert json.loads(res.stdout)["error"]["code"] == "frightened"
+    res = runner.invoke(app, ["move", "--actor", "pc-borin", "--to", "3,4"])
+    assert res.exit_code == 0, res.stdout                            # fleeing is fine
+
+
+# ---------------------------------------------------------------------------
+# Light and darkness
+# ---------------------------------------------------------------------------
+
+def test_darkness_attack_modifiers_and_torchlight(wroot):
+    make_pc()
+    start_hideout(wroot)                                             # dark cells at [8..10,6]
+    put_pos(wroot, "pc-borin", (9, 6))                               # in the dark
+    put_pos(wroot, "goblin-1", (9, 5))                               # lit, adjacent
+    fn, calls = spy()
+    r = combat.attack(wroot, "goblin-1", "pc-borin", attack_name=None,
+                      adv=False, dis=False, roll_fn=fn, rng=random.Random(1))
+    assert "target_in_darkness" in r["dis_from"]
+    r = combat.attack(wroot, "pc-borin", "goblin-1", attack_name="longsword",
+                      adv=False, dis=False, roll_fn=fn, rng=random.Random(1))
+    assert "attacker_in_darkness" in r["adv_from"]                   # unseen attacker
+
+    runner.invoke(app, ["item", "add", "--actor", "pc-borin", "--item", "torch"])
+    res = runner.invoke(app, ["equip", "--actor", "pc-borin", "--item", "torch"])
+    assert res.exit_code == 0, res.stdout                            # torch grants `lit`
+    r = combat.attack(wroot, "goblin-1", "pc-borin", attack_name=None,
+                      adv=False, dis=False, roll_fn=fn, rng=random.Random(1))
+    assert "dis_from" not in r                                       # torchlight gives him away
+
+
+def test_hide_in_darkness_needs_no_cover_unless_lit(wroot):
+    make_pc(**ROGUE)
+    start_hideout(wroot)
+    g = worldfs.load_game_for(wroot)
+    put_pos(wroot, "pc-sly", (10, 6))                                # dark, in goblin sight lines
+    r = combat.hide(wroot, g, "pc-sly", roll_fn=fixed(15))
+    assert r["hidden"] is True and r["in_darkness"] is True
+
+    runner.invoke(app, ["item", "add", "--actor", "pc-sly", "--item", "torch"])
+    runner.invoke(app, ["equip", "--actor", "pc-sly", "--item", "torch"])
+    try:
+        combat.hide(wroot, g, "pc-sly", roll_fn=fixed(15))
+        raise AssertionError("a lit torch is not stealthy")
+    except EngineError as e:
+        assert e.code == "seen"
+
+
+def test_movers_cannot_spot_into_darkness(wroot):
+    make_pc(**ROGUE)
+    start_hideout(wroot)
+    put_pos(wroot, "pc-sly", (10, 6))
+    combat.hide(wroot, worldfs.load_game_for(wroot), "pc-sly", roll_fn=fixed(1))  # stealth 5
+    res = runner.invoke(app, ["move", "--actor", "goblin-1", "--to", "9,5"])
+    assert res.exit_code == 0, res.stdout
+    assert "spotted" not in json.loads(res.stdout)                   # adjacent, but it's pitch dark
+    assert "hidden" in effects_of(wroot, None, "pc-sly")
+
+
+# ---------------------------------------------------------------------------
 # Grapple / shove
 # ---------------------------------------------------------------------------
 
@@ -403,6 +521,17 @@ def test_grappled_flyer_cannot_ascend(wroot):
         raise AssertionError("should have raised held")
     except EngineError as e:
         assert e.code == "held"
+
+
+def test_grappling_from_hiding_reveals(wroot):
+    make_pc(**ROGUE)
+    start_hideout(wroot)
+    put_pos(wroot, "pc-sly", (10, 6))                                # dark corner
+    combat.hide(wroot, worldfs.load_game_for(wroot), "pc-sly", roll_fn=fixed(15))
+    put_pos(wroot, "goblin-1", (9, 5))                               # wanders adjacent, sees nothing
+    r = combat.grapple(wroot, "pc-sly", "goblin-1", roll_fn=seq(20, 1))
+    assert r["grappled"] is True and r["revealed"] is True
+    assert "hidden" not in effects_of(wroot, None, "pc-sly")
 
 
 def test_shove_knocks_prone(wroot):
