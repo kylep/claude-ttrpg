@@ -1,0 +1,10 @@
+name: Giant Bat
+ac: 12
+hp: 5
+speed: 6
+attributes: {STR: 6, DEX: 16, CON: 8, INT: 2, WIS: 12, CHA: 4}
+attacks: [{name: bite, attack_mod: 3, damage: 1d4, range: 1}]
+xp: 10
+loot: {gold: null, items: []}
+flying: true
+difficulty: easy

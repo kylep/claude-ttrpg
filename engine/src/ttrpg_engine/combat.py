@@ -25,6 +25,48 @@ def get_combatant(root: Path, enc: dict, cid: str) -> tuple[str, dict]:
     raise EngineError("not_found", f"no combatant {cid}")
 
 
+def attack_kind(atk: dict) -> str:
+    """melee|ranged for an attack. Explicit atk['kind'] wins; otherwise
+    melee if range <= 1, else ranged."""
+    kind = atk.get("kind")
+    if kind in ("melee", "ranged"):
+        return kind
+    return "melee" if atk.get("range", 1) <= 1 else "ranged"
+
+
+def flying_capable(data: dict) -> bool:
+    """A combatant can fly if its stat data says so (bestiary `flying: true`)
+    or it carries an effect named `flying` (PC granted by spell/item)."""
+    if data.get("flying"):
+        return True
+    return "flying" in {e["name"] for e in data.get("effects", [])}
+
+
+def is_living(root: Path, enc: dict, cid: str) -> bool:
+    if cid in enc["monsters"]:
+        return not enc["monsters"][cid].get("dead", False)
+    _, data, _ = resolve_actor(root, cid)
+    return "dead" not in {e["name"] for e in data.get("effects", [])}
+
+
+def adjacent_living_hostile(root: Path, enc: dict, attacker: str) -> bool:
+    """True if a living, cross-side combatant is chebyshev-adjacent to attacker."""
+    if attacker not in enc["positions"]:
+        return False
+    pos = tuple(enc["positions"][attacker])
+    attacker_is_monster = attacker in enc["monsters"]
+    for cid, cpos in enc["positions"].items():
+        if cid == attacker:
+            continue
+        if (cid in enc["monsters"]) == attacker_is_monster:
+            continue  # same side, not hostile
+        if grid.chebyshev(pos, tuple(cpos)) != 1:
+            continue
+        if is_living(root, enc, cid):
+            return True
+    return False
+
+
 def start(root: Path, g: dict, map_rel: str, rng: Random, pcs: list[str] | None = None) -> dict:
     if (root / "state" / "encounter.yaml").exists():
         raise EngineError("encounter_active", "an encounter is already running")
@@ -72,6 +114,7 @@ def start(root: Path, g: dict, map_rel: str, rng: Random, pcs: list[str] | None 
                          "speed": entry["speed"], "attributes": entry["attributes"],
                          "attacks": entry["attacks"], "xp": entry["xp"],
                          "loot": entry.get("loot", {"gold": None, "items": []}),
+                         "flying": entry.get("flying", False),
                          "effects": [], "dead": False}
         positions[mid] = list(spec["pos"])
     for pc_id, spawn in zip(participants, emap["pc_spawns"]):
@@ -208,13 +251,24 @@ def attack(root: Path, attacker: str, target: str, *, attack_name: str | None,
     atk = next((a for a in attacks if a["name"] == attack_name), attacks[0] if attacks else None)
     if atk is None:
         raise EngineError("no_attack", f"{attacker} has no attack {attack_name!r}")
+    kind = attack_kind(atk)
     if enc and attacker in enc["positions"] and target in enc["positions"]:
         dist = grid.chebyshev(tuple(enc["positions"][attacker]),
                               tuple(enc["positions"][target]))
         if dist > atk.get("range", 1):
             raise EngineError("out_of_range",
                               f"{target} is {dist} away, range is {atk.get('range', 1)}")
-    natural, total = roll_fn(atk["attack_mod"], adv, dis)
+        if kind == "melee":
+            aloft = enc.get("aloft", {})
+            a_aloft, t_aloft = bool(aloft.get(attacker)), bool(aloft.get(target))
+            if a_aloft != t_aloft:
+                if t_aloft:
+                    raise EngineError("unreachable", f"{target} is airborne")
+                raise EngineError("unreachable",
+                                  "attacker is airborne, cannot reach a grounded target")
+    ranged_in_melee = (kind == "ranged" and enc is not None
+                      and adjacent_living_hostile(root, enc, attacker))
+    natural, total = roll_fn(atk["attack_mod"], adv, dis or ranged_in_melee)
     crit = "hit" if natural == 20 else "fumble" if natural == 1 else None
     hit = natural != 1 and (natural == 20 or total >= t_data["ac"])
     damage = 0
@@ -226,6 +280,8 @@ def attack(root: Path, attacker: str, target: str, *, attack_name: str | None,
     result = {"attacker": attacker, "target": target, "attack": atk["name"],
               "natural": natural, "total": total, "vs_ac": t_data["ac"],
               "hit": hit, "crit": crit, "damage": damage}
+    if ranged_in_melee:
+        result["ranged_in_melee"] = True
     verb = "hits" if hit else "misses"
     timeline.append_event(root, type_="attack", actors=[attacker, target],
                           summary=f"{attacker} {verb} {target} with {atk['name']}"
@@ -290,6 +346,30 @@ def death_save(root: Path, actor: str, *, roll_fn) -> dict:
             "saves": sheet.get("death_saves")}
 
 
+def ascend(root: Path, actor: str) -> dict:
+    enc = load_encounter(root)
+    if actor not in enc["positions"]:
+        raise EngineError("not_found", f"{actor} is not on the map")
+    _, data = get_combatant(root, enc, actor)
+    if not flying_capable(data):
+        raise EngineError("cannot_fly", f"{actor} cannot fly")
+    enc.setdefault("aloft", {})[actor] = True
+    save_encounter(root, enc)
+    timeline.append_event(root, type_="move", actors=[actor],
+                          summary=f"{actor} takes to the air")
+    return {"actor": actor, "aloft": True}
+
+
+def land(root: Path, actor: str) -> dict:
+    enc = load_encounter(root)
+    if actor not in enc["positions"]:
+        raise EngineError("not_found", f"{actor} is not on the map")
+    enc.setdefault("aloft", {})[actor] = False
+    save_encounter(root, enc)
+    timeline.append_event(root, type_="move", actors=[actor], summary=f"{actor} lands")
+    return {"actor": actor, "aloft": False}
+
+
 def move(root: Path, actor: str, to: tuple[int, int], *, force: bool = False) -> dict:
     enc = load_encounter(root)
     if actor not in enc["positions"]:
@@ -301,7 +381,7 @@ def move(root: Path, actor: str, to: tuple[int, int], *, force: bool = False) ->
         raise EngineError("blocked", f"cannot enter {list(to)}: {reason}")
     _, data, _ = resolve_actor(root, actor)
     cost = grid.chebyshev(src, to)
-    if to in grid.cells_of(enc, "difficult"):
+    if to in grid.cells_of(enc, "difficult") and not enc.get("aloft", {}).get(actor, False):
         cost += 1
     if not force and cost > data["speed"]:
         raise EngineError("too_far", f"cost {cost} exceeds speed {data['speed']}")

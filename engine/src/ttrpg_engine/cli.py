@@ -281,10 +281,28 @@ def deathsave(actor: str = typer.Option(...)):
 
 @app.command()
 def cast(caster: str = typer.Option(...), spell: str = typer.Option(...),
-         target: str | None = typer.Option(None)):
+         target: str | None = typer.Option(None),
+         at: str | None = typer.Option(None, "--at", help="X,Y cell for area spells")):
     root = require_root()
     g = guard(worldfs.load_game_for, root)
-    emit(guard(spells.cast, root, g, caster, spell, target, roll_fn=d20_roll, rng=rng))
+    cell = None
+    if at is not None:
+        try:
+            x, y = (int(v) for v in at.split(","))
+        except ValueError:
+            fail("bad_coord", f"--at must be X,Y, got {at!r}")
+        cell = (x, y)
+    emit(guard(spells.cast, root, g, caster, spell, target, roll_fn=d20_roll, rng=rng, at=cell))
+
+
+@app.command()
+def ascend(actor: str = typer.Option(...)):
+    emit(guard(combat.ascend, require_root(), actor))
+
+
+@app.command()
+def land(actor: str = typer.Option(...)):
+    emit(guard(combat.land, require_root(), actor))
 
 
 @app.command()

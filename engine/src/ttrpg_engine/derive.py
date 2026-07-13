@@ -30,8 +30,11 @@ def attacks(g: dict, equipped: list[str], attrs: dict, prof: int) -> list[dict]:
         bonus = spec.get("bonus", {})
         dmg_mod = mod + bonus.get("damage", 0)
         dmg = spec["damage"] + (f"{dmg_mod:+d}" if dmg_mod else "")
-        out.append({"name": item, "attack_mod": mod + prof + bonus.get("attack", 0),
-                    "damage": dmg, "range": spec["range"]})
+        entry = {"name": item, "attack_mod": mod + prof + bonus.get("attack", 0),
+                 "damage": dmg, "range": spec["range"]}
+        if "kind" in spec:
+            entry["kind"] = spec["kind"]
+        out.append(entry)
     return out
 
 

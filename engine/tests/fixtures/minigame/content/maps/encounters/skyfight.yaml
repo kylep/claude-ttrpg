@@ -1,0 +1,8 @@
+id: skyfight
+name: Skyfight
+grid: {width: 12, height: 8}
+terrain: []
+monsters:
+  - {type: giant_bat, pos: [6, 3]}
+  - {type: goblin, pos: [6, 5]}
+pc_spawns: [[1, 3], [2, 3], [1, 4], [2, 4]]

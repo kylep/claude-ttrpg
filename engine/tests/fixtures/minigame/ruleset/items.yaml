@@ -8,3 +8,5 @@ ward_ring: {type: gear, price: 100, grants_effect: {name: blessed}}
 lucky_charm: {type: gear, price: 20, grants_effect: {name: blessed}}
 fine_longsword: {type: weapon, damage: 1d8, finesse: false, range: 1, price: 100, bonus: {attack: 1, damage: 1}}
 grim_helm: {type: armor, ac_base: 16, add_dex: false, price: 90, cursed: true, bonus: {ac: 1}, grants_effect: {name: poisoned}}
+shortbow: {type: weapon, damage: 1d6, finesse: true, range: 8, price: 25}
+spear: {type: weapon, damage: 1d6, finesse: false, range: 2, price: 10, kind: melee}
