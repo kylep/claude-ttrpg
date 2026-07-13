@@ -4,7 +4,7 @@ from pathlib import Path
 
 import typer
 
-from ttrpg_engine import chargen, checks, combat, dice, game as game_mod, inventory, level as level_mod, render, rest as rest_mod, spells, timeline, travel as travel_mod, worldfs
+from ttrpg_engine import chargen, checks, combat, dice, game as game_mod, inventory, level as level_mod, quests as quests_mod, render, rest as rest_mod, spells, timeline, travel as travel_mod, worldfs
 from ttrpg_engine.errors import EngineError
 
 app = typer.Typer(add_completion=False, no_args_is_help=True)
@@ -394,3 +394,60 @@ def level_up(actor: str = typer.Option(...)):
     root = require_root()
     g = guard(worldfs.load_game_for, root)
     emit(guard(level_mod.up, root, g, actor, rng))
+
+
+quest_app = typer.Typer()
+app.add_typer(quest_app, name="quest")
+
+
+@quest_app.command("offer")
+def quest_offer(
+    title: str = typer.Option(...),
+    desc: str = typer.Option(..., "--desc"),
+    giver: str = typer.Option(..., help="npc:ID, pc:ID, or world"),
+    gold: int = typer.Option(0),
+    items: str | None = typer.Option(None, help="comma-separated"),
+    xp: int = typer.Option(0),
+    deadline: str | None = typer.Option(None, help="YYYY-MM-DD; omit for indefinite"),
+    deadline_hour: int = typer.Option(9, "--deadline-hour"),
+    spawn: bool = typer.Option(False, "--spawn", help="world only: reward materializes on completion"),
+    escrow_from: str | None = typer.Option(None, "--escrow-from", help="npc:ID or pc:ID (world giver only)"),
+):
+    root = require_root()
+    g = guard(worldfs.load_game_for, root)
+    giver_type, giver_id = guard(quests_mod.parse_ref, giver)
+    escrow_type = escrow_id = None
+    if escrow_from:
+        escrow_type, escrow_id = guard(quests_mod.parse_ref, escrow_from, allow_world=False)
+    item_list = [i.strip() for i in items.split(",") if i.strip()] if items else []
+    deadline_spec = {"date": deadline, "hour": deadline_hour} if deadline else None
+    emit(guard(quests_mod.offer, root, g, title=title, description=desc,
+               giver_type=giver_type, giver_id=giver_id, gold=gold, items=item_list,
+               xp=xp, deadline=deadline_spec, spawn=spawn,
+               escrow_from_type=escrow_type, escrow_from_id=escrow_id))
+
+
+@quest_app.command("accept")
+def quest_accept(quest_id: str, pcs: str = typer.Option(..., "--pcs", help="comma-separated PC ids")):
+    root = require_root()
+    emit(guard(quests_mod.accept, root, quest_id, split_pcs(pcs)))
+
+
+@quest_app.command("complete")
+def quest_complete(quest_id: str,
+                   to: str | None = typer.Option(None, "--to", help="comma-separated PC ids; default accepted_by")):
+    root = require_root()
+    emit(guard(quests_mod.complete, root, quest_id, split_pcs(to)))
+
+
+@quest_app.command("cancel")
+def quest_cancel(quest_id: str):
+    emit(guard(quests_mod.cancel, require_root(), quest_id))
+
+
+@quest_app.command("list")
+def quest_list(status: str | None = typer.Option(None, "--status")):
+    """List quests. Side effect: any offered/accepted quest whose deadline
+    has passed is transitioned to expired (escrow refunded) before listing."""
+    root = require_root()
+    emit({"quests": guard(quests_mod.list_quests, root, status)})

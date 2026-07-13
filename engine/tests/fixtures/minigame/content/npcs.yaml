@@ -1,1 +1,2 @@
-mayor: {name: The Mayor, location: town, role: quest-giver, disposition: friendly}
+mayor: {name: The Mayor, location: town, role: quest-giver, disposition: friendly,
+        gold: 50, inventory: [{item: torch, qty: 2}]}

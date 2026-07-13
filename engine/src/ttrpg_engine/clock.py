@@ -1,3 +1,10 @@
+def to_hours(date_str: str, hour: int) -> int:
+    """Absolute hour count for a (date, hour) pair, for deadline comparisons.
+    Uses the same fixed 12-month x 30-day calendar as `advance`."""
+    y, m, d = (int(x) for x in str(date_str).split("-"))
+    return ((y * 12 + (m - 1)) * 30 + (d - 1)) * 24 + hour
+
+
 def advance(clock: dict, hours: int) -> dict:
     h = clock["hour"] + hours
     days, h = divmod(h, 24)
