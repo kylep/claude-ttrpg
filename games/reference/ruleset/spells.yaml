@@ -1,13 +1,18 @@
 # level: 0 = cantrip (no slot), 1+ consumes a spell slot of that level
 # range: squares; resolve: attack (vs AC) | save (target rolls vs 8 + prof + cast mod) | auto (always lands)
 # CASTMOD in dice expressions = caster's cast_attr modifier; on_save none = no damage on a successful save
+# on_save half = a successful save halves the rolled damage (rounded down, minimum 1)
 # effect durations are in combat rounds; -1 would mean until cleared
+# description is GM-facing narration flavor; the engine ignores it
 fire_bolt:
   level: 0
   action: action
   range: 24
   resolve: attack
   damage: 1d10
+  description: >
+    A pea of orange flame snaps from the caster's fingertip and bursts
+    against whatever it strikes, scorching flesh and kindling dry cloth.
 sacred_flame:
   level: 0
   action: action
@@ -16,12 +21,18 @@ sacred_flame:
   save_attr: DEX
   damage: 1d8
   on_save: none
+  description: >
+    A column of pale, heatless radiance drops onto the target from directly
+    above; the quick can throw themselves clear of it entirely.
 magic_missile:
   level: 1
   action: action
   range: 24
   resolve: auto
   damage: 3d4+3
+  description: >
+    Three darts of humming violet force streak from the caster's palm and
+    swerve around cover to strike home — they never miss.
 sleep_dust:
   level: 1
   action: action
@@ -30,21 +41,79 @@ sleep_dust:
   save_attr: WIS
   effect: {name: unconscious, duration: 2}
   on_save: none
+  description: >
+    A pinch of glittering grey powder blooms into a drowsy haze around the
+    target's head; a weak will folds into sudden, snoring sleep.
 cure_wounds:
   level: 1
   action: action
   range: 1
   resolve: auto
   heal: 1d8+CASTMOD
+  description: >
+    Warm light pools under the caster's laid-on hand, knitting torn skin
+    and settling cracked bone with a sound like ice thawing.
 bless:
   level: 1
   action: action
   range: 6
   resolve: auto
   effect: {name: blessed, duration: 10}
+  description: >
+    A murmured benediction settles over the target like a steadying hand on
+    the shoulder; their strikes land truer while it holds.
 shield_of_faith:
   level: 1
   action: action
   range: 6
   resolve: auto
   effect: {name: shielded, duration: 10}
+  description: >
+    A faint disc of translucent light orbits the target, sliding between
+    them and incoming blows of its own accord.
+cinder_bloom:
+  level: 2
+  action: action
+  range: 18
+  resolve: save
+  save_attr: DEX
+  damage: 4d6
+  on_save: half
+  description: >
+    A mote of red light drifts to the target and unfolds into a flower of
+    fire taller than a man; even those who dive aside are singed by the
+    petals' wash of heat.
+peal_of_judgment:
+  level: 2
+  action: action
+  range: 12
+  resolve: save
+  save_attr: CON
+  damage: 3d8
+  on_save: half
+  description: >
+    The cleric names the target's offense aloud and the air answers with a
+    bell-toll of thunder centered inside the target's chest; the sturdy
+    stay standing, but nobody walks away unshaken.
+venom_surge:
+  level: 2
+  action: action
+  range: 12
+  resolve: save
+  save_attr: CON
+  damage: 2d6
+  effect: {name: poisoned, duration: 3}
+  on_save: none
+  description: >
+    A rope of green-black vapor uncoils from the caster's sleeve and pours
+    itself down the target's throat; a strong gut expels it harmlessly, but
+    a weak one burns and shakes with venom for the rest of the fight.
+wave_of_mending:
+  level: 2
+  action: action
+  range: 6
+  resolve: auto
+  heal: 2d8+CASTMOD
+  description: >
+    A slow ripple of silver light rolls out from the cleric and breaks over
+    the target like surf, washing blood from wounds that close behind it.

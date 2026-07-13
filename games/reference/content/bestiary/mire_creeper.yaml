@@ -1,0 +1,18 @@
+# field meanings: see bestiary/goblin.yaml
+name: Mire Creeper
+description: >
+  A man-length centipede of pallid chitin that breeds in the flooded
+  galleries, all clicking legs and backward-curving fangs; it drops from
+  ceilings and stair rails onto whatever carries a light.
+ac: 14
+hp: 24
+speed: 7
+attributes: {STR: 12, DEX: 16, CON: 14, INT: 2, WIS: 10, CHA: 4}
+attacks: [{name: venomed fangs, attack_mod: 6, damage: 1d8+3, range: 1}]
+xp: 250
+loot: {gold: null, items: []}
+difficulty: medium
+notes: >
+  Its bite carries a paralytic venom: on a hit, the target rolls a CON
+  check vs DC 13 (medium); on a failure the GM applies the poisoned
+  effect (effect add --target <pc> --name poisoned --duration 3).

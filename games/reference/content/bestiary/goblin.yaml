@@ -1,4 +1,8 @@
 name: Goblin
+description: >
+  A wiry, knee-high raider with mud-green skin, a scavenged scimitar, and
+  no appetite for a fair fight; goblins press in packs and scatter the
+  moment a fight turns against them.
 ac: 13     # armor class attacks must meet or beat
 hp: 7      # hit points per spawned instance
 speed: 6   # grid squares per combat turn

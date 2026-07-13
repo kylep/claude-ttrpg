@@ -1,0 +1,22 @@
+# field meanings: see bestiary/goblin.yaml
+name: Sunken Warden
+description: >
+  One of Hravik's household guard, drowned at his interment and preserved
+  by the barrow's cold water: a bloated armored shape that walks the
+  flooded halls with a rusted hook-headed pike, still keeping a
+  three-hundred-year-old watch.
+ac: 15
+hp: 32
+speed: 5
+attributes: {STR: 17, DEX: 8, CON: 16, INT: 6, WIS: 12, CHA: 8}
+attacks:
+  - {name: hooked pike, attack_mod: 6, damage: 1d10+3, range: 2}
+  - {name: dragging undertow, attack_mod: 6, damage: 1d4+3, range: 1}
+xp: 350
+loot: {gold: 2d6, items: []}
+difficulty: medium
+notes: >
+  The dragging undertow hooks a leg and hauls the victim off their feet:
+  on a hit, the GM applies the prone effect (effect add --target <pc>
+  --name prone --duration 2), and the victim spends half its move to
+  stand once the effect ends or is cleared.

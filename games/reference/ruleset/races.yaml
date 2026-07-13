@@ -1,6 +1,11 @@
 # bonuses: added to attributes after the standard array is assigned
 # speed: movement in grid squares per combat turn
-human: {bonuses: {CON: 1, WIS: 1}, speed: 6}
-elf: {bonuses: {DEX: 2}, speed: 6}
-dwarf: {bonuses: {CON: 2}, speed: 5}
-halfling: {bonuses: {DEX: 1, CHA: 1}, speed: 5}
+# description is GM-facing narration flavor; the engine ignores it
+human: {bonuses: {CON: 1, WIS: 1}, speed: 6,
+  description: "Farmers, reeves, and restless wanderers found in every valley; humans are unremarkable in any one gift and stubborn in all of them."}
+elf: {bonuses: {DEX: 2}, speed: 6,
+  description: "Long-lived and light-footed, elves move through wood and ruin as if the ground were telling them where to step."}
+dwarf: {bonuses: {CON: 2}, speed: 5,
+  description: "Short, broad, and built like the hills they mine; a dwarf outlasts trouble rather than dodging it."}
+halfling: {bonuses: {DEX: 1, CHA: 1}, speed: 5,
+  description: "Small folk with quick fingers and quicker smiles, fond of comfort and improbably hard to catch off guard."}

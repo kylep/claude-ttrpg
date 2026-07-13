@@ -5,7 +5,11 @@ nodes:
   old-road: {name: The Old Road, coords: [4, 1], terrain: road}
   barrow-woods: {name: Barrow Woods, coords: [7, 3], terrain: forest}
   barrowdeep: {name: Barrowdeep, coords: [8, 5], terrain: hills}
+  sunken-stair: {name: The Sunken Stair, coords: [9, 7], terrain: underground}
+  drowned-gallery: {name: The Drowned Gallery, coords: [10, 9], terrain: flooded}
 edges:
   - {between: [thornbury, old-road], hours: 4}
   - {between: [old-road, barrow-woods], hours: 3}
   - {between: [barrow-woods, barrowdeep], hours: 1}
+  - {between: [barrowdeep, sunken-stair], hours: 1}
+  - {between: [sunken-stair, drowned-gallery], hours: 2}

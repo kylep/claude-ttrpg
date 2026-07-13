@@ -1,4 +1,7 @@
 name: wizard
+description: >
+  A scholar of the arcane who trades hit points for raw magical reach —
+  fragile in the front line, devastating from the back of it.
 hit_die: 6        # d6, controls starting HP, per-level HP gain, and short-rest healing
 cast_attr: INT    # attribute behind spell attack rolls, save DCs, and CASTMOD
 skill_choices: 2  # how many skills to pick from the list below at creation
@@ -9,3 +12,5 @@ levels:  # per-level: features (flavor tags, GM-adjudicated), spells learned, sp
   1: {features: [], spells: [fire_bolt, magic_missile], slots: {1: 2}}
   2: {features: [well_of_mana], spells: [sleep_dust], slots: {1: 3}}
   3: {features: [], spells: [], slots: {1: 4}}
+  4: {features: [], spells: [cinder_bloom], slots: {1: 4, 2: 2}}
+  5: {features: [], spells: [venom_surge], slots: {1: 4, 2: 3}}

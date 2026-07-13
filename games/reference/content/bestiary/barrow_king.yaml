@@ -1,5 +1,9 @@
 # field meanings: see bestiary/goblin.yaml
 name: The Barrow King
+description: >
+  Hravik Coldspear as three centuries left him: a tall corpse in
+  verdigrised scale, pearl circlet on a leathered brow, moving with the
+  unhurried certainty of a man who has never once been disobeyed.
 ac: 15
 hp: 30
 speed: 6

@@ -1,10 +1,27 @@
 # impact is guidance for the GM, not engine-enforced: apply it via --adv/--dis flags
 # on rolls, or `engine effect add/remove`. Durations tick down each combat round.
-blessed: {impact: "GM gives the blessed creature +1d4 flavor luck on attacks and saves, or grants --adv on a close roll instead"}
-shielded: {impact: "attacks against the shielded creature resolve at --dis, or the GM treats its AC as 2 higher for the encounter"}
-poisoned: {impact: "GM applies --dis to the poisoned creature's attacks and ability checks"}
-unconscious: {impact: "creature cannot act, speak, or move; attacks against it resolve at --adv"}
-dying: {impact: "creature is unconscious at 0 hp and rolls a death save each round per recovery.yaml until stable, healed, or dead"}
-dead: {impact: "creature is out of play; no further saves, healing, or actions apply to it"}
-prone: {impact: "melee attacks against the prone creature get --adv, ranged attacks against it get --dis, and its own attacks resolve at --dis until it stands"}
-frightened: {impact: "GM applies --dis to the frightened creature's attacks and checks while the source of its fear is in view"}
+# description is GM-facing narration flavor; the engine ignores it
+blessed:
+  impact: "GM gives the blessed creature +1d4 flavor luck on attacks and saves, or grants --adv on a close roll instead"
+  description: "A faint warmth rides the creature's shoulders and its hands stop shaking; blows seem to land where they were meant to."
+shielded:
+  impact: "attacks against the shielded creature resolve at --dis, or the GM treats its AC as 2 higher for the encounter"
+  description: "A pale disc of light drifts around the creature, tilting to catch blades and arrows a half-second before they land."
+poisoned:
+  impact: "GM applies --dis to the poisoned creature's attacks and ability checks"
+  description: "The creature is grey-faced and sweating, its stomach cramping and its vision swimming at the edges."
+unconscious:
+  impact: "creature cannot act, speak, or move; attacks against it resolve at --adv"
+  description: "The creature is slack and senseless on the ground, deaf to shouting and helpless against anything done to it."
+dying:
+  impact: "creature is unconscious at 0 hp and rolls a death save each round per recovery.yaml until stable, healed, or dead"
+  description: "The creature's breath comes shallow and wet; without help, each passing moment is a coin toss it did not agree to."
+dead:
+  impact: "creature is out of play; no further saves, healing, or actions apply to it"
+  description: "The creature is beyond wounds, beyond medicine, and beyond argument."
+prone:
+  impact: "melee attacks against the prone creature get --adv, ranged attacks against it get --dis, and its own attacks resolve at --dis until it stands"
+  description: "The creature is flat on the ground amid its own dropped gear, scrambling for footing while the fight goes on above it."
+frightened:
+  impact: "GM applies --dis to the frightened creature's attacks and checks while the source of its fear is in view"
+  description: "The creature's nerve has cracked; it fights with one eye on the thing it fears and one foot pointed toward the exit."

@@ -1,0 +1,54 @@
+# Class feature tags. The engine treats these as opaque tags on the sheet;
+# each description tells the GM how to adjudicate the feature at the table
+# (via --adv/--dis flags, `engine heal`, extra rolls, or plain rulings).
+second_wind:
+  description: >
+    Once per short rest the fighter grits through the pain: the GM applies
+    `engine heal` for 1d10 + level as a bonus on the fighter's own turn.
+surge_of_violence:
+  description: >
+    Once per short rest the fighter takes one extra action on their turn —
+    a second attack, dash, or shove, at the GM's adjudication.
+improved_critical:
+  description: >
+    The fighter's weapon attacks crit on a natural 19 as well as 20; the GM
+    doubles damage dice by hand on a 19 since the engine only knows about 20s.
+sneak_attack:
+  description: >
+    Once per turn, when the rogue attacks with advantage or an ally is adjacent
+    to the target, the GM adds 1d6 (2d6 at level 3+, 3d6 at level 5) to the
+    damage via a follow-up `engine damage`.
+slippery_footwork:
+  description: >
+    The rogue can disengage or dash as a bonus movement; the GM waives
+    opportunity ruling against the rogue when it moves away from melee.
+untouchable:
+  description: >
+    When an attacker the rogue can see hits it, once per round the GM may
+    halve the damage dealt, representing a last-instant twist away.
+ghost_step:
+  description: >
+    The rogue moves through enemy-occupied squares without stopping and can
+    hide as part of any move that ends out of line of sight; the GM grants
+    --adv on the next stealth check made this way.
+exploit_opening:
+  description: >
+    When any ally lands a hit on a creature within the rogue's reach, the GM
+    may let the rogue make one immediate free attack against that creature
+    once per round.
+invoke_the_light:
+  description: >
+    Once per long rest the cleric channels their faith: the GM grants --adv
+    on one attack, save, or check for the cleric or an ally within sight.
+well_of_mana:
+  description: >
+    Once per long rest the wizard recovers one expended level-1 spell slot
+    during a short rest; the GM restores it by editing the slot by hand.
+bulwark_stance:
+  description: >
+    While the fighter has not moved this turn, the GM treats its AC as 1
+    higher and gives it --adv on saves against being knocked prone.
+flurry_of_steel:
+  description: >
+    The fighter makes two weapon attacks whenever it takes the attack action;
+    the GM runs the second attack as a separate `engine attack` roll.

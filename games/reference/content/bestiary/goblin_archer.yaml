@@ -1,5 +1,9 @@
 # field meanings: see bestiary/goblin.yaml
 name: Goblin Archer
+description: >
+  A goblin skirmisher with a hunter's shortbow and a coward's instincts:
+  it looses from cover at maximum range and relocates every time an enemy
+  closes half the distance.
 ac: 12
 hp: 5
 speed: 6

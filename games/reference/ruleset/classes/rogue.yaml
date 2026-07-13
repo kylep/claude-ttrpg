@@ -1,4 +1,7 @@
 name: rogue
+description: >
+  A knife-quiet opportunist who fights dirty and moves first — deadliest when
+  striking from shadow or beside a distracted foe.
 hit_die: 8        # d8, controls starting HP, per-level HP gain, and short-rest healing
 cast_attr: null   # non-caster
 skill_choices: 3  # how many skills to pick from the list below at creation
@@ -9,3 +12,5 @@ levels:  # per-level: features (flavor tags, GM-adjudicated), spells learned, sp
   1: {features: [sneak_attack], spells: [], slots: {}}
   2: {features: [slippery_footwork], spells: [], slots: {}}
   3: {features: [untouchable], spells: [], slots: {}}
+  4: {features: [ghost_step], spells: [], slots: {}}
+  5: {features: [exploit_opening], spells: [], slots: {}}

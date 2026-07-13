@@ -1,13 +1,25 @@
 # weapons — damage: dice rolled on hit; finesse: use DEX instead of STR if higher; range: squares; price: gp
-longsword: {type: weapon, damage: 1d8, finesse: false, range: 1, price: 15}
-mace: {type: weapon, damage: 1d6, finesse: false, range: 1, price: 5}
-dagger: {type: weapon, damage: 1d4, finesse: true, range: 1, price: 2}
-shortbow: {type: weapon, damage: 1d6, finesse: true, range: 16, price: 25}
+# description is GM-facing narration flavor; the engine ignores it
+longsword: {type: weapon, damage: 1d8, finesse: false, range: 1, price: 15,
+  description: "A straight, double-edged blade the length of an arm, balanced for both cut and thrust — the standard sidearm of anyone who soldiers for pay."}
+mace: {type: weapon, damage: 1d6, finesse: false, range: 1, price: 5,
+  description: "A flanged iron head on a stout haft; it ignores fine technique and answers armor with blunt arithmetic."}
+dagger: {type: weapon, damage: 1d4, finesse: true, range: 1, price: 2,
+  description: "A hand-span of sharpened steel that hides in a boot or sleeve; quick hands matter more than strong ones."}
+shortbow: {type: weapon, damage: 1d6, finesse: true, range: 16, price: 25,
+  description: "A hunter's recurve of horn and yew, short enough to draw in scrub or a tunnel mouth."}
 # armor — AC = ac_base (+ DEX modifier if add_dex); unarmored is 10 + DEX
-chain_mail: {type: armor, ac_base: 16, add_dex: false, price: 75}
-leather_armor: {type: armor, ac_base: 11, add_dex: true, price: 10}
-torch: {type: gear, price: 1}
-rope: {type: gear, price: 2}
-thieves_tools: {type: gear, price: 25}
-healing_potion: {type: consumable, heal: 2d4+2, price: 50}  # GM applies via `engine heal`
-kings_circlet: {type: treasure, price: 200}  # no mechanical use; sell value only
+chain_mail: {type: armor, ac_base: 16, add_dex: false, price: 75,
+  description: "A knee-length shirt of riveted rings over padded cloth; heavy, loud, and very hard to cut."}
+leather_armor: {type: armor, ac_base: 11, add_dex: true, price: 10,
+  description: "Boiled hide panels stitched over a jerkin — light enough to tumble in, tough enough to turn a glancing blade."}
+torch: {type: gear, price: 1,
+  description: "A pitch-soaked brand that burns for about an hour, shedding honest light and a lot of smoke."}
+rope: {type: gear, price: 2,
+  description: "Fifty feet of hemp line, tarred against rot; holds a climber's weight if the knot does."}
+thieves_tools: {type: gear, price: 25,
+  description: "A leather roll of picks, tension bars, and a tiny mirror — everything a lock believes is a key."}
+healing_potion: {type: consumable, heal: 2d4+2, price: 50,
+  description: "A stoppered vial of red liquid that tastes of copper and cloves; wounds begin closing before the bottle is empty."}  # GM applies via `engine heal`
+kings_circlet: {type: treasure, price: 200,
+  description: "Hravik Coldspear's grave-crown: a thin band of old gold set with river pearls, cold to the touch no matter how long it is carried."}  # no mechanical use; sell value only

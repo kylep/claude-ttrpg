@@ -36,3 +36,17 @@ Three hooks for the table:
   quietly discussed selling barrow salvage rights to a river-town
   broker rather than resealing the hill — a complication Reeve Halda
   has not mentioned to the party.
+
+## Below the tomb
+
+The old accounts agree on one more thing, though Thornbury has mostly
+chosen to forget it: Hravik did not go into the hill alone. His
+oath-priestess Sigrun — counselor, grave-wife, keeper of his word —
+was drowned in the undercroft cistern at his interment so that his
+counsel would follow him into death, and the household guard who
+lowered her were walled in beside the water to keep her company. The
+flood that opened the barrow's eastern passage has been filling those
+deep chambers ever since, and the water is still rising. Whatever
+stirred the goblins to order was only the King; what waits below the
+tomb, at the foot of the sunken stair, has had three centuries to
+think about what it is owed.

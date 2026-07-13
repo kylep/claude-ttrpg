@@ -28,3 +28,16 @@ pedlar_okko:
     and sells at the list prices in ruleset/items.yaml, and will share
     what he's seen on the road — goblin sign, the ambush site, tracks
     toward Barrow Woods — if the party is civil with him.
+
+diver_wenna:
+  name: Wenna the Diver
+  location: barrowdeep
+  role: guide
+  disposition: neutral
+  wants: >
+    Wenna is a river-salvager who came upvalley on the Moot broker's coin
+    to sound the flooded galleries, and what she found down there scared
+    her off the contract. She wants her rope, her lamp-oil debt to Okko
+    paid, and someone else to go down the Sunken Stair; she will trade a
+    hand-drawn depth map and fair warning about the "grey woman in the
+    water" for 20 gp or a share of any salvage.

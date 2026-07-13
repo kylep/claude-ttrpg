@@ -1,4 +1,7 @@
 name: cleric
+description: >
+  An armored intercessor who channels a patron light through prayer — part
+  healer, part battlefield judge, sturdiest of the two casters.
 hit_die: 8        # d8, controls starting HP, per-level HP gain, and short-rest healing
 cast_attr: WIS    # attribute behind spell attack rolls, save DCs, and CASTMOD
 skill_choices: 2  # how many skills to pick from the list below at creation
@@ -9,3 +12,5 @@ levels:  # per-level: features (flavor tags, GM-adjudicated), spells learned, sp
   1: {features: [], spells: [sacred_flame, cure_wounds], slots: {1: 2}}
   2: {features: [invoke_the_light], spells: [bless], slots: {1: 3}}
   3: {features: [], spells: [shield_of_faith], slots: {1: 4}}
+  4: {features: [], spells: [peal_of_judgment], slots: {1: 4, 2: 2}}
+  5: {features: [], spells: [wave_of_mending], slots: {1: 4, 2: 3}}

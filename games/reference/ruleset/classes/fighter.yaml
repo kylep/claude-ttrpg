@@ -1,4 +1,7 @@
 name: fighter
+description: >
+  A drilled professional soldier who wins fights with armor, discipline, and
+  repetition — the party's anchor in any melee.
 hit_die: 10       # d10, controls starting HP, per-level HP gain, and short-rest healing
 cast_attr: null   # non-caster
 skill_choices: 2  # how many skills to pick from the list below at creation
@@ -9,3 +12,5 @@ levels:  # per-level: features (flavor tags, GM-adjudicated), spells learned, sp
   1: {features: [second_wind], spells: [], slots: {}}
   2: {features: [surge_of_violence], spells: [], slots: {}}
   3: {features: [improved_critical], spells: [], slots: {}}
+  4: {features: [bulwark_stance], spells: [], slots: {}}
+  5: {features: [flurry_of_steel], spells: [], slots: {}}

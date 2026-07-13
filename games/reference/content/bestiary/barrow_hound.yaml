@@ -1,5 +1,9 @@
 # field meanings: see bestiary/goblin.yaml
 name: Barrow Hound
+description: >
+  A gaunt, grave-cold dog the size of a wolfhound, its hide stretched
+  drum-tight over old bones; it hunts by sound, circles wide with its
+  packmate, and bites for the hamstring.
 ac: 12
 hp: 11
 speed: 8
