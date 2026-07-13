@@ -51,6 +51,10 @@ def validate(path: Path) -> list[str]:
             for tag in row.get("features", []):
                 if tag not in g["features"]:
                     errors.append(f"class {cname}: unknown feature {tag}")
+    for iid, ispec in g["items"].items():
+        grants = ispec.get("grants_effect")
+        if grants and grants["name"] not in g["effects"]:
+            errors.append(f"item {iid}: unknown effect {grants['name']}")
     for mname, mon in _bestiary(g).items():
         for field in ["name", "ac", "hp", "speed", "attributes", "attacks", "xp"]:
             if field not in mon:

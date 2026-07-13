@@ -326,6 +326,27 @@ def item_remove(actor: str = typer.Option(...), item: str = typer.Option(...),
     emit(guard(inventory.remove_item, root, g, actor, item, qty))
 
 
+@item_app.command("dispel")
+def item_dispel(actor: str = typer.Option(...), item: str = typer.Option(...)):
+    root = require_root()
+    g = guard(worldfs.load_game_for, root)
+    emit(guard(inventory.dispel, root, g, actor, item))
+
+
+@app.command()
+def equip(actor: str = typer.Option(...), item: str = typer.Option(...)):
+    root = require_root()
+    g = guard(worldfs.load_game_for, root)
+    emit(guard(inventory.equip, root, g, actor, item))
+
+
+@app.command()
+def unequip(actor: str = typer.Option(...), item: str = typer.Option(...)):
+    root = require_root()
+    g = guard(worldfs.load_game_for, root)
+    emit(guard(inventory.unequip, root, g, actor, item))
+
+
 def _gold_target(actor: str | None, party: bool) -> str:
     if party == (actor is not None):
         fail("bad_target", "pass exactly one of --actor or --party")

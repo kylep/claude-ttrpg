@@ -2,7 +2,7 @@ from pathlib import Path
 from random import Random
 
 from ttrpg_engine import clock as clock_mod
-from ttrpg_engine import dice, timeline, worldfs
+from ttrpg_engine import derive, dice, timeline, worldfs
 from ttrpg_engine.chargen import attr_mod
 from ttrpg_engine.errors import EngineError
 
@@ -33,7 +33,7 @@ def take(root: Path, g: dict, kind: str, rng: Random) -> dict:
             sheet["hp"] = sheet["max_hp"]
             for slot in sheet["spell_slots"].values():
                 slot["current"] = slot["max"]
-            sheet["effects"] = []
+            sheet["effects"] = derive.equipment_effects(sheet, g)
             sheet.pop("death_saves", None)
         healed[pc_id] = [before, sheet["hp"]]
         worldfs.write_yaml(worldfs.state(root, f"party/{pc_id}"), sheet)
