@@ -26,7 +26,7 @@ prone:
   impact: "engine-enforced: melee attacks against the prone creature get advantage, ranged attacks against it get disadvantage, its own attacks roll at disadvantage, and it crawls at double movement cost until `engine stand`"
   description: "The creature is flat on the ground amid its own dropped gear, scrambling for footing while the fight goes on above it."
 hidden:
-  impact: "engine-enforced: set by `engine hide` (needs cover from every hostile's line of sight); attacks from hiding get advantage and then reveal, attacks against the hidden creature get disadvantage, and moving into a watcher's sight contests its stealth roll against their passive perception"
+  impact: "engine-enforced: set by `engine hide` (needs cover from every hostile's line of sight); attacks from hiding get advantage and then reveal, attacks against the hidden creature get disadvantage, and whenever either side moves into the other's sight the stealth roll is contested against passive perception"
   description: "The creature has folded itself into shadow and held its breath; the fight has, for the moment, lost track of it."
 grappled:
   impact: "engine-enforced: set by `engine grapple` (contested Athletics); the grappled creature cannot move until `engine escape` succeeds, the grappler releases or drops, or the pair is pulled apart"

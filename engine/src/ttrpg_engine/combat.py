@@ -767,6 +767,27 @@ def move(root: Path, actor: str, to: tuple[int, int], *, force: bool = False) ->
             result["revealed_by"] = sorted(spotters)
             timeline.append_event(root, type_="effect", actors=[actor, *spotters],
                                   summary=f"{actor} is spotted by {', '.join(sorted(spotters))}")
+    # ...and the mover may walk around someone else's cover: its passive
+    # perception contests each hidden hostile its new position can see
+    if "unconscious" not in eff:
+        pp = passive_perception(data)
+        spotted = []
+        for cid, cdata, cpos in _hostiles_of(root, enc, actor, awake=False):
+            if "hidden" not in effect_names(cdata):
+                continue
+            if not grid.line_of_sight(enc, to, cpos):
+                continue
+            if pp < enc.get("stealth", {}).get(cid, 0):
+                continue
+            cdata["effects"] = [e for e in cdata["effects"] if e["name"] != "hidden"]
+            enc.get("stealth", {}).pop(cid, None)
+            if cid not in enc["monsters"]:
+                save_pc(root, cdata)
+            spotted.append(cid)
+        if spotted:
+            result["spotted"] = sorted(spotted)
+            timeline.append_event(root, type_="effect", actors=[actor, *spotted],
+                                  summary=f"{actor} spots {', '.join(sorted(spotted))}")
     save_encounter(root, enc)
     timeline.append_event(root, type_="move", actors=[actor],
                           summary=f"{actor} moves {list(src)} -> {list(to)}")

@@ -230,6 +230,27 @@ def test_low_stealth_gets_spotted_moving_into_view(wroot):
     assert "hidden" not in effects_of(wroot, None, "pc-sly")
 
 
+def test_hostile_moving_around_cover_spots_low_stealth(wroot):
+    make_pc(**ROGUE)
+    start_hideout(wroot)
+    combat.hide(wroot, "pc-sly", roll_fn=fixed(1))                   # stealth 5
+    # goblin-1 walks north past the wall's end and can now see the spawn
+    res = runner.invoke(app, ["move", "--actor", "goblin-1", "--to", "6,0"])
+    assert res.exit_code == 0, res.stdout
+    assert json.loads(res.stdout)["spotted"] == ["pc-sly"]
+    assert "hidden" not in effects_of(wroot, None, "pc-sly")
+
+
+def test_hostile_moving_around_cover_misses_high_stealth(wroot):
+    make_pc(**ROGUE)
+    start_hideout(wroot)
+    combat.hide(wroot, "pc-sly", roll_fn=fixed(15))                  # stealth 19 > passive 9
+    res = runner.invoke(app, ["move", "--actor", "goblin-1", "--to", "6,0"])
+    assert res.exit_code == 0, res.stdout
+    assert "spotted" not in json.loads(res.stdout)
+    assert "hidden" in effects_of(wroot, None, "pc-sly")
+
+
 def test_attacking_hidden_target_has_disadvantage(wroot):
     make_pc()
     start_hideout(wroot)
