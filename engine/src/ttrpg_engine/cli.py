@@ -4,7 +4,7 @@ from pathlib import Path
 
 import typer
 
-from ttrpg_engine import chargen, checks, combat, dice, game as game_mod, render, spells, timeline, worldfs
+from ttrpg_engine import chargen, checks, combat, dice, game as game_mod, render, rest as rest_mod, spells, timeline, worldfs
 from ttrpg_engine.errors import EngineError
 
 app = typer.Typer(add_completion=False, no_args_is_help=True)
@@ -280,6 +280,13 @@ def cast(caster: str = typer.Option(...), spell: str = typer.Option(...),
     root = require_root()
     g = guard(worldfs.load_game_for, root)
     emit(guard(spells.cast, root, g, caster, spell, target, roll_fn=d20_roll, rng=rng))
+
+
+@app.command()
+def rest(type_: str = typer.Option(..., "--type")):
+    root = require_root()
+    g = guard(worldfs.load_game_for, root)
+    emit(guard(rest_mod.take, root, g, type_, rng))
 
 
 @app.command()
