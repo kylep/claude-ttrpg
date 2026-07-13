@@ -50,3 +50,19 @@ def test_cli_render_no_encounter(wroot):
     res = runner.invoke(app, ["map", "render"])
     assert res.exit_code == 1
     assert json.loads(res.stdout)["error"]["code"] == "no_encounter"
+
+
+def test_symbols_collision_walks_alphabet():
+    enc = {
+        "order": ["pc-brin", "pc-borin", "goblin-1", "gnoll-1"],
+        "grid": {"width": 4, "height": 2},
+        "terrain": [],
+        "positions": {},
+        "monsters": {"goblin-1": {}, "gnoll-1": {}},
+    }
+    syms = render.symbols(enc)
+    assert syms["pc-brin"] == "B"
+    assert syms["pc-borin"] == "C"      # collision walked B -> C
+    assert syms["goblin-1"] == "g"
+    assert syms["gnoll-1"] == "h"       # collision walked g -> h
+    assert len(set(syms.values())) == 4  # all glyphs unique
