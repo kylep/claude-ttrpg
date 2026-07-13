@@ -19,7 +19,7 @@ notes: >
   the stat block. Solo vs. a level 1 PC: at attack_mod +5 it hits an
   unarmored caster (ac ~11) on a d20 >= 6 (75%) for 1d8+2 (avg 6.5) — one
   good hit can drop a 5-6 hp level 1 wizard outright, and even a level 1
-  fighter in chain mail (ac 16, hp ~12) is hit on a d20 >= 11 (50%) for
+  fighter in chain mail (ac 16, hp 13) is hit on a d20 >= 11 (50%) for
   ~3.25 expected dmg/round against the fighter's own ~4.55 expected
   dmg/round (attack +4 vs its ac 11, 1d8+2) — an even, real fight over
   ~4 rounds either way, not a guaranteed win. Against a mixed-level party

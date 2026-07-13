@@ -28,9 +28,9 @@ notes: >
   — kill, scare, and parley are all meant to be live options, and the
   fight is tuned to feel like a reluctant last resort rather than a
   monster hunt. Sized for a level 1-2 party of up to four: at attack_mod
-  +4/+3 it hits a level 1 PC (ac 11-16) on 25-60% of rolls for modest
+  +4/+3 it hits a level 1 PC (ac 11-16) on 40-70% of rolls for modest
   damage (1d6+2 melee, 1d4 at range), while the party's combined attacks
-  at +4-6 hit its ac 13 on 55-80% of rolls and can clear its 30 hp in
+  at +4-6 hit its ac 13 on 60-70% of rolls and can clear its 30 hp in
   about 2 rounds of focus fire — comparable in weight to `barrow_hound.yaml`
   x2. Talking it down is cheaper than fighting it: a DC 13 (medium,
   `ruleset/core.yaml` dcs) Intimidation check scares it back into
