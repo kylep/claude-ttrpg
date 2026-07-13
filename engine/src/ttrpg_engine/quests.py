@@ -200,6 +200,8 @@ def offer(root: Path, g: dict, *, title: str, description: str,
           deadline: dict | None = None, spawn: bool = False,
           escrow_from_type: str | None = None, escrow_from_id: str | None = None) -> dict:
     items = list(items or [])
+    if gold < 0:
+        raise EngineError("bad_amount", "gold cannot be negative")
     quest_id = _slugify(title)
     if not quest_id:
         raise EngineError("bad_title", "title must contain at least one alphanumeric character")
@@ -290,6 +292,9 @@ def complete(root: Path, quest_id: str, to: list[str] | None = None) -> dict:
     for pid in recipients:
         if pid not in party["members"]:
             raise EngineError("not_found", f"no such PC {pid}")
+        sheet = worldfs.read_yaml(worldfs.state(root, f"party/{pid}"))
+        if "dead" in {e["name"] for e in sheet["effects"]}:
+            raise EngineError("dead", f"{pid} is dead and cannot complete quests")
 
     reward = quest["reward"]
     gold, items, xp = reward["gold"], reward["items"], reward["xp"]

@@ -321,3 +321,83 @@ def test_accept_requires_existing_and_living_pc(wroot):
     combat.set_effect(wroot, pc, "dead", -1)
     res = runner.invoke(app, ["quest", "accept", quest_id, "--pcs", pc])
     assert json.loads(res.stdout)["error"]["code"] == "dead"
+
+
+def test_complete_rejects_dead_recipients(wroot):
+    pc = make_pc()
+    # Use world quest with escrow_from so escrow is populated
+    res = _offer(title="Complete Dead Test", desc="x", giver="world", gold=10,
+                 escrow_from="npc:mayor")
+    quest_id = json.loads(res.stdout)["id"]
+
+    res = runner.invoke(app, ["quest", "accept", quest_id, "--pcs", pc])
+    assert res.exit_code == 0, res.stdout
+
+    # Kill the PC
+    combat.set_effect(wroot, pc, "dead", -1)
+
+    # Try to complete: should error, quest should still be accepted, escrow untouched
+    res = runner.invoke(app, ["quest", "complete", quest_id])
+    assert json.loads(res.stdout)["error"]["code"] == "dead"
+
+    quest = _quest(wroot, quest_id)
+    assert quest["status"] == "accepted"
+    assert quest["escrow"] == {"gold": 10, "items": []}
+
+    # PC should have no gold (not paid)
+    sheet = _sheet(wroot, pc)
+    assert sheet["gold"] == 10  # unchanged
+
+
+def test_offer_rejects_negative_gold(wroot):
+    res = _offer(title="Negative Gold Quest", desc="x", giver="world", spawn=True, gold=-5)
+    assert json.loads(res.stdout)["error"]["code"] == "bad_amount"
+    # No quest should be created
+    assert not (wroot / "state" / "quests" / "negative-gold-quest.yaml").exists()
+
+
+def test_offer_allows_zero_gold(wroot):
+    res = _offer(title="Zero Gold Quest", desc="x", giver="world", spawn=True, gold=0, items="torch")
+    assert res.exit_code == 0, res.stdout
+    quest = _quest(wroot, json.loads(res.stdout)["id"])
+    assert quest["reward"]["gold"] == 0
+
+
+def test_world_quest_cancel_restores_escrow_from_npc(wroot):
+    res = _offer(title="NPC Escrow Cancel", desc="x", giver="world", gold=10, items="torch",
+                 escrow_from="npc:mayor")
+    assert res.exit_code == 0, res.stdout
+    quest_id = json.loads(res.stdout)["id"]
+
+    # Capture initial NPC state after escrow
+    npcs_before = _npcs(wroot)
+    mayor_gold_after_escrow = npcs_before["mayor"]["gold"]
+    mayor_inv_after_escrow = [dict(item) for item in npcs_before["mayor"]["inventory"]]
+
+    # Cancel the quest
+    res = runner.invoke(app, ["quest", "cancel", quest_id])
+    assert res.exit_code == 0, res.stdout
+
+    # Check that mayor's holdings are restored exactly
+    npcs_after = _npcs(wroot)
+    assert npcs_after["mayor"]["gold"] == 50  # back to original (seeded 50, spent 10, refunded 10)
+    # Find torch in inventory
+    torch_after = next((l for l in npcs_after["mayor"]["inventory"] if l["item"] == "torch"), None)
+    torch_before = next((l for l in mayor_inv_after_escrow if l["item"] == "torch"), None)
+    assert torch_after["qty"] == torch_before["qty"] + 1  # one more torch than after escrow
+
+
+def test_world_spawn_quest_cancel_no_refund(wroot):
+    res = _offer(title="Spawn Quest No Refund", desc="x", giver="world", spawn=True, gold=20, items="torch")
+    assert res.exit_code == 0, res.stdout
+    quest_id = json.loads(res.stdout)["id"]
+
+    # Spawn quests have no escrow, no holdings change
+    assert not (wroot / "state" / "npcs.yaml").exists()
+
+    # Cancel the quest
+    res = runner.invoke(app, ["quest", "cancel", quest_id])
+    assert res.exit_code == 0, res.stdout
+
+    # No holdings should be created
+    assert not (wroot / "state" / "npcs.yaml").exists()
