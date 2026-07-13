@@ -19,6 +19,35 @@ roll, stat, and state mutation.
 - `engine/` — scripts that run game logic and mutate world state
 - `.claude/` — agents and skills for GM sessions
 
+## Playing
+
+Install the engine CLI:
+
+```bash
+uv tool install --editable ./engine
+```
+
+Create a world — either ask Claude to use the `world-new` skill, or
+run it directly:
+
+```bash
+engine world init <dir> --game games/reference --name "<name>"
+```
+
+Launch the GM from inside the world repo:
+
+```bash
+cd <world> && claude --agent gm
+```
+
+Three phrases steer the operator relationship with the GM at any time:
+
+- **"GM override"** — apply an instruction as-is; it gets logged to
+  the timeline.
+- **"manual GM"** — every ruling (DCs, NPC reactions) is deferred to
+  you; the engine paperwork keeps happening automatically.
+- **"auto GM"** — hand rulings back to Claude.
+
 ## Status
 
 Design phase. See `docs/design.md`.
