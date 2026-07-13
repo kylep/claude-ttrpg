@@ -60,6 +60,13 @@ Three phrases steer the operator relationship with the GM at any time:
   you; the engine paperwork keeps happening automatically.
 - **"auto GM"** — hand rulings back to Claude.
 
+Gear is live state: `engine equip` / `engine unequip` recompute AC and
+attacks from what's actually worn, magic items carry boons (and
+sometimes curses — `engine item dispel` is the remedy), and the party
+can split: `travel`, `encounter start`, and `rest` all take `--pcs` to
+act on a subset, with XP flowing only to the PCs who were actually in
+the fight.
+
 ## Worlds are git repos — saves, forks, and time travel
 
 A world's entire save state is files in its own git repo, so git *is*
