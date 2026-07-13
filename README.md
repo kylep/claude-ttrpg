@@ -35,6 +35,10 @@ does all of the below for you), or by hand:
 engine world init ~/ttrpg/saves/world1 \
   --game ~/gh/claude-ttrpg/games/reference --name "World One"
 
+# install the GM agent + skills into the world (claude loads .claude/
+# from the directory you launch it in)
+cp -r ~/gh/claude-ttrpg/.claude ~/ttrpg/saves/world1/.claude
+
 # make it a git repo: the commit is save zero, the tag a named restore point
 cd ~/ttrpg/saves/world1
 git init

@@ -5,6 +5,12 @@ fix-later; none block play.
 
 ## Engineering
 
+- **Ship the GM agent/skills as engine package data** so `engine world
+  init` installs `.claude/` into every world itself. Today the world-new
+  skill (and README) copy this repo's `.claude/` at creation, which
+  snapshots the skills — worlds drift as the repo's skills improve.
+  Related open question: how a live world should upgrade its skills
+  (same shape as the game-version pinning question).
 - **Portable game path in `world.yaml`** — the manifest stores an absolute,
   machine-local path to the game; worlds break if cloned to another machine.
   Support a repo-relative or registry-style reference.
