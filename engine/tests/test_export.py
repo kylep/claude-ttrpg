@@ -1,4 +1,5 @@
 import json
+import shutil
 from pathlib import Path
 
 from typer.testing import CliRunner
@@ -146,3 +147,82 @@ def test_export_no_external_refs_in_all_three(wroot):
         assert res.exit_code == 0, res.stdout
         html = Path(json.loads(res.stdout)["file"]).read_text()
         assert _no_external_refs(html)
+
+
+# --- HTML escaping / markdown hardening (review fixes) -----------------------
+
+
+def test_export_game_escapes_malicious_class_feature_tag(tmp_path, monkeypatch):
+    game_dir = tmp_path / "evilgame"
+    shutil.copytree(FIXTURE_GAME, game_dir)
+
+    fighter_path = game_dir / "ruleset" / "classes" / "fighter.yaml"
+    fighter_path.write_text(
+        fighter_path.read_text().replace(
+            "1: {features: [second_wind], spells: [], slots: {}}",
+            '1: {features: [second_wind, "x<script>alert(1)</script>"], spells: [], slots: {}}',
+        )
+    )
+    features_path = game_dir / "ruleset" / "features.yaml"
+    features_path.write_text(
+        features_path.read_text()
+        + '\n"x<script>alert(1)</script>": {description: "malicious tag"}\n'
+    )
+
+    monkeypatch.chdir(tmp_path)
+    res = _export("game", "--game", str(game_dir), "--out", str(tmp_path / "out"))
+    assert res.exit_code == 0, res.stdout
+    html = Path(json.loads(res.stdout)["file"]).read_text()
+
+    assert "<script" not in html.lower()          # no live script tag reaches the page
+    assert "&lt;script&gt;" in html.lower()       # the payload itself survives, escaped
+    assert "alert(1)" in html.lower()             # confirms it's the same payload, just inert
+
+
+def test_export_game_escapes_dc_label_html(tmp_path, monkeypatch):
+    game_dir = tmp_path / "evildc"
+    shutil.copytree(FIXTURE_GAME, game_dir)
+
+    core_path = game_dir / "ruleset" / "core.yaml"
+    core_path.write_text(
+        core_path.read_text().replace(
+            "dcs: {easy: 10, medium: 13, hard: 16}",
+            'dcs: {easy: 10, medium: 13, hard: 16, "boss<b>bold</b>": 20}',
+        )
+    )
+
+    monkeypatch.chdir(tmp_path)
+    res = _export("game", "--game", str(game_dir), "--out", str(tmp_path / "out"))
+    assert res.exit_code == 0, res.stdout
+    html = Path(json.loads(res.stdout)["file"]).read_text()
+
+    assert "<b>bold</b>" not in html
+    assert "&lt;b&gt;bold&lt;/b&gt;" in html.lower()
+    assert "(DC 20)" in html                       # generated parens/format survive untouched
+
+
+def test_export_world_markdown_strips_script_capable_html(tmp_path, monkeypatch):
+    game_dir = tmp_path / "evilmd"
+    shutil.copytree(FIXTURE_GAME, game_dir)
+
+    setting_path = game_dir / "content" / "setting.md"
+    setting_path.write_text(
+        setting_path.read_text()
+        + "\n\nTrouble is brewing — the elders are worried.\n\n"
+        + "<script>evil()</script>\n\n"
+        + '<a href="javascript:x" onclick="y">link</a>\n\n'
+        + "## A Real Heading\n"
+    )
+
+    monkeypatch.chdir(tmp_path)
+    res = _export("world", "--game", str(game_dir), "--out", str(tmp_path / "out"))
+    assert res.exit_code == 0, res.stdout
+    html = Path(json.loads(res.stdout)["file"]).read_text()
+
+    assert "evil()" not in html
+    assert "<script" not in html.lower()
+    assert "onclick" not in html.lower()
+    assert "javascript:" not in html.lower()
+    assert "<h2>A Real Heading</h2>" in html        # legit markdown still renders
+    assert "Sunbleached Hills" in html              # no over-escaping regression on existing content
+    assert "—" in html                              # em-dashes in setting.md still render raw

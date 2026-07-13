@@ -9,6 +9,12 @@ Produces three self-contained HTML documents and, if `gws` is working,
 uploads each as a Google Doc. Falls back gracefully to local HTML if `gws`
 isn't available — this must never be treated as a hard failure.
 
+Exported HTML embeds the game's own authored text verbatim, so only export
+games from sources you trust. As defense-in-depth the exporter escapes
+author-controlled fields and strips script-capable HTML (`<script>`,
+event-handler attributes, `javascript:` URLs, etc.) out of markdown-rendered
+content, but this is not a substitute for trusting the source.
+
 ## 1. Render the three exports
 
 From inside a world (uses `canon/` for content and the world's pinned
