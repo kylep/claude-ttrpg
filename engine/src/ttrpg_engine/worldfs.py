@@ -36,6 +36,12 @@ def state(root: Path, rel: str) -> Path:
     return root / "state" / f"{rel}.yaml"
 
 
+def pc_location(sheet: dict, party: dict) -> str:
+    """A PC's current location: the sheet's own `location` if set, else the
+    party anchor. Old-world sheets (pre-party-split) lack the key entirely."""
+    return sheet.get("location", party["location"])
+
+
 def load_game_for(root: Path) -> dict:
     manifest = read_yaml(root / "world.yaml")
     return game_mod.load(Path(manifest["game"]["path"]))

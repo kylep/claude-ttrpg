@@ -31,6 +31,7 @@ def create(root: Path, g: dict, *, name: str, cls_name: str, race_name: str,
     pc_id = f"pc-{_slug(name)}"
     if worldfs.state(root, f"party/{pc_id}").exists():
         raise EngineError("exists", f"{pc_id} already exists")
+    party = worldfs.read_yaml(worldfs.state(root, "party"))
     max_hp = max(1, cls["hit_die"] + attr_mod(attrs["CON"]))
     sheet = {
         "id": pc_id, "name": name, "class": cls_name, "race": race_name,
@@ -44,10 +45,10 @@ def create(root: Path, g: dict, *, name: str, cls_name: str, race_name: str,
         "features": list(level1["features"]),
         "inventory": [{"item": i, "qty": 1, "equipped": True} for i in cls["starting_gear"]],
         "gold": cls["starting_gold"], "effects": [],
+        "location": party["location"],
     }
     derive.recompute(sheet, g)
     worldfs.write_yaml(worldfs.state(root, f"party/{pc_id}"), sheet)
-    party = worldfs.read_yaml(worldfs.state(root, "party"))
     party["members"].append(pc_id)
     worldfs.write_yaml(worldfs.state(root, "party"), party)
     timeline.append_event(root, type_="character", actors=[pc_id],

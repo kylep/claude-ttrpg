@@ -25,7 +25,7 @@ def get_combatant(root: Path, enc: dict, cid: str) -> tuple[str, dict]:
     raise EngineError("not_found", f"no combatant {cid}")
 
 
-def start(root: Path, g: dict, map_rel: str, rng: Random) -> dict:
+def start(root: Path, g: dict, map_rel: str, rng: Random, pcs: list[str] | None = None) -> dict:
     if (root / "state" / "encounter.yaml").exists():
         raise EngineError("encounter_active", "an encounter is already running")
     map_rel = map_rel.removeprefix("canon/")
@@ -33,8 +33,34 @@ def start(root: Path, g: dict, map_rel: str, rng: Random) -> dict:
     party = worldfs.read_yaml(worldfs.state(root, "party"))
     if not party["members"]:
         raise EngineError("no_party", "no PCs in the party")
-    if len(party["members"]) > len(emap["pc_spawns"]):
+
+    sheets = {pid: worldfs.read_yaml(worldfs.state(root, f"party/{pid}"))
+              for pid in party["members"]}
+
+    def is_living(pid):
+        return "dead" not in {e["name"] for e in sheets[pid]["effects"]}
+
+    if pcs is None:
+        participants = [pid for pid in party["members"] if is_living(pid)]
+    else:
+        participants = pcs
+        for pid in participants:
+            if pid not in party["members"]:
+                raise EngineError("not_found", f"no combatant {pid}")
+            if not is_living(pid):
+                raise EngineError("dead", f"{pid} is dead and cannot join the encounter")
+    if not participants:
+        raise EngineError("no_party", "no living PCs to seat")
+
+    if len(participants) > len(emap["pc_spawns"]):
         raise EngineError("map_invalid", "not enough pc_spawns for the party")
+
+    here = worldfs.pc_location(sheets[participants[0]], party)
+    for pid in participants[1:]:
+        loc = worldfs.pc_location(sheets[pid], party)
+        if loc != here:
+            raise EngineError("split_party", f"{pid} is at {loc}, not {here}")
+
     monsters, positions, counts = {}, {}, {}
     for spec in emap["monsters"]:
         mtype = spec["type"]
@@ -48,17 +74,17 @@ def start(root: Path, g: dict, map_rel: str, rng: Random) -> dict:
                          "loot": entry.get("loot", {"gold": None, "items": []}),
                          "effects": [], "dead": False}
         positions[mid] = list(spec["pos"])
-    for pc_id, spawn in zip(party["members"], emap["pc_spawns"]):
+    for pc_id, spawn in zip(participants, emap["pc_spawns"]):
         positions[pc_id] = list(spawn)
     scores = {}
-    for cid in [*party["members"], *monsters]:
+    for cid in [*participants, *monsters]:
         _, data = get_combatant(root, {"monsters": monsters}, cid)
         dex = data["attributes"]["DEX"]
         scores[cid] = (rng.randint(1, 20) + attr_mod(dex), dex, cid)
     order = sorted(scores, key=lambda c: scores[c], reverse=True)
     enc = {"id": emap["id"], "name": emap["name"], "round": 1, "turn": 0,
            "order": order, "grid": emap["grid"], "terrain": emap.get("terrain", []),
-           "positions": positions, "monsters": monsters}
+           "positions": positions, "monsters": monsters, "pcs": participants}
     save_encounter(root, enc)
     timeline.append_event(root, type_="encounter", actors=order,
                           summary=f"encounter started: {emap['name']}")
@@ -94,11 +120,12 @@ def next_turn(root: Path) -> dict:
 def end(root: Path, g: dict, rng: Random) -> dict:
     enc = load_encounter(root)
     party = worldfs.read_yaml(worldfs.state(root, "party"))
+    participants = enc.get("pcs") or list(party["members"])
     total_xp = sum(m["xp"] for m in enc["monsters"].values())
-    xp_each = total_xp // len(party["members"])
-    for i, pc_id in enumerate(party["members"]):
+    xp_each = total_xp // len(participants)
+    for i, pc_id in enumerate(participants):
         sheet = worldfs.read_yaml(worldfs.state(root, f"party/{pc_id}"))
-        sheet["xp"] += xp_each + (total_xp % len(party["members"]) if i == 0 else 0)
+        sheet["xp"] += xp_each + (total_xp % len(participants) if i == 0 else 0)
         save_pc(root, sheet)
     gold, items = 0, []
     for m in enc["monsters"].values():

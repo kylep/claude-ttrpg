@@ -33,6 +33,11 @@ def fail(code: str, message: str) -> None:
     raise typer.Exit(1)
 
 
+def split_pcs(pcs: str | None) -> list[str] | None:
+    """Parse a comma-separated --pcs option into a list, or None if omitted."""
+    return [p.strip() for p in pcs.split(",") if p.strip()] if pcs else None
+
+
 def guard(fn, *args, **kwargs):
     """Run fn, converting EngineError/ValueError into JSON failures."""
     try:
@@ -211,10 +216,10 @@ app.add_typer(enc_app, name="encounter")
 
 
 @enc_app.command("start")
-def encounter_start(map_rel: str):
+def encounter_start(map_rel: str, pcs: str | None = typer.Option(None, "--pcs", help="comma-separated PC ids")):
     root = require_root()
     g = guard(worldfs.load_game_for, root)
-    emit(guard(combat.start, root, g, map_rel, rng))
+    emit(guard(combat.start, root, g, map_rel, rng, split_pcs(pcs)))
 
 
 @enc_app.command("next")
@@ -283,10 +288,11 @@ def cast(caster: str = typer.Option(...), spell: str = typer.Option(...),
 
 
 @app.command()
-def rest(type_: str = typer.Option(..., "--type")):
+def rest(type_: str = typer.Option(..., "--type"),
+         pcs: str | None = typer.Option(None, "--pcs", help="comma-separated PC ids")):
     root = require_root()
     g = guard(worldfs.load_game_for, root)
-    emit(guard(rest_mod.take, root, g, type_, rng))
+    emit(guard(rest_mod.take, root, g, type_, rng, split_pcs(pcs)))
 
 
 @app.command()
@@ -300,8 +306,9 @@ def move(actor: str = typer.Option(...), to: str = typer.Option(..., help="X,Y")
 
 
 @app.command()
-def travel(to: str = typer.Option(...)):
-    emit(guard(travel_mod.go, require_root(), to))
+def travel(to: str = typer.Option(...),
+           pcs: str | None = typer.Option(None, "--pcs", help="comma-separated PC ids")):
+    emit(guard(travel_mod.go, require_root(), to, split_pcs(pcs)))
 
 
 item_app = typer.Typer()
