@@ -1,0 +1,8 @@
+blessed: {impact: "GM gives the blessed creature +1d4 flavor luck on attacks and saves, or grants --adv on a close roll instead"}
+shielded: {impact: "attacks against the shielded creature resolve at --dis, or the GM treats its AC as 2 higher for the encounter"}
+poisoned: {impact: "GM applies --dis to the poisoned creature's attacks and ability checks"}
+unconscious: {impact: "creature cannot act, speak, or move; attacks against it resolve at --adv"}
+dying: {impact: "creature is unconscious at 0 hp and rolls a death save each round per recovery.yaml until stable, healed, or dead"}
+dead: {impact: "creature is out of play; no further saves, healing, or actions apply to it"}
+prone: {impact: "melee attacks against the prone creature get --adv, ranged attacks against it get --dis, and its own attacks resolve at --dis until it stands"}
+frightened: {impact: "GM applies --dis to the frightened creature's attacks and checks while the source of its fear is in view"}

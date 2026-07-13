@@ -1,0 +1,6 @@
+name: reference
+version: 0.1.0
+description: The baseline four-class ruleset every other game in this repo is instantiated from.
+start_date: "1203-04-17"
+start_hour: 9
+start_location: thornbury

@@ -1,0 +1,4 @@
+human: {bonuses: {CON: 1, WIS: 1}, speed: 6}
+elf: {bonuses: {DEX: 2}, speed: 6}
+dwarf: {bonuses: {CON: 2}, speed: 5}
+halfling: {bonuses: {DEX: 1, CHA: 1}, speed: 5}

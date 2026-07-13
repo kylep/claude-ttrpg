@@ -1,0 +1,46 @@
+fire_bolt:
+  level: 0
+  action: action
+  range: 24
+  resolve: attack
+  damage: 1d10
+sacred_flame:
+  level: 0
+  action: action
+  range: 12
+  resolve: save
+  save_attr: DEX
+  damage: 1d8
+  on_save: none
+magic_missile:
+  level: 1
+  action: action
+  range: 24
+  resolve: auto
+  damage: 3d4+3
+sleep_dust:
+  level: 1
+  action: action
+  range: 12
+  resolve: save
+  save_attr: WIS
+  effect: {name: unconscious, duration: 2}
+  on_save: none
+cure_wounds:
+  level: 1
+  action: action
+  range: 1
+  resolve: auto
+  heal: 1d8+CASTMOD
+bless:
+  level: 1
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: blessed, duration: 10}
+shield_of_faith:
+  level: 1
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: shielded, duration: 10}

@@ -1,0 +1,11 @@
+name: rogue
+hit_die: 8
+cast_attr: null
+skill_choices: 3
+skills: [stealth, perception, deception, acrobatics, sleight_of_hand]
+starting_gear: [leather_armor, dagger, dagger]
+starting_gold: 15
+levels:
+  1: {features: [sneak_attack], spells: [], slots: {}}
+  2: {features: [cunning_action], spells: [], slots: {}}
+  3: {features: [evasion], spells: [], slots: {}}

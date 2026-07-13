@@ -1,0 +1,5 @@
+resolution: d20_vs_dc
+crit_on: 20
+fumble_on: 1
+standard_array: [15, 14, 13, 12, 10, 8]
+dcs: {easy: 10, medium: 13, hard: 16}
