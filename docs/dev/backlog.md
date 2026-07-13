@@ -50,3 +50,17 @@ fix-later; none block play.
 - Insert-mode play + predestination validator (hard layer).
 - Fork/save-management skill; never-merge enforcement hook for world repos.
 - Region-map image generation from node coords/terrain tags.
+
+## From the equipment / party-split round (2026-07-13)
+
+- Effects are keyed by name only: an equipment-granted effect and a
+  GM-applied effect with the same name clobber each other on
+  unequip/set. Needs effect provenance if it ever matters in play.
+- `engine item dispel` works on any effect-granting item, not just
+  cursed ones (GM-only escape hatch; broader than the curse remedy it
+  was specced as).
+- `travel --pcs` naming the full roster leaves `party.location` stale;
+  consider detecting full-roster moves.
+- `level.grant_xp` still grants to all members regardless of splits;
+  dead PCs never leave `party.members` (no retire/bury flow).
+- Equip/unequip unsupported for monster ids.
