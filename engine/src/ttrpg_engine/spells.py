@@ -31,6 +31,20 @@ def _spend_slot(root, sheet, level):
         combat.save_pc(root, sheet)
 
 
+def _reveal_caster(root, enc, caster, sheet, result):
+    """Casting a spell gives the caster away."""
+    if "hidden" not in combat.effect_names(sheet):
+        return
+    sheet["effects"] = [e for e in sheet["effects"] if e["name"] != "hidden"]
+    combat.save_pc(root, sheet)
+    if enc is not None:
+        enc.get("stealth", {}).pop(caster, None)
+        combat.save_encounter(root, enc)
+    result["revealed"] = True
+    timeline.append_event(root, type_="effect", actors=[caster],
+                          summary=f"{caster} is revealed (cast a spell)")
+
+
 def cast(root: Path, g: dict, caster: str, spell_name: str, target: str | None,
          *, roll_fn, rng: Random, at: tuple[int, int] | None = None) -> dict:
     kind, sheet, enc = combat.resolve_actor(root, caster)
@@ -57,9 +71,12 @@ def cast(root: Path, g: dict, caster: str, spell_name: str, target: str | None,
             raise EngineError("no_encounter", "area spells require an active encounter")
         cell = tuple(at)
         if caster in enc["positions"]:
-            dist = grid.chebyshev(tuple(enc["positions"][caster]), cell)
+            caster_pos = tuple(enc["positions"][caster])
+            dist = grid.chebyshev(caster_pos, cell)
             if dist > spell["range"]:
                 raise EngineError("out_of_range", f"{list(cell)} is {dist} away, range {spell['range']}")
+            if not grid.line_of_sight(enc, caster_pos, cell):
+                raise EngineError("no_los", f"{caster} has no line of sight to {list(cell)}")
         _spend_slot(root, sheet, level)
         radius = area["radius"]
         affected = [cid for cid, pos in enc["positions"].items()
@@ -69,6 +86,7 @@ def cast(root: Path, g: dict, caster: str, spell_name: str, target: str | None,
                                       + (f" (hits {', '.join(affected)})" if affected else " (hits nothing)"))
         result = {"caster": caster, "spell": spell_name, "cell": list(cell),
                   "targets": [], "slot_level": level or None}
+        _reveal_caster(root, enc, caster, sheet, result)
         for cid in affected:
             _, c_data, _ = combat.resolve_actor(root, cid)
             entry = {"id": cid}
@@ -81,7 +99,8 @@ def cast(root: Path, g: dict, caster: str, spell_name: str, target: str | None,
                     dmg = dice.roll(_expr(spell["damage"], castmod), rng).total
                     dmg = max(1, dmg // 2) if half else dmg
                     entry["damage"] = combat.apply_damage(root, cid, dmg,
-                                                          source=f"{caster}:{spell_name}")["amount"]
+                                                          source=f"{caster}:{spell_name}",
+                                                          rng=rng)["amount"]
                 if "heal" in spell:
                     amount = dice.roll(_expr(spell["heal"], castmod), rng).total
                     entry["healed"] = combat.apply_heal(root, cid, amount,
@@ -91,26 +110,40 @@ def cast(root: Path, g: dict, caster: str, spell_name: str, target: str | None,
 
     target = target or caster
     _, t_data, _ = combat.resolve_actor(root, target)
-    if enc and caster in enc["positions"] and target in enc["positions"]:
-        dist = grid.chebyshev(tuple(enc["positions"][caster]),
-                              tuple(enc["positions"][target]))
+    if enc and target != caster and caster in enc["positions"] and target in enc["positions"]:
+        caster_pos = tuple(enc["positions"][caster])
+        target_pos = tuple(enc["positions"][target])
+        dist = grid.chebyshev(caster_pos, target_pos)
         if dist > spell["range"]:
             raise EngineError("out_of_range", f"{target} is {dist} away, range {spell['range']}")
+        if not grid.line_of_sight(enc, caster_pos, target_pos):
+            raise EngineError("no_los", f"{caster} has no line of sight to {target}")
     _spend_slot(root, sheet, level)
     result = {"caster": caster, "spell": spell_name, "target": target,
               "slot_level": level or None, "damage": 0, "healed": 0}
     lands, half = True, False
     if spell["resolve"] == "attack":
-        ranged_in_melee = (spell["range"] > 1 and enc is not None
+        s_kind = "ranged" if spell["range"] > 1 else "melee"
+        adv_from, dis_from = combat.roll_conditions(
+            combat.effect_names(sheet), combat.effect_names(t_data), s_kind)
+        ranged_in_melee = (s_kind == "ranged" and enc is not None
                            and combat.adjacent_living_hostile(root, enc, caster))
-        natural, total = roll_fn(sheet["proficiency"] + castmod, False, ranged_in_melee)
+        if ranged_in_melee:
+            dis_from.append("ranged_in_melee")
+        natural, total = roll_fn(sheet["proficiency"] + castmod,
+                                 bool(adv_from), bool(dis_from))
         lands = natural != 1 and (natural == 20 or total >= t_data["ac"])
         result["attack"] = {"natural": natural, "total": total, "vs_ac": t_data["ac"], "hit": lands}
         if ranged_in_melee:
             result["ranged_in_melee"] = True
+        if adv_from:
+            result["adv_from"] = adv_from
+        if dis_from:
+            result["dis_from"] = dis_from
     elif spell["resolve"] == "save":
         save_entry, lands, half = _resolve_save(sheet, castmod, t_data, spell, roll_fn)
         result["save"] = save_entry
+    _reveal_caster(root, enc, caster, sheet, result)
     timeline.append_event(root, type_="cast", actors=[caster, target],
                           summary=f"{caster} casts {spell_name} at {target}")
     if lands:
@@ -118,7 +151,8 @@ def cast(root: Path, g: dict, caster: str, spell_name: str, target: str | None,
             dmg = dice.roll(_expr(spell["damage"], castmod), rng).total
             dmg = max(1, dmg // 2) if half else dmg
             result["damage"] = combat.apply_damage(root, target, dmg,
-                                                   source=f"{caster}:{spell_name}")["amount"]
+                                                   source=f"{caster}:{spell_name}",
+                                                   rng=rng)["amount"]
         if "heal" in spell:
             amount = dice.roll(_expr(spell["heal"], castmod), rng).total
             result["healed"] = combat.apply_heal(root, target, amount,

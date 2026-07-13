@@ -224,7 +224,7 @@ def encounter_start(map_rel: str, pcs: str | None = typer.Option(None, "--pcs", 
 
 @enc_app.command("next")
 def encounter_next():
-    emit(guard(combat.next_turn, require_root()))
+    emit(guard(combat.next_turn, require_root(), rng))
 
 
 @enc_app.command("end")
@@ -254,7 +254,7 @@ def attack(
 @app.command()
 def damage(target: str = typer.Option(...), amount: int = typer.Option(...),
            source: str = typer.Option("GM")):
-    emit(guard(combat.apply_damage, require_root(), target, amount, source))
+    emit(guard(combat.apply_damage, require_root(), target, amount, source, rng))
 
 
 @app.command()
@@ -271,7 +271,7 @@ def effect_add(target: str = typer.Option(...), name: str = typer.Option(...),
 
 @effect_app.command("remove")
 def effect_remove(target: str = typer.Option(...), name: str = typer.Option(...)):
-    emit(guard(combat.remove_effect, require_root(), target, name))
+    emit(guard(combat.remove_effect, require_root(), target, name, rng))
 
 
 @app.command()
@@ -303,6 +303,44 @@ def ascend(actor: str = typer.Option(...)):
 @app.command()
 def land(actor: str = typer.Option(...)):
     emit(guard(combat.land, require_root(), actor))
+
+
+@app.command()
+def fall(actor: str = typer.Option(...),
+         dice_expr: str = typer.Option("2d6", "--dice", help="Fall damage roll.")):
+    emit(guard(combat.fall, require_root(), actor, rng, dice_expr))
+
+
+@app.command()
+def hide(actor: str = typer.Option(...)):
+    emit(guard(combat.hide, require_root(), actor, roll_fn=d20_roll))
+
+
+@app.command()
+def stand(actor: str = typer.Option(...)):
+    emit(guard(combat.stand, require_root(), actor))
+
+
+@app.command()
+def grapple(actor: str = typer.Option(...), target: str = typer.Option(...),
+            release: bool = typer.Option(False, "--release")):
+    emit(guard(combat.grapple, require_root(), actor, target,
+               roll_fn=d20_roll, release=release))
+
+
+@app.command()
+def escape(actor: str = typer.Option(...)):
+    emit(guard(combat.escape, require_root(), actor, roll_fn=d20_roll))
+
+
+@app.command()
+def shove(actor: str = typer.Option(...), target: str = typer.Option(...)):
+    emit(guard(combat.shove, require_root(), actor, target, roll_fn=d20_roll))
+
+
+@app.command()
+def sight(actor: str = typer.Option(...), target: str = typer.Option(...)):
+    emit(guard(combat.sight, require_root(), actor, target))
 
 
 @app.command()

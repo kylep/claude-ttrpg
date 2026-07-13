@@ -1,0 +1,28 @@
+# field meanings: see bestiary/goblin.yaml
+name: Lych-Crake
+description: >
+  A heron-sized carrion bird that roosts on Thornbury's lych-gate and has
+  eaten too much of what the yard keeps giving up; grave-light leaks
+  between its pinfeathers. It fights like weather — circling out of reach,
+  dropping on whoever looks weakest, and lifting away again before the
+  counter-blow lands.
+ac: 13
+hp: 10
+speed: 7
+flying: true
+attributes: {STR: 8, DEX: 15, CON: 10, INT: 4, WIS: 12, CHA: 6}
+attacks: [{name: carrion beak, attack_mod: 4, damage: 1d6+2, range: 1}]
+xp: 100
+loot: {gold: null, items: []}
+difficulty: easy
+notes: >
+  The engine's flying rules ARE this fight. Run its turns as a swoop
+  loop: `engine land`, `engine attack` (beak, melee range 1), `engine
+  ascend` — while aloft, melee attacks against it raise `unreachable`
+  and only ranged weapons or spells can touch it. Three honest counters
+  the party can find on their own: shoot it down (dropping it to 0 hp
+  while aloft auto-falls it, 2d6 + prone), ready weapons for the one
+  turn per round it spends on the ground, or `engine grapple` it the
+  moment it lands — a grappled creature cannot take off, which turns
+  the crake from a hazard into a very angry farm bird. Sized easy on
+  purpose: the lesson is the mechanics, not the hp bar.

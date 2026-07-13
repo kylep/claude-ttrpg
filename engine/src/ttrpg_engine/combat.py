@@ -34,6 +34,44 @@ def attack_kind(atk: dict) -> str:
     return "melee" if atk.get("range", 1) <= 1 else "ranged"
 
 
+def effect_names(data: dict) -> set[str]:
+    return {e["name"] for e in data.get("effects", [])}
+
+
+def skill_mod(data: dict, attr: str, skill: str) -> int:
+    """Attribute modifier, plus proficiency if the combatant has the skill.
+    Monsters have no skills/proficiency keys and fall back to the bare mod."""
+    mod = attr_mod(data["attributes"][attr])
+    if skill in data.get("skills", []):
+        mod += data.get("proficiency", 0)
+    return mod
+
+
+def passive_perception(data: dict) -> int:
+    return 10 + skill_mod(data, "WIS", "perception")
+
+
+def roll_conditions(a_eff: set[str], t_eff: set[str], kind: str) -> tuple[list[str], list[str]]:
+    """Advantage/disadvantage sources an attack roll picks up from the
+    engine-enforced conditions on attacker (a_eff) and target (t_eff)."""
+    adv, dis = [], []
+    if "hidden" in a_eff:
+        adv.append("attacker_hidden")
+    if "prone" in a_eff:
+        dis.append("attacker_prone")
+    if "restrained" in a_eff:
+        dis.append("attacker_restrained")
+    if "prone" in t_eff:
+        (adv if kind == "melee" else dis).append("target_prone")
+    if "restrained" in t_eff:
+        adv.append("target_restrained")
+    if "unconscious" in t_eff:
+        adv.append("target_unconscious")
+    if "hidden" in t_eff:
+        dis.append("target_hidden")
+    return adv, dis
+
+
 def flying_capable(data: dict) -> bool:
     """A combatant can fly if its stat data says so (bestiary `flying: true`)
     or it carries an effect named `flying` (PC granted by spell/item)."""
@@ -63,6 +101,43 @@ def adjacent_living_hostile(root: Path, enc: dict, attacker: str) -> bool:
         if grid.chebyshev(pos, tuple(cpos)) != 1:
             continue
         if is_living(root, enc, cid):
+            return True
+    return False
+
+
+def _hostiles_of(root: Path, enc: dict, actor: str, *, awake: bool = True):
+    """Living cross-side combatants as (cid, data, pos) tuples; with awake,
+    skips unconscious ones (they can't see or distract anyone)."""
+    actor_is_monster = actor in enc["monsters"]
+    for cid, cpos in enc["positions"].items():
+        if cid == actor or (cid in enc["monsters"]) == actor_is_monster:
+            continue
+        if not is_living(root, enc, cid):
+            continue
+        _, data = get_combatant(root, enc, cid)
+        if awake and "unconscious" in effect_names(data):
+            continue
+        yield cid, data, tuple(cpos)
+
+
+def ally_adjacent(root: Path, enc: dict, attacker: str, target: str) -> bool:
+    """A living, conscious combatant on the attacker's side (other than the
+    attacker itself) is chebyshev-adjacent to the target."""
+    if target not in enc["positions"]:
+        return False
+    tpos = tuple(enc["positions"][target])
+    attacker_is_monster = attacker in enc["monsters"]
+    for cid, cpos in enc["positions"].items():
+        if cid in (attacker, target):
+            continue
+        if (cid in enc["monsters"]) != attacker_is_monster:
+            continue  # hostile, not an ally
+        if grid.chebyshev(tpos, tuple(cpos)) != 1:
+            continue
+        if not is_living(root, enc, cid):
+            continue
+        _, data = get_combatant(root, enc, cid)
+        if "unconscious" not in effect_names(data):
             return True
     return False
 
@@ -135,10 +210,11 @@ def start(root: Path, g: dict, map_rel: str, rng: Random, pcs: list[str] | None 
             "initiative": {c: scores[c][0] for c in order}}
 
 
-def next_turn(root: Path) -> dict:
+def next_turn(root: Path, rng: Random | None = None) -> dict:
     enc = load_encounter(root)
     enc["turn"] += 1
     expired = []
+    falling = []
     if enc["turn"] >= len(enc["order"]):
         enc["turn"] = 0
         enc["round"] += 1
@@ -155,9 +231,16 @@ def next_turn(root: Path) -> dict:
             data["effects"] = keep
             if kind == "pc":
                 save_pc(root, data)
+            if (any(name == "flying" for c, name in expired if c == cid)
+                    and enc.get("aloft", {}).get(cid) and not flying_capable(data)
+                    and rng is not None):
+                falling.append(cid)
     save_encounter(root, enc)
-    return {"round": enc["round"], "turn": enc["turn"],
-            "up": enc["order"][enc["turn"]], "expired_effects": expired}
+    result = {"round": enc["round"], "turn": enc["turn"],
+              "up": enc["order"][enc["turn"]], "expired_effects": expired}
+    if falling:
+        result["fell"] = [fall(root, cid, rng) for cid in falling]
+    return result
 
 
 def end(root: Path, g: dict, rng: Random) -> dict:
@@ -207,25 +290,56 @@ def _persist(root, kind, data, enc):
         save_encounter(root, enc)
 
 
-def apply_damage(root: Path, target: str, amount: int, source: str) -> dict:
+def apply_damage(root: Path, target: str, amount: int, source: str,
+                 rng: Random | None = None) -> dict:
     kind, data, enc = resolve_actor(root, target)
     before = data["hp"]
     data["hp"] = max(0, before - amount)
     dropped = data["hp"] == 0 and before > 0
+    released, fall_damage = [], None
     if dropped:
         if kind == "monster":
             data["dead"] = True
         else:
-            names = {e["name"] for e in data["effects"]}
+            names = effect_names(data)
             data["effects"] += [{"name": n, "duration": -1}
                                 for n in ("unconscious", "dying") if n not in names]
             data["death_saves"] = {"successes": 0, "fails": 0}
+        if enc:
+            for held, holder in list(enc.get("grapples", {}).items()):
+                if holder != target:
+                    continue
+                hkind, hdata = (kind, data) if held == target \
+                    else get_combatant(root, enc, held)
+                hdata["effects"] = [e for e in hdata["effects"] if e["name"] != "grappled"]
+                if hkind == "pc":
+                    save_pc(root, hdata)
+                del enc["grapples"][held]
+                released.append(held)
+            if enc.get("aloft", {}).get(target) and rng is not None:
+                enc["aloft"][target] = False
+                fall_damage = dice.roll("2d6", rng).total
+                data["hp"] = max(0, data["hp"] - fall_damage)
+                if "prone" not in effect_names(data):
+                    data["effects"].append({"name": "prone", "duration": -1})
     _persist(root, kind, data, enc)
     timeline.append_event(root, type_="damage", actors=[target],
                           summary=f"{target} takes {amount} damage ({source})",
                           delta={target: {"hp": [before, data["hp"]]}})
-    return {"target": target, "amount": amount, "hp": [before, data["hp"]],
-            "dropped": dropped}
+    if fall_damage is not None:
+        timeline.append_event(root, type_="damage", actors=[target],
+                              summary=f"{target} drops from the air and falls prone"
+                                      f" ({fall_damage} fall damage)")
+    for held in released:
+        timeline.append_event(root, type_="effect", actors=[target, held],
+                              summary=f"{target} drops and loses its grip on {held}")
+    result = {"target": target, "amount": amount, "hp": [before, data["hp"]],
+              "dropped": dropped}
+    if released:
+        result["grapples_released"] = released
+    if fall_damage is not None:
+        result["fell"] = fall_damage
+    return result
 
 
 def apply_heal(root: Path, target: str, amount: int, source: str) -> dict:
@@ -245,7 +359,7 @@ def apply_heal(root: Path, target: str, amount: int, source: str) -> dict:
 
 def attack(root: Path, attacker: str, target: str, *, attack_name: str | None,
            adv: bool, dis: bool, roll_fn, rng: Random) -> dict:
-    _, a_data, enc = resolve_actor(root, attacker)
+    a_kind, a_data, enc = resolve_actor(root, attacker)
     _, t_data, _ = resolve_actor(root, target)
     attacks = a_data["attacks"]
     atk = next((a for a in attacks if a["name"] == attack_name), attacks[0] if attacks else None)
@@ -253,11 +367,14 @@ def attack(root: Path, attacker: str, target: str, *, attack_name: str | None,
         raise EngineError("no_attack", f"{attacker} has no attack {attack_name!r}")
     kind = attack_kind(atk)
     if enc and attacker in enc["positions"] and target in enc["positions"]:
-        dist = grid.chebyshev(tuple(enc["positions"][attacker]),
-                              tuple(enc["positions"][target]))
+        a_pos = tuple(enc["positions"][attacker])
+        t_pos = tuple(enc["positions"][target])
+        dist = grid.chebyshev(a_pos, t_pos)
         if dist > atk.get("range", 1):
             raise EngineError("out_of_range",
                               f"{target} is {dist} away, range is {atk.get('range', 1)}")
+        if not grid.line_of_sight(enc, a_pos, t_pos):
+            raise EngineError("no_los", f"{attacker} has no line of sight to {target}")
         if kind == "melee":
             aloft = enc.get("aloft", {})
             a_aloft, t_aloft = bool(aloft.get(attacker)), bool(aloft.get(target))
@@ -268,7 +385,16 @@ def attack(root: Path, attacker: str, target: str, *, attack_name: str | None,
                                   "attacker is airborne, cannot reach a grounded target")
     ranged_in_melee = (kind == "ranged" and enc is not None
                       and adjacent_living_hostile(root, enc, attacker))
-    natural, total = roll_fn(atk["attack_mod"], adv, dis or ranged_in_melee)
+    a_eff, t_eff = effect_names(a_data), effect_names(t_data)
+    adv_from, dis_from = roll_conditions(a_eff, t_eff, kind)
+    if adv:
+        adv_from.insert(0, "caller")
+    if dis:
+        dis_from.insert(0, "caller")
+    if ranged_in_melee:
+        dis_from.append("ranged_in_melee")
+    eff_adv, eff_dis = bool(adv_from), bool(dis_from)
+    natural, total = roll_fn(atk["attack_mod"], eff_adv, eff_dis)
     crit = "hit" if natural == 20 else "fumble" if natural == 1 else None
     hit = natural != 1 and (natural == 20 or total >= t_data["ac"])
     damage = 0
@@ -282,12 +408,42 @@ def attack(root: Path, attacker: str, target: str, *, attack_name: str | None,
               "hit": hit, "crit": crit, "damage": damage}
     if ranged_in_melee:
         result["ranged_in_melee"] = True
+    if adv_from:
+        result["adv_from"] = adv_from
+    if dis_from:
+        result["dis_from"] = dis_from
+    mutated = False
+    if hit and a_kind == "pc" and "sneak_attack" in a_data.get("features", []):
+        used = enc is not None and enc.get("sneak_used", {}).get(attacker) == enc["round"]
+        distracted = enc is not None and ally_adjacent(root, enc, attacker, target)
+        if not eff_dis and not used and (eff_adv or distracted):
+            n_dice = min(3, (a_data["level"] + 1) // 2)
+            sneak = dice.roll(f"{n_dice}d6", rng).total
+            if crit == "hit":
+                sneak += dice.roll(f"{n_dice}d6", rng).total
+            damage += sneak
+            result["damage"] = damage
+            result["sneak_attack"] = sneak
+            if enc is not None:
+                enc.setdefault("sneak_used", {})[attacker] = enc["round"]
+                mutated = True
+    if "hidden" in a_eff:
+        a_data["effects"] = [e for e in a_data["effects"] if e["name"] != "hidden"]
+        if enc is not None:
+            enc.get("stealth", {}).pop(attacker, None)
+        result["revealed"] = True
+        mutated = True
+        timeline.append_event(root, type_="effect", actors=[attacker],
+                              summary=f"{attacker} is revealed (attacked from hiding)")
+    if mutated:
+        _persist(root, a_kind, a_data, enc)
     verb = "hits" if hit else "misses"
     timeline.append_event(root, type_="attack", actors=[attacker, target],
                           summary=f"{attacker} {verb} {target} with {atk['name']}"
                                   + (f" for {damage}" if hit else ""))
     if hit and damage:
-        dmg_result = apply_damage(root, target, damage, source=f"{attacker}:{atk['name']}")
+        dmg_result = apply_damage(root, target, damage,
+                                  source=f"{attacker}:{atk['name']}", rng=rng)
         result["target_hp"] = dmg_result["hp"]
         result["dropped"] = dmg_result["dropped"]
     return result
@@ -303,13 +459,23 @@ def set_effect(root: Path, target: str, name: str, duration: int) -> dict:
     return {"target": target, "effects": data["effects"]}
 
 
-def remove_effect(root: Path, target: str, name: str) -> dict:
+def remove_effect(root: Path, target: str, name: str,
+                  rng: Random | None = None) -> dict:
     kind, data, enc = resolve_actor(root, target)
     data["effects"] = [e for e in data["effects"] if e["name"] != name]
+    if enc is not None:
+        if name == "hidden":
+            enc.get("stealth", {}).pop(target, None)
+        if name == "grappled":
+            enc.get("grapples", {}).pop(target, None)
     _persist(root, kind, data, enc)
     timeline.append_event(root, type_="effect", actors=[target],
                           summary=f"{target} loses {name}")
-    return {"target": target, "effects": data["effects"]}
+    result = {"target": target, "effects": data["effects"]}
+    if (name == "flying" and enc is not None and enc.get("aloft", {}).get(target)
+            and not flying_capable(data) and rng is not None):
+        result["fell"] = fall(root, target, rng)
+    return result
 
 
 def death_save(root: Path, actor: str, *, roll_fn) -> dict:
@@ -353,6 +519,9 @@ def ascend(root: Path, actor: str) -> dict:
     _, data = get_combatant(root, enc, actor)
     if not flying_capable(data):
         raise EngineError("cannot_fly", f"{actor} cannot fly")
+    for cond in ("grappled", "restrained"):
+        if cond in effect_names(data):
+            raise EngineError("held", f"{actor} is {cond} and cannot take off")
     enc.setdefault("aloft", {})[actor] = True
     save_encounter(root, enc)
     timeline.append_event(root, type_="move", actors=[actor],
@@ -370,6 +539,172 @@ def land(root: Path, actor: str) -> dict:
     return {"actor": actor, "aloft": False}
 
 
+def fall(root: Path, actor: str, rng: Random, expr: str = "2d6") -> dict:
+    enc = load_encounter(root)
+    if not enc.get("aloft", {}).get(actor):
+        raise EngineError("not_aloft", f"{actor} is not aloft")
+    enc["aloft"][actor] = False
+    save_encounter(root, enc)
+    timeline.append_event(root, type_="move", actors=[actor],
+                          summary=f"{actor} falls from the sky")
+    dmg = dice.roll(expr, rng).total
+    damage_result = apply_damage(root, actor, dmg, source="fall", rng=rng)
+    kind, data, enc = resolve_actor(root, actor)
+    if "prone" not in effect_names(data):
+        data["effects"].append({"name": "prone", "duration": -1})
+        _persist(root, kind, data, enc)
+    return {"actor": actor, "damage": dmg, "hp": damage_result["hp"],
+            "prone": True, "dropped": damage_result["dropped"]}
+
+
+def sight(root: Path, actor: str, target: str) -> dict:
+    enc = load_encounter(root)
+    for cid in (actor, target):
+        if cid not in enc["positions"]:
+            raise EngineError("not_found", f"{cid} is not on the map")
+    a, b = tuple(enc["positions"][actor]), tuple(enc["positions"][target])
+    return {"actor": actor, "target": target,
+            "distance": grid.chebyshev(a, b),
+            "los": grid.line_of_sight(enc, a, b)}
+
+
+def hide(root: Path, actor: str, *, roll_fn) -> dict:
+    enc = load_encounter(root)
+    if actor not in enc["positions"]:
+        raise EngineError("not_found", f"{actor} is not on the map")
+    kind, data = get_combatant(root, enc, actor)
+    pos = tuple(enc["positions"][actor])
+    seen_by = sorted(cid for cid, _, cpos in _hostiles_of(root, enc, actor)
+                     if grid.line_of_sight(enc, cpos, pos))
+    if seen_by:
+        raise EngineError("seen", f"{actor} is in plain sight of {', '.join(seen_by)}")
+    natural, total = roll_fn(skill_mod(data, "DEX", "stealth"), False, False)
+    data["effects"] = [e for e in data["effects"] if e["name"] != "hidden"]
+    data["effects"].append({"name": "hidden", "duration": -1})
+    enc.setdefault("stealth", {})[actor] = total
+    if kind == "pc":
+        save_pc(root, data)
+    save_encounter(root, enc)
+    timeline.append_event(root, type_="effect", actors=[actor],
+                          summary=f"{actor} hides (stealth {total})")
+    return {"actor": actor, "natural": natural, "stealth": total, "hidden": True}
+
+
+def stand(root: Path, actor: str) -> dict:
+    kind, data, enc = resolve_actor(root, actor)
+    if "prone" not in effect_names(data):
+        raise EngineError("not_prone", f"{actor} is not prone")
+    data["effects"] = [e for e in data["effects"] if e["name"] != "prone"]
+    _persist(root, kind, data, enc)
+    timeline.append_event(root, type_="effect", actors=[actor],
+                          summary=f"{actor} stands up")
+    return {"actor": actor, "effects": data["effects"]}
+
+
+def _contest(attacker_mod: int, defender_mod: int, roll_fn) -> dict:
+    """Contested check; ties go to the defender."""
+    a_nat, a_total = roll_fn(attacker_mod, False, False)
+    d_nat, d_total = roll_fn(defender_mod, False, False)
+    return {"attacker": {"natural": a_nat, "total": a_total},
+            "defender": {"natural": d_nat, "total": d_total},
+            "success": a_total > d_total}
+
+
+def _require_grabbable(enc: dict, actor: str, target: str) -> None:
+    for cid in (actor, target):
+        if cid not in enc["positions"]:
+            raise EngineError("not_found", f"{cid} is not on the map")
+    dist = grid.chebyshev(tuple(enc["positions"][actor]), tuple(enc["positions"][target]))
+    if dist > 1:
+        raise EngineError("out_of_range", f"{target} is {dist} away, must be adjacent")
+    aloft = enc.get("aloft", {})
+    if bool(aloft.get(actor)) != bool(aloft.get(target)):
+        raise EngineError("unreachable", f"{actor} and {target} are not on the same plane")
+
+
+def _escape_mod(data: dict) -> int:
+    return max(skill_mod(data, "STR", "athletics"), skill_mod(data, "DEX", "acrobatics"))
+
+
+def grapple(root: Path, actor: str, target: str, *, roll_fn, release: bool = False) -> dict:
+    enc = load_encounter(root)
+    if release:
+        if enc.get("grapples", {}).get(target) != actor:
+            raise EngineError("not_grappling", f"{actor} is not grappling {target}")
+        tkind, tdata = get_combatant(root, enc, target)
+        tdata["effects"] = [e for e in tdata["effects"] if e["name"] != "grappled"]
+        if tkind == "pc":
+            save_pc(root, tdata)
+        del enc["grapples"][target]
+        save_encounter(root, enc)
+        timeline.append_event(root, type_="effect", actors=[actor, target],
+                              summary=f"{actor} releases {target}")
+        return {"actor": actor, "target": target, "released": True}
+    _require_grabbable(enc, actor, target)
+    if not is_living(root, enc, target):
+        raise EngineError("invalid_target", f"{target} is down")
+    if target in enc.get("grapples", {}):
+        raise EngineError("already_grappled", f"{target} is already grappled")
+    _, a_data = get_combatant(root, enc, actor)
+    tkind, tdata = get_combatant(root, enc, target)
+    contest = _contest(skill_mod(a_data, "STR", "athletics"), _escape_mod(tdata), roll_fn)
+    if contest["success"]:
+        tdata["effects"] = [e for e in tdata["effects"] if e["name"] != "grappled"]
+        tdata["effects"].append({"name": "grappled", "duration": -1})
+        if tkind == "pc":
+            save_pc(root, tdata)
+        enc.setdefault("grapples", {})[target] = actor
+        save_encounter(root, enc)
+    verb = "grapples" if contest["success"] else "fails to grapple"
+    timeline.append_event(root, type_="effect", actors=[actor, target],
+                          summary=f"{actor} {verb} {target}")
+    return {"actor": actor, "target": target, "contest": contest,
+            "grappled": contest["success"]}
+
+
+def escape(root: Path, actor: str, *, roll_fn) -> dict:
+    enc = load_encounter(root)
+    holder = enc.get("grapples", {}).get(actor)
+    if holder is None:
+        raise EngineError("not_grappled", f"{actor} is not grappled")
+    akind, a_data = get_combatant(root, enc, actor)
+    _, h_data = get_combatant(root, enc, holder)
+    contest = _contest(_escape_mod(a_data), skill_mod(h_data, "STR", "athletics"), roll_fn)
+    if contest["success"]:
+        a_data["effects"] = [e for e in a_data["effects"] if e["name"] != "grappled"]
+        if akind == "pc":
+            save_pc(root, a_data)
+        del enc["grapples"][actor]
+        save_encounter(root, enc)
+    verb = "breaks free of" if contest["success"] else "fails to break free of"
+    timeline.append_event(root, type_="effect", actors=[actor, holder],
+                          summary=f"{actor} {verb} {holder}")
+    return {"actor": actor, "holder": holder, "contest": contest,
+            "escaped": contest["success"]}
+
+
+def shove(root: Path, actor: str, target: str, *, roll_fn) -> dict:
+    enc = load_encounter(root)
+    _require_grabbable(enc, actor, target)
+    if not is_living(root, enc, target):
+        raise EngineError("invalid_target", f"{target} is down")
+    _, a_data = get_combatant(root, enc, actor)
+    tkind, tdata = get_combatant(root, enc, target)
+    contest = _contest(skill_mod(a_data, "STR", "athletics"), _escape_mod(tdata), roll_fn)
+    if contest["success"]:
+        tdata["effects"] = [e for e in tdata["effects"] if e["name"] != "prone"]
+        tdata["effects"].append({"name": "prone", "duration": -1})
+        if tkind == "pc":
+            save_pc(root, tdata)
+        save_encounter(root, enc)
+    verb = "shoves" if contest["success"] else "fails to shove"
+    timeline.append_event(root, type_="effect", actors=[actor, target],
+                          summary=f"{actor} {verb} {target}"
+                                  + (" prone" if contest["success"] else ""))
+    return {"actor": actor, "target": target, "contest": contest,
+            "prone": contest["success"]}
+
+
 def move(root: Path, actor: str, to: tuple[int, int], *, force: bool = False) -> dict:
     enc = load_encounter(root)
     if actor not in enc["positions"]:
@@ -379,15 +714,60 @@ def move(root: Path, actor: str, to: tuple[int, int], *, force: bool = False) ->
     reason = grid.blocked(enc, to)
     if reason == "oob" or (reason and not force):
         raise EngineError("blocked", f"cannot enter {list(to)}: {reason}")
-    _, data, _ = resolve_actor(root, actor)
-    cost = grid.chebyshev(src, to)
-    if to in grid.cells_of(enc, "difficult") and not enc.get("aloft", {}).get(actor, False):
-        cost += 1
-    if not force and cost > data["speed"]:
-        raise EngineError("too_far", f"cost {cost} exceeds speed {data['speed']}")
+    kind, data = get_combatant(root, enc, actor)
+    eff = effect_names(data)
+    aloft = bool(enc.get("aloft", {}).get(actor))
+    if force:
+        cost = grid.chebyshev(src, to)
+    else:
+        for cond in ("grappled", "restrained"):
+            if cond in eff:
+                raise EngineError("held", f"{actor} is {cond} and cannot move")
+        hostile_cells = (set() if aloft else
+                         {pos for cid, _, pos in _hostiles_of(root, enc, actor, awake=False)
+                          if not enc.get("aloft", {}).get(cid)})
+        cost = grid.path_cost(enc, src, to, ignore_terrain=aloft,
+                              impassable=hostile_cells)
+        if cost is None:
+            raise EngineError("no_path", f"no route from {list(src)} to {list(to)}")
+        if "prone" in eff:
+            cost *= 2  # crawling
+        if cost > data["speed"]:
+            raise EngineError("too_far", f"cost {cost} exceeds speed {data['speed']}")
     enc["positions"][actor] = list(to)
+    result = {"actor": actor, "from": list(src), "to": list(to),
+              "cost": cost, "forced": force}
+    # a grapple breaks the moment the pair is no longer adjacent
+    for held, holder in list(enc.get("grapples", {}).items()):
+        if actor not in (held, holder):
+            continue
+        other = holder if actor == held else held
+        if other not in enc["positions"]:
+            continue
+        if grid.chebyshev(to, tuple(enc["positions"][other])) <= 1:
+            continue
+        hkind, hdata = (kind, data) if held == actor else get_combatant(root, enc, held)
+        hdata["effects"] = [e for e in hdata["effects"] if e["name"] != "grappled"]
+        if hkind == "pc":
+            save_pc(root, hdata)
+        del enc["grapples"][held]
+        result["grapple_broken"] = [holder, held]
+        timeline.append_event(root, type_="effect", actors=[holder, held],
+                              summary=f"{holder} loses its grip on {held}")
+    if "hidden" in eff:
+        stealth = enc.get("stealth", {}).get(actor, 0)
+        spotters = [cid for cid, cdata, cpos in _hostiles_of(root, enc, actor)
+                    if grid.line_of_sight(enc, cpos, to)
+                    and passive_perception(cdata) >= stealth]
+        if spotters:
+            data["effects"] = [e for e in data["effects"] if e["name"] != "hidden"]
+            enc.get("stealth", {}).pop(actor, None)
+            if kind == "pc":
+                save_pc(root, data)
+            result["revealed_by"] = sorted(spotters)
+            timeline.append_event(root, type_="effect", actors=[actor, *spotters],
+                                  summary=f"{actor} is spotted by {', '.join(sorted(spotters))}")
     save_encounter(root, enc)
     timeline.append_event(root, type_="move", actors=[actor],
                           summary=f"{actor} moves {list(src)} -> {list(to)}")
-    return {"actor": actor, "from": list(src), "to": list(to),
-            "cost": cost, "forced": force}
+    return result

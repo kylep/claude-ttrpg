@@ -91,7 +91,17 @@ engine quest offer --title "The Graveyard Risings" \
 The lone corpse each rising sends up is a **Grave-Walker**
 (`content/bestiary/grave_walker.yaml`) — run it on
 `maps/encounters/graveyard.yaml`, which is *always* a solo spawn; there
-is never more than one. The cause is **the Hollow Sexton**
+is never more than one. If the party stakes out the yard at dusk
+*before* a rising (rather than answering one), run
+`maps/encounters/lych-gate.yaml` instead: the fresh Grave-Walker plus
+the **Lych-Crake** (`content/bestiary/lych_crake.yaml`), the carrion
+bird that has been getting fat on the risings. The gate wall screens
+the party's approach — nobody has line of sight to the spawns, so a
+stealthy PC can `engine hide` before anything moves — and the crake is
+the campaign's first flyer: see its bestiary `notes:` for the
+swoop-loop turns and the three counters (shoot it down for a 2d6 fall,
+ready for its landings, or grapple it grounded so it cannot take off).
+The cause is **the Hollow Sexton**
 (`content/bestiary/hollow_sexton.yaml`), a lonely, over-literal
 grave-spirit whose ward has gone untended for a generation — sympathetic
 enough that kill, scare, and parley are all meant to be real options at

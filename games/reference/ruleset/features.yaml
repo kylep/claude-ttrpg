@@ -15,9 +15,11 @@ improved_critical:
     doubles damage dice by hand on a 19 since the engine only knows about 20s.
 sneak_attack:
   description: >
-    Once per turn, when the rogue attacks with advantage or an ally is adjacent
-    to the target, the GM adds 1d6 (2d6 at level 3+, 3d6 at level 5) to the
-    damage via a follow-up `engine damage`.
+    Engine-enforced: once per round, when the rogue's hit lands with
+    advantage or while a conscious ally is adjacent to the target (and the
+    roll is not at disadvantage), `engine attack` adds 1d6 sneak damage
+    automatically — 2d6 at level 3+, 3d6 at level 5, dice doubled on a crit.
+    The result reports it as `sneak_attack`.
 slippery_footwork:
   description: >
     The rogue can disengage or dash as a bonus movement; the GM waives
@@ -28,9 +30,10 @@ untouchable:
     halve the damage dealt, representing a last-instant twist away.
 ghost_step:
   description: >
-    The rogue moves through enemy-occupied squares without stopping and can
-    hide as part of any move that ends out of line of sight; the GM grants
-    --adv on the next stealth check made this way.
+    The rogue moves through enemy-occupied squares without stopping (GM runs
+    the move with --force) and can `engine hide` as part of any move that
+    ends out of every hostile's line of sight, without spending an action on
+    it; the GM grants --adv on that hide's stealth roll.
 exploit_opening:
   description: >
     When any ally lands a hit on a creature within the rogue's reach, the GM
