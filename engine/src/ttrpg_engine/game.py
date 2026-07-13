@@ -86,3 +86,8 @@ def bestiary_entry(g: dict, monster_type: str) -> dict:
     if entry is None:
         raise EngineError("unknown_monster", f"no bestiary entry: {monster_type}")
     return entry
+
+
+def bestiary(g: dict) -> dict:
+    """Full bestiary as {monster_id: entry}, sorted by id."""
+    return _bestiary(g)

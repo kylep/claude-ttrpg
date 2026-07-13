@@ -2,7 +2,11 @@
 name = "ttrpg-engine"
 version = "0.1.0"
 requires-python = ">=3.12"
-dependencies = ["typer>=0.12", "pyyaml>=6"]
+dependencies = [
+    "typer>=0.12",
+    "pyyaml>=6",
+    "markdown>=3.10.2",
+]
 
 [project.scripts]
 engine = "ttrpg_engine.cli:app"

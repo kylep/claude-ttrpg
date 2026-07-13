@@ -4,7 +4,7 @@ from pathlib import Path
 
 import typer
 
-from ttrpg_engine import chargen, checks, combat, dice, game as game_mod, inventory, level as level_mod, quests as quests_mod, render, rest as rest_mod, spells, timeline, travel as travel_mod, worldfs
+from ttrpg_engine import chargen, checks, combat, dice, export as export_mod, game as game_mod, inventory, level as level_mod, quests as quests_mod, render, rest as rest_mod, spells, timeline, travel as travel_mod, worldfs
 from ttrpg_engine.errors import EngineError
 
 app = typer.Typer(add_completion=False, no_args_is_help=True)
@@ -451,3 +451,53 @@ def quest_list(status: str | None = typer.Option(None, "--status")):
     has passed is transitioned to expired (escrow refunded) before listing."""
     root = require_root()
     emit({"quests": guard(quests_mod.list_quests, root, status)})
+
+
+export_app = typer.Typer()
+app.add_typer(export_app, name="export")
+
+_EXPORT_FILENAMES = {
+    "game": "claude-ttrpg-game-handbook.html",
+    "world": "claude-ttrpg-world-guide.html",
+    "campaign": "claude-ttrpg-campaign-book.html",
+}
+_EXPORT_RENDERERS = {
+    "game": export_mod.render_game,
+    "world": export_mod.render_world,
+    "campaign": export_mod.render_campaign,
+}
+
+
+def _run_export(kind: str, out: Path, game: Path | None) -> None:
+    root = None if game is not None else require_root()
+    src = guard(export_mod.resolve_source, root, game)
+    html_str, sections = guard(_EXPORT_RENDERERS[kind], src)
+    out_dir = Path(out)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    path = (out_dir / _EXPORT_FILENAMES[kind]).resolve()
+    path.write_text(html_str)
+    emit({"file": str(path), "sections": sections})
+
+
+@export_app.command("game")
+def export_game_cmd(
+    out: Path = typer.Option(Path("exports"), "--out", help="Output directory."),
+    game: Path | None = typer.Option(None, "--game", help="Game repo path (repo-side, no world needed)."),
+):
+    _run_export("game", out, game)
+
+
+@export_app.command("world")
+def export_world_cmd(
+    out: Path = typer.Option(Path("exports"), "--out", help="Output directory."),
+    game: Path | None = typer.Option(None, "--game", help="Game repo path (repo-side, no world needed)."),
+):
+    _run_export("world", out, game)
+
+
+@export_app.command("campaign")
+def export_campaign_cmd(
+    out: Path = typer.Option(Path("exports"), "--out", help="Output directory."),
+    game: Path | None = typer.Option(None, "--game", help="Game repo path (repo-side, no world needed)."),
+):
+    _run_export("campaign", out, game)

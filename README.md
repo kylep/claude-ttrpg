@@ -70,6 +70,19 @@ offer/accept/complete/cancel/list`): NPC and PC rewards are escrowed up
 front — no vaporware bounties — while world quests can spawn rewards
 and grant XP. Thornbury's quest board ships with two.
 
+### Printable handbooks
+
+`engine export game|world|campaign` renders self-contained, print-friendly
+HTML — a game handbook (rules, classes, races, spells, items, bestiary), a
+world guide (setting, history, region map, factions, NPCs), and a campaign
+book (adventure outline, quest board, and, inside a world, the live quest
+list). Run them inside a world (uses `canon/` and the pinned game) or
+repo-side with `--game games/reference` (no world needed); files land in
+`./exports/` by default. The `export-docs` skill runs all three and, if
+`gws` is installed and authenticated, uploads them as Google Docs;
+otherwise it falls back gracefully and hands you the local HTML files —
+handy for a printout your kid can actually read.
+
 ## Worlds are git repos — saves, forks, and time travel
 
 A world's entire save state is files in its own git repo, so git *is*
