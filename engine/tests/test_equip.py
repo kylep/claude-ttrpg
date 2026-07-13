@@ -143,3 +143,13 @@ def test_validate_catches_unknown_grants_effect(tmp_path):
                           "grants_effect: {name: nonexistent_effect}}\n")
     errors = game.validate(broken)
     assert any("cursed_bauble: unknown effect nonexistent_effect" in e for e in errors)
+
+
+def test_unequip_removes_flag_entirely(wroot):
+    pc = make_pc()
+    runner.invoke(app, ["item", "add", "--actor", pc, "--item", "ward_ring"])
+    runner.invoke(app, ["equip", "--actor", pc, "--item", "ward_ring"])
+    res = runner.invoke(app, ["unequip", "--actor", pc, "--item", "ward_ring"])
+    assert res.exit_code == 0, res.stdout
+    line = next(l for l in _sheet(wroot, pc)["inventory"] if l["item"] == "ward_ring")
+    assert "equipped" not in line

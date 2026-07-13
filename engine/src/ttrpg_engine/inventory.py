@@ -135,7 +135,7 @@ def unequip(root: Path, g: dict, actor: str, item: str, *, force: bool = False) 
     _check_gear_economy(enc, actor, spec, force)
     if spec.get("cursed") and not line.get("dispelled"):
         raise EngineError("cursed", f"{item} is cursed; dispel it before unequipping")
-    line["equipped"] = False
+    line.pop("equipped", None)
     grants = spec.get("grants_effect")
     if grants and not line.get("dispelled"):
         name = grants["name"]
