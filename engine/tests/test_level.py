@@ -45,3 +45,18 @@ def test_level_cap(wroot):
     runner.invoke(app, ["--seed", "1", "level", "up", "--actor", "pc-mira"])
     res = runner.invoke(app, ["--seed", "1", "level", "up", "--actor", "pc-mira"])
     assert json.loads(res.stdout)["error"]["code"] == "max_level"
+
+
+def test_levelup_updates_derived_attacks(wroot):
+    """Level up with proficiency increase should recompute attack_mod."""
+    make_pc(name="Fighter", cls="fighter")
+    runner.invoke(app, ["xp", "grant", "--amount", "9999", "--reason", "test"])
+    # Level 1->2 (prof stays at 2)
+    runner.invoke(app, ["--seed", "1", "level", "up", "--actor", "pc-fighter"])
+    # Level 2->3 (prof increases from 2 to 3)
+    runner.invoke(app, ["--seed", "1", "level", "up", "--actor", "pc-fighter"])
+    sheet = worldfs.read_yaml(wroot / "state" / "party" / "pc-fighter.yaml")
+    assert sheet["level"] == 3
+    assert sheet["proficiency"] == 3
+    # STR=15 -> attr_mod=2, prof=3 -> attack_mod should be 5
+    assert sheet["attacks"][0]["attack_mod"] == 5

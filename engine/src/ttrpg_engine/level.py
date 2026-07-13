@@ -1,7 +1,7 @@
 from pathlib import Path
 from random import Random
 
-from ttrpg_engine import dice, timeline, worldfs
+from ttrpg_engine import derive, dice, timeline, worldfs
 from ttrpg_engine.chargen import attr_mod
 from ttrpg_engine.errors import EngineError
 
@@ -44,6 +44,7 @@ def up(root: Path, g: dict, actor: str, rng: Random) -> dict:
         slot = sheet["spell_slots"].setdefault(lvl, {"max": 0, "current": 0})
         slot["current"] += n - slot["max"]
         slot["max"] = n
+    derive.recompute(sheet, g)
     worldfs.write_yaml(worldfs.state(root, f"party/{actor}"), sheet)
     timeline.append_event(root, type_="level", actors=[actor],
                           summary=f"{actor} reaches level {new_level} (+{gain} hp)")
