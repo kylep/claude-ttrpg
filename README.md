@@ -27,18 +27,26 @@ Install the engine CLI:
 uv tool install --editable ./engine
 ```
 
-Create a world — either ask Claude to use the `world-new` skill, or
-run it directly:
+Create a world — either ask Claude to use the `world-new` skill (which
+does all of the below for you), or by hand:
 
 ```bash
-engine world init <dir> --game games/reference --name "<name>"
+# init writes the world files into a new directory
+engine world init ~/ttrpg/saves/world1 \
+  --game ~/gh/claude-ttrpg/games/reference --name "World One"
+
+# make it a git repo: the commit is save zero, the tag a named restore point
+cd ~/ttrpg/saves/world1
+git init
+git add -A && git commit -m "world created: World One"
+git tag genesis
+
+# play — the GM commits automatically at every session boundary from here
+claude --agent gm
 ```
 
-Launch the GM from inside the world repo:
-
-```bash
-cd <world> && claude --agent gm
-```
+(`--game` takes any path to a game directory; use the absolute path
+unless you're running from inside this repo.)
 
 Three phrases steer the operator relationship with the GM at any time:
 
@@ -86,19 +94,33 @@ Timeline branches never merge — two presents can't be reconciled into
 one. Deep history is naturally shared: everything authored before the
 fork point exists in both lines' ancestry.
 
-**Inserting history (backfilling the past).** The design also supports
-*insert-mode* play: sessions set in the world's past that append events
-with earlier in-world dates — fleshing out backstory the way a
-flashback does. Inserts are lore-only (they never auto-change
-`state/`), and predestination is enforced so the past can't contradict
-established canon: a scripted validator blocks mechanical paradoxes
-(killing an NPC who demonstrably lives later), and the GM steers the
-narrative around softer ones. Because events carry in-world dates,
-anything inserted before a fork point is inherited by every timeline
-forked after it. The insert-mode tooling (validator + skill) is
-post-v1 and not yet built — today the GM can backfill lore by editing
-`canon/` during play, and the session-end pass reconciles it; see
-`docs/design.md` (Tier 3 — Timelines) for the full design.
+**Inserting history (backfilling the past).** An *insert* is a session
+set in the world's past — a flashback that fleshes out backstory
+without touching the present. Two rules make inserts safe: they are
+**lore-only** (nothing an insert session does auto-changes `state/` —
+the present's HP, inventory, and positions stay untouched), and they
+must respect **predestination** (the past can't contradict established
+canon: an NPC alive today can't die in your flashback).
+
+To run one today, tell the GM at a session start:
+
+> "This session is an insert — a flashback set 20 years before the
+> campaign, when Halda first came to Thornbury."
+
+The GM then plays the scene normally (dice and checks still go through
+the engine) but records the outcomes as narrative history in `canon/`
+(history.md, NPC entries) instead of mutating the present. If something
+from the flashback *should* exist in the present — a buried item, a
+debt, a grudge — you apply it explicitly: say "GM override" and the
+change lands through engine commands with a logged override event.
+Because canon lives in git, an insert committed before a fork point is
+inherited by every timeline forked after it — deep history stays shared.
+
+First-class insert tooling is post-v1 and not yet built: dated
+`timeline/` events for insert sessions and a validator that mechanically
+blocks paradoxes (see `docs/design.md`, Tier 3 — Timelines). Until
+then, predestination is enforced only by the GM's discipline plus the
+session-end reconciliation pass.
 
 ## Status
 
