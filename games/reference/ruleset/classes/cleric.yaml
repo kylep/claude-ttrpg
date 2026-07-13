@@ -7,5 +7,5 @@ starting_gear: [leather_armor, mace]
 starting_gold: 15
 levels:
   1: {features: [], spells: [sacred_flame, cure_wounds], slots: {1: 2}}
-  2: {features: [channel_divinity], spells: [bless], slots: {1: 3}}
+  2: {features: [invoke_the_light], spells: [bless], slots: {1: 3}}
   3: {features: [], spells: [shield_of_faith], slots: {1: 4}}

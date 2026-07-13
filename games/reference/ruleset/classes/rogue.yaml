@@ -7,5 +7,5 @@ starting_gear: [leather_armor, dagger, dagger]
 starting_gold: 15
 levels:
   1: {features: [sneak_attack], spells: [], slots: {}}
-  2: {features: [cunning_action], spells: [], slots: {}}
-  3: {features: [evasion], spells: [], slots: {}}
+  2: {features: [slippery_footwork], spells: [], slots: {}}
+  3: {features: [untouchable], spells: [], slots: {}}

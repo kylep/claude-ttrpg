@@ -7,5 +7,5 @@ starting_gear: [chain_mail, longsword]
 starting_gold: 10
 levels:
   1: {features: [second_wind], spells: [], slots: {}}
-  2: {features: [action_surge], spells: [], slots: {}}
+  2: {features: [surge_of_violence], spells: [], slots: {}}
   3: {features: [improved_critical], spells: [], slots: {}}

@@ -7,5 +7,5 @@ starting_gear: [dagger]
 starting_gold: 20
 levels:
   1: {features: [], spells: [fire_bolt, magic_missile], slots: {1: 2}}
-  2: {features: [arcane_recovery], spells: [sleep_dust], slots: {1: 3}}
+  2: {features: [well_of_mana], spells: [sleep_dust], slots: {1: 3}}
   3: {features: [], spells: [], slots: {1: 4}}
