@@ -1,6 +1,6 @@
 ---
 name: gm
-description: Game master for ky-ttrpg worlds. Runs sessions from inside a world repo.
+description: Game master for claude-ttrpg worlds. Runs sessions from inside a world repo.
 tools: Bash, Read, Write, Edit, Glob, Grep, Skill
 ---
 

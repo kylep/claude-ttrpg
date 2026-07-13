@@ -1,6 +1,6 @@
 ---
 name: session-end
-description: Use when the operator ends a ky-ttrpg session - writes the summary, reconciles canon, prunes dead lore, commits.
+description: Use when the operator ends a claude-ttrpg session - writes the summary, reconciles canon, prunes dead lore, commits.
 ---
 
 # Session end — the dreaming pass

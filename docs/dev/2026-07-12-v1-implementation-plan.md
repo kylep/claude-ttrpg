@@ -1,4 +1,4 @@
-# ky-ttrpg v1 Implementation Plan
+# claude-ttrpg v1 Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -147,7 +147,7 @@ override: false
 - [ ] **Step 1: Scaffold the uv project**
 
 ```bash
-cd /Users/kp/gh/ky-ttrpg/engine 2>/dev/null || (mkdir -p /Users/kp/gh/ky-ttrpg/engine && cd /Users/kp/gh/ky-ttrpg/engine)
+cd /Users/kp/gh/claude-ttrpg/engine 2>/dev/null || (mkdir -p /Users/kp/gh/claude-ttrpg/engine && cd /Users/kp/gh/claude-ttrpg/engine)
 uv init --package --name ttrpg-engine --python 3.12
 uv add typer pyyaml
 uv add --dev pytest
@@ -3359,14 +3359,14 @@ Expected: all PASS.
 
 ```bash
 cd /tmp && rm -rf smoke-world
-uv run --project /Users/kp/gh/ky-ttrpg/engine engine world init smoke-world \
-  --game /Users/kp/gh/ky-ttrpg/games/reference --name Smoke
+uv run --project /Users/kp/gh/claude-ttrpg/engine engine world init smoke-world \
+  --game /Users/kp/gh/claude-ttrpg/games/reference --name Smoke
 cd smoke-world
-uv run --project /Users/kp/gh/ky-ttrpg/engine engine char create --name Test --class fighter \
+uv run --project /Users/kp/gh/claude-ttrpg/engine engine char create --name Test --class fighter \
   --race human --assign "STR=15,CON=14,DEX=13,WIS=12,INT=10,CHA=8" --skills athletics,perception
-uv run --project /Users/kp/gh/ky-ttrpg/engine engine travel --to old-road
-uv run --project /Users/kp/gh/ky-ttrpg/engine engine encounter start maps/encounters/road-ambush.yaml
-uv run --project /Users/kp/gh/ky-ttrpg/engine engine map render --svg
+uv run --project /Users/kp/gh/claude-ttrpg/engine engine travel --to old-road
+uv run --project /Users/kp/gh/claude-ttrpg/engine engine encounter start maps/encounters/road-ambush.yaml
+uv run --project /Users/kp/gh/claude-ttrpg/engine engine map render --svg
 ```
 
 Expected: each command emits success JSON; the SVG file exists under `renders/`.
@@ -3396,7 +3396,7 @@ git commit -m "feat(games): reference adventure - Thornbury and the Barrowdeep"
 ```markdown
 ---
 name: gm
-description: Game master for ky-ttrpg worlds. Runs sessions from inside a world repo.
+description: Game master for claude-ttrpg worlds. Runs sessions from inside a world repo.
 tools: Bash, Read, Write, Edit, Glob, Grep, Skill
 ---
 
@@ -3446,7 +3446,7 @@ the narrative truth, `timeline/` is the append-only record.
 ```markdown
 ---
 name: gm-session
-description: Use when starting or resuming a ky-ttrpg play session in a world repo.
+description: Use when starting or resuming a claude-ttrpg play session in a world repo.
 ---
 
 # Session start / resume
@@ -3474,7 +3474,7 @@ Ending a session is the session-end skill — never improvise it.
 ```markdown
 ---
 name: gm-override
-description: Use when the operator says "GM override", "manual GM", or "auto GM" in a ky-ttrpg session.
+description: Use when the operator says "GM override", "manual GM", or "auto GM" in a claude-ttrpg session.
 ---
 
 # GM override handling
@@ -3526,7 +3526,7 @@ git commit -m "feat(claude): gm agent, session and override skills"
 ```markdown
 ---
 name: gm-combat
-description: Use when combat starts in a ky-ttrpg session - runs the encounter loop through engine commands.
+description: Use when combat starts in a claude-ttrpg session - runs the encounter loop through engine commands.
 ---
 
 # Running combat
@@ -3559,7 +3559,7 @@ description: Use when combat starts in a ky-ttrpg session - runs the encounter l
 ```markdown
 ---
 name: session-end
-description: Use when the operator ends a ky-ttrpg session - writes the summary, reconciles canon, prunes dead lore, commits.
+description: Use when the operator ends a claude-ttrpg session - writes the summary, reconciles canon, prunes dead lore, commits.
 ---
 
 # Session end — the dreaming pass
@@ -3623,7 +3623,7 @@ git commit -m "feat(claude): combat loop and session-end dreaming skills"
 ```markdown
 ---
 name: world-new
-description: Use when creating a new ky-ttrpg world (campaign) from a game definition.
+description: Use when creating a new claude-ttrpg world (campaign) from a game definition.
 ---
 
 # New world

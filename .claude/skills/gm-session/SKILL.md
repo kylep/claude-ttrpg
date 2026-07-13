@@ -1,6 +1,6 @@
 ---
 name: gm-session
-description: Use when starting or resuming a ky-ttrpg play session in a world repo.
+description: Use when starting or resuming a claude-ttrpg play session in a world repo.
 ---
 
 # Session start / resume

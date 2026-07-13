@@ -1,11 +1,11 @@
-# ky-ttrpg Design
+# claude-ttrpg Design
 
 Status: open questions resolved, ready for implementation planning
 Date: 2026-07-12
 
 ## Purpose
 
-ky-ttrpg is an engine plus tooling for running tabletop RPGs with Claude
+claude-ttrpg is an engine plus tooling for running tabletop RPGs with Claude
 Code. It is system-agnostic: D&D-style high fantasy and cyberpunk are both
 just content. The engine handles rules execution, dice, and state tracking;
 Claude handles narration, adjudication, and NPC simulation.

@@ -1,6 +1,6 @@
 ---
 name: world-new
-description: Use when creating a new ky-ttrpg world (campaign) from a game definition.
+description: Use when creating a new claude-ttrpg world (campaign) from a game definition.
 ---
 
 # New world

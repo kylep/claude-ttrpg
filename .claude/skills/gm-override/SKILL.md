@@ -1,6 +1,6 @@
 ---
 name: gm-override
-description: Use when the operator says "GM override", "manual GM", or "auto GM" in a ky-ttrpg session.
+description: Use when the operator says "GM override", "manual GM", or "auto GM" in a claude-ttrpg session.
 ---
 
 # GM override handling

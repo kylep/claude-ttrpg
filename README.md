@@ -1,4 +1,4 @@
-# ky-ttrpg
+# claude-ttrpg
 
 Engine, scripts, and Claude Code skills for running tabletop RPGs.
 

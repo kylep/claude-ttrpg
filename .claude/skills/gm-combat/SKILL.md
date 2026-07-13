@@ -1,6 +1,6 @@
 ---
 name: gm-combat
-description: Use when combat starts in a ky-ttrpg session - runs the encounter loop through engine commands.
+description: Use when combat starts in a claude-ttrpg session - runs the encounter loop through engine commands.
 ---
 
 # Running combat
