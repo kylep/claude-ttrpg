@@ -313,7 +313,9 @@ def fall(actor: str = typer.Option(...),
 
 @app.command()
 def hide(actor: str = typer.Option(...)):
-    emit(guard(combat.hide, require_root(), actor, roll_fn=d20_roll))
+    root = require_root()
+    g = guard(worldfs.load_game_for, root)
+    emit(guard(combat.hide, root, g, actor, roll_fn=d20_roll))
 
 
 @app.command()

@@ -187,7 +187,7 @@ def test_hide_fails_in_plain_sight(wroot):
     start_hideout(wroot)
     put_pos(wroot, "pc-borin", (6, 3))                               # east of the wall, seen by both
     try:
-        combat.hide(wroot, "pc-borin", roll_fn=fixed(15))
+        combat.hide(wroot, worldfs.load_game_for(wroot), "pc-borin", roll_fn=fixed(15))
         raise AssertionError("should have raised seen")
     except EngineError as e:
         assert e.code == "seen"
@@ -200,7 +200,7 @@ def test_hide_sneak_and_ambush_with_advantage(wroot):
     assert res.exit_code == 0, res.stdout
     start_hideout(wroot)                                             # pc-sly at [2,3], concealed
 
-    r = combat.hide(wroot, "pc-sly", roll_fn=fixed(15))              # stealth 15+4=19
+    r = combat.hide(wroot, worldfs.load_game_for(wroot), "pc-sly", roll_fn=fixed(15))              # stealth 15+4=19
     assert r["hidden"] and r["stealth"] == 19
     assert "hidden" in effects_of(wroot, None, "pc-sly")
 
@@ -223,7 +223,7 @@ def test_hide_sneak_and_ambush_with_advantage(wroot):
 def test_low_stealth_gets_spotted_moving_into_view(wroot):
     make_pc(**ROGUE)
     start_hideout(wroot)
-    combat.hide(wroot, "pc-sly", roll_fn=fixed(1))                   # stealth 5 < passive 9
+    combat.hide(wroot, worldfs.load_game_for(wroot), "pc-sly", roll_fn=fixed(1))                   # stealth 5 < passive 9
     res = runner.invoke(app, ["move", "--actor", "pc-sly", "--to", "6,3"])
     assert res.exit_code == 0, res.stdout
     assert json.loads(res.stdout)["revealed_by"] == ["goblin-1", "goblin_archer-1"]
@@ -233,7 +233,7 @@ def test_low_stealth_gets_spotted_moving_into_view(wroot):
 def test_hostile_moving_around_cover_spots_low_stealth(wroot):
     make_pc(**ROGUE)
     start_hideout(wroot)
-    combat.hide(wroot, "pc-sly", roll_fn=fixed(1))                   # stealth 5
+    combat.hide(wroot, worldfs.load_game_for(wroot), "pc-sly", roll_fn=fixed(1))                   # stealth 5
     # goblin-1 walks north past the wall's end and can now see the spawn
     res = runner.invoke(app, ["move", "--actor", "goblin-1", "--to", "6,0"])
     assert res.exit_code == 0, res.stdout
@@ -244,17 +244,48 @@ def test_hostile_moving_around_cover_spots_low_stealth(wroot):
 def test_hostile_moving_around_cover_misses_high_stealth(wroot):
     make_pc(**ROGUE)
     start_hideout(wroot)
-    combat.hide(wroot, "pc-sly", roll_fn=fixed(15))                  # stealth 19 > passive 9
+    combat.hide(wroot, worldfs.load_game_for(wroot), "pc-sly", roll_fn=fixed(15))                  # stealth 19 > passive 9
     res = runner.invoke(app, ["move", "--actor", "goblin-1", "--to", "6,0"])
     assert res.exit_code == 0, res.stdout
     assert "spotted" not in json.loads(res.stdout)
     assert "hidden" in effects_of(wroot, None, "pc-sly")
 
 
+def test_hide_roll_modifiers(wroot):
+    make_pc()                                                        # borin wears chain mail
+    start_hideout(wroot)
+    g = worldfs.load_game_for(wroot)
+    fn, calls = spy()
+    r = combat.hide(wroot, g, "pc-borin", roll_fn=fn)
+    assert calls[-1] == (False, True)                                # noisy armor
+    assert r["dis_from"] == ["noisy:chain_mail"]
+
+    combat.set_effect(wroot, "pc-borin", "silent_step", -1)          # hush-charmed boots etc.
+    r = combat.hide(wroot, g, "pc-borin", roll_fn=fn)
+    assert calls[-1] == (True, True)                                 # cancels to a straight roll
+    assert r["adv_from"] == ["silent_step"]
+
+    runner.invoke(app, ["unequip", "--actor", "pc-borin", "--item", "chain_mail", "--force"])
+    r = combat.hide(wroot, g, "pc-borin", roll_fn=fn)
+    assert calls[-1] == (True, False)                                # silent and unarmored
+    assert "dis_from" not in r
+
+
+def test_cannot_hide_while_held(wroot):
+    make_pc(**ROGUE)
+    start_hideout(wroot)
+    combat.set_effect(wroot, "pc-sly", "grappled", -1)
+    try:
+        combat.hide(wroot, worldfs.load_game_for(wroot), "pc-sly", roll_fn=fixed(15))
+        raise AssertionError("should have raised held")
+    except EngineError as e:
+        assert e.code == "held"
+
+
 def test_attacking_hidden_target_has_disadvantage(wroot):
     make_pc()
     start_hideout(wroot)
-    combat.hide(wroot, "pc-borin", roll_fn=fixed(15))
+    combat.hide(wroot, worldfs.load_game_for(wroot), "pc-borin", roll_fn=fixed(15))
     put_pos(wroot, "goblin-1", (3, 3))                               # adjacent to hidden pc
     fn, calls = spy()
     r = combat.attack(wroot, "goblin-1", "pc-borin", attack_name=None,
@@ -266,7 +297,7 @@ def test_attacking_hidden_target_has_disadvantage(wroot):
 def test_casting_reveals_hidden_caster_with_advantage(wroot):
     _level_cleric_to_3(wroot)                                        # pc-mira knows fire_dart
     start_hideout(wroot)
-    combat.hide(wroot, "pc-mira", roll_fn=fixed(15))
+    combat.hide(wroot, worldfs.load_game_for(wroot), "pc-mira", roll_fn=fixed(15))
     res = runner.invoke(app, ["move", "--actor", "pc-mira", "--to", "6,3"])
     assert res.exit_code == 0, res.stdout
     fn, calls = spy()

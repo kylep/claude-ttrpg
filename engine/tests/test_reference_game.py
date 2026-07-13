@@ -59,7 +59,7 @@ def test_latch_vault_rewards_the_stealth_kit(ref_root):
 
     # the ward watches the door: hiding at the spawn fails
     try:
-        combat.hide(ref_root, "pc-nim", roll_fn=fixed(15))
+        combat.hide(ref_root, worldfs.load_game_for(ref_root), "pc-nim", roll_fn=fixed(15))
         raise AssertionError("spawn is in the Latchwight's sight")
     except EngineError as e:
         assert e.code == "seen"
@@ -67,7 +67,7 @@ def test_latch_vault_rewards_the_stealth_kit(ref_root):
     # two squares into the shelving's shadow, then hide
     res = runner.invoke(app, ["move", "--actor", "pc-nim", "--to", "3,1"])
     assert res.exit_code == 0, res.stdout
-    r = combat.hide(ref_root, "pc-nim", roll_fn=fixed(15))
+    r = combat.hide(ref_root, worldfs.load_game_for(ref_root), "pc-nim", roll_fn=fixed(15))
     assert r["hidden"] and r["stealth"] >= 15
 
     # sneak to arm's reach: stealth beats the ward's passive perception
@@ -100,7 +100,7 @@ def test_lych_gate_flying_fight(ref_root):
     assert res.exit_code == 0, res.stdout
 
     # the gate wall screens the approach: even the fighter can hide here
-    r = combat.hide(ref_root, "pc-bron", roll_fn=fixed(10))
+    r = combat.hide(ref_root, worldfs.load_game_for(ref_root), "pc-bron", roll_fn=fixed(10))
     assert r["hidden"] is True
 
     combat.ascend(ref_root, "lych_crake-1")

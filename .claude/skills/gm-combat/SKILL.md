@@ -32,12 +32,14 @@ description: Use when combat starts in a claude-ttrpg session - runs the encount
      living hostiles block, difficult terrain costs +1 per cell,
      prone creatures crawl at double cost). `engine stand` gets up.
    - Stealth: `engine hide --actor X` (fails with `seen` unless every
-     hostile's line of sight is blocked; rolls stealth). Movement on
-     either side is contested automatically — a hidden creature moving
-     into a watcher's sight, or a hostile rounding the cover, checks
-     passive perception vs the stealth roll (`revealed_by`/`spotted` in
-     the move result). Attacking or casting from hiding grants
-     advantage and then reveals.
+     hostile's line of sight is blocked, and with `held` while grappled
+     or restrained; rolls stealth). The roll takes disadvantage from
+     equipped `stealth_dis` armor and advantage from the `silent_step`
+     effect, automatically. Movement on either side is contested — a
+     hidden creature moving into a watcher's sight, or a hostile
+     rounding the cover, checks passive perception vs the stealth roll
+     (`revealed_by`/`spotted` in the move result). Attacking or casting
+     from hiding grants advantage and then reveals.
    - Grappling: `engine grapple --actor A --target B` (contested;
      grappled creatures cannot move or take off), `engine escape
      --actor B`, `engine grapple ... --release`, and `engine shove

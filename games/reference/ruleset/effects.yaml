@@ -41,7 +41,7 @@ oath_whisper:
   impact: "GM applies --dis to the cursed wielder's WIS-based checks (Insight, Medicine, Perception, Religion, Survival) while the blade is carried"
   description: "A thin second voice rides under every thought, doubting the wielder's read of every face and every room; it is patient, and it is very rarely wrong to doubt."
 silent_step:
-  impact: "GM grants --adv on the wearer's Stealth checks"
+  impact: "engine-enforced for `engine hide` (the roll gets advantage); GM still grants --adv on other Stealth-flavored checks"
   description: "The wearer's footfalls land a half-second quieter than they should, as if the ground itself were leaning out of the way."
 gravewarded:
   impact: "GM grants --adv on the wearer's saves and checks made to resist fear, undead influence, or grave-magic (a wail, a poison sourced from something already dead, a fright effect the restless dead cause)"

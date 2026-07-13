@@ -568,17 +568,29 @@ def sight(root: Path, actor: str, target: str) -> dict:
             "los": grid.line_of_sight(enc, a, b)}
 
 
-def hide(root: Path, actor: str, *, roll_fn) -> dict:
+def hide(root: Path, g: dict, actor: str, *, roll_fn) -> dict:
     enc = load_encounter(root)
     if actor not in enc["positions"]:
         raise EngineError("not_found", f"{actor} is not on the map")
     kind, data = get_combatant(root, enc, actor)
+    eff = effect_names(data)
+    for cond in ("grappled", "restrained"):
+        if cond in eff:
+            raise EngineError("held",
+                              f"{actor} is {cond}; whatever holds it knows where it is")
     pos = tuple(enc["positions"][actor])
     seen_by = sorted(cid for cid, _, cpos in _hostiles_of(root, enc, actor)
                      if grid.line_of_sight(enc, cpos, pos))
     if seen_by:
         raise EngineError("seen", f"{actor} is in plain sight of {', '.join(seen_by)}")
-    natural, total = roll_fn(skill_mod(data, "DEX", "stealth"), False, False)
+    adv_from, dis_from = [], []
+    if "silent_step" in eff:
+        adv_from.append("silent_step")
+    for line in data.get("inventory", []):
+        if line.get("equipped") and g["items"][line["item"]].get("stealth_dis"):
+            dis_from.append(f"noisy:{line['item']}")
+    natural, total = roll_fn(skill_mod(data, "DEX", "stealth"),
+                             bool(adv_from), bool(dis_from))
     data["effects"] = [e for e in data["effects"] if e["name"] != "hidden"]
     data["effects"].append({"name": "hidden", "duration": -1})
     enc.setdefault("stealth", {})[actor] = total
@@ -587,7 +599,12 @@ def hide(root: Path, actor: str, *, roll_fn) -> dict:
     save_encounter(root, enc)
     timeline.append_event(root, type_="effect", actors=[actor],
                           summary=f"{actor} hides (stealth {total})")
-    return {"actor": actor, "natural": natural, "stealth": total, "hidden": True}
+    result = {"actor": actor, "natural": natural, "stealth": total, "hidden": True}
+    if adv_from:
+        result["adv_from"] = adv_from
+    if dis_from:
+        result["dis_from"] = dis_from
+    return result
 
 
 def stand(root: Path, actor: str) -> dict:
