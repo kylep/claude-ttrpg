@@ -1,3 +1,5 @@
+# bonuses: added to attributes after the standard array is assigned
+# speed: movement in grid squares per combat turn
 human: {bonuses: {CON: 1, WIS: 1}, speed: 6}
 elf: {bonuses: {DEX: 2}, speed: 6}
 dwarf: {bonuses: {CON: 2}, speed: 5}

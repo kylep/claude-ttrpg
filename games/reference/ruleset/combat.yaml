@@ -1,3 +1,3 @@
-initiative: {die: d20, attr: DEX}
-turn: {move: speed, actions: 1}
-diagonal_cost: 1
+initiative: {die: d20, attr: DEX}  # turn-order roll: die + attribute modifier (hardcoded in v1 engine)
+turn: {move: speed, actions: 1}    # one turn = move up to speed squares + one action
+diagonal_cost: 1                   # diagonal moves cost the same as straight ones (hardcoded in v1 engine)

@@ -1,11 +1,13 @@
+# weapons — damage: dice rolled on hit; finesse: use DEX instead of STR if higher; range: squares; price: gp
 longsword: {type: weapon, damage: 1d8, finesse: false, range: 1, price: 15}
 mace: {type: weapon, damage: 1d6, finesse: false, range: 1, price: 5}
 dagger: {type: weapon, damage: 1d4, finesse: true, range: 1, price: 2}
 shortbow: {type: weapon, damage: 1d6, finesse: true, range: 16, price: 25}
+# armor — AC = ac_base (+ DEX modifier if add_dex); unarmored is 10 + DEX
 chain_mail: {type: armor, ac_base: 16, add_dex: false, price: 75}
 leather_armor: {type: armor, ac_base: 11, add_dex: true, price: 10}
 torch: {type: gear, price: 1}
 rope: {type: gear, price: 2}
 thieves_tools: {type: gear, price: 25}
-healing_potion: {type: consumable, heal: 2d4+2, price: 50}
-kings_circlet: {type: treasure, price: 200}
+healing_potion: {type: consumable, heal: 2d4+2, price: 50}  # GM applies via `engine heal`
+kings_circlet: {type: treasure, price: 200}  # no mechanical use; sell value only

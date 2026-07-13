@@ -1,1 +1,1 @@
-order: [STR, DEX, CON, INT, WIS, CHA]
+order: [STR, DEX, CON, INT, WIS, CHA]  # the six attributes; modifier = (score - 10) / 2, rounded down

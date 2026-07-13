@@ -1,11 +1,11 @@
 name: fighter
-hit_die: 10
-cast_attr: null
-skill_choices: 2
+hit_die: 10       # d10, controls starting HP, per-level HP gain, and short-rest healing
+cast_attr: null   # non-caster
+skill_choices: 2  # how many skills to pick from the list below at creation
 skills: [athletics, intimidation, perception, survival]
-starting_gear: [chain_mail, longsword]
+starting_gear: [chain_mail, longsword]  # item ids from ruleset/items.yaml
 starting_gold: 10
-levels:
+levels:  # per-level: features (flavor tags, GM-adjudicated), spells learned, spell slots {level: count}
   1: {features: [second_wind], spells: [], slots: {}}
   2: {features: [surge_of_violence], spells: [], slots: {}}
   3: {features: [improved_critical], spells: [], slots: {}}

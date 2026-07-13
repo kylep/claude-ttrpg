@@ -1,11 +1,11 @@
 name: cleric
-hit_die: 8
-cast_attr: WIS
-skill_choices: 2
+hit_die: 8        # d8, controls starting HP, per-level HP gain, and short-rest healing
+cast_attr: WIS    # attribute behind spell attack rolls, save DCs, and CASTMOD
+skill_choices: 2  # how many skills to pick from the list below at creation
 skills: [insight, medicine, persuasion, religion]
-starting_gear: [leather_armor, mace]
+starting_gear: [leather_armor, mace]  # item ids from ruleset/items.yaml
 starting_gold: 15
-levels:
+levels:  # per-level: features (flavor tags, GM-adjudicated), spells learned, spell slots {level: count}
   1: {features: [], spells: [sacred_flame, cure_wounds], slots: {1: 2}}
   2: {features: [invoke_the_light], spells: [bless], slots: {1: 3}}
   3: {features: [], spells: [shield_of_faith], slots: {1: 4}}

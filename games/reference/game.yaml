@@ -1,6 +1,6 @@
 name: reference
-version: 0.1.0
+version: 0.1.0            # worlds pin this at instantiation; bump on any ruleset change
 description: The baseline four-class ruleset every other game in this repo is instantiated from.
-start_date: "1203-04-17"
-start_hour: 9
-start_location: thornbury
+start_date: "1203-04-17"  # in-world date new worlds begin on (calendar is 12 months x 30 days)
+start_hour: 9             # 0-23, world clock at creation
+start_location: thornbury # region-map node id the party starts at

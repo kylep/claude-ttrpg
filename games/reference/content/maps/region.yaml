@@ -1,3 +1,5 @@
+# nodes: travel destinations; coords are approximate map placement (also image-gen hints), terrain is flavor
+# edges: undirected routes; hours advance the world clock on `engine travel`
 nodes:
   thornbury: {name: Thornbury, coords: [0, 0], terrain: settlement}
   old-road: {name: The Old Road, coords: [4, 1], terrain: road}

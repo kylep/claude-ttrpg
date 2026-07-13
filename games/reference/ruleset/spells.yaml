@@ -1,3 +1,7 @@
+# level: 0 = cantrip (no slot), 1+ consumes a spell slot of that level
+# range: squares; resolve: attack (vs AC) | save (target rolls vs 8 + prof + cast mod) | auto (always lands)
+# CASTMOD in dice expressions = caster's cast_attr modifier; on_save none = no damage on a successful save
+# effect durations are in combat rounds; -1 would mean until cleared
 fire_bolt:
   level: 0
   action: action

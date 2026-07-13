@@ -1,3 +1,4 @@
+# field meanings: see maps/encounters/road-ambush.yaml
 id: barrow-hall
 name: The Pillared Hall
 grid: {width: 12, height: 9}
