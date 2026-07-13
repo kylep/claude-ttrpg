@@ -386,6 +386,8 @@ class TestMainEndToEnd:
         monkeypatch.delenv("OPENAI_API_KEY", raising=False)
         monkeypatch.delenv("GEMINI_API_KEY", raising=False)
         monkeypatch.delenv("IMAGE_MODEL", raising=False)
+        # Guard: network must not be called (key check should happen first).
+        monkeypatch.setattr(urllib.request, "urlopen", lambda req, timeout=None: (_ for _ in ()).throw(AssertionError("network must not be called")))
         out_path = tmp_path / "out.png"
         code = imagegen.main(
             ["--prompt", "a cat", "--out", str(out_path)], repo_root=tmp_path
@@ -423,6 +425,8 @@ class TestMainEndToEnd:
         monkeypatch.setenv("OPENAI_API_KEY", "sk-test")
         monkeypatch.delenv("IMAGE_MODEL", raising=False)
         monkeypatch.setenv("IMAGEGEN_MAX_PER_RUN", "1")
+        # Guard: network must not be called (max-per-run check should happen first).
+        monkeypatch.setattr(urllib.request, "urlopen", lambda req, timeout=None: (_ for _ in ()).throw(AssertionError("network must not be called")))
         code = imagegen.main(
             [
                 "--prompt", "a", "--out", str(tmp_path / "a.png"),
@@ -437,6 +441,8 @@ class TestMainEndToEnd:
         monkeypatch.setenv("OPENAI_API_KEY", "sk-test")
         monkeypatch.delenv("IMAGE_MODEL", raising=False)
         monkeypatch.setenv("IMAGEGEN_SPEND_CAP_USD", "0.01")
+        # Guard: network must not be called (spend-cap check should happen first).
+        monkeypatch.setattr(urllib.request, "urlopen", lambda req, timeout=None: (_ for _ in ()).throw(AssertionError("network must not be called")))
         code = imagegen.main(
             ["--prompt", "a cat", "--out", str(tmp_path / "out.png")], repo_root=tmp_path
         )
