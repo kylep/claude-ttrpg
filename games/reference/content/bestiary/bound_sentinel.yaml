@@ -21,7 +21,7 @@ notes: >
   auto-hit resolve rather than raw toughness). A DC 13 (medium) Arcana
   check on the rune-circle tells a wizard what the numbers already show:
   raw force ignores the Sentinel's warding lattice outright. Opening with
-  cinder_bloom (DEX save, DC ~14 vs the Sentinel's DEX 8, ~70% to land
+  cinder_bloom (DEX save, DC ~13 vs the Sentinel's DEX 8, ~70% to land
   full) then finishing with magic_missile (auto-hit, no save, no AC check
   at all) drops it in about 3 rounds; at ~60% to hit back for ~5.5 avg,
   that is only ~10 expected incoming damage over the fight. A wizard who
