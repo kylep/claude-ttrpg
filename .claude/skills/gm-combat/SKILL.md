@@ -22,6 +22,9 @@ description: Use when combat starts in a claude-ttrpg session - runs the encount
      Apply --adv/--dis per the effects on either side (see the game's
      effects.yaml impact notes).
    - Spells: `engine cast --caster X --spell s [--target Y]`.
+   - Gear swaps cost the turn's action — the engine enforces one non-armor
+     `engine equip`/`unequip` per combatant per round and blocks armor
+     entirely mid-encounter (GM can override with `--force`).
 4. A PC hitting 0 HP starts death saves: `engine deathsave --actor X`
    on each of their turns until revived, stable, or dead.
 5. Combat ends when one side is dead, surrendered, or fled:

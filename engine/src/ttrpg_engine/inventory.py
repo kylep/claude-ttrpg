@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from ttrpg_engine import derive, timeline, worldfs
+from ttrpg_engine import combat, derive, timeline, worldfs
 from ttrpg_engine.errors import EngineError
 
 
@@ -73,12 +73,33 @@ def _still_granted(sheet: dict, g: dict, line: dict, name: str) -> bool:
     )
 
 
-def equip(root: Path, g: dict, actor: str, item: str) -> dict:
-    sheet = _sheet(root, actor)
+def _check_gear_economy(enc: dict | None, actor: str, spec: dict, force: bool) -> None:
+    """Enforce combat action economy for equip/unequip. `--force` (GM override)
+    bypasses both the armor block and the one-swap-per-round limit."""
+    if force or enc is None or actor not in enc["order"]:
+        return
+    if spec["type"] == "armor":
+        raise EngineError("no_time", "cannot don or doff armor mid-encounter")
+    if enc.get("gear_actions", {}).get(actor) == enc["round"]:
+        raise EngineError("action_spent", f"{actor} has already swapped gear this round")
+
+
+def _record_gear_action(enc: dict | None, actor: str, spec: dict) -> bool:
+    """Track that `actor` spent this round's gear swap. Armor is never tracked
+    here since rule 1 blocks it outright (no allowance to record)."""
+    if enc is None or actor not in enc["order"] or spec["type"] == "armor":
+        return False
+    enc.setdefault("gear_actions", {})[actor] = enc["round"]
+    return True
+
+
+def equip(root: Path, g: dict, actor: str, item: str, *, force: bool = False) -> dict:
+    _, sheet, enc = combat.resolve_actor(root, actor)
     line = _find_line(sheet, item)
     if line is None:
         raise EngineError("not_carried", f"{actor} does not carry {item}")
     spec = g["items"][item]
+    _check_gear_economy(enc, actor, spec, force)
     if spec["type"] == "armor" and any(
         other["item"] != item and other.get("equipped") and g["items"][other["item"]]["type"] == "armor"
         for other in sheet["inventory"]
@@ -91,22 +112,27 @@ def equip(root: Path, g: dict, actor: str, item: str) -> dict:
         sheet["effects"] = [e for e in sheet["effects"] if e["name"] != name]
         sheet["effects"].append({"name": name, "duration": -1})
     derive.recompute(sheet, g)
-    worldfs.write_yaml(worldfs.state(root, f"party/{actor}"), sheet)
+    combat.save_pc(root, sheet)
+    if _record_gear_action(enc, actor, spec):
+        combat.save_encounter(root, enc)
     cursed = bool(spec.get("cursed", False))
-    timeline.append_event(root, type_="equip", actors=[actor],
-                          summary=f"{actor} equips {item}" + (" (cursed!)" if cursed else ""))
+    summary = f"{actor} equips {item}" + (" (cursed!)" if cursed else "")
+    if force:
+        summary += " (forced)"
+    timeline.append_event(root, type_="equip", actors=[actor], summary=summary)
     return {"actor": actor, "item": item, "ac": sheet["ac"], "attacks": sheet["attacks"],
-            "effects": sheet["effects"], "cursed": cursed}
+            "effects": sheet["effects"], "cursed": cursed, "forced": force}
 
 
-def unequip(root: Path, g: dict, actor: str, item: str) -> dict:
-    sheet = _sheet(root, actor)
+def unequip(root: Path, g: dict, actor: str, item: str, *, force: bool = False) -> dict:
+    _, sheet, enc = combat.resolve_actor(root, actor)
     line = _find_line(sheet, item)
     if line is None:
         raise EngineError("not_carried", f"{actor} does not carry {item}")
     if not line.get("equipped"):
         raise EngineError("not_equipped", f"{actor} does not have {item} equipped")
     spec = g["items"][item]
+    _check_gear_economy(enc, actor, spec, force)
     if spec.get("cursed") and not line.get("dispelled"):
         raise EngineError("cursed", f"{item} is cursed; dispel it before unequipping")
     line["equipped"] = False
@@ -116,11 +142,15 @@ def unequip(root: Path, g: dict, actor: str, item: str) -> dict:
         if not _still_granted(sheet, g, line, name):
             sheet["effects"] = [e for e in sheet["effects"] if e["name"] != name]
     derive.recompute(sheet, g)
-    worldfs.write_yaml(worldfs.state(root, f"party/{actor}"), sheet)
-    timeline.append_event(root, type_="unequip", actors=[actor],
-                          summary=f"{actor} unequips {item}")
+    combat.save_pc(root, sheet)
+    if _record_gear_action(enc, actor, spec):
+        combat.save_encounter(root, enc)
+    summary = f"{actor} unequips {item}"
+    if force:
+        summary += " (forced)"
+    timeline.append_event(root, type_="unequip", actors=[actor], summary=summary)
     return {"actor": actor, "item": item, "ac": sheet["ac"], "attacks": sheet["attacks"],
-            "effects": sheet["effects"]}
+            "effects": sheet["effects"], "forced": force}
 
 
 def dispel(root: Path, g: dict, actor: str, item: str) -> dict:

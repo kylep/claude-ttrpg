@@ -334,17 +334,19 @@ def item_dispel(actor: str = typer.Option(...), item: str = typer.Option(...)):
 
 
 @app.command()
-def equip(actor: str = typer.Option(...), item: str = typer.Option(...)):
+def equip(actor: str = typer.Option(...), item: str = typer.Option(...),
+          force: bool = typer.Option(False, "--force")):
     root = require_root()
     g = guard(worldfs.load_game_for, root)
-    emit(guard(inventory.equip, root, g, actor, item))
+    emit(guard(inventory.equip, root, g, actor, item, force=force))
 
 
 @app.command()
-def unequip(actor: str = typer.Option(...), item: str = typer.Option(...)):
+def unequip(actor: str = typer.Option(...), item: str = typer.Option(...),
+            force: bool = typer.Option(False, "--force")):
     root = require_root()
     g = guard(worldfs.load_game_for, root)
-    emit(guard(inventory.unequip, root, g, actor, item))
+    emit(guard(inventory.unequip, root, g, actor, item, force=force))
 
 
 def _gold_target(actor: str | None, party: bool) -> str:
