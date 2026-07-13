@@ -11,7 +11,7 @@ attributes: {STR: 16, DEX: 12, CON: 16, INT: 10, WIS: 12, CHA: 14}
 attacks:
   - {name: kingsblade, attack_mod: 7, damage: 1d8+3, range: 1}
   - {name: dread wail, attack_mod: 6, damage: 1d4, range: 8}
-xp: 450
+xp: 1800
 loot: {gold: 4d10, items: [kings_circlet]}
 difficulty: boss
 notes: >

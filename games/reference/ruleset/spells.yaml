@@ -77,7 +77,7 @@ cinder_bloom:
   range: 18
   resolve: save
   save_attr: DEX
-  damage: 4d6
+  damage: 5d6
   on_save: half
   description: >
     A mote of red light drifts to the target and unfolds into a flower of
@@ -89,7 +89,7 @@ peal_of_judgment:
   range: 12
   resolve: save
   save_attr: CON
-  damage: 3d8
+  damage: 4d8
   on_save: half
   description: >
     The cleric names the target's offense aloud and the air answers with a

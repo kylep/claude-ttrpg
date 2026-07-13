@@ -81,19 +81,30 @@ per `combat.end`; the quest bonus does not).
 
 ## Loot / Reward Table
 
-| Source                          | Gold             | Items                | XP  |
+| Source                          | Gold             | Items                | XP (party pool) |
 |----------------------------------|------------------|-----------------------|-----|
-| Goblin (x2, road-ambush)         | 1d6 each          | —                      | 50 each |
-| Goblin archer (road-ambush)      | 1d4               | —                      | 50  |
-| Barrow hound (x2, barrow-hall)   | —                 | —                      | 100 each |
-| Goblin honor guard (kings-tomb)  | 1d6               | —                      | 50  |
-| The Barrow King (kings-tomb)     | 4d10              | `kings_circlet` (200 gp value) | 450 |
-| Quest reward (Reeve Halda)       | 100 flat          | —                      | 100 (flat grant) |
+| Goblin (x2, road-ambush)         | 1d6 each          | —                      | 200 each |
+| Goblin archer (road-ambush)      | 1d4               | —                      | 200  |
+| Barrow hound (x2, barrow-hall)   | —                 | —                      | 400 each |
+| Goblin honor guard (kings-tomb)  | 1d6               | —                      | 200  |
+| The Barrow King (kings-tomb)     | 4d10              | `kings_circlet` (200 gp value) | 1800 |
+| Quest reward (Reeve Halda)       | 100 flat          | —                      | 100 (flat grant, full amount to each PC) |
 
-Total encounter XP for a full clear: 850 (150 / 200 / 500 across the
-three fights), plus the 100 xp quest bonus — enough to push most
-parties to level 2 (`xp_thresholds: {2: 300}` in
-`ruleset/progression.yaml`) with room to spare toward level 3 (900).
+Bestiary `xp:` values are a party pool sized for 4 PCs — `engine
+encounter end` splits each encounter's pool with `total // len(members)`,
+while `engine xp grant` credits its flat amount in full to every PC (it
+does not split). Worked per-PC math for a 4-PC party, from the actual
+rosters in `maps/encounters/*.yaml` and the bestiary above:
+
+- road-ambush: (200 + 200 + 200) // 4 = 600 // 4 = **150 xp/PC**
+- barrow-hall: (400 + 400) // 4 = 800 // 4 = **200 xp/PC**
+- kings-tomb: (1800 + 200) // 4 = 2000 // 4 = **500 xp/PC**
+- quest grant (Reeve Halda): **100 xp/PC**, in full, not split
+
+Per-PC total after Act 1: 150 + 200 + 500 + 100 = **950 xp** — past
+the level-3 threshold (`xp_thresholds: {3: 900}` in
+`ruleset/progression.yaml`) with a small cushion, and well short of
+level 4 (2700).
 
 ---
 
@@ -171,18 +182,26 @@ next.
 
 ## Act 2 Loot / Reward Table
 
-| Source                                | Gold      | Items | XP  |
+| Source                                | Gold      | Items | XP (party pool) |
 |----------------------------------------|-----------|--------|-----|
-| Mire creeper (x2, sunken-stair)        | —         | —      | 250 each |
-| Sunken warden (sunken-stair)           | 2d6       | —      | 350 |
-| Mire creeper (drowned-gallery)         | —         | —      | 250 |
-| Sunken warden (drowned-gallery)        | 2d6       | —      | 350 |
-| The Pale Oathwife (drowned-gallery)    | 6d10      | —      | 700 |
-| Quest reward (Reeve Halda, Act 2)      | 100 flat  | —      | 200 (flat grant) |
+| Mire creeper (x2, sunken-stair)        | —         | —      | 1000 each |
+| Sunken warden (sunken-stair)           | 2d6       | —      | 1400 |
+| Mire creeper (drowned-gallery)         | —         | —      | 1000 |
+| Sunken warden (drowned-gallery)        | 2d6       | —      | 1400 |
+| The Pale Oathwife (drowned-gallery)    | 6d10      | `oathwifes_torc` (300 gp value) | 2800 |
+| Quest reward (Reeve Halda, Act 2)      | 100 flat  | —      | 200 (flat grant, full amount to each PC) |
 
-Total Act 2 encounter XP for a full clear: 2150 (850 at the stair,
-1300 in the gallery), plus the 200 xp quest bonus. A party that
-finished Act 1 around 950 xp ends Act 2 near 3300 — past level 4
-(`xp_thresholds: {4: 2700}`) and halfway to level 5 (6500), with the
-new level-2 spell slots coming online exactly when the Oathwife
-starts poisoning people.
+Same per-PC math as Act 1, continuing from the 950 xp/PC each
+character has banked by the end of it:
+
+- sunken-stair: (1000 + 1000 + 1400) // 4 = 3400 // 4 = **850 xp/PC**
+- drowned-gallery: (1000 + 1400 + 2800) // 4 = 5200 // 4 = **1300 xp/PC**
+- quest grant (Reeve Halda, Act 2): **200 xp/PC**, in full, not split
+
+Per-PC Act 2 gain: 850 + 1300 + 200 = 2350 xp. Cumulative per-PC
+total: 950 + 2350 = **3300 xp** — comfortably clear of the level-4
+threshold (`xp_thresholds: {4: 2700}`), about 600 xp past it, with
+the new level-2 spell slots coming online exactly when the Oathwife
+starts poisoning people. Level 5 (6500) is headroom reserved for
+future content beyond this two-act adventure — it is not reachable
+from the encounters and quest grants shipped here.

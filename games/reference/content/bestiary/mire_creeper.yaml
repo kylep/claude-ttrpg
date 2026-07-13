@@ -9,7 +9,7 @@ hp: 24
 speed: 7
 attributes: {STR: 12, DEX: 16, CON: 14, INT: 2, WIS: 10, CHA: 4}
 attacks: [{name: venomed fangs, attack_mod: 6, damage: 1d8+3, range: 1}]
-xp: 250
+xp: 1000
 loot: {gold: null, items: []}
 difficulty: medium
 notes: >

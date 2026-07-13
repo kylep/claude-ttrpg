@@ -12,8 +12,8 @@ attributes: {STR: 14, DEX: 12, CON: 16, INT: 14, WIS: 16, CHA: 16}
 attacks:
   - {name: cistern-cold grasp, attack_mod: 7, damage: 2d6+2, range: 1}
   - {name: drowning benediction, attack_mod: 6, damage: 1d8, range: 10}
-xp: 700
-loot: {gold: 6d10, items: []}
+xp: 2800
+loot: {gold: 6d10, items: [oathwifes_torc]}
 difficulty: hard
 notes: >
   A hit from the drowning benediction fills the victim's lungs with cold

@@ -8,6 +8,6 @@ hp: 7      # hit points per spawned instance
 speed: 6   # grid squares per combat turn
 attributes: {STR: 8, DEX: 14, CON: 10, INT: 10, WIS: 8, CHA: 8}  # DEX drives initiative
 attacks: [{name: scimitar, attack_mod: 4, damage: 1d6+2, range: 1}]  # range in squares
-xp: 50     # split among the party at `engine encounter end`
+xp: 200    # party pool sized for 4 PCs; split evenly at `engine encounter end`
 loot: {gold: 1d6, items: []}  # rolled per instance at encounter end, into the party pool
 difficulty: easy  # GM guidance only
