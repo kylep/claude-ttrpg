@@ -25,3 +25,9 @@ prone:
 frightened:
   impact: "GM applies --dis to the frightened creature's attacks and checks while the source of its fear is in view"
   description: "The creature's nerve has cracked; it fights with one eye on the thing it fears and one foot pointed toward the exit."
+oath_whisper:
+  impact: "GM applies --dis to the cursed wielder's WIS-based checks (Insight, Medicine, Perception, Religion, Survival) while the blade is carried"
+  description: "A thin second voice rides under every thought, doubting the wielder's read of every face and every room; it is patient, and it is very rarely wrong to doubt."
+silent_step:
+  impact: "GM grants --adv on the wearer's Stealth checks"
+  description: "The wearer's footfalls land a half-second quieter than they should, as if the ground itself were leaning out of the way."

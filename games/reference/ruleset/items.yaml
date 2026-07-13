@@ -25,3 +25,13 @@ kings_circlet: {type: treasure, price: 200,
   description: "Hravik Coldspear's grave-crown: a thin band of old gold set with river pearls, cold to the touch no matter how long it is carried."}  # no mechanical use; sell value only
 oathwifes_torc: {type: treasure, price: 300,
   description: "A grey pearl torc Sigrun wore into the cistern as Hravik's bride; the pearls stay cistern-cold long after they're lifted clear of the water, as if some of the drowning came out with them."}  # no mechanical use; sell value only
+# Act 3 grave-ward relics — one per class, see content/adventure.md Act 3 and content/bestiary/{ward_captain,latchwight,unshriven_judge,bound_sentinel}.yaml
+doubtwhisper: {type: weapon, damage: 1d8, finesse: false, range: 1, price: 275,
+  cursed: true, bonus: {attack: 1, damage: 2}, grants_effect: {name: oath_whisper},
+  description: "The Ward-Captain's own blade, forsworn in a quarrel three centuries dead and never once laid down since; it cuts truer than a blade this old has any right to, and it never stops asking, very quietly, what else the one carrying it might be lying about."}
+hushstep_boots: {type: gear, price: 180, grants_effect: {name: silent_step},
+  description: "Soft grave-leather boots the Latchwight wore over its brass feet, still humming faintly with the hush-charm that let it cross its own trip-latches without a sound; worn by anyone lighter of foot than a construct, they do rather more."}
+oathlight_talisman: {type: gear, price: 150, grants_effect: {name: blessed},
+  description: "A disc of tarnished silver on a leather cord, the Unshriven Judge's badge of office, still warm with whatever patience three centuries of waiting did not burn out of it; it settles over the wearer's heart like a hand that has decided, this once, to be kind."}
+wardglass_lens: {type: gear, price: 200, grants_effect: {name: shielded},
+  description: "A disc of smoke-clouded glass pried from the Bound Sentinel's rune-circle, still tracing faint lines of ward-script when held to the light; a caster who keeps it close finds incoming blows arriving a half-beat later than they should."}

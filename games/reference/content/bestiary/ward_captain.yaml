@@ -1,0 +1,24 @@
+# field meanings: see bestiary/goblin.yaml
+name: The Ward-Captain's Echo
+description: >
+  Hravik's champion in life, and the only one of his household who ever
+  broke an oath to him — the ward remembers him not as he was honored but
+  as he was forsworn, and gives back only that shape: verdigrised plate,
+  a raised blade, and no voice left to argue with. It saluted before it
+  attacked the last three centuries of intruders, and it will salute this
+  one too.
+ac: 15
+hp: 34
+speed: 6
+attributes: {STR: 16, DEX: 13, CON: 15, INT: 10, WIS: 12, CHA: 13}
+attacks: [{name: the answering blade, attack_mod: 6, damage: 1d10+3, range: 1}]
+xp: 350
+loot: {gold: null, items: [doubtwhisper]}
+difficulty: hard
+notes: >
+  A solo duel: sized for one level 4-5 fighter (ac ~15-17, attack ~+7,
+  hp ~35-42). Expected ~7 rounds to drop the Echo at a ~65% hit chance
+  and ~7.5 avg damage/hit; the Echo lands roughly half its own swings for
+  ~8.5 avg, totaling ~30 expected incoming damage over the fight — a real
+  fight, not a formality. On defeat its blade is the reward: see
+  `doubtwhisper` in ruleset/items.yaml and adventure.md Act 3.

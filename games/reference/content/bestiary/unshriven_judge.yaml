@@ -1,0 +1,30 @@
+# field meanings: see bestiary/goblin.yaml
+name: The Unshriven Judge
+description: >
+  One of Hravik's household priests, left unburied and unshriven for a
+  crime the barrow's memory no longer names, bound here to weigh every
+  soul that comes asking for grace it was never given. It speaks the
+  weighing aloud in a dead language before it swings — a verdict, not a
+  warning.
+ac: 15
+hp: 30
+speed: 5
+attributes: {STR: 14, DEX: 10, CON: 14, INT: 10, WIS: 14, CHA: 12}
+attacks: [{name: the gavel verdict, attack_mod: 5, damage: 1d8+2, range: 2}]
+xp: 350
+loot: {gold: null, items: [oathlight_talisman]}
+difficulty: hard
+notes: >
+  A solo judgment fight: sized for one level 4-5 cleric (ac ~15-17,
+  hp ~33-36, spell save DC ~14). A cleric who opens with peal_of_judgment
+  (CON save, DC 14 vs the Judge's CON 14) expects ~14 damage on the nova,
+  then sacred_flame (DEX save, DC 14 vs the Judge's DEX 10, ~65% to land)
+  for ~2.9 avg/round clears the rest in about ~5-6 more rounds. The Judge
+  hits back at ~55% for ~6.5 avg, roughly ~23 expected incoming damage
+  over the fight — a real test of the cleric's kit, not just their armor;
+  casting shield_of_faith first buys a wide safety margin. A hit that
+  drops a PC to 0 hp may be narrated as the Judge finding them wanting —
+  the GM may apply frightened (`effect add --target <pc> --name
+  frightened --duration 2`) on a particularly damning verdict. On defeat
+  it yields its talisman of office: see `oathlight_talisman` in
+  ruleset/items.yaml and adventure.md Act 3.

@@ -50,3 +50,13 @@ deep chambers ever since, and the water is still rising. Whatever
 stirred the goblins to order was only the King; what waits below the
 tomb, at the foot of the sunken stair, has had three centuries to
 think about what it is owed.
+
+## The grave-wards
+
+Sigrun kept one more duty besides her king's counsel: four reliquary
+doors, sealed into the undercroft on oath rather than lock, holding
+whatever Hravik's household did not trust to a single tomb. She held
+those wards live from inside the water for three hundred years,
+answering for them the way a keeper answers for a gate. Nothing in the
+surviving accounts says what happens to a ward once its keeper finally
+lets go.

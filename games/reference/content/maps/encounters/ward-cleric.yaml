@@ -1,0 +1,11 @@
+# field meanings: see maps/encounters/road-ambush.yaml
+# solo map: one pc_spawn, sized for a single level 4-5 cleric (see adventure.md Act 3)
+id: ward-cleric
+name: The Judgment Ward
+grid: {width: 9, height: 6}
+terrain:
+  - {type: wall, cells: [[4, 0], [4, 5]]}                    # broken chancel rail
+  - {type: difficult, cells: [[5, 2], [5, 3], [6, 2], [6, 3]]}  # drifts of grave-ash before the dais
+monsters:
+  - {type: unshriven_judge, pos: [7, 2]}
+pc_spawns: [[1, 2]]

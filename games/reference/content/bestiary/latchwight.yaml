@@ -1,0 +1,25 @@
+# field meanings: see bestiary/goblin.yaml
+name: The Latchwight
+description: >
+  A key-shaped ward-spirit no taller than a child, all thin brass limbs
+  and a lockplate face, that has kept this vault's shelving upright and
+  its thresholds honest since the household guard walled it in. It does
+  not fight fair: it skitters across broken shelving and trip-latch
+  rubble that answer to it and betray everyone else.
+ac: 14
+hp: 22
+speed: 9
+attributes: {STR: 10, DEX: 16, CON: 12, INT: 6, WIS: 12, CHA: 6}
+attacks: [{name: hooked latch-key, attack_mod: 6, damage: 1d6+3, range: 1}]
+xp: 300
+loot: {gold: null, items: [hushstep_boots]}
+difficulty: medium
+notes: >
+  A solo vault fight: sized for one level 4-5 rogue (ac ~15-17, attack
+  ~+7, hp ~30-36) who has to cross the difficult rubble/trip-latch cells
+  on `ward-rogue.yaml` to close the distance. At ~70% to hit for ~6.5
+  avg damage, expect ~5 rounds to drop it; it hits back at ~55% for ~6.5
+  avg, roughly ~18 expected incoming damage over the fight — comfortably
+  survivable if the rogue minds their footing, punishing if they don't.
+  On defeat it yields the vault's ward-boots: see `hushstep_boots` in
+  ruleset/items.yaml and adventure.md Act 3.

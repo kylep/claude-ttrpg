@@ -1,0 +1,11 @@
+# field meanings: see maps/encounters/road-ambush.yaml
+# solo map: one pc_spawn, sized for a single level 4-5 wizard (see adventure.md Act 3)
+id: ward-wizard
+name: The Bound Ward
+grid: {width: 9, height: 7}
+terrain:
+  - {type: wall, cells: [[4, 0], [4, 6]]}                       # the binding-circle's stone rim
+  - {type: difficult, cells: [[5, 2], [5, 4], [6, 3]]}          # scorched rune-glyphs that still spark underfoot
+monsters:
+  - {type: bound_sentinel, pos: [7, 3]}
+pc_spawns: [[1, 3]]

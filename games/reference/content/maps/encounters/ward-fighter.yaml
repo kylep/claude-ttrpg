@@ -1,0 +1,10 @@
+# field meanings: see maps/encounters/road-ambush.yaml
+# solo map: one pc_spawn, sized for a single level 4-5 fighter (see adventure.md Act 3)
+id: ward-fighter
+name: The Duelist's Ward
+grid: {width: 9, height: 5}
+terrain:
+  - {type: wall, cells: [[0, 0], [0, 4], [8, 0], [8, 4]]}  # the ward's shattered doorposts frame a clean floor
+monsters:
+  - {type: ward_captain, pos: [7, 2]}
+pc_spawns: [[1, 2]]

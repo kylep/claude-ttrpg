@@ -205,3 +205,244 @@ the new level-2 spell slots coming online exactly when the Oathwife
 starts poisoning people. Level 5 (6500) is headroom reserved for
 future content beyond this two-act adventure — it is not reachable
 from the encounters and quest grants shipped here.
+
+---
+
+# Act 3 — The Four Grave-Wards
+
+The Pale Oathwife does not simply die when she falls: something that
+has been listening for three centuries lets go. The instant she goes
+still, a low tremor rolls through the flooded stone and four sealed
+doors the party never noticed — set flush into the undercroft wall
+past the gallery, unmarked by damp or moss the way nothing else down
+here is unmarked — wake at once, each one sighing open by a hand's
+width and no further. These are Hravik's grave-wards: reliquary vaults
+his household built to hold what a king's household does not trust to
+a single tomb, warded the old way, on oath and blood rather than lock
+and key. Sigrun kept the wards live from the water for three hundred
+years without ever needing to explain them to anyone; with her gone,
+they have woken up needing an explanation, and they choose to test
+one.
+
+Each ward "abides a single heartbeat." Approach one door as a group
+and it seals itself shut, cold and final, before anyone's hand
+touches it; approach alone and it opens the rest of the way, revealing
+a short passage to a trial chamber keyed to a calling the ward
+recognizes — fighter, rogue, cleric, wizard — one door per nature, none
+interchangeable, none forceable. A party of any other composition
+either has doors that never open, or a trial no one currently in the
+party can attempt; a classic four-class party finds one door for each
+of them and no leftovers. This is the game's structural excuse for a
+split party, and the mandate is explicit rather than incidental: all
+four trials are meant to run as (near-)concurrent solo scenes, not a
+single-file dungeon crawl four times over.
+
+## Beat 11 — The Ward-Hall (`drowned-gallery` → `ward-hall`, 1h)
+
+The party travels together — this leg is not split, only the trial
+doors are. `engine travel --to ward-hall` (no `--pcs`, the whole party
+moves as one and the world clock ticks once) brings everyone into a
+short domed chamber standing above the last of the floodwater, dry
+enough that torches hold. Four low iron doors are set into the four
+walls, each cold to the touch and each etched with a device any PC can
+recognize as their own calling once they are close enough to feel it
+sigh open for them alone: a crossed blade and shield; a latch and key;
+a censer and scale; a bound circle and eye. In the chamber's center, a
+shallow basin holds water that never quite goes still — the **Font of
+Unbinding**, more on which below. A DC 13 (medium) Religion or Arcana
+check on the door-devices confirms what Beat 12-15 assume: these are
+tests, not traps, and killing what waits inside is expected to end
+each one cleanly.
+
+## Beats 12-15 — The Four Trials
+
+Each trial is a **solo encounter**: run `engine encounter start
+maps/encounters/ward-<class>.yaml --pcs <that PC's id>` for exactly one
+PC. The engine seats only that PC (solo maps ship one `pc_spawns`
+entry), participants are recorded on the encounter, and `engine
+encounter end` credits that encounter's full monster xp to the lone
+participant — nobody else gets a cut, because nobody else was there.
+There is no separate quest-completion xp grant this act (contrast Acts
+1-2's `xp grant` bonuses): **the relic each ward yields is the reward**,
+in place of a flat bonus, on top of whatever xp the fight itself pays
+out. See the survivability notes in each bestiary file
+(`content/bestiary/ward_captain.yaml`, `latchwight.yaml`,
+`unshriven_judge.yaml`, `bound_sentinel.yaml`) for the hit-chance and
+expected-damage math behind each design; the summary is in the reward
+table below.
+
+### Beat 12 — The Duelist's Ward (fighter)
+
+The door opens on a bare, clean floor between two broken doorposts —
+`maps/encounters/ward-fighter.yaml` — and **the Ward-Captain's Echo**
+salutes before it attacks, exactly as it has saluted every soul foolish
+enough to answer this door for three hundred years. It fights fair,
+which is the whole trial: no terrain gimmick, no add, just one duel a
+level 4-5 fighter is expected to win on the merits. On its defeat, the
+Echo's blade is the ward's yield — see `doubtwhisper` below. A DC 13
+(medium) Insight check made *during* the duel (not before — the ward
+doesn't reveal this until blades are already crossed) notices the Echo
+pulls exactly one strike in three, as if some part of it still doesn't
+want the fight it's bound to have.
+
+### Beat 13 — The Latch-Vault (rogue)
+
+Beyond this door is shelving, half-collapsed, over a floor of rubble
+and trip-latches — `maps/encounters/ward-rogue.yaml` — guarded by **the
+Latchwight**, a key-shaped ward-spirit that skitters the difficult
+cells (`terrain: difficult`) without penalty while everyone else pays
+the extra movement cost to cross them. A DC 13 (medium) Acrobatics
+check on entry lets the rogue ignore the difficult-terrain cost for one
+turn, same convention as Act 2's flooded treads; a DC 10 (easy)
+Perception check before engaging spots which shelving is still going
+to fall if leaned on, which the GM can use to open an environmental
+option (shove the Latchwight under it) instead of a straight fight.
+On defeat it yields the vault's own boots — see `hushstep_boots` below.
+
+### Beat 14 — The Judgment Ward (cleric)
+
+The censer-and-scale door opens on a small dais chamber ankle-deep in
+grave-ash — `maps/encounters/ward-cleric.yaml` — where **the Unshriven
+Judge** names the cleric's failings aloud in a dead language before
+it swings its gavel-rod. A DC 16 (hard) Religion or Insight check,
+made before combat, lets the cleric correctly answer the Judge's first
+charge; the GM may reward this with `--adv` on the cleric's first
+attack roll rather than skipping the fight outright — the ward wants
+to see the calling proven in combat, not merely argued with. On defeat
+it yields its talisman of office — see `oathlight_talisman` below.
+
+### Beat 15 — The Bound Ward (wizard)
+
+The bound-circle door opens on a rune-scorched chamber — `maps/encounters/ward-wizard.yaml` —
+holding **the Bound Sentinel**, a mindless construct raised to let
+nothing living leave its circle unproven. A DC 13 (medium) Arcana check
+on the rune-lattice tells a wizard something worth knowing before they
+commit spell slots: the warding answers to intent and edge, not to raw
+force — `magic_missile`'s auto-hit resolve ignores the lattice (and the
+Sentinel's AC) entirely, while `fire_bolt` has to beat it fair. This is
+mechanically true, not just flavor: see the bestiary notes on
+`bound_sentinel.yaml` for the math. On defeat it yields the lens from
+its own rune-circle — see `wardglass_lens` below.
+
+## The Font of Unbinding
+
+Whatever answers the wards also keeps the shallow basin in the
+ward-hall's center from ever going still. The Font is not a shrine to
+any god the party's cleric would recognize by name — it is closer to a
+held breath, three centuries of one woman's patience with nowhere left
+to go once she let go of it. It has one function left in it:
+**lifting a curse laid by anything the ward-hall produced.** This is
+the ritual site for dispelling `doubtwhisper` (see below) — the
+mechanic is `engine item dispel --actor <pc> --item doubtwhisper`,
+GM-gated, not automatic. To earn the GM's go-ahead to run it, the
+cursed PC must return to the ward-hall, lay the blade in the Font's
+water, and speak the confession the blade has been whispering back at
+them — in practice, a DC 13 (medium) Religion, Insight, or Persuasion
+check, played as a genuine beat of table roleplay rather than a dice
+formality. Success: the whispering stops (`engine item dispel`
+lifts `oath_whisper` but leaves the blade's `bonus: {attack: 1, damage:
+2}` intact — a cursed weapon dispelled is still a fine weapon).
+Failure doesn't lock the ritual out forever; it just means the
+confession wasn't honest enough yet, and the Font will still be there
+next session.
+
+## Curse Reveal — When Does the Fighter Learn?
+
+Not immediately, and that's deliberate. `doubtwhisper` doesn't
+announce itself on the swing that kills the Ward-Captain's Echo, or
+even on the walk back to camp — the whisper is quiet, and a fighter
+riding a battle high has better things to listen to. The mechanical
+and narrative reveal are the same moment: **the first time the fighter
+tries to lay the blade down** — to clean it, trade it to a companion,
+switch back to their old longsword, anything — `engine unequip --actor
+<pc> --item doubtwhisper` returns the `cursed` error, and that refusal
+*is* the reveal. Narrate the whisper sharpening into words at exactly
+that moment: the blade does not want to be set down, and says so. Any
+GM who wants an earlier tell can allow a DC 16 (hard) Insight check the
+first evening the fighter carries it, unprompted, as a "something's
+not right" hook — but the hard reveal, the one the player can't
+rules-lawyer around, is the failed unequip.
+
+## GM Sidebar — Running a Split Party
+
+Four solo trials in one sitting is an interleaving problem, not a
+sequencing problem — don't run all of one PC's trial start-to-finish
+while three players wait.
+
+- **Travel together, split for the trial.** Beat 11 moves the whole
+  party with a single `engine travel --to ward-hall` (one clock tick).
+  The split happens only at the doors: run `engine encounter start
+  maps/encounters/ward-<class>.yaml --pcs <pc-id>` one at a time. If
+  your table wants an even earlier, harder split — a PC arriving at
+  the ward-hall ahead of the others — send them alone with `engine
+  travel --to ward-hall --pcs <pc-id>` instead; that PC's hour ticks
+  the shared world clock immediately, and the rest of the party ticks
+  it again, separately, whenever they follow. There is only one world
+  clock in v1 — it is not per-PC — so a staggered arrival costs the
+  table two clock advances instead of one. Beat 11's simultaneous
+  version is the cheaper, easier default; use the staggered version
+  only when the story wants the gap.
+- **Interleave the scenes, not the encounters.** Combat itself can't be
+  split further than "one PC's turn at a time" (an active `encounter`
+  is a single object in `state/`), so each trial has to run to
+  completion once started. What you *can* interleave is the framing:
+  run two or three rounds of the fighter's duel, cut away ("while
+  that's happening, what is the rogue seeing at their door?"), run a
+  few rounds of the rogue's vault, cut back. Nothing in `state/` stops
+  you narrating out of strict real-time order — the engine only cares
+  about the order you issue commands in, not the order the fiction
+  implies.
+- **One shared clock, four separate outcomes.** Because Beat 11 is a
+  single unsplit travel, all four trials are happening "at the same
+  time" in fiction regardless of the order you resolve them at the
+  table. Don't let a PC who finishes early retcon their way into
+  helping another door — the wards seal against exactly that ("abides
+  a single heartbeat"), and mechanically the map only has one
+  `pc_spawns` entry to seat them on anyway.
+- **Rest is also splittable.** If a trial goes badly and a PC needs to
+  recover before their door (or after it, before rejoining), `engine
+  rest --type short --pcs <pc-id>` rests just that PC without forcing
+  a short rest on everyone waiting in the ward-hall.
+- **No mid-encounter equip games.** `engine equip`/`unequip` block
+  armor swaps mid-fight and cap one gear swap per PC per round even
+  outside combat gating; don't try to have the fighter equip
+  `doubtwhisper` *during* the duel that drops it — the item doesn't
+  exist in their inventory until `encounter end` resolves loot into the
+  party stash.
+
+## Act 3 Reward Table
+
+| Ward (solo encounter)       | Guardian                    | Item (yield)          | Item boon | XP (solo participant only) |
+|------------------------------|------------------------------|------------------------|-----------|------|
+| Duelist's Ward (fighter)    | Ward-Captain's Echo (x1)    | `doubtwhisper` (275 gp value) | weapon, `bonus: {attack: 1, damage: 2}`, **cursed**, grants `oath_whisper` | 350 |
+| Latch-Vault (rogue)         | The Latchwight (x1)         | `hushstep_boots` (180 gp value) | gear, grants `silent_step` | 300 |
+| Judgment Ward (cleric)      | The Unshriven Judge (x1)    | `oathlight_talisman` (150 gp value) | gear, grants `blessed` | 350 |
+| Bound Ward (wizard)         | The Bound Sentinel (x1)     | `wardglass_lens` (200 gp value) | gear, grants `shielded` | 320 |
+
+**No flat quest-completion xp grant this act** — unlike Reeve Halda's
+bonuses in Acts 1-2, the four relics stand in for that bonus entirely.
+The xp column above is ordinary `engine encounter end` monster xp, and
+because each encounter is solo (`--pcs` seats one PC), the *entire*
+total goes to that one PC rather than being divided by party size —
+worked math is in each bestiary file's `notes:`.
+
+Per-PC effect: each PC who runs their own class's trial gains only
+that trial's xp — there is no world in which one PC runs all four (the
+wards are class-keyed and self-excluding), so no single character's
+total moves by more than ~350 xp. Starting from the Act 2 cumulative
+of 3300 xp/PC, the worst case (350 xp) lands a PC at 3650 — nowhere
+near the level-5 threshold (`xp_thresholds: {5: 6500}`) and nowhere
+near `max_level: 5`. This act is explicitly not a leveling engine; it
+is a gearing-up interlude between Act 2's ending and whatever the table
+runs next.
+
+**Getting the relic into the PC's hands.** `engine encounter end`
+resolves monster loot into the shared `party` stash (see
+`ttrpg_engine.combat.end`), same as every encounter in this adventure —
+it does not know or care that only one PC was present. Because these
+are solo fights, follow every `ward-<class>` encounter's `end` with an
+explicit `engine item add --actor <pc-id> --item <relic-id>` to place
+the relic in the hands of the PC who actually earned it (the party
+stash has no other PC who could plausibly claim a single-heartbeat
+relic anyway). `engine equip --actor <pc-id> --item <relic-id>`
+afterward puts its `bonus`/`grants_effect` into effect immediately.

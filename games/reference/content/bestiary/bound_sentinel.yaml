@@ -1,0 +1,31 @@
+# field meanings: see bestiary/goblin.yaml
+name: The Bound Sentinel
+description: >
+  A man-shaped construct of grave-iron and river clay, raised by whatever
+  passed for Hravik's court wizard and bound to its rune-circle with
+  wards that have not slipped once in three centuries. It has no mind to
+  change and no fear to trade on — only the one instruction it was ever
+  given, to let nothing living leave the circle unproven.
+ac: 16
+hp: 34
+speed: 4
+attributes: {STR: 16, DEX: 8, CON: 16, INT: 4, WIS: 10, CHA: 4}
+attacks: [{name: warded fist, attack_mod: 4, damage: 1d6+2, range: 1}]
+xp: 320
+loot: {gold: null, items: [wardglass_lens]}
+difficulty: medium
+notes: >
+  A solo construct fight: sized for one level 4-5 wizard (ac ~13-14,
+  hp ~22-30 — a wizard's d6 hit die runs lower than the other three
+  classes even at this level, so this fight leans on magic_missile's
+  auto-hit resolve rather than raw toughness). A DC 13 (medium) Arcana
+  check on the rune-circle tells a wizard what the numbers already show:
+  raw force ignores the Sentinel's warding lattice outright. Opening with
+  cinder_bloom (DEX save, DC ~14 vs the Sentinel's DEX 8, ~70% to land
+  full) then finishing with magic_missile (auto-hit, no save, no AC check
+  at all) drops it in about 3 rounds; at ~60% to hit back for ~5.5 avg,
+  that is only ~10 expected incoming damage over the fight. A wizard who
+  instead trades fire_bolt shots into AC 16 will find this a much slower,
+  much riskier fight — which is the point. On defeat it yields the lens
+  from its rune-circle: see `wardglass_lens` in ruleset/items.yaml and
+  adventure.md Act 3.
