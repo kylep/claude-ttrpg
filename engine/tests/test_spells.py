@@ -54,3 +54,16 @@ def test_unknown_spell_fails(wroot):
     make_pc(**CLERIC)
     res = runner.invoke(app, ["cast", "--caster", "pc-mira", "--spell", "fireball"])
     assert json.loads(res.stdout)["error"]["code"] == "unknown_spell"
+
+
+def test_out_of_range_cast_does_not_burn_slot(wroot):
+    make_pc(**CLERIC)
+    res = runner.invoke(app, ["--seed", "9", "encounter", "start",
+                              "maps/encounters/skirmish.yaml"])
+    assert res.exit_code == 0, res.stdout
+    res = runner.invoke(app, ["cast", "--caster", "pc-mira", "--spell", "cure_wounds",
+                              "--target", "goblin-1"])
+    assert res.exit_code == 1
+    assert json.loads(res.stdout)["error"]["code"] == "out_of_range"
+    sheet = worldfs.read_yaml(wroot / "state" / "party" / "pc-mira.yaml")
+    assert sheet["spell_slots"][1]["current"] == 2   # slot NOT burned

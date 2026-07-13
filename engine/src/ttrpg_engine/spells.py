@@ -23,12 +23,6 @@ def cast(root: Path, g: dict, caster: str, spell_name: str, target: str | None,
     cast_attr = g["classes"][sheet["class"]]["cast_attr"]
     castmod = attr_mod(sheet["attributes"][cast_attr])
     level = spell["level"]
-    if level > 0:
-        slot = sheet["spell_slots"].get(level)
-        if not slot or slot["current"] < 1:
-            raise EngineError("no_slots", f"no level-{level} slots left")
-        slot["current"] -= 1
-        combat.save_pc(root, sheet)
     target = target or caster
     _, t_data, _ = combat.resolve_actor(root, target)
     if enc and caster in enc["positions"] and target in enc["positions"]:
@@ -36,6 +30,12 @@ def cast(root: Path, g: dict, caster: str, spell_name: str, target: str | None,
                               tuple(enc["positions"][target]))
         if dist > spell["range"]:
             raise EngineError("out_of_range", f"{target} is {dist} away, range {spell['range']}")
+    if level > 0:
+        slot = sheet["spell_slots"].get(level)
+        if not slot or slot["current"] < 1:
+            raise EngineError("no_slots", f"no level-{level} slots left")
+        slot["current"] -= 1
+        combat.save_pc(root, sheet)
     result = {"caster": caster, "spell": spell_name, "target": target,
               "slot_level": level or None, "damage": 0, "healed": 0}
     lands, half = True, False
