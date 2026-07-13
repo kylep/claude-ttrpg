@@ -50,4 +50,6 @@ Three phrases steer the operator relationship with the GM at any time:
 
 ## Status
 
-Design phase. See `docs/design.md`.
+v1 playable: engine, reference game, and GM agent are implemented (see
+the Playing section). Insert-mode and fork-management tooling are
+post-v1; see `docs/design.md`.

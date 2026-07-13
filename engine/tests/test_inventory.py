@@ -26,6 +26,21 @@ def test_unknown_item_rejected(wroot):
     assert json.loads(res.stdout)["error"]["code"] == "unknown_item"
 
 
+def test_item_add_zero_qty_rejected(wroot):
+    pc = make_pc()
+    res = runner.invoke(app, ["item", "add", "--actor", pc, "--item", "torch", "--qty", "0"])
+    assert res.exit_code == 1
+    assert json.loads(res.stdout)["error"]["code"] == "bad_qty"
+
+
+def test_item_remove_zero_qty_rejected(wroot):
+    pc = make_pc()
+    runner.invoke(app, ["item", "add", "--actor", pc, "--item", "torch", "--qty", "2"])
+    res = runner.invoke(app, ["item", "remove", "--actor", pc, "--item", "torch", "--qty", "0"])
+    assert res.exit_code == 1
+    assert json.loads(res.stdout)["error"]["code"] == "bad_qty"
+
+
 def test_gold_pc_and_party(wroot):
     pc = make_pc()
     runner.invoke(app, ["gold", "spend", "--amount", "4", "--actor", pc])
@@ -36,3 +51,20 @@ def test_gold_pc_and_party(wroot):
     runner.invoke(app, ["gold", "add", "--amount", "50", "--party"])
     party = worldfs.read_yaml(wroot / "state" / "party.yaml")
     assert party["gold"] == 50
+
+
+def test_gold_spend_negative_amount_rejected(wroot):
+    pc = make_pc()
+    before = worldfs.read_yaml(wroot / "state" / "party" / f"{pc}.yaml")["gold"]
+    res = runner.invoke(app, ["gold", "spend", "--amount", "-5", "--actor", pc])
+    assert res.exit_code == 1
+    assert json.loads(res.stdout)["error"]["code"] == "bad_amount"
+    after = worldfs.read_yaml(wroot / "state" / "party" / f"{pc}.yaml")["gold"]
+    assert after == before
+
+
+def test_gold_add_negative_amount_rejected(wroot):
+    pc = make_pc()
+    res = runner.invoke(app, ["gold", "add", "--amount", "-5", "--actor", pc])
+    assert res.exit_code == 1
+    assert json.loads(res.stdout)["error"]["code"] == "bad_amount"

@@ -25,6 +25,10 @@ def take(root: Path, g: dict, kind: str, rng: Random) -> dict:
             gain = max(1, dice.roll(f"d{hit_die}", rng).total
                        + attr_mod(sheet["attributes"]["CON"]))
             sheet["hp"] = min(sheet["max_hp"], sheet["hp"] + gain)
+            if sheet["hp"] > 0:
+                sheet["effects"] = [e for e in sheet["effects"]
+                                    if e["name"] not in ("unconscious", "dying")]
+                sheet.pop("death_saves", None)
         else:
             sheet["hp"] = sheet["max_hp"]
             for slot in sheet["spell_slots"].values():

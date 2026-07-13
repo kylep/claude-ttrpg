@@ -9,6 +9,8 @@ def _sheet(root: Path, actor: str) -> dict:
 
 
 def add_item(root: Path, g: dict, actor: str, item: str, qty: int) -> dict:
+    if qty < 1:
+        raise EngineError("bad_qty", f"qty must be >= 1, got {qty}")
     if item not in g["items"]:
         raise EngineError("unknown_item", f"no item {item} in this game")
     sheet = _sheet(root, actor)
@@ -24,6 +26,8 @@ def add_item(root: Path, g: dict, actor: str, item: str, qty: int) -> dict:
 
 
 def remove_item(root: Path, g: dict, actor: str, item: str, qty: int) -> dict:
+    if qty < 1:
+        raise EngineError("bad_qty", f"qty must be >= 1, got {qty}")
     sheet = _sheet(root, actor)
     line = next((l for l in sheet["inventory"] if l["item"] == item), None)
     if line is None or line["qty"] < qty:

@@ -17,6 +17,15 @@ def start(seed="5"):
     return json.loads(res.stdout)
 
 
+def test_start_tolerates_canon_prefixed_path(wroot):
+    make_pc()
+    res = runner.invoke(app, ["--seed", "5", "encounter", "start",
+                              "canon/maps/encounters/skirmish.yaml"])
+    assert res.exit_code == 0, res.stdout
+    enc = worldfs.read_yaml(wroot / "state" / "encounter.yaml")
+    assert set(enc["order"]) == {"pc-borin", "goblin-1", "goblin-2"}
+
+
 def test_start_seats_and_orders(wroot):
     data = start()
     enc = worldfs.read_yaml(wroot / "state" / "encounter.yaml")

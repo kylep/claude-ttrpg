@@ -28,6 +28,7 @@ def get_combatant(root: Path, enc: dict, cid: str) -> tuple[str, dict]:
 def start(root: Path, g: dict, map_rel: str, rng: Random) -> dict:
     if (root / "state" / "encounter.yaml").exists():
         raise EngineError("encounter_active", "an encounter is already running")
+    map_rel = map_rel.removeprefix("canon/")
     emap = worldfs.read_yaml(root / "canon" / map_rel)
     party = worldfs.read_yaml(worldfs.state(root, "party"))
     if not party["members"]:

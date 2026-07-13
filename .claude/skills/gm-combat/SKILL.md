@@ -6,10 +6,13 @@ description: Use when combat starts in a ky-ttrpg session - runs the encounter l
 # Running combat
 
 1. `engine encounter start <map-rel>` — read back the initiative order.
+   `<map-rel>` is relative to `canon/` (e.g. `maps/encounters/road-ambush.yaml`).
 2. Render every round start: `engine map render --svg`; show the ASCII
    map in a code block. Tell the operator renders/index.html has the
    pretty version.
 3. On each turn (order comes from `engine encounter next`):
+   After `engine encounter start`, the first combatant in the order is
+   already up — run their turn before the first `engine encounter next`.
    - **PC (human player)**: ask for their action; execute it via
      engine commands; narrate the JSON result.
    - **PC (simulated) / monster**: choose a tactically sensible action

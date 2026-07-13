@@ -42,3 +42,15 @@ def test_rest_blocked_in_encounter(wroot):
     res = runner.invoke(app, ["rest", "--type", "short"])
     assert res.exit_code == 1
     assert json.loads(res.stdout)["error"]["code"] == "encounter_active"
+
+
+def test_short_rest_clears_death_state(wroot):
+    make_pc()
+    combat.apply_damage(wroot, "pc-borin", 13, source="test")
+    res = runner.invoke(app, ["--seed", "8", "rest", "--type", "short"])
+    assert res.exit_code == 0, res.stdout
+    sheet = worldfs.read_yaml(wroot / "state" / "party" / "pc-borin.yaml")
+    assert sheet["hp"] > 0
+    names = {e["name"] for e in sheet["effects"]}
+    assert "dying" not in names and "unconscious" not in names
+    assert "death_saves" not in sheet

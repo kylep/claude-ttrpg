@@ -335,12 +335,16 @@ def _gold_target(actor: str | None, party: bool) -> str:
 @gold_app.command("add")
 def gold_add(amount: int = typer.Option(...), actor: str | None = typer.Option(None),
              party: bool = typer.Option(False, "--party")):
+    if amount < 1:
+        fail("bad_amount", f"amount must be >= 1, got {amount}")
     emit(guard(inventory.adjust_gold, require_root(), _gold_target(actor, party), amount))
 
 
 @gold_app.command("spend")
 def gold_spend(amount: int = typer.Option(...), actor: str | None = typer.Option(None),
                party: bool = typer.Option(False, "--party")):
+    if amount < 1:
+        fail("bad_amount", f"amount must be >= 1, got {amount}")
     emit(guard(inventory.adjust_gold, require_root(), _gold_target(actor, party), -amount))
 
 
