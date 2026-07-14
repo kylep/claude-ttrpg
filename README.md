@@ -27,6 +27,10 @@ Install the engine CLI:
 uv tool install --editable ./engine
 ```
 
+(The editable install picks up code changes automatically but not new
+dependencies — after pulling a change that adds one, rerun with
+`--reinstall`.)
+
 Create a world — either ask Claude to use the `world-new` skill (which
 does all of the below for you), or by hand:
 
@@ -69,6 +73,18 @@ the fight. Quests are first-class state too (`engine quest
 offer/accept/complete/cancel/list`): NPC and PC rewards are escrowed up
 front — no vaporware bounties — while world quests can spawn rewards
 and grant XP. Thornbury's quest board ships with two.
+
+Combat is tactically honest: walls block line of sight (and shots),
+movement pays for the actual route through difficult terrain, and the
+engine enforces the conditions the rules only used to describe — prone,
+grappled, restrained, poisoned, frightened (of a specific enemy, until
+you break line of sight), and hidden. `engine hide` starts a real
+stealth contest against passive perception, dark terrain conceals
+whoever stands in it unlit (torches grant `lit` and give you away),
+flyers fight from the air and take fall damage coming down, rogues get
+their sneak dice applied automatically, and `grapple`/`shove`/`escape`
+are contested rolls. Every attack and check reports *why* it rolled
+with advantage or disadvantage.
 
 ### Printable handbooks
 
