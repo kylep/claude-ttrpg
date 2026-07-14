@@ -1,2 +1,3 @@
 second_wind: {description: "Once per short rest, regain hit points equal to a roll plus fighter level."}
 improved_critical: {description: "This character's weapon attacks score a critical hit on a roll of 19 or 20."}
+sneak_attack: {description: "Engine-enforced: hits made with advantage or beside an adjacent ally add sneak dice."}

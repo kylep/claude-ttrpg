@@ -15,4 +15,6 @@ difficulty: medium
 notes: >
   Its bite carries a paralytic venom: on a hit, the target rolls a CON
   check vs DC 13 (medium); on a failure the GM applies the poisoned
-  effect (effect add --target <pc> --name poisoned --duration 3).
+  effect (effect add --target <pc> --name poisoned --duration 3). The
+  engine enforces the consequences from there — disadvantage on the
+  victim's attacks, checks, contests, and hiding until it expires.

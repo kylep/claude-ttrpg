@@ -28,11 +28,11 @@ def test_move_too_far_rejected(wroot):
 
 def test_move_into_wall_rejected_difficult_costs_extra(wroot):
     setup_fight(wroot)
-    # Test difficult terrain first (from original [10,3])
-    # Chebyshev: max(|10-8|, |3-5|) = max(2, 2) = 2, +1 for difficult = cost 3
+    # Path from [10,3] to [8,5]: the diagonal through [9,4] is blocked by the
+    # living goblin there, so the route is 3 steps, +1 to enter difficult [8,5]
     res = runner.invoke(app, ["move", "--actor", "pc-borin", "--to", "8,5"])
     assert res.exit_code == 0
-    assert json.loads(res.stdout)["cost"] == 3
+    assert json.loads(res.stdout)["cost"] == 4
 
     # Reset PC position to [10,3] for wall rejection test
     enc = worldfs.read_yaml(wroot / "state" / "encounter.yaml")

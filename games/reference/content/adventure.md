@@ -87,12 +87,15 @@ heard from the tomb beyond (see Encounter B).
 The boss fight: **the Barrow King** with one goblin honor-guard, in
 his rubble-choked burial chamber. His dread wail (see
 `content/bestiary/barrow_king.yaml`) frightens whoever it hits; the GM
-should apply the `frightened` effect by hand
-(`effect add --target <pc> --name frightened --duration 2`) rather
-than expecting the engine to do it automatically. A DC 16 (hard)
-Athletics or Perception check finds safe footing across the rubble
-(`terrain: difficult`) and avoids the extra movement cost for one
-turn.
+applies the effect with the King as its source
+(`effect add --target <pc> --name frightened --duration 2 --source barrow_king-1`)
+and the engine enforces the rest: the shaken PC rolls at disadvantage
+while the King is in view and cannot willingly step closer to him.
+The dais walls flanking his position are the counterplay — breaking
+line of sight behind them shakes the fear off until he comes back
+into view. A DC 16 (hard) Athletics or Perception check finds safe
+footing across the rubble (`terrain: difficult`) and avoids the extra
+movement cost for one turn.
 
 ## Beat 6 — Return and Reward
 
@@ -319,12 +322,23 @@ Beyond this door is shelving, half-collapsed, over a floor of rubble
 and trip-latches — `maps/encounters/ward-rogue.yaml` — guarded by **the
 Latchwight**, a key-shaped ward-spirit that skitters the difficult
 cells (`terrain: difficult`) without penalty while everyone else pays
-the extra movement cost to cross them. A DC 13 (medium) Acrobatics
-check on entry lets the rogue ignore the difficult-terrain cost for one
-turn, same convention as Act 2's flooded treads; a DC 10 (easy)
-Perception check before engaging spots which shelving is still going
-to fall if leaned on, which the GM can use to open an environmental
-option (shove the Latchwight under it) instead of a straight fight.
+the extra movement cost to cross them (the engine now charges terrain
+along the whole route, so let it do the math). This trial is the
+stealth kit's proving ground, and the ward watches the door: the rogue
+enters *seen*, and `engine hide` at the spawn will fail with `seen`.
+The collapsed shelving stacks block line of sight — two moves put the
+rogue in their shadow, where `engine hide` works. From hiding, the
+intended run is the rogue's whole trade in three commands: sneak along
+the shelving (the engine contests the stealth roll against the
+Latchwight's passive perception on every move it can see), close to
+adjacent, and `engine attack` from hiding — advantage, automatic
+`sneak_attack` dice, and the reveal, all engine-applied. A DC 13
+(medium) Acrobatics check on entry lets the rogue ignore the
+difficult-terrain cost for one turn, same convention as Act 2's flooded
+treads; a DC 10 (easy) Perception check before engaging spots which
+shelving is still going to fall if leaned on, which the GM can resolve
+with `engine shove` (a real contested roll now — prone under falling
+shelving is worth a `damage` ruling) instead of a straight fight.
 On defeat it yields the vault's own boots — see `hushstep_boots` below.
 
 ### Beat 14 — The Judgment Ward (cleric)

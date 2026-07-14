@@ -1,5 +1,5 @@
 name: reference
-version: 0.2.0            # worlds pin this at instantiation; bump on any ruleset change
+version: 0.3.0            # worlds pin this at instantiation; bump on any ruleset change
 description: The baseline four-class ruleset every other game in this repo is instantiated from.
 start_date: "1203-04-17"  # in-world date new worlds begin on (calendar is 12 months x 30 days)
 start_hour: 9             # 0-23, world clock at creation

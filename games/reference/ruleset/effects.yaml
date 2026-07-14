@@ -1,5 +1,9 @@
-# impact is guidance for the GM, not engine-enforced: apply it via --adv/--dis flags
-# on rolls, or `engine effect add/remove`. Durations tick down each combat round.
+# impact is guidance for the GM: apply it via --adv/--dis flags on rolls, or
+# `engine effect add/remove`. Durations tick down each combat round.
+# Exceptions marked "engine-enforced" are applied by the engine itself:
+# prone, hidden, grappled, restrained, unconscious, poisoned, frightened,
+# and lit change attack rolls, checks, and movement automatically — no
+# --adv/--dis flags needed for those.
 # description is GM-facing narration flavor; the engine ignores it
 blessed:
   impact: "GM gives the blessed creature +1d4 flavor luck on attacks and saves, or grants --adv on a close roll instead"
@@ -8,10 +12,10 @@ shielded:
   impact: "attacks against the shielded creature resolve at --dis, or the GM treats its AC as 2 higher for the encounter"
   description: "A pale disc of light drifts around the creature, tilting to catch blades and arrows a half-second before they land."
 poisoned:
-  impact: "GM applies --dis to the poisoned creature's attacks and ability checks"
+  impact: "engine-enforced: the poisoned creature's attacks, checks, contests, and hide rolls all take disadvantage"
   description: "The creature is grey-faced and sweating, its stomach cramping and its vision swimming at the edges."
 unconscious:
-  impact: "creature cannot act, speak, or move; attacks against it resolve at --adv"
+  impact: "engine-enforced: creature cannot act, speak, or move; attacks against it resolve with advantage automatically"
   description: "The creature is slack and senseless on the ground, deaf to shouting and helpless against anything done to it."
 dying:
   impact: "creature is unconscious at 0 hp and rolls a death save each round per recovery.yaml until stable, healed, or dead"
@@ -20,16 +24,28 @@ dead:
   impact: "creature is out of play; no further saves, healing, or actions apply to it"
   description: "The creature is beyond wounds, beyond medicine, and beyond argument."
 prone:
-  impact: "melee attacks against the prone creature get --adv, ranged attacks against it get --dis, and its own attacks resolve at --dis until it stands"
+  impact: "engine-enforced: melee attacks against the prone creature get advantage, ranged attacks against it get disadvantage, its own attacks roll at disadvantage, and it crawls at double movement cost until `engine stand`"
   description: "The creature is flat on the ground amid its own dropped gear, scrambling for footing while the fight goes on above it."
+hidden:
+  impact: "engine-enforced: set by `engine hide` (needs cover from every hostile's line of sight); attacks from hiding get advantage and then reveal, attacks against the hidden creature get disadvantage, and whenever either side moves into the other's sight the stealth roll is contested against passive perception"
+  description: "The creature has folded itself into shadow and held its breath; the fight has, for the moment, lost track of it."
+grappled:
+  impact: "engine-enforced: set by `engine grapple` (contested Athletics); the grappled creature cannot move until `engine escape` succeeds, the grappler releases or drops, or the pair is pulled apart"
+  description: "A fist, jaw, or worse has closed on the creature; it can still fight, but it is going nowhere."
+restrained:
+  impact: "engine-enforced: the restrained creature cannot move, attacks against it get advantage, and its own attacks roll at disadvantage (GM applies and removes this one by hand - nets, vines, leg-hooks)"
+  description: "The creature is pinned in place by something with no interest in letting go - rope, root, or grave-iron."
 frightened:
-  impact: "GM applies --dis to the frightened creature's attacks and checks while the source of its fear is in view"
+  impact: "engine-enforced: apply with `effect add --source <cause>` and the creature rolls attacks, checks, and contests at disadvantage while the source is alive and in its line of sight, and cannot willingly move closer to it; applied without a source it always bites"
   description: "The creature's nerve has cracked; it fights with one eye on the thing it fears and one foot pointed toward the exit."
+lit:
+  impact: "engine-enforced: the creature carries its own light (a burning torch grants this on equip); it is plainly visible even in dark cells, so darkness gives it no concealment and attackers no penalty against it"
+  description: "Honest flame rides with the creature, throwing its shadow tall against every wall and telling the whole room exactly where it stands."
 oath_whisper:
   impact: "GM applies --dis to the cursed wielder's WIS-based checks (Insight, Medicine, Perception, Religion, Survival) while the blade is carried"
   description: "A thin second voice rides under every thought, doubting the wielder's read of every face and every room; it is patient, and it is very rarely wrong to doubt."
 silent_step:
-  impact: "GM grants --adv on the wearer's Stealth checks"
+  impact: "engine-enforced for `engine hide` (the roll gets advantage); GM still grants --adv on other Stealth-flavored checks"
   description: "The wearer's footfalls land a half-second quieter than they should, as if the ground itself were leaning out of the way."
 gravewarded:
   impact: "GM grants --adv on the wearer's saves and checks made to resist fear, undead influence, or grave-magic (a wail, a poison sourced from something already dead, a fright effect the restless dead cause)"

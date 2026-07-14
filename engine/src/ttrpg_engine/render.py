@@ -32,10 +32,12 @@ def ascii_map(enc: dict) -> str:
     w, h = enc["grid"]["width"], enc["grid"]["height"]
     syms = symbols(enc)
     cells = [["." for _ in range(w)] for _ in range(h)]
-    for x, y in grid.cells_of(enc, "wall"):
-        cells[y][x] = "#"
+    for x, y in grid.cells_of(enc, "dark"):
+        cells[y][x] = ":"
     for x, y in grid.cells_of(enc, "difficult"):
         cells[y][x] = "~"
+    for x, y in grid.cells_of(enc, "wall"):
+        cells[y][x] = "#"
     for cid, pos in enc["positions"].items():
         if enc["monsters"].get(cid, {}).get("dead", False):
             continue
@@ -44,7 +46,8 @@ def ascii_map(enc: dict) -> str:
     header = "   " + " ".join(str(x % 10) for x in range(w))
     rows = [f"{y:2d} " + " ".join(cells[y]) for y in range(h)]
     legend = "  ".join(f"{glyph}={cid}" for cid, glyph in syms.items())
-    return "\n".join([header, *rows, "", legend, "#=wall  ~=difficult"])
+    key = "#=wall  ~=difficult  :=dark" + ("  (the whole map is dark)" if enc.get("dark") else "")
+    return "\n".join([header, *rows, "", legend, key])
 
 
 def svg_map(enc: dict) -> str:
@@ -55,6 +58,8 @@ def svg_map(enc: dict) -> str:
              f'<rect width="{W}" height="{H}" fill="#fafaf7"/>']
     for x, y in grid.cells_of(enc, "difficult"):
         parts.append(f'<rect x="{x*_CELL}" y="{y*_CELL}" width="{_CELL}" height="{_CELL}" fill="#d8c9a3"/>')
+    for x, y in grid.cells_of(enc, "dark"):
+        parts.append(f'<rect x="{x*_CELL}" y="{y*_CELL}" width="{_CELL}" height="{_CELL}" fill="#6b7280" opacity="0.55"/>')
     for x, y in grid.cells_of(enc, "wall"):
         parts.append(f'<rect x="{x*_CELL}" y="{y*_CELL}" width="{_CELL}" height="{_CELL}" fill="#44403c"/>')
     for i in range(w + 1):

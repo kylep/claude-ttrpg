@@ -9,12 +9,13 @@ dagger: {type: weapon, damage: 1d4, finesse: true, range: 1, price: 2,
 shortbow: {type: weapon, damage: 1d6, finesse: true, range: 16, price: 25,
   description: "A hunter's recurve of horn and yew, short enough to draw in scrub or a tunnel mouth."}
 # armor — AC = ac_base (+ DEX modifier if add_dex); unarmored is 10 + DEX
-chain_mail: {type: armor, ac_base: 16, add_dex: false, price: 75,
+# stealth_dis: engine rolls the wearer's `engine hide` at disadvantage
+chain_mail: {type: armor, ac_base: 16, add_dex: false, stealth_dis: true, price: 75,
   description: "A knee-length shirt of riveted rings over padded cloth; heavy, loud, and very hard to cut."}
 leather_armor: {type: armor, ac_base: 11, add_dex: true, price: 10,
   description: "Boiled hide panels stitched over a jerkin — light enough to tumble in, tough enough to turn a glancing blade."}
-torch: {type: gear, price: 1,
-  description: "A pitch-soaked brand that burns for about an hour, shedding honest light and a lot of smoke."}
+torch: {type: gear, price: 1, grants_effect: {name: lit},
+  description: "A pitch-soaked brand that burns for about an hour, shedding honest light and a lot of smoke; while it is equipped its bearer is lit - seen plainly even in the dark."}
 rope: {type: gear, price: 2,
   description: "Fifty feet of hemp line, tarred against rot; holds a climber's weight if the knot does."}
 thieves_tools: {type: gear, price: 25,

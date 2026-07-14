@@ -26,3 +26,18 @@ holy_burst:
   save_attr: DEX
   damage: 3d6
   on_save: half
+fire_dart:
+  level: 0
+  action: action
+  range: 12
+  resolve: attack
+  damage: 1d6
+flame_wave:
+  level: 2
+  action: action
+  range: 12
+  resolve: save
+  save_attr: DEX
+  damage: 3d6
+  on_save: half
+  area: {shape: burst, radius: 1}

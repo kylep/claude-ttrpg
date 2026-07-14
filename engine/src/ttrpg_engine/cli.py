@@ -224,7 +224,7 @@ def encounter_start(map_rel: str, pcs: str | None = typer.Option(None, "--pcs", 
 
 @enc_app.command("next")
 def encounter_next():
-    emit(guard(combat.next_turn, require_root()))
+    emit(guard(combat.next_turn, require_root(), rng))
 
 
 @enc_app.command("end")
@@ -254,7 +254,7 @@ def attack(
 @app.command()
 def damage(target: str = typer.Option(...), amount: int = typer.Option(...),
            source: str = typer.Option("GM")):
-    emit(guard(combat.apply_damage, require_root(), target, amount, source))
+    emit(guard(combat.apply_damage, require_root(), target, amount, source, rng))
 
 
 @app.command()
@@ -265,13 +265,14 @@ def heal(target: str = typer.Option(...), amount: int = typer.Option(...),
 
 @effect_app.command("add")
 def effect_add(target: str = typer.Option(...), name: str = typer.Option(...),
-               duration: int = typer.Option(-1)):
-    emit(guard(combat.set_effect, require_root(), target, name, duration))
+               duration: int = typer.Option(-1),
+               source: str | None = typer.Option(None, help="Combatant causing it (frightened uses this).")):
+    emit(guard(combat.set_effect, require_root(), target, name, duration, source))
 
 
 @effect_app.command("remove")
 def effect_remove(target: str = typer.Option(...), name: str = typer.Option(...)):
-    emit(guard(combat.remove_effect, require_root(), target, name))
+    emit(guard(combat.remove_effect, require_root(), target, name, rng))
 
 
 @app.command()
@@ -281,10 +282,68 @@ def deathsave(actor: str = typer.Option(...)):
 
 @app.command()
 def cast(caster: str = typer.Option(...), spell: str = typer.Option(...),
-         target: str | None = typer.Option(None)):
+         target: str | None = typer.Option(None),
+         at: str | None = typer.Option(None, "--at", help="X,Y cell for area spells")):
     root = require_root()
     g = guard(worldfs.load_game_for, root)
-    emit(guard(spells.cast, root, g, caster, spell, target, roll_fn=d20_roll, rng=rng))
+    cell = None
+    if at is not None:
+        try:
+            x, y = (int(v) for v in at.split(","))
+        except ValueError:
+            fail("bad_coord", f"--at must be X,Y, got {at!r}")
+        cell = (x, y)
+    emit(guard(spells.cast, root, g, caster, spell, target, roll_fn=d20_roll, rng=rng, at=cell))
+
+
+@app.command()
+def ascend(actor: str = typer.Option(...)):
+    emit(guard(combat.ascend, require_root(), actor))
+
+
+@app.command()
+def land(actor: str = typer.Option(...)):
+    emit(guard(combat.land, require_root(), actor))
+
+
+@app.command()
+def fall(actor: str = typer.Option(...),
+         dice_expr: str = typer.Option("2d6", "--dice", help="Fall damage roll.")):
+    emit(guard(combat.fall, require_root(), actor, rng, dice_expr))
+
+
+@app.command()
+def hide(actor: str = typer.Option(...)):
+    root = require_root()
+    g = guard(worldfs.load_game_for, root)
+    emit(guard(combat.hide, root, g, actor, roll_fn=d20_roll))
+
+
+@app.command()
+def stand(actor: str = typer.Option(...)):
+    emit(guard(combat.stand, require_root(), actor))
+
+
+@app.command()
+def grapple(actor: str = typer.Option(...), target: str = typer.Option(...),
+            release: bool = typer.Option(False, "--release")):
+    emit(guard(combat.grapple, require_root(), actor, target,
+               roll_fn=d20_roll, release=release))
+
+
+@app.command()
+def escape(actor: str = typer.Option(...)):
+    emit(guard(combat.escape, require_root(), actor, roll_fn=d20_roll))
+
+
+@app.command()
+def shove(actor: str = typer.Option(...), target: str = typer.Option(...)):
+    emit(guard(combat.shove, require_root(), actor, target, roll_fn=d20_roll))
+
+
+@app.command()
+def sight(actor: str = typer.Option(...), target: str = typer.Option(...)):
+    emit(guard(combat.sight, require_root(), actor, target))
 
 
 @app.command()

@@ -16,5 +16,11 @@ loot: {gold: 4d10, items: [kings_circlet]}
 difficulty: boss
 notes: >
   A hit from the dread wail leaves its victim shaken: the GM applies
-  the frightened effect (effect add --target <pc> --name frightened
-  --duration 2) for as long as the Barrow King remains in view.
+  the frightened effect with the King as its source (effect add
+  --target <pc> --name frightened --duration 2 --source barrow_king-1).
+  The engine then does the rest, exactly as the wail intends: the
+  victim rolls attacks and checks at disadvantage while the King is in
+  view, and cannot willingly move a step closer to him. The tomb's
+  flanking walls are the counterplay — duck behind the dais stonework
+  to break line of sight and fight on, or hold at range until the
+  effect ticks out.

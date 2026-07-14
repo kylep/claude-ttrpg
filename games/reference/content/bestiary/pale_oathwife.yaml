@@ -18,5 +18,7 @@ difficulty: hard
 notes: >
   A hit from the drowning benediction fills the victim's lungs with cold
   cistern water: the GM applies the poisoned effect (effect add --target
-  <pc> --name poisoned --duration 3). If the party carries the
-  kings_circlet, she directs every benediction at its bearer first.
+  <pc> --name poisoned --duration 3); the engine rolls the victim's
+  attacks, checks, contests, and hiding at disadvantage until it passes.
+  If the party carries the kings_circlet, she directs every benediction
+  at its bearer first.

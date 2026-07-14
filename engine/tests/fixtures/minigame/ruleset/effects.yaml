@@ -1,4 +1,10 @@
 blessed: {impact: "+1d4 hint to GM on attacks and saves (adjudicated via --adv where fitting)"}
-poisoned: {impact: "GM applies --dis on attacks and checks"}
-unconscious: {impact: "cannot act; attacks against have --adv"}
+poisoned: {impact: "engine-enforced: dis on attacks, checks, contests, and hiding"}
+frightened: {impact: "engine-enforced: dis on rolls while the fear source is in view; cannot approach it (effect add --source)"}
+lit: {impact: "engine-enforced: carrying light; cancels darkness concealment"}
+unconscious: {impact: "engine-enforced: cannot act; attacks against have adv"}
 dying: {impact: "must make death saves; see recovery"}
+prone: {impact: "engine-enforced: melee vs it adv, ranged vs it dis, its attacks dis, crawls at double cost"}
+hidden: {impact: "engine-enforced: set by engine hide; adv attacking from it, dis attacking into it"}
+grappled: {impact: "engine-enforced: cannot move until escape, release, or the pair separates"}
+restrained: {impact: "engine-enforced: cannot move, attacks against it adv, its attacks dis"}
