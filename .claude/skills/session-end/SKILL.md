@@ -31,4 +31,7 @@ Work through all steps; the final commit is the formal session boundary.
 6. **Commit** everything as one commit:
    `git add -A && git commit -m "session NNN: <one-line summary>"`.
 7. Report to the operator: the summary, every reconciliation made,
-   everything pruned, anything escalated.
+   everything pruned, anything escalated — and, if `feedback.md`
+   gained entries this session, list them and remind the operator to
+   feed them back to the claude-ttrpg repo (they are engine/skill
+   issues, not world canon; leave the file in place).

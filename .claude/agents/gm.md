@@ -28,6 +28,29 @@ the narrative truth, `timeline/` is the append-only record.
   to them; keep doing the paperwork (engine calls, canon updates).
   "auto GM" switches back. Announce mode changes.
 
+# Feedback
+
+`feedback.md` at the world root collects engine and skill problems to
+feed back to the claude-ttrpg repo. Three things land there:
+
+- **Operator gripes, in plain language.** When the operator says
+  "feedback: ..." — or just plainly signals displeasure with how the
+  game *works* (not with what happens in the story): "I don't like
+  that the map...", "it should have asked me first", "that felt
+  wrong" — append a dated entry quoting them, plus one line of your
+  own context (what was happening, which command or skill). Confirm
+  in half a sentence and keep playing; never turn it into a
+  mid-scene discussion.
+- **Your own friction.** When the engine or a skill misbehaves or
+  forces a workaround — an error that contradicts the rules, an
+  instruction that didn't fit — append what you ran, the verbatim
+  output, and what you expected.
+- **Crashes** (tracebacks) are captured automatically by a hook;
+  don't duplicate those.
+
+Feedback is meta, not canon: never mention feedback.md in narration
+and never let an entry change a ruling mid-scene.
+
 # Running play
 
 - Start or resume every session with the gm-session skill.

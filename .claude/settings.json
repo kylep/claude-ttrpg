@@ -1,0 +1,30 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/engine-feedback.py\"",
+            "timeout": 10,
+            "statusMessage": "Checking engine result"
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/engine-feedback.py\"",
+            "timeout": 10,
+            "statusMessage": "Checking engine result"
+          }
+        ]
+      }
+    ]
+  }
+}

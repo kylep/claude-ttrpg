@@ -69,13 +69,18 @@ chime in but follow your lead), and opens the first scene. On later
 launches, "resume" (or just "let's play") picks up from the last
 session summary.
 
-Three phrases steer the operator relationship with the GM at any time:
+Four phrases steer the operator relationship with the GM at any time:
 
 - **"GM override"** — apply an instruction as-is; it gets logged to
   the timeline.
 - **"manual GM"** — every ruling (DCs, NPC reactions) is deferred to
   you; the engine paperwork keeps happening automatically.
 - **"auto GM"** — hand rulings back to Claude.
+- **"feedback: ..."** — log a gripe or suggestion about how the game
+  *works* (engine, skills, UX) to the world's `feedback.md` and keep
+  playing; plain complaints ("I don't like that the map...") get
+  logged too. Engine crashes land there automatically via a hook.
+  Feed the file back to this repo when it has content.
 
 Gear is live state: `engine equip` / `engine unequip` recompute AC and
 attacks from what's actually worn, magic items carry boons (and
