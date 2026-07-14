@@ -1,6 +1,7 @@
 from pathlib import Path
+from random import Random
 
-from ttrpg_engine import combat, derive, timeline, worldfs
+from ttrpg_engine import combat, derive, dice, grid, timeline, worldfs
 from ttrpg_engine.errors import EngineError
 
 
@@ -151,6 +152,59 @@ def unequip(root: Path, g: dict, actor: str, item: str, *, force: bool = False) 
     timeline.append_event(root, type_="unequip", actors=[actor], summary=summary)
     return {"actor": actor, "item": item, "ac": sheet["ac"], "attacks": sheet["attacks"],
             "effects": sheet["effects"], "forced": force}
+
+
+def use(root: Path, g: dict, actor: str, item: str, target: str | None,
+        rng: Random, *, force: bool = False) -> dict:
+    kind, sheet, enc = combat.resolve_actor(root, actor)
+    if kind != "pc":
+        raise EngineError("not_pc", "only PCs carry inventory")
+    if item not in g["items"]:
+        raise EngineError("unknown_item", f"no item {item} in this game")
+    spec = g["items"][item]
+    if spec.get("type") != "consumable":
+        raise EngineError("not_consumable", f"{item} is not a consumable")
+    if not any(k in spec for k in ("heal", "damage", "grants_effect")):
+        raise EngineError("inert", f"{item} defines no heal, damage, or grants_effect")
+    line = _find_line(sheet, item)
+    if line is None:
+        raise EngineError("not_carried", f"{actor} does not carry {item}")
+    target = target or actor
+    if target != actor:
+        combat.resolve_actor(root, target)  # must exist
+        if enc and actor in enc["positions"] and target in enc["positions"]:
+            dist = grid.chebyshev(tuple(enc["positions"][actor]),
+                                  tuple(enc["positions"][target]))
+            if dist > 1:
+                raise EngineError("out_of_range", f"{target} is {dist} away, must be adjacent")
+            aloft = enc.get("aloft", {})
+            if bool(aloft.get(actor)) != bool(aloft.get(target)):
+                raise EngineError("unreachable", f"{actor} and {target} are not on the same plane")
+    _check_gear_economy(enc, actor, spec, force)
+    # spend the item before resolving, mirroring spell-slot spending
+    line["qty"] -= 1
+    sheet["inventory"] = [l for l in sheet["inventory"] if l["qty"] > 0]
+    combat.save_pc(root, sheet)
+    if _record_gear_action(enc, actor, spec):
+        combat.save_encounter(root, enc)
+    timeline.append_event(root, type_="item", actors=[actor, target],
+                          summary=f"{actor} uses {item}"
+                                  + (f" on {target}" if target != actor else ""))
+    result = {"actor": actor, "item": item, "target": target,
+              "qty_left": max(0, line["qty"]), "forced": force}
+    if "heal" in spec:
+        amount = dice.roll(str(spec["heal"]), rng).total
+        result["healed"] = combat.apply_heal(root, target, amount,
+                                             source=f"{actor}:{item}")["amount"]
+    if "damage" in spec:
+        dmg = dice.roll(str(spec["damage"]), rng).total
+        result["damage"] = combat.apply_damage(root, target, dmg,
+                                               source=f"{actor}:{item}", rng=rng)["amount"]
+    if "grants_effect" in spec:
+        eff = spec["grants_effect"]
+        combat.set_effect(root, target, eff["name"], eff.get("duration", -1))
+        result["effect"] = eff
+    return result
 
 
 def dispel(root: Path, g: dict, actor: str, item: str) -> dict:

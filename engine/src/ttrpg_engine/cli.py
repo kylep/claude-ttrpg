@@ -392,6 +392,15 @@ def item_remove(actor: str = typer.Option(...), item: str = typer.Option(...),
     emit(guard(inventory.remove_item, root, g, actor, item, qty))
 
 
+@item_app.command("use")
+def item_use(actor: str = typer.Option(...), item: str = typer.Option(...),
+             target: str | None = typer.Option(None, help="Defaults to the actor."),
+             force: bool = typer.Option(False, "--force")):
+    root = require_root()
+    g = guard(worldfs.load_game_for, root)
+    emit(guard(inventory.use, root, g, actor, item, target, rng, force=force))
+
+
 @item_app.command("dispel")
 def item_dispel(actor: str = typer.Option(...), item: str = typer.Option(...)):
     root = require_root()

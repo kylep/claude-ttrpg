@@ -28,7 +28,10 @@ Thornbury, so the world clock still reads `1203-04-17 09:00`
 Giver: **Farmer Tobin** (`content/npcs.yaml`, holdings seeded with 20 gp
 and 1x `healing_potion`). Reward escrows from his holdings at offer
 time — modest gold plus the potion, exercising both gold and item
-escrow at once. Deadline is exactly one year out from the campaign's
+escrow at once. The potion is drunk through the engine, not narration:
+`engine item use --actor <pc> --item healing_potion [--target <ally>]`
+rolls its `heal: 2d4+2` and decrements the bottle (adjacent targets
+only in combat, and it spends the round's gear action). Deadline is exactly one year out from the campaign's
 start date (`1203-04-17` → `1204-04-17`, this game's calendar being 12
 months of 30 days per `engine/src/ttrpg_engine/clock.py`); `--deadline-hour`
 is left at its default (9), which already matches the campaign's start

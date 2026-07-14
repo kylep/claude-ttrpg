@@ -55,6 +55,9 @@ def validate(path: Path) -> list[str]:
         grants = ispec.get("grants_effect")
         if grants and grants["name"] not in g["effects"]:
             errors.append(f"item {iid}: unknown effect {grants['name']}")
+        if (ispec.get("type") == "consumable"
+                and not any(k in ispec for k in ("heal", "damage", "grants_effect"))):
+            errors.append(f"item {iid}: consumable defines no heal, damage, or grants_effect")
     for mname, mon in _bestiary(g).items():
         for field in ["name", "ac", "hp", "speed", "attributes", "attacks", "xp"]:
             if field not in mon:
