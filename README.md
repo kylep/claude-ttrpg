@@ -56,6 +56,19 @@ claude --agent gm
 (`--game` takes any path to a game directory; use the absolute path
 unless you're running from inside this repo.)
 
+Once the GM greets you, just say what you want in plain language —
+there is no command syntax to learn. A typical first prompt:
+
+> New campaign. Party of four: I'll play a dwarf fighter named Borin —
+> build him for me, then design a rogue, a cleric, and a wizard and run
+> those three yourself. Auto-GM. Start the adventure.
+
+The GM creates every sheet through `engine char create`, plays any PC
+you didn't claim (in combat it takes their turns; out of combat they
+chime in but follow your lead), and opens the first scene. On later
+launches, "resume" (or just "let's play") picks up from the last
+session summary.
+
 Three phrases steer the operator relationship with the GM at any time:
 
 - **"GM override"** — apply an instruction as-is; it gets logged to
