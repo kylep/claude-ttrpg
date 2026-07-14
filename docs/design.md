@@ -110,12 +110,17 @@ movement checks are arithmetic the engine owns.
 ```yaml
 grid: {width: 12, height: 8}
 terrain:
-  - {type: wall, cells: [[4,0],[4,1],[4,2]]}
-  - {type: difficult, cells: [[7,5],[8,5]]}
+  - {type: wall, cells: [[4,0],[4,1],[4,2]]}      # blocks movement and line of sight
+  - {type: difficult, cells: [[7,5],[8,5]]}       # +1 movement cost to enter
+  - {type: dark, cells: [[9,6],[10,6]]}           # unlit creatures here are unseen
 combatants:
   pc-brin:  {pos: [2, 3]}
   goblin-1: {pos: [9, 4]}
 ```
+
+Maps may also declare a top-level `dark: true` for fully unlit
+encounters; the `lit` effect (granted by an equipped torch) opts a
+combatant out of darkness concealment.
 
 ### Rendering
 

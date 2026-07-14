@@ -65,6 +65,39 @@ fix-later; none block play.
   dead PCs never leave `party.members` (no retire/bury flow).
 - Equip/unequip unsupported for monster ids.
 
+## From the tactics round (2026-07-14)
+
+Carve-outs from the stealth/LOS/terrain/grapple/darkness work on the
+`tactical-mechanics` branch; all deliberate, none block play.
+
+- Sneak attack's "once per turn" is implemented as once per *round*
+  (keyed on `enc.sneak_used[attacker] == round`); the engine has no
+  reaction/off-turn attack concept to distinguish turns by.
+- Active searching for a hidden creature stays GM-run (`engine check`
+  with perception vs the stored stealth total, then `effect remove`);
+  the automatic contests only cover incidental notice on movement.
+- Walls block line of sight regardless of altitude — a flyer cannot
+  see or shoot over a wall. Fine while walls are read as full-height;
+  revisit if maps ever want low cover.
+- `engine sight` reports geometric LOS and distance only; it ignores
+  darkness and hidden. Good enough for GM adjudication, but it can say
+  `los: true` for a target the attacker would roll at disadvantage
+  against.
+- `lit` is binary and personal: a torch-bearer illuminates only itself,
+  not adjacent cells. No light-radius model.
+- Darkness and conditions never touch saving throws (`_resolve_save`
+  rolls raw); 5e agrees for darkness, less so for restrained vs DEX
+  saves. Revisit if saves grow adv/dis support.
+- Auto-fall triggers on `effect remove`/expiry of `flying`, but not on
+  unequipping a hypothetical flying-granting item (no game ships one
+  yet; wire `inventory.unequip` through the same path if one ever
+  does).
+- `restrained` has no engine-side applier (no net/web items or attacks);
+  it's GM `effect add` only.
+- Encounter-map terrain (including the new `dark` type) is still not
+  validated by `game validate` — a typoed terrain type is silently
+  ignored.
+
 ## From the quests round (2026-07-13)
 
 - Canon `npcs.yaml` gold/inventory shapes unvalidated by `game validate`;
