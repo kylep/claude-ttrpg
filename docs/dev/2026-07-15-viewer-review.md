@@ -76,8 +76,9 @@ feature/visual · **P2** polish.
 
 - [ ] **Story beats have no timestamps.** Can't tell pacing. Optional
   timestamp per beat (from the transcript record time).
-- [ ] **Party card could be richer.** AC shield, an initial medallion,
-  clearer level. Small.
+- [x] **Party card could be richer.** → AC shield (⛊ N) now shows on
+  party rows and, GM-lens, foe rows; medallions already appear on the
+  empty-state hero. `viewer.html` `hpBar` + viewer_data `_roster`.
 - [ ] **Combat-forward layout.** Consider swapping emphasis when an
   encounter is active (map-forward) vs exploration (story-forward).
   Larger change; defer.

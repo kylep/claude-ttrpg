@@ -49,6 +49,7 @@ def _roster(root: Path, enc: dict, view: dict, lens: str) -> list[dict]:
             if lens == "gm":
                 entry["hp"] = mon["hp"]
                 entry["max_hp"] = mon["max_hp"]
+                entry["ac"] = mon.get("ac")   # AC stays GM-only for foes
             else:
                 entry["status"] = _monster_status(mon)
         else:
@@ -56,7 +57,8 @@ def _roster(root: Path, enc: dict, view: dict, lens: str) -> list[dict]:
             names = [e["name"] for e in sheet.get("effects", [])]
             entry = {"id": cid, "name": sheet["name"], "side": "pc",
                      "effects": names, "aloft": aloft, "dead": "dead" in names,
-                     "hp": sheet["hp"], "max_hp": sheet["max_hp"]}
+                     "hp": sheet["hp"], "max_hp": sheet["max_hp"],
+                     "ac": sheet.get("ac")}
         entries.append(entry)
     return entries
 
