@@ -106,7 +106,7 @@ def cast(root: Path, g: dict, caster: str, spell_name: str, target: str | None,
     _spend_slot(root, sheet, level)
     result = {"caster": caster, "spell": spell_name, "target": target,
               "slot_level": level or None, "damage": 0, "healed": 0}
-    lands, half, crit = True, False, None
+    lands, half = True, False
     if spell["resolve"] == "attack":
         s_kind = "ranged" if spell["range"] > 1 else "melee"
         adv_from, dis_from = combat.roll_conditions(
@@ -123,9 +123,9 @@ def cast(root: Path, g: dict, caster: str, spell_name: str, target: str | None,
             dis_from.append("ranged_in_melee")
         natural, total = roll_fn(sheet["proficiency"] + castmod,
                                  bool(adv_from), bool(dis_from))
-        lands, crit = combat.resolve_hit(natural, total, t_data["ac"])
+        lands, _ = combat.resolve_hit(natural, total, t_data["ac"])  # spells don't crit
         result["attack"] = {"natural": natural, "total": total, "vs_ac": t_data["ac"],
-                            "hit": lands, "crit": crit}
+                            "hit": lands}
         if ranged_in_melee:
             result["ranged_in_melee"] = True
         if adv_from:
@@ -140,7 +140,7 @@ def cast(root: Path, g: dict, caster: str, spell_name: str, target: str | None,
                           summary=f"{caster} casts {spell_name} at {target}")
     if lands:
         if "damage" in spell:
-            dmg = combat.roll_damage(_expr(spell["damage"], castmod), rng, crit)
+            dmg = dice.roll(_expr(spell["damage"], castmod), rng).total
             dmg = max(1, dmg // 2) if half else dmg
             result["damage"] = combat.apply_damage(root, target, dmg,
                                                    source=f"{caster}:{spell_name}",

@@ -121,10 +121,9 @@ def test_holy_burst_no_slots_left_fails(wroot):
         assert e.code == "no_slots"
 
 
-def test_attack_spell_doubles_damage_on_crit(wroot):
-    # regression: spell attack rolls used to skip crit doubling that weapon
-    # attacks got. fire_dart is an attack-resolve cantrip (1d6) the cleric
-    # learns at level 2.
+def test_attack_spell_does_not_crit(wroot):
+    # spells never crit: a natural 20 auto-hits but rolls damage once (no
+    # doubling) and reports no crit field. fire_dart is an attack cantrip (1d6).
     _level_cleric_to_3(wroot)
     _start_encounter_adjacent_to_goblin(wroot)
     g = worldfs.load_game_for(wroot)
@@ -133,17 +132,11 @@ def test_attack_spell_doubles_damage_on_crit(wroot):
     enc["monsters"]["goblin-1"]["max_hp"] = 100
     worldfs.write_yaml(wroot / "state" / "encounter.yaml", enc)
 
-    crit = spells.cast(wroot, g, "pc-mira", "fire_dart", "goblin-1",
-                       roll_fn=fixed(20), rng=random.Random(3))
-    assert crit["attack"]["crit"] == "hit"
-    assert crit["damage"] == combat.roll_damage("1d6", random.Random(3), "hit")
-
-    worldfs.write_yaml(wroot / "state" / "encounter.yaml", enc)   # reset HP
-    plain = spells.cast(wroot, g, "pc-mira", "fire_dart", "goblin-1",
-                        roll_fn=fixed(15), rng=random.Random(3))
-    assert plain["attack"]["crit"] is None
-    assert plain["damage"] == combat.roll_damage("1d6", random.Random(3), None)
-    assert crit["damage"] > plain["damage"]           # doubling actually happened
+    r = spells.cast(wroot, g, "pc-mira", "fire_dart", "goblin-1",
+                    roll_fn=fixed(20), rng=random.Random(3))
+    assert r["attack"]["hit"] is True                 # nat 20 still auto-hits
+    assert "crit" not in r["attack"]                  # but spells carry no crit
+    assert r["damage"] == dice.roll("1d6", random.Random(3)).total   # single die, not doubled
 
 
 def test_unknown_spell_fails(wroot):
