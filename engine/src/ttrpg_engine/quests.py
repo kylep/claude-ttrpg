@@ -178,6 +178,10 @@ def offer(root: Path, g: dict, *, title: str, description: str,
           gold: int = 0, items: list[str] | None = None, xp: int = 0,
           deadline: dict | None = None, spawn: bool = False,
           escrow_from_type: str | None = None, escrow_from_id: str | None = None) -> dict:
+    """Create and persist a new 'offered' quest. Funding rules: world quests
+    either --spawn rewards from nothing (items validated against the game) or
+    escrow them from a holder; NPC/PC quests always escrow from the giver and
+    cannot grant xp. Escrowed gold/items are deducted from the holder up front."""
     items = list(items or [])
     if gold < 0:
         raise EngineError("bad_amount", "gold cannot be negative")
@@ -259,6 +263,10 @@ def accept(root: Path, quest_id: str, pcs: list[str]) -> dict:
 
 
 def complete(root: Path, quest_id: str, to: list[str] | None = None) -> dict:
+    """Pay out rewards and mark the quest completed. Gold splits evenly across
+    recipients with any remainder going to the first; all item rewards go to the
+    first recipient; xp is granted to every recipient. Recipients default to
+    accepted_by when --to is omitted."""
     quest = check_expiry(root, load_quest(root, quest_id))
     if quest["status"] == "expired":
         raise EngineError("expired", f"quest {quest_id} has expired")

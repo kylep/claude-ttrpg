@@ -87,6 +87,8 @@ def is_dark(enc: dict, cell: tuple[int, int]) -> bool:
 
 
 def blocked(enc: dict, cell: tuple[int, int]) -> str | None:
+    """Why `cell` can't be entered: "oob", "wall", or "occupied" (by a living
+    monster/PC); None if free. Dead occupants don't block."""
     x, y = cell
     if not (0 <= x < enc["grid"]["width"] and 0 <= y < enc["grid"]["height"]):
         return "oob"

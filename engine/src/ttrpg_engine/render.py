@@ -4,7 +4,7 @@ from xml.sax.saxutils import escape
 from ttrpg_engine import grid, worldfs
 from ttrpg_engine.errors import EngineError
 
-_CELL = 40
+_CELL = 40  # pixel size of one grid square in the rendered SVG
 
 
 def load_encounter(root: Path) -> dict:
@@ -37,6 +37,8 @@ def symbols(enc: dict) -> dict[str, str]:
 
 
 def ascii_map(enc: dict) -> str:
+    """Text battle map with a coordinate frame, terrain glyphs (#/~/:), and one
+    glyph per living combatant; the dead are omitted. Ends with legend + key."""
     w, h = enc["grid"]["width"], enc["grid"]["height"]
     syms = symbols(enc)
     cells = [["." for _ in range(w)] for _ in range(h)]
@@ -189,6 +191,8 @@ def svg_map(enc: dict, *, caption: bool = True, status: dict | None = None,
 
 
 def write_svg(root: Path, enc: dict) -> Path:
+    """Write the current round's map to renders/ (named date-id-round) and
+    regenerate renders/index.html as a newest-first gallery of every map."""
     clk = worldfs.read_yaml(worldfs.state(root, "clock"))
     stem = f'{clk["date"]}-{enc["id"]}-r{enc["round"]:02d}'
     out = root / "renders" / f"{stem}.svg"

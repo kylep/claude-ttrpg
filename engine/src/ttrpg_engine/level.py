@@ -28,6 +28,9 @@ def grant_xp(root: Path, amount: int, reason: str) -> dict:
 
 
 def up(root: Path, g: dict, actor: str, rng: Random) -> dict:
+    """Advance `actor` one level, adding a rolled hit die of hp and the new
+    row's features, spells, and slots. Raises if already at max level or short
+    of the next xp threshold. Slot counts carry current-vs-max deltas forward."""
     sheet = worldfs.read_yaml(worldfs.state(root, f"party/{actor}"))
     prog = g["progression"]
     new_level = sheet["level"] + 1

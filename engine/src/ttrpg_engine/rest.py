@@ -7,6 +7,10 @@ from ttrpg_engine.errors import EngineError
 
 
 def take(root: Path, g: dict, kind: str, rng: Random, pcs: list[str] | None = None) -> dict:
+    """Rest the party (or `pcs`), advancing the clock. A short rest heals one
+    hit die and clears unconscious/dying once above 0 hp; a long rest restores
+    full hp and all spell slots and resets effects to equipment-granted ones.
+    The dead are skipped."""
     if kind not in ("short", "long"):
         raise EngineError("bad_rest", "type must be short or long")
     if (root / "state" / "encounter.yaml").exists():

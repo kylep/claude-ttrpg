@@ -4,7 +4,8 @@ from pathlib import Path
 from ttrpg_engine import render, worldfs
 from ttrpg_engine.combat import effect_names
 
-_TIMELINE_TAIL = 30
+_TIMELINE_TAIL = 30  # how many recent timeline events the GM lens shows
+# encounter bookkeeping surfaced only in the GM lens, never to players
 _INTERNAL_KEYS = ("stealth", "grapples", "sneak_used", "gear_actions", "aloft")
 # coarse health bands for a monster the players only see as a status word — the
 # token ring then matches the healthy/wounded/bloodied word they already have

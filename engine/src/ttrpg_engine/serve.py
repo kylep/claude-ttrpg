@@ -99,6 +99,8 @@ class _Handler(BaseHTTPRequestHandler):
                 pass
 
     def _render_file(self, name: str) -> None:
+        """Serve a file from the world's renders/ dir; the resolved-path check
+        rejects any `name` that would escape it (path traversal)."""
         renders = (self.root / "renders").resolve()
         target = (renders / name).resolve()
         if not target.is_relative_to(renders) or not target.is_file():

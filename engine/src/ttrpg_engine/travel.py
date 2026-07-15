@@ -6,6 +6,9 @@ from ttrpg_engine.errors import EngineError
 
 
 def go(root: Path, dest: str, pcs: list[str] | None = None) -> dict:
+    """Travel to `dest` along a single region edge, advancing the clock by the
+    edge's hours. `pcs=None` moves the whole party (and its location); a subset
+    must all start at the same node and travels without the rest."""
     if (root / "state" / "encounter.yaml").exists():
         raise EngineError("encounter_active", "cannot travel mid-encounter")
     region = worldfs.read_yaml(root / "canon" / "maps" / "region.yaml")

@@ -183,6 +183,8 @@ def read_yaml(path: Path) -> dict:
 
 
 def write_yaml(path: Path, data) -> None:
+    """Atomic YAML write (temp file + os.replace) so a crash mid-write never
+    leaves a truncated state file."""
     path.parent.mkdir(parents=True, exist_ok=True)
     fd, tmp = tempfile.mkstemp(dir=path.parent, suffix=".tmp")
     with os.fdopen(fd, "w") as f:

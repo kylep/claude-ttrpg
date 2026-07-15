@@ -6,6 +6,8 @@ def to_hours(date_str: str, hour: int) -> int:
 
 
 def advance(clock: dict, hours: int) -> dict:
+    """Add `hours` to the clock, rolling over on a fixed 12-month, 30-day
+    calendar. Reference implementation for the game's calendar math."""
     h = clock["hour"] + hours
     days, h = divmod(h, 24)
     y, m, d = (int(x) for x in str(clock["date"]).split("-"))

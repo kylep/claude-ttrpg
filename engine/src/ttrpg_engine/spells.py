@@ -23,6 +23,7 @@ def _resolve_save(sheet, castmod, c_data, spell, roll_fn):
 
 
 def _spend_slot(root, sheet, level):
+    """Consume one level-`level` slot; cantrips (level 0) are free and spend nothing."""
     if level > 0:
         slot = sheet["spell_slots"].get(level)
         if not slot or slot["current"] < 1:
@@ -41,6 +42,10 @@ def _reveal_caster(root, enc, caster, sheet, result):
 
 def cast(root: Path, g: dict, caster: str, spell_name: str, target: str | None,
          *, roll_fn, rng: Random, at: tuple[int, int] | None = None) -> dict:
+    """Cast `spell_name` from `caster`'s sheet. Area spells (via `at` CELL) hit
+    every living actor within radius; single-target spells resolve by attack or
+    save. Spells never crit and cantrips (level 0) spend no slot. Returns a
+    result dict of what landed."""
     kind, sheet, enc = combat.resolve_actor(root, caster)
     if kind != "pc":
         raise EngineError("not_pc", "only PCs cast via their sheets in v1")

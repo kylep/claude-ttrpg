@@ -8,6 +8,10 @@ from ttrpg_engine.render import load_encounter
 
 def run(root: Path, actor: str, attr: str, dc: int, *,
         skill: str | None, adv: bool, dis: bool, roll_fn) -> dict:
+    """Roll an attribute check for `actor` against `dc`. Adds proficiency when
+    `skill` is one the PC has; applies disadvantage from active conditions on
+    top of the passed `dis`; flags crit/fumble on a natural roll at the
+    ruleset's bounds."""
     sheet = worldfs.read_yaml(worldfs.state(root, f"party/{actor}"))
     if attr not in sheet["attributes"]:
         raise EngineError("unknown_attr", f"no attribute {attr!r} on {actor}")

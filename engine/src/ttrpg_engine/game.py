@@ -17,6 +17,8 @@ def _read(path: Path):
 
 
 def load(path: Path) -> dict:
+    """Load a game definition into a dict: `meta`, `content_dir`, one key per
+    ruleset file, and `classes` keyed by class id."""
     path = Path(path)
     g = {"meta": _read(path / "game.yaml"), "content_dir": path / "content"}
     for name in _RULESET_FILES:
@@ -31,6 +33,8 @@ def load(path: Path) -> dict:
 
 
 def validate(path: Path) -> list[str]:
+    """Return human-readable problems with the game definition; an empty list
+    means valid."""
     errors: list[str] = []
     try:
         g = load(path)
