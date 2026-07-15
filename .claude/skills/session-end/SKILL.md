@@ -10,7 +10,8 @@ Work through all steps; the final commit is the formal session boundary.
 1. **Summary.** Write `sessions/session-NNN/summary.md`: 10-20 bullet
    beats, party status line (location, date, HP, level, notable loot),
    open threads. Source: the transcript file plus `timeline/` events
-   from this session (`grep -l "session: N" timeline/*.yaml`).
+   from this session (`grep -lE "^session: N$" timeline/*.yaml` — anchored
+   so session 1 doesn't also match 10, 11, …).
 2. **Canon diff.** `git diff <session-start-commit> -- canon/` (the
    commit made by gm-session). Read every changed file end to end.
 3. **Reconcile.** Fix contradictions and plot holes the session

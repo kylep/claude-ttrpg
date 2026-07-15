@@ -3,6 +3,8 @@ from dataclasses import dataclass
 from random import Random
 
 _DICE_RE = re.compile(r"^(\d*)d(\d+)([+-]\d+)?$")
+_MAX_COUNT = 1000   # bound allocation: `999999d6` should not build a huge list
+_MAX_SIDES = 1000
 
 
 @dataclass
@@ -22,6 +24,9 @@ def parse(expr: str) -> tuple[int, int, int]:
     modifier = int(m.group(3) or 0)
     if count < 1 or sides < 2:
         raise ValueError(f"invalid dice expression: {expr!r}")
+    if count > _MAX_COUNT or sides > _MAX_SIDES:
+        raise ValueError(
+            f"dice expression too large: {expr!r} (max {_MAX_COUNT}d{_MAX_SIDES})")
     return count, sides, modifier
 
 

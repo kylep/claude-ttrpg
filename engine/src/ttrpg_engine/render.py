@@ -14,6 +14,9 @@ def load_encounter(root: Path) -> dict:
     return worldfs.read_yaml(path)
 
 
+_GLYPH_FALLBACK = "0123456789@%&*+=<>"  # once a case's 26 letters are all taken
+
+
 def symbols(enc: dict) -> dict[str, str]:
     """Deterministic map of combatant id -> single glyph."""
     out, used = {}, set()
@@ -21,9 +24,13 @@ def symbols(enc: dict) -> dict[str, str]:
         is_pc = cid.startswith("pc-")
         glyph = cid.removeprefix("pc-")[0]
         glyph = glyph.upper() if is_pc else glyph.lower()
-        while glyph in used:  # collision: walk the alphabet
+        tries = 0
+        while glyph in used and tries < 26:  # collision: walk the alphabet, bounded
             nxt = chr(ord(glyph) + 1)
             glyph = nxt if nxt.isalpha() else ("A" if is_pc else "a")
+            tries += 1
+        if glyph in used:  # every letter of this case is taken — fall back
+            glyph = next((c for c in _GLYPH_FALLBACK if c not in used), "?")
         used.add(glyph)
         out[cid] = glyph
     return out

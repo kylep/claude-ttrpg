@@ -340,6 +340,8 @@ def apply_damage(root: Path, target: str, amount: int, source: str,
     if dropped:
         if kind == "monster":
             data["dead"] = True
+            timeline.append_event(root, type_="death", actors=[target],
+                                  summary=f"{data['name']} is slain")
         else:
             names = effect_names(data)
             data["effects"] += [{"name": n, "duration": -1}

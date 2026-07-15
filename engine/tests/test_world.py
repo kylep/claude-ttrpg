@@ -12,6 +12,20 @@ FIXTURE_GAME = Path(__file__).parent / "fixtures" / "minigame"
 runner = CliRunner()
 
 
+def test_init_world_cleans_up_on_failure(tmp_path, monkeypatch):
+    import pytest
+    dest = tmp_path / "brokenworld"
+
+    def boom(*a, **k):
+        raise OSError("disk full")
+
+    monkeypatch.setattr(worldfs.shutil, "copytree", boom)
+    with pytest.raises(EngineError) as exc:
+        worldfs.init_world(dest, FIXTURE_GAME, "Doomed")
+    assert exc.value.code == "init_failed"
+    assert not dest.exists()          # partial world removed so a retry is clean
+
+
 def test_init_world_layout(tmp_path):
     root = tmp_path / "w"
     worldfs.init_world(root, FIXTURE_GAME, "Testia")

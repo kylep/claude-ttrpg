@@ -55,6 +55,7 @@ def init_world(dest: Path, game_path: Path, name: str) -> None:
     if errors:
         raise EngineError("game_invalid", "; ".join(errors))
     g = game_mod.load(game_path)
+    preexisting = dest.exists()
     try:
         dest.mkdir(parents=True, exist_ok=True)
         shutil.copytree(g["content_dir"], dest / "canon")
@@ -76,5 +77,11 @@ def init_world(dest: Path, game_path: Path, name: str) -> None:
                      "path": str(Path(game_path).resolve())},
             "created": datetime.date.today().isoformat(),
         })
-    except OSError as e:
-        raise EngineError("init_failed", f"cannot initialize {dest}: {e}")
+    except Exception as e:
+        # world.yaml is written last, so reaching here means a partial init.
+        # Remove what we created (only if the dir is ours) so a retry is clean.
+        if not preexisting and dest.exists() and not (dest / "world.yaml").exists():
+            shutil.rmtree(dest, ignore_errors=True)
+        if isinstance(e, OSError):
+            raise EngineError("init_failed", f"cannot initialize {dest}: {e}")
+        raise

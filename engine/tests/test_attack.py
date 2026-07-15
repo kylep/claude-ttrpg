@@ -83,6 +83,14 @@ def test_nat1_misses_even_vs_ac0(wroot):
     assert r["hit"] is False and r["damage"] == 0
 
 
+def test_monster_death_emits_timeline_event(wroot):
+    setup_fight(wroot)
+    combat.apply_damage(wroot, "goblin-1", 99, source="test")
+    events = [worldfs.read_yaml(p) for p in sorted((wroot / "timeline").glob("*.yaml"))]
+    deaths = [e for e in events if e.get("type") == "death"]
+    assert any("goblin-1" in e["actors"] for e in deaths)   # monsters get a death event too
+
+
 def test_out_of_range_fails(wroot):
     setup_fight(wroot)
     # Move PC far from goblin-2 to test out of range
