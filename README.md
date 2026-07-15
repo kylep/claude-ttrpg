@@ -8,241 +8,44 @@ is a playable instance of a game living in its own private git repo, and
 **Timelines** let a world fork like save files or backfill its own history.
 
 Claude acts as game master (with an explicit human-GM override mode),
-narrating and adjudicating while deterministic scripts own every dice
-roll, stat, and state mutation.
+narrating and adjudicating while deterministic scripts own every dice roll,
+stat, and state mutation.
 
-## Layout
+v1 is playable: engine, reference game, and GM agent are implemented.
+Insert-mode and fork-management tooling are post-v1 (see the design doc).
 
-- `docs/design.md` — the design document (start here)
-- `docs/dev/` — implementation planning
-- `games/` — game definitions, including the reference template game
-- `engine/` — scripts that run game logic and mutate world state
-- `.claude/` — agents and skills for GM sessions
+## Install
 
-## Playing
-
-Install the engine CLI:
+Install the engine CLI with [uv](https://docs.astral.sh/uv/):
 
 ```bash
 uv tool install --editable ./engine
 ```
 
-(The editable install picks up code changes automatically but not new
+The editable install picks up code changes automatically but not new
 dependencies — after pulling a change that adds one, rerun with
-`--reinstall`.)
+`--reinstall`.
 
-Create a world — either ask Claude to use the `world-new` skill (which
-does all of the below for you), or by hand:
+Then create a world and start playing — see the [playing
+guide](docs/playing.md).
 
-```bash
-# init writes the world files into a new directory
-engine world init ~/ttrpg/saves/world1 \
-  --game ~/gh/claude-ttrpg/games/reference --name "World One"
+## Documentation
 
-# install the GM agent + skills into the world (claude loads .claude/
-# from the directory you launch it in)
-cp -r ~/gh/claude-ttrpg/.claude ~/ttrpg/saves/world1/.claude
+- **[Playing](docs/playing.md)** — create a world, run your first session,
+  steer the GM, and what the engine enforces in play.
+- **[Tools](docs/tools.md)** — the live web table view (`engine serve`),
+  printable handbooks (`engine export`), and image generation.
+- **[Worlds are git repos](docs/worlds-and-git.md)** — saves, forks, and
+  time travel; how a world's files map to git.
+- **[Design](docs/design.md)** — the design document: goals, roles, tiers,
+  and open questions. Start here to understand the system.
+- **[docs/dev/](docs/dev/)** — implementation planning, the post-v1
+  backlog, and design/review notes.
 
-# make it a git repo: the commit is save zero, the tag a named restore point
-cd ~/ttrpg/saves/world1
-git init
-git add -A && git commit -m "world created: World One"
-git tag genesis
+## Repository layout
 
-# play — the GM commits automatically at every session boundary from here
-claude --agent gm
-```
-
-(`--game` takes any path to a game directory; use the absolute path
-unless you're running from inside this repo.)
-
-Once the GM greets you, just say what you want in plain language —
-there is no command syntax to learn. A typical first prompt:
-
-> New campaign. Party of four: I'll play a dwarf fighter named Borin —
-> build him for me, then design a rogue, a cleric, and a wizard and run
-> those three yourself. Auto-GM. Start the adventure.
-
-The GM creates every sheet through `engine char create`, plays any PC
-you didn't claim (in combat it takes their turns; out of combat they
-chime in but follow your lead), and opens the first scene. On later
-launches, "resume" (or just "let's play") picks up from the last
-session summary.
-
-Four phrases steer the operator relationship with the GM at any time:
-
-- **"GM override"** — apply an instruction as-is; it gets logged to
-  the timeline.
-- **"manual GM"** — every ruling (DCs, NPC reactions) is deferred to
-  you; the engine paperwork keeps happening automatically.
-- **"auto GM"** — hand rulings back to Claude.
-- **"feedback: ..."** — log a gripe or suggestion about how the game
-  *works* (engine, skills, UX) to the world's `feedback.md` and keep
-  playing; plain complaints ("I don't like that the map...") get
-  logged too. Engine crashes land there automatically via a hook.
-  Feed the file back to this repo when it has content.
-
-Gear is live state: `engine equip` / `engine unequip` recompute AC and
-attacks from what's actually worn, magic items carry boons (and
-sometimes curses — `engine item dispel` is the remedy), consumables
-resolve through `engine item use` (the potion's own dice, one bottle
-off the stack), and the party can split: `travel`, `encounter start`, and `rest` all take `--pcs` to
-act on a subset, with XP flowing only to the PCs who were actually in
-the fight. Quests are first-class state too (`engine quest
-offer/accept/complete/cancel/list`): NPC and PC rewards are escrowed up
-front — no vaporware bounties — while world quests can spawn rewards
-and grant XP. Thornbury's quest board ships with two.
-
-Combat is tactically honest: walls block line of sight (and shots),
-movement pays for the actual route through difficult terrain, and the
-engine enforces the conditions the rules only used to describe — prone,
-grappled, restrained, poisoned, frightened (of a specific enemy, until
-you break line of sight), and hidden. `engine hide` starts a real
-stealth contest against passive perception, dark terrain conceals
-whoever stands in it unlit (torches grant `lit` and give you away),
-flyers fight from the air and take fall damage coming down, rogues get
-their sneak dice applied automatically, and `grapple`/`shove`/`escape`
-are contested rolls. Every attack and check reports *why* it rolled
-with advantage or disadvantage.
-
-### Live table view
-
-`engine serve` (run inside a world; default port 8787) hosts a local,
-read-only web view that updates live as you play — the story feed (your
-prompts and the GM's narration, recovered from the Claude session
-itself, none of the tool noise), a live battle map that moves when
-tokens move, party HP and effects, and the quest board. `/` is the
-player-safe lens: hidden monsters are actually hidden (tokens, legend,
-turn order), monster health shows as words instead of numbers.
-`/gm` shows everything, plus the timeline and engine internals. The
-terminal stays the only way to *act* — the browser is the good reading
-surface, for you or for whoever's following along.
-
-### Printable handbooks
-
-`engine export game|world|campaign` renders self-contained, print-friendly
-HTML — a game handbook (rules, classes, races, spells, items, bestiary), a
-world guide (setting, history, region map, factions, NPCs), and a campaign
-book (adventure outline, quest board, and, inside a world, the live quest
-list). Run them inside a world (uses `canon/` and the pinned game) or
-repo-side with `--game games/reference` (no world needed); files land in
-`./exports/` by default. The `export-docs` skill runs all three and, if
-`gws` is installed and authenticated, uploads them as Google Docs;
-otherwise it falls back gracefully and hands you the local HTML files —
-handy for a printout your kid can actually read.
-
-### Generating images
-
-`tools/imagegen.py` is a standalone `uv` script (stdlib only, no extra
-dependencies) that calls OpenAI or Gemini image models to illustrate
-handbooks, world guides, and bestiary/NPC art. Set up once:
-
-```bash
-cp .env.sample .env
-# then edit .env and add OPENAI_API_KEY and/or GEMINI_API_KEY
-```
-
-Generate an image:
-
-```bash
-uv run tools/imagegen.py --prompt "a weathered stone gate, painterly fantasy art" \
-  --out games/reference/content/art/gate.png
-```
-
-The provider is selected via `IMAGE_MODEL` in `.env` (default `openai`,
-model `gpt-image-1.5`), overridable per-run with `--model gemini`
-(`gemini-3-pro-image-preview`) or `--model gemini-2.5-flash`
-(`gemini-2.5-flash-image`). Generate several images in one invocation with
-repeated `--prompt`/`--out` pairs, or `--batch prompts.json` (a JSON list
-of `{"prompt": ..., "out": ...}` objects).
-
-**Spend controls are on by default.** `IMAGEGEN_MAX_PER_RUN` (default 1)
-caps how many images one invocation can generate; `IMAGEGEN_SPEND_CAP_USD`
-(default $5.00) refuses to run once cumulative estimated spend — tracked
-in the gitignored `.imagegen-ledger.json` — would exceed the cap. Both
-env vars live in `.env`. Costs are rough per-image *estimates*, not real
-billing data; check current spend anytime with:
-
-```bash
-uv run tools/imagegen.py --ledger-status
-```
-
-Generated art has no single fixed home — point `--out` wherever fits: a
-game's own `content/art/` (e.g. `games/reference/content/art/`) for
-reusable game art, or a world's `renders/` for world-specific
-illustrations. The `image-gen` skill drives this tool end-to-end (prompt
-composition with a consistent art style, running it, placing output, and
-reporting spend) — ask Claude to illustrate something rather than
-invoking the script by hand.
-
-## Worlds are git repos — saves, forks, and time travel
-
-A world's entire save state is files in its own git repo, so git *is*
-the save system:
-
-```
-world.yaml   # which game + version this world was created from
-state/       # the present: party, character sheets, positions, clock
-canon/       # narrative truth: setting, history, NPCs, factions, maps
-timeline/    # append-only event log — every roll's outcome, every
-             #   mutation, one file per event, ordered by in-world date
-sessions/    # per-session transcripts and summaries
-```
-
-`state/` is authoritative for "now"; `timeline/` is the audit trail and
-the story's mechanical record. Only the engine writes to either — the GM
-narrates from engine output and edits `canon/` for narrative facts.
-
-**Saving.** The GM skills commit at every session boundary (`session NNN
-start`, `session NNN: <summary>`), so each session is a save point out
-of the box. For a named save you can return to, tag it:
-
-```bash
-git tag before-the-tomb
-```
-
-**Loading / forking.** Rewinding is branching. A fork is a full
-alternate timeline — the original keeps existing and can be resumed:
-
-```bash
-git branch tomb-attempt-2 before-the-tomb   # fork from the save point
-git checkout tomb-attempt-2                  # play the alternate line
-```
-
-Timeline branches never merge — two presents can't be reconciled into
-one. Deep history is naturally shared: everything authored before the
-fork point exists in both lines' ancestry.
-
-**Inserting history (backfilling the past).** An *insert* is a session
-set in the world's past — a flashback that fleshes out backstory
-without touching the present. Two rules make inserts safe: they are
-**lore-only** (nothing an insert session does auto-changes `state/` —
-the present's HP, inventory, and positions stay untouched), and they
-must respect **predestination** (the past can't contradict established
-canon: an NPC alive today can't die in your flashback).
-
-To run one today, tell the GM at a session start:
-
-> "This session is an insert — a flashback set 20 years before the
-> campaign, when Halda first came to Thornbury."
-
-The GM then plays the scene normally (dice and checks still go through
-the engine) but records the outcomes as narrative history in `canon/`
-(history.md, NPC entries) instead of mutating the present. If something
-from the flashback *should* exist in the present — a buried item, a
-debt, a grudge — you apply it explicitly: say "GM override" and the
-change lands through engine commands with a logged override event.
-Because canon lives in git, an insert committed before a fork point is
-inherited by every timeline forked after it — deep history stays shared.
-
-First-class insert tooling is post-v1 and not yet built: dated
-`timeline/` events for insert sessions and a validator that mechanically
-blocks paradoxes (see `docs/design.md`, Tier 3 — Timelines). Until
-then, predestination is enforced only by the GM's discipline plus the
-session-end reconciliation pass.
-
-## Status
-
-v1 playable: engine, reference game, and GM agent are implemented (see
-the Playing section). Insert-mode and fork-management tooling are
-post-v1; see `docs/design.md`.
+- `games/` — game definitions, including the reference template game
+- `engine/` — the `engine` CLI: game logic and world-state mutation
+- `.claude/` — agents and skills for GM sessions
+- `tools/` — standalone utilities (e.g. image generation)
+- `docs/` — documentation (see above)
