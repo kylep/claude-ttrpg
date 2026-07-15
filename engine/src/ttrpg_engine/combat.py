@@ -230,11 +230,14 @@ def start(root: Path, g: dict, map_rel: str, rng: Random, pcs: list[str] | None 
         positions[mid] = list(spec["pos"])
     for pc_id, spawn in zip(participants, emap["pc_spawns"]):
         positions[pc_id] = list(spawn)
+    init = g.get("combat", {}).get("initiative", {})
+    init_sides = int(str(init.get("die", "d20")).lstrip("dD"))
+    init_attr = init.get("attr", "DEX")
     scores = {}
     for cid in [*participants, *monsters]:
         _, data = get_combatant(root, {"monsters": monsters}, cid)
-        dex = data["attributes"]["DEX"]
-        scores[cid] = (rng.randint(1, 20) + attr_mod(dex), dex, cid)
+        attr_score = data["attributes"][init_attr]
+        scores[cid] = (rng.randint(1, init_sides) + attr_mod(attr_score), attr_score, cid)
     order = sorted(scores, key=lambda c: scores[c], reverse=True)
     enc = {"id": emap["id"], "name": emap["name"], "round": 1, "turn": 0,
            "order": order, "grid": emap["grid"], "terrain": emap.get("terrain", []),
@@ -394,13 +397,21 @@ def apply_heal(root: Path, target: str, amount: int, source: str) -> dict:
     return {"target": target, "amount": amount, "hp": [before, data["hp"]]}
 
 
-def resolve_hit(natural: int, total: int, ac: int) -> tuple[bool, str | None]:
-    """Shared hit/crit resolution: a natural 1 always misses, a natural 20
-    always hits and crits, otherwise compare the total to AC. Returns
+def resolve_hit(natural: int, total: int, ac: int, *,
+                crit_on: int = 20, fumble_on: int = 1) -> tuple[bool, str | None]:
+    """Shared hit/crit resolution: a natural `fumble_on` always misses, a
+    natural `crit_on` always hits and crits, otherwise compare the total to
+    AC. `crit_on`/`fumble_on` come from the ruleset's core.yaml. Returns
     (hit, crit) where crit is 'hit' | 'fumble' | None."""
-    crit = "hit" if natural == 20 else "fumble" if natural == 1 else None
-    hit = natural != 1 and (natural == 20 or total >= ac)
+    crit = "hit" if natural == crit_on else "fumble" if natural == fumble_on else None
+    hit = natural != fumble_on and (natural == crit_on or total >= ac)
     return hit, crit
+
+
+def crit_bounds(g: dict) -> tuple[int, int]:
+    """(crit_on, fumble_on) from the ruleset, defaulting to 20 / 1."""
+    core = g.get("core", {})
+    return core.get("crit_on", 20), core.get("fumble_on", 1)
 
 
 def roll_damage(expr, rng: Random, crit: str | None) -> int:
@@ -463,7 +474,8 @@ def attack(root: Path, attacker: str, target: str, *, attack_name: str | None,
         dis_from.append("ranged_in_melee")
     eff_adv, eff_dis = bool(adv_from), bool(dis_from)
     natural, total = roll_fn(atk["attack_mod"], eff_adv, eff_dis)
-    hit, crit = resolve_hit(natural, total, t_data["ac"])
+    crit_on, fumble_on = crit_bounds(worldfs.load_game_for(root))
+    hit, crit = resolve_hit(natural, total, t_data["ac"], crit_on=crit_on, fumble_on=fumble_on)
     damage = roll_damage(atk["damage"], rng, crit) if hit else 0
     result = {"attacker": attacker, "target": target, "attack": atk["name"],
               "natural": natural, "total": total, "vs_ac": t_data["ac"],
@@ -544,16 +556,21 @@ def death_save(root: Path, actor: str, *, roll_fn) -> dict:
     kind, sheet, enc = resolve_actor(root, actor)
     if kind != "pc" or "dying" not in {e["name"] for e in sheet["effects"]}:
         raise EngineError("not_dying", f"{actor} is not dying")
+    cfg = worldfs.load_game_for(root).get("recovery", {}).get("death_save", {})
+    dc = cfg.get("dc", 10)
+    fails_to_die = cfg.get("fails_to_die", 3)
+    successes_to_stable = cfg.get("successes_to_stable", 3)
+    crit_on, fumble_on = crit_bounds(worldfs.load_game_for(root))
     natural, _ = roll_fn(0, False, False)
     saves = sheet.setdefault("death_saves", {"successes": 0, "fails": 0})
-    if natural == 20:
+    if natural == crit_on:
         result = "revived"
-    elif natural >= 10:
+    elif natural >= dc:
         saves["successes"] += 1
-        result = "stable" if saves["successes"] >= 3 else "success"
+        result = "stable" if saves["successes"] >= successes_to_stable else "success"
     else:
         saves["fails"] += 1
-        result = "dead" if saves["fails"] >= 3 else "fail"
+        result = "dead" if saves["fails"] >= fails_to_die else "fail"
     if result == "revived":
         sheet["hp"] = 1
         sheet["effects"] = [e for e in sheet["effects"]
@@ -855,8 +872,9 @@ def move(root: Path, actor: str, to: tuple[int, int], *, force: bool = False) ->
         hostile_cells = (set() if aloft else
                          {pos for cid, _, pos in _hostiles_of(root, enc, actor, awake=False)
                           if not enc.get("aloft", {}).get(cid)})
+        diagonal_cost = worldfs.load_game_for(root).get("combat", {}).get("diagonal_cost", 1)
         cost = grid.path_cost(enc, src, to, ignore_terrain=aloft,
-                              impassable=hostile_cells)
+                              impassable=hostile_cells, diagonal_cost=diagonal_cost)
         if cost is None:
             raise EngineError("no_path", f"no route from {list(src)} to {list(to)}")
         if "prone" in eff:

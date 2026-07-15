@@ -17,7 +17,8 @@ def run(root: Path, actor: str, attr: str, dc: int, *,
     enc = load_encounter(root) if (root / "state" / "encounter.yaml").exists() else None
     dis_from = combat.self_dis_conditions(root, enc, actor, sheet)
     natural, total = roll_fn(modifier, adv, dis or bool(dis_from))
-    crit = "hit" if natural == 20 else "fumble" if natural == 1 else None
+    crit_on, fumble_on = combat.crit_bounds(worldfs.load_game_for(root))
+    crit = "hit" if natural == crit_on else "fumble" if natural == fumble_on else None
     result = {"actor": actor, "attr": attr, "skill": skill, "modifier": modifier,
               "natural": natural, "total": total, "dc": dc,
               "success": total >= dc, "crit": crit}

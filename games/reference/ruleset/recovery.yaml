@@ -1,3 +1,3 @@
 short_rest: {hours: 1}  # each living PC heals one hit-die roll + CON modifier
 long_rest: {hours: 8}   # full HP, spell slots restored, all effects cleared
-death_save: {dc: 10, fails_to_die: 3, successes_to_stable: 3}  # rolled each round while dying at 0 hp (hardcoded in v1 engine)
+death_save: {dc: 10, fails_to_die: 3, successes_to_stable: 3}  # rolled each round while dying at 0 hp
