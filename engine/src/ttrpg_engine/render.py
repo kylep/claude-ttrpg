@@ -1,4 +1,5 @@
 from pathlib import Path
+from xml.sax.saxutils import escape
 
 from ttrpg_engine import grid, worldfs
 from ttrpg_engine.errors import EngineError
@@ -74,9 +75,11 @@ def svg_map(enc: dict) -> str:
         cx, cy = x * _CELL + _CELL // 2, y * _CELL + _CELL // 2
         color = "#2563eb" if cid.startswith("pc-") else "#dc2626"
         parts.append(f'<circle cx="{cx}" cy="{cy}" r="{_CELL//2 - 4}" fill="{color}"/>')
-        parts.append(f'<text x="{cx}" y="{cy + 5}" text-anchor="middle" fill="#fff">{syms[cid]}</text>')
-    legend = "   ".join(f"{s}={cid}" for cid, s in syms.items())
-    parts.append(f'<text x="4" y="{h*_CELL + 20}" font-size="12">{enc["name"]} — round {enc["round"]} — {legend}</text>')
+        parts.append(f'<text x="{cx}" y="{cy + 5}" text-anchor="middle" fill="#fff">{escape(syms[cid])}</text>')
+    # names and ids are world/game-author content; escape so the SVG string
+    # is safe to drop into innerHTML in the live viewer
+    legend = "   ".join(f"{escape(s)}={escape(cid)}" for cid, s in syms.items())
+    parts.append(f'<text x="4" y="{h*_CELL + 20}" font-size="12">{escape(str(enc["name"]))} — round {enc["round"]} — {legend}</text>')
     parts.append("</svg>")
     return "".join(parts)
 

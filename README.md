@@ -105,6 +105,19 @@ their sneak dice applied automatically, and `grapple`/`shove`/`escape`
 are contested rolls. Every attack and check reports *why* it rolled
 with advantage or disadvantage.
 
+### Live table view
+
+`engine serve` (run inside a world; default port 8787) hosts a local,
+read-only web view that updates live as you play — the story feed (your
+prompts and the GM's narration, recovered from the Claude session
+itself, none of the tool noise), a live battle map that moves when
+tokens move, party HP and effects, and the quest board. `/` is the
+player-safe lens: hidden monsters are actually hidden (tokens, legend,
+turn order), monster health shows as words instead of numbers.
+`/gm` shows everything, plus the timeline and engine internals. The
+terminal stays the only way to *act* — the browser is the good reading
+surface, for you or for whoever's following along.
+
 ### Printable handbooks
 
 `engine export game|world|campaign` renders self-contained, print-friendly

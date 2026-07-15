@@ -4,7 +4,7 @@ from pathlib import Path
 
 import typer
 
-from ttrpg_engine import chargen, checks, combat, dice, export as export_mod, game as game_mod, inventory, level as level_mod, quests as quests_mod, render, rest as rest_mod, spells, timeline, travel as travel_mod, worldfs
+from ttrpg_engine import chargen, checks, combat, dice, export as export_mod, game as game_mod, inventory, level as level_mod, quests as quests_mod, render, rest as rest_mod, serve as serve_mod, spells, timeline, travel as travel_mod, worldfs
 from ttrpg_engine.errors import EngineError
 
 app = typer.Typer(add_completion=False, no_args_is_help=True)
@@ -362,6 +362,19 @@ def move(actor: str = typer.Option(...), to: str = typer.Option(..., help="X,Y")
     except ValueError:
         fail("bad_coord", f"--to must be X,Y, got {to!r}")
     emit(guard(combat.move, require_root(), actor, (x, y), force=force))
+
+
+@app.command()
+def serve(port: int = typer.Option(8787, help="Port on 127.0.0.1.")):
+    """Serve the live world viewer (player lens at /, GM lens at /gm)."""
+    root = require_root()
+    server = guard(serve_mod.run, root, port)
+    emit({"player": f"http://127.0.0.1:{port}/",
+          "gm": f"http://127.0.0.1:{port}/gm", "world": str(root)})
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        server.shutdown()
 
 
 @app.command()

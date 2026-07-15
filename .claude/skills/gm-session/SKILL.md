@@ -25,7 +25,12 @@ description: Use when starting or resuming a claude-ttrpg play session in a worl
    append notable beats to it as play proceeds (bullet lines, not
    verbatim chat).
 7. Commit: `git add -A && git commit -m "session NNN start"`.
-8. Recap the previous summary to the players in 3-5 sentences, state
+8. Offer the table view once per session: run `engine serve` as a
+   background process (Bash run_in_background) and give the operator
+   both URLs — player lens at http://127.0.0.1:8787/ and GM lens at
+   /gm. If the port is taken (`port_busy`), a viewer is already
+   running from a previous session; just re-share the URLs.
+9. Recap the previous summary to the players in 3-5 sentences, state
    the party's location and date, then open the scene. For a brand-new
    world there is nothing to recap: open at the game's start location
    with the first beat of `canon/adventure.md`.

@@ -25,7 +25,6 @@ fix-later; none block play.
 - Monster deaths emit no `death` timeline event (PCs get one); add on
   `dead: true` for a self-contained audit log.
 - `encounter end` grants XP to dead PCs; `xp grant` skips them — pick one.
-- Escape encounter/combatant names in SVG output (`xml.sax.saxutils.escape`).
 - `session-end` skill: `grep "session: N"` substring-matches 1 vs 1x — anchor it.
 - Shared `resolve_hit()` for the nat-1/nat-20 formula duplicated in
   `combat.attack` and `spells.cast`; drop unused `worldfs` import in spells.py.
@@ -97,6 +96,29 @@ Carve-outs from the stealth/LOS/terrain/grapple/darkness work on the
 - Encounter-map terrain (including the new `dark` type) is still not
   validated by `game validate` — a typoed terrain type is silently
   ignored.
+
+## From the live-viewer round (2026-07-14)
+
+Carve-outs from `engine serve` (see docs/dev/2026-07-14-live-viewer-design.md).
+
+- The story pane parses Claude Code session transcripts — deliberate
+  coupling, quarantined in `story.py`; if the JSONL format shifts, the
+  story pane degrades to "no live session feed" and everything else
+  keeps working.
+- Current session only; no session-history browsing in the viewer.
+- The SVG map has no aloft/prone/hidden badges on tokens yet.
+- The game ruleset is loaded once at server start; a mid-session
+  ruleset change needs a serve restart.
+- When it is a hidden monster's turn, the player lens shows `up: ???` —
+  players learn *something* acts, which is genuinely 5e-accurate but
+  worth knowing.
+- Each SSE client polls world mtimes itself (~300ms rglob) — fine for a
+  table's worth of browsers, not for dozens.
+- The `/renders/<name>` route (round-stamped GM battle-map history) has
+  no lens gate — a spectator who hand-types `/renders/index.html` sees
+  unfiltered GM maps. The player page never links it (its live map comes
+  filtered through `/api/state`), so this is manual-URL-only on a
+  localhost tool; lens-gate or drop the route if it ever matters.
 
 ## From the quests round (2026-07-13)
 

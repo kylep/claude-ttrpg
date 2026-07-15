@@ -7,9 +7,12 @@ description: Use when combat starts in a claude-ttrpg session - runs the encount
 
 1. `engine encounter start <map-rel>` — read back the initiative order.
    `<map-rel>` is relative to `canon/` (e.g. `maps/encounters/road-ambush.yaml`).
-2. Render every round start: `engine map render --svg`; show the ASCII
-   map in a code block. Tell the operator renders/index.html has the
-   pretty version.
+2. Render every round start: `engine map render --svg`. If a viewer is
+   running (`engine serve`), the live map is already on-screen — just
+   point the operator at it and skip pasting ASCII into chat. Otherwise
+   show the ASCII map in a code block. Note: the player web lens strips
+   fenced code blocks from the story feed (an ASCII map shows hidden
+   monsters and true positions), so a pasted map is GM-facing only.
 3. On each turn (order comes from `engine encounter next`):
    After `engine encounter start`, the first combatant in the order is
    already up — run their turn before the first `engine encounter next`.
@@ -75,3 +78,9 @@ description: Use when combat starts in a claude-ttrpg session - runs the encount
 5. Combat ends when one side is dead, surrendered, or fled:
    `engine encounter end` — report xp and loot from its JSON.
 6. Never move a token, change HP, or decide a hit outside the engine.
+7. Narrate for the room, not the spreadsheet. Players may be reading the
+   player web lens, which hides monster HP behind words
+   (healthy/wounded/bloodied) and hides hidden enemies entirely. Keep
+   exact enemy HP and hidden-enemy positions out of player-facing prose
+   — describe a wound, don't quote the number. Engine JSON and the GM
+   lens carry the real figures.

@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>claude-ttrpg</title>
+<style>
+  :root {
+    --ink: #171412; --surface: #211d19; --edge: #383028;
+    --parchment: #e8e0d2; --muted: #9c917f; --ember: #d9973b;
+    --blood: #b8453c; --moss: #7d9b5e; --gold: #c9a86a;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --mono: "SF Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html { background: var(--ink); }
+  body {
+    color: var(--parchment); font-family: var(--serif);
+    min-height: 100vh; line-height: 1.55;
+  }
+  a { color: var(--ember); }
+
+  header {
+    display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap;
+    padding: .7rem 1.2rem; border-bottom: 1px solid var(--edge);
+    position: sticky; top: 0; background: var(--ink); z-index: 2;
+  }
+  header h1 { font-size: 1.05rem; font-weight: 600; letter-spacing: .02em; }
+  header .where { color: var(--muted); font-size: .85rem; }
+  header .lens {
+    margin-left: auto; font-family: var(--mono); font-size: .7rem;
+    color: var(--ink); background: var(--gold); padding: .15rem .5rem;
+    border-radius: 2px; letter-spacing: .08em;
+  }
+  header .lens.gm { background: var(--blood); color: var(--parchment); }
+
+  .table { display: grid; grid-template-columns: minmax(0, 7fr) minmax(300px, 4fr);
+           gap: 1.4rem; padding: 1.2rem; max-width: 1500px; margin: 0 auto; }
+  @media (max-width: 900px) { .table { grid-template-columns: 1fr; } }
+
+  /* ---- the story: a manuscript column ---------------------------------- */
+  #story { max-width: 46rem; }
+  #story .feed { border-left: 2px solid var(--ember); padding: .2rem 0 .2rem 1.4rem; }
+  .beat { margin: 0 0 1.1rem; }
+  .beat.gm p { margin: 0 0 .7rem; }
+  .beat.gm :is(h1,h2,h3) { font-size: 1rem; color: var(--gold); margin: .9rem 0 .4rem; }
+  .beat.gm table { border-collapse: collapse; font-family: var(--mono); font-size: .78rem; margin: .6rem 0; }
+  .beat.gm :is(td,th) { border: 1px solid var(--edge); padding: .25rem .55rem; }
+  .beat.gm code, .beat.gm pre { font-family: var(--mono); font-size: .82rem;
+    background: var(--surface); border-radius: 3px; padding: .1rem .3rem; }
+  .beat.gm pre { padding: .6rem .8rem; overflow-x: auto; }
+  .beat.gm blockquote { border-left: 2px solid var(--edge); color: var(--muted);
+    padding-left: .8rem; margin: .6rem 0; }
+  /* an operator line is a spoken line in the script */
+  .beat.operator { margin: 1.4rem 0; }
+  .beat.operator .speaker { font-variant: small-caps; letter-spacing: .12em;
+    color: var(--ember); font-size: .85rem; }
+  .beat.operator .line { color: var(--gold); font-style: italic; }
+  .beat.operator .line::before { content: "— "; }
+  @media (prefers-reduced-motion: no-preference) {
+    .beat.new { animation: settle .5s ease-out; }
+    @keyframes settle { from { opacity: 0; transform: translateY(4px); } }
+  }
+  #story .empty { color: var(--muted); font-style: italic; }
+
+  /* ---- the rail: cards off the engine ----------------------------------- */
+  .card { background: var(--surface); border: 1px solid var(--edge);
+          border-radius: 4px; padding: .9rem 1rem; margin-bottom: 1.2rem; }
+  .card h2 { font-size: .72rem; font-family: var(--mono); font-weight: 400;
+             color: var(--muted); letter-spacing: .14em; text-transform: uppercase;
+             margin-bottom: .6rem; }
+  #map svg { max-width: 100%; height: auto; border-radius: 3px; }
+  #map .empty { color: var(--muted); font-style: italic; font-size: .9rem; }
+  #map .turn { font-family: var(--mono); font-size: .78rem; color: var(--gold);
+               margin-bottom: .5rem; }
+
+  .fighter { display: grid; grid-template-columns: 1fr auto; gap: .15rem .7rem;
+             padding: .45rem 0; border-top: 1px solid var(--edge); }
+  .fighter:first-of-type { border-top: 0; }
+  .fighter .name { font-size: .92rem; }
+  .fighter .name .dead { text-decoration: line-through; color: var(--muted); }
+  .fighter .tags { grid-column: 1 / -1; display: flex; gap: .35rem; flex-wrap: wrap; }
+  .chip { font-family: var(--mono); font-size: .66rem; color: var(--ink);
+          background: var(--muted); padding: .08rem .4rem; border-radius: 2px; }
+  .chip.warn { background: var(--blood); color: var(--parchment); }
+  .chip.good { background: var(--moss); }
+  .chip.aloft { background: var(--gold); }
+  .hp { display: flex; align-items: center; gap: .5rem; font-family: var(--mono);
+        font-size: .74rem; color: var(--muted); }
+  .hp .bar { width: 84px; height: 7px; background: var(--ink); border-radius: 4px;
+             overflow: hidden; }
+  .hp .bar i { display: block; height: 100%; }
+  .status { font-family: var(--mono); font-size: .72rem; }
+  .status.healthy { color: var(--moss); } .status.wounded { color: var(--gold); }
+  .status.bloodied { color: var(--blood); } .status.down { color: var(--muted); }
+
+  #quests li { list-style: none; padding: .3rem 0; font-size: .88rem;
+               border-top: 1px solid var(--edge); }
+  #quests li:first-child { border-top: 0; }
+  #quests .q-status { font-family: var(--mono); font-size: .68rem; color: var(--muted);
+                      margin-left: .5rem; }
+  #timeline li { list-style: none; font-family: var(--mono); font-size: .74rem;
+                 color: var(--muted); padding: .22rem 0; border-top: 1px solid var(--edge); }
+  #timeline li:first-child { border-top: 0; }
+  #internals pre { font-family: var(--mono); font-size: .72rem; color: var(--muted);
+                   overflow-x: auto; }
+  .offline { color: var(--blood); font-family: var(--mono); font-size: .72rem; }
+  :focus-visible { outline: 2px solid var(--ember); outline-offset: 2px; }
+</style>
+</head>
+<body>
+<header>
+  <h1 id="world">…</h1>
+  <span class="where" id="where"></span>
+  <span class="lens" id="lens"></span>
+</header>
+
+<div class="table">
+  <main id="story" aria-live="polite">
+    <div class="feed" id="feed"></div>
+    <p class="empty" id="story-empty" hidden>No live session feed — start a session
+      with <code>claude --agent gm</code> in this world and the story appears here.</p>
+  </main>
+
+  <aside>
+    <div class="card" id="map"><h2>Map</h2><div class="turn" id="turn" hidden></div>
+      <div id="map-body"><p class="empty">No encounter running.</p></div></div>
+    <div class="card" id="party"><h2>Party</h2><div id="party-body"></div></div>
+    <div class="card" id="foes" hidden><h2>Opposition</h2><div id="foes-body"></div></div>
+    <div class="card" id="quests"><h2>Quests</h2><ul id="quests-body"></ul></div>
+    <div class="card" id="timeline" hidden><h2>Timeline</h2><ul id="timeline-body"></ul></div>
+    <div class="card" id="internals" hidden><h2>GM internals</h2><pre id="internals-body"></pre></div>
+    <p class="offline" id="offline" hidden>connection lost — retrying…</p>
+  </aside>
+</div>
+
+<script>
+const GM = location.pathname.replace(/\/+$/, "") === "/gm";
+const lensEl = document.getElementById("lens");
+lensEl.textContent = GM ? "GM TABLE" : "PLAYER TABLE";
+if (GM) lensEl.classList.add("gm");
+
+let cursor = { file: null, offset: 0 };
+let fetchingStory = false;
+let storyDirty = false;
+
+function el(tag, cls, text) {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (text !== undefined) n.textContent = text;
+  return n;
+}
+
+function hpBar(hp, max) {
+  const frac = max > 0 ? hp / max : 0;
+  const wrap = el("span", "hp");
+  const bar = el("span", "bar");
+  const fill = document.createElement("i");
+  fill.style.width = Math.round(frac * 100) + "%";
+  fill.style.background = frac > 2 / 3 ? "var(--moss)" : frac > 1 / 3 ? "var(--gold)" : "var(--blood)";
+  bar.appendChild(fill);
+  wrap.appendChild(bar);
+  wrap.appendChild(el("span", null, hp + "/" + max));
+  return wrap;
+}
+
+function fighterRow(f) {
+  const row = el("div", "fighter");
+  const name = el("span", "name");
+  const label = el("span", f.dead ? "dead" : null, f.name);
+  name.appendChild(label);
+  row.appendChild(name);
+  if ("hp" in f) row.appendChild(hpBar(f.hp, f.max_hp));
+  else if (f.status) row.appendChild(el("span", "status " + f.status, f.status));
+  const tags = el("span", "tags");
+  if (f.aloft) tags.appendChild(el("span", "chip aloft", "aloft"));
+  for (const e of f.effects || []) {
+    const bad = ["poisoned", "frightened", "prone", "grappled", "restrained", "dying", "unconscious"].includes(e);
+    tags.appendChild(el("span", "chip" + (bad ? " warn" : e === "hidden" ? " good" : ""), e));
+  }
+  if (tags.children.length) row.appendChild(tags);
+  return row;
+}
+
+function renderState(s) {
+  document.getElementById("world").textContent = s.world || "claude-ttrpg";
+  document.getElementById("where").textContent =
+    (s.location || "?") + " — " + (s.clock ? s.clock.date + ", " + s.clock.hour + ":00" : "");
+
+  const partyBody = document.getElementById("party-body");
+  partyBody.replaceChildren();
+  for (const pc of s.party || []) {
+    partyBody.appendChild(fighterRow({
+      name: pc.name + "  ·  " + pc.race + " " + pc.class + " " + pc.level,
+      hp: pc.hp, max_hp: pc.max_hp, dead: false,
+      effects: (pc.effects || []).map(e => e.name),
+      aloft: false,
+    }));
+  }
+
+  const enc = s.encounter;
+  const turn = document.getElementById("turn");
+  const mapBody = document.getElementById("map-body");
+  const foes = document.getElementById("foes");
+  const foesBody = document.getElementById("foes-body");
+  if (enc && s.map_svg) {
+    turn.hidden = false;
+    turn.textContent = enc.name + " — round " + enc.round + " — up: " + enc.up;
+    mapBody.innerHTML = s.map_svg;
+    foesBody.replaceChildren();
+    let any = false;
+    for (const f of enc.roster || []) {
+      if (f.side !== "monster") continue;
+      any = true;
+      foesBody.appendChild(fighterRow(f));
+    }
+    foes.hidden = !any;
+  } else {
+    turn.hidden = true;
+    mapBody.replaceChildren(el("p", "empty", "No encounter running."));
+    foes.hidden = true;
+  }
+
+  const quests = document.getElementById("quests-body");
+  quests.replaceChildren();
+  for (const q of s.quests || []) {
+    const li = el("li", null, q.title || q.id);
+    li.appendChild(el("span", "q-status", q.status || ""));
+    quests.appendChild(li);
+  }
+  if (!quests.children.length) quests.appendChild(el("li", null, "The board is empty."));
+
+  if (GM) {
+    const tl = document.getElementById("timeline");
+    tl.hidden = false;
+    const tlBody = document.getElementById("timeline-body");
+    tlBody.replaceChildren();
+    for (const ev of (s.timeline || [])) tlBody.appendChild(el("li", null, ev.summary || ev.id));
+    const internals = document.getElementById("internals");
+    internals.hidden = false;
+    document.getElementById("internals-body").textContent =
+      JSON.stringify(s.internals || {}, null, 1);
+  }
+}
+
+async function fetchState() {
+  try {
+    const r = await fetch("/api/state?lens=" + (GM ? "gm" : "player"));
+    if (r.ok) renderState(await r.json());
+  } catch (e) { /* next tick retries */ }
+}
+
+async function fetchStory() {
+  if (fetchingStory) { storyDirty = true; return; }  // a tick during a fetch isn't lost
+  fetchingStory = true;
+  try {
+    const params = new URLSearchParams({ offset: cursor.offset, lens: GM ? "gm" : "player" });
+    if (cursor.file) params.set("file", cursor.file);
+    const r = await fetch("/api/story?" + params);
+    if (!r.ok) return;
+    const data = await r.json();
+    if (data.cursor.file !== cursor.file && cursor.file !== null) {
+      document.getElementById("feed").replaceChildren();   // new session started
+    }
+    cursor = data.cursor;
+    const feed = document.getElementById("feed");
+    const stick = window.innerHeight + window.scrollY >= document.body.offsetHeight - 200;
+    for (const entry of data.entries || []) {
+      const beat = el("div", "beat new " + entry.role);
+      if (entry.role === "operator") {
+        beat.appendChild(el("div", "speaker", "player"));
+        const line = el("div", "line");
+        line.innerHTML = entry.html;
+        beat.appendChild(line);
+      } else {
+        beat.innerHTML = entry.html;
+        beat.className = "beat new gm";
+      }
+      feed.appendChild(beat);
+    }
+    document.getElementById("story-empty").hidden = cursor.file !== null;
+    if (stick && data.entries.length) window.scrollTo(0, document.body.scrollHeight);
+  } catch (e) { /* next tick retries */
+  } finally {
+    fetchingStory = false;
+    if (storyDirty) { storyDirty = false; fetchStory(); }  // catch writes that landed mid-fetch
+  }
+}
+
+let stateTimer = null;
+function connect() {
+  const es = new EventSource("/events");
+  es.addEventListener("state", () => {
+    clearTimeout(stateTimer);
+    stateTimer = setTimeout(fetchState, 120);
+  });
+  es.addEventListener("story", fetchStory);
+  es.onopen = () => {
+    document.getElementById("offline").hidden = true;
+    fetchState(); fetchStory();
+  };
+  es.onerror = () => { document.getElementById("offline").hidden = false; };
+}
+
+fetchState();
+fetchStory();
+connect();
+</script>
+</body>
+</html>
