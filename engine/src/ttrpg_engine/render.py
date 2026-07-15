@@ -61,7 +61,7 @@ def ascii_map(enc: dict) -> str:
 # conditions that read as "something is wrong with this combatant" — the token
 # gets a warning pip; the roster carries the specifics
 _BAD_EFFECTS = frozenset({"poisoned", "prone", "grappled", "restrained",
-                          "frightened", "unconscious", "dying"})
+                          "frightened", "unconscious", "dying", "weakened"})
 
 
 def _hp_stroke(frac: float | None) -> str:

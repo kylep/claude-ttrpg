@@ -301,6 +301,13 @@ def deathsave(actor: str = typer.Option(...)):
 
 
 @app.command()
+def revive(actor: str = typer.Option(...),
+           hp: int = typer.Option(1, help="HP to return at (default 1).")):
+    """Restore a dead PC to life (the GM decides the fiction and any cost)."""
+    emit(guard(combat.revive, require_root(), actor, hp=hp))
+
+
+@app.command()
 def cast(caster: str = typer.Option(...), spell: str = typer.Option(...),
          target: str | None = typer.Option(None),
          at: str | None = typer.Option(None, "--at", help="X,Y cell for area spells")):

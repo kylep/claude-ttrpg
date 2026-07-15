@@ -82,6 +82,8 @@ def self_dis_conditions(root: Path, enc: dict | None, cid: str, data: dict) -> l
     out = []
     if "poisoned" in effect_names(data):
         out.append("poisoned")
+    if "weakened" in effect_names(data):   # the toll of being raised from death
+        out.append("weakened")
     if _frightened_active(root, enc, cid, data):
         out.append("frightened")
     return out
@@ -552,6 +554,34 @@ def remove_effect(root: Path, target: str, name: str,
             and not flying_capable(data) and rng is not None):
         result["fell"] = fall(root, target, rng)
     return result
+
+
+def revive(root: Path, actor: str, *, hp: int = 1) -> dict:
+    """Bring a dead PC back to life. The engine performs only the mechanical
+    revival — worlds decide the fiction and any cost (a temple's price, a
+    priest's spell, a rare potion, a scroll). The PC returns at `hp` (default
+    1, on death's door) and carries a `weakened` toll: disadvantage on its
+    attacks, checks, and contests until it finishes a long rest. XP and level
+    are untouched (a fallen hero kept earning encounter XP), so a revived PC
+    is not behind."""
+    kind, sheet, enc = resolve_actor(root, actor)
+    if kind != "pc":
+        raise EngineError("not_a_pc", f"{actor} is not a PC")
+    if "dead" not in effect_names(sheet):
+        raise EngineError("not_dead", f"{actor} is not dead")
+    if hp < 1:
+        raise EngineError("bad_hp", "revive hp must be at least 1")
+    sheet["hp"] = min(sheet["max_hp"], hp)
+    sheet["effects"] = [e for e in sheet["effects"]
+                        if e["name"] not in ("dead", "dying", "unconscious")]
+    sheet.pop("death_saves", None)
+    if "weakened" not in effect_names(sheet):
+        sheet["effects"].append({"name": "weakened", "duration": -1})
+    _persist(root, kind, sheet, enc)
+    timeline.append_event(root, type_="revive", actors=[actor],
+                          summary=f"{actor} is restored to life at {sheet['hp']} hp (weakened)")
+    return {"actor": actor, "hp": sheet["hp"], "max_hp": sheet["max_hp"],
+            "effects": [e["name"] for e in sheet["effects"]]}
 
 
 def death_save(root: Path, actor: str, *, roll_fn) -> dict:

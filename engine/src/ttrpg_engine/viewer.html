@@ -235,7 +235,7 @@ function fighterRow(f, up) {
   const tags = el("span", "tags");
   if (f.aloft) tags.appendChild(el("span", "chip aloft", "aloft"));
   for (const e of f.effects || []) {
-    const bad = ["poisoned", "frightened", "prone", "grappled", "restrained", "dying", "unconscious"].includes(e);
+    const bad = ["poisoned", "frightened", "prone", "grappled", "restrained", "dying", "unconscious", "weakened"].includes(e);
     tags.appendChild(el("span", "chip" + (bad ? " warn" : e === "hidden" ? " good" : ""), e));
   }
   if (tags.children.length) row.appendChild(tags);
