@@ -2,12 +2,50 @@ import datetime
 import os
 import shutil
 import tempfile
+from importlib import resources
 from pathlib import Path
 
 import yaml
 
 from ttrpg_engine import game as game_mod
 from ttrpg_engine.errors import EngineError
+
+# junk that should never be copied into a world's .claude/
+_KIT_IGNORE = shutil.ignore_patterns("__pycache__", "*.pyc", "*.pyo",
+                                     "*.lock", "scheduled_tasks.lock")
+
+
+def _package_data_dir(name: str) -> Path | None:
+    """A data dir bundled inside the installed package, if present (wheels)."""
+    try:
+        cand = resources.files("ttrpg_engine") / name
+        return Path(str(cand)) if cand.is_dir() else None
+    except (ModuleNotFoundError, FileNotFoundError, NotADirectoryError, TypeError):
+        return None
+
+
+def _repo_dir(name: str) -> Path | None:
+    """A repo-root sibling dir, available under an editable/dev install where
+    the source tree is present (worldfs.py is <repo>/engine/src/ttrpg_engine/)."""
+    cand = Path(__file__).resolve().parents[3] / name
+    return cand if cand.is_dir() else None
+
+
+def agent_kit_dir() -> Path | None:
+    """The `.claude/` payload to install into a new world: a packaged
+    `agent_kit/` (wheel) or the repo-root `.claude/` (editable dev). None if
+    neither is available (a bare wheel install with no bundled kit)."""
+    return _package_data_dir("agent_kit") or _repo_dir(".claude")
+
+
+def _bundled_game(name: str) -> Path | None:
+    """Resolve a game by name against the engine's games registry (packaged
+    `games/` or the repo `games/`), so a world stays loadable when its stored
+    absolute path is not valid on this machine."""
+    for base in (_package_data_dir("games"), _repo_dir("games")):
+        if base is not None and (base / name).is_dir():
+            return base / name
+    return None
 
 
 def find_root(start: Path | None = None) -> Path:
@@ -44,7 +82,18 @@ def pc_location(sheet: dict, party: dict) -> str:
 
 def load_game_for(root: Path) -> dict:
     manifest = read_yaml(root / "world.yaml")
-    return game_mod.load(Path(manifest["game"]["path"]))
+    gi = manifest["game"]
+    path = Path(gi["path"])
+    if path.is_dir():
+        return game_mod.load(path)
+    # the stored absolute path is not valid here (e.g. the world was cloned to
+    # another machine) — fall back to the game registry by name.
+    fallback = _bundled_game(gi.get("name", ""))
+    if fallback is not None:
+        return game_mod.load(fallback)
+    raise EngineError("game_not_found",
+                      f"game path {path} does not exist and no bundled game "
+                      f"named {gi.get('name')!r} was found")
 
 
 def init_world(dest: Path, game_path: Path, name: str) -> None:
@@ -68,6 +117,12 @@ def init_world(dest: Path, game_path: Path, name: str) -> None:
         (dest / "sessions").mkdir()
         (dest / "renders").mkdir()
         (dest / ".gitignore").write_text("renders/\n")
+        # install the GM agent + skills so the world is playable without a
+        # manual copy; skipped only on a bare wheel install with no bundled kit
+        kit = agent_kit_dir()
+        if kit is not None:
+            shutil.copytree(kit, dest / ".claude", ignore=_KIT_IGNORE,
+                            dirs_exist_ok=True)
         # world.yaml is the commit point: write it last so a crash mid-init
         # never leaves a manifest behind (which would make retries think the
         # world already exists).

@@ -9,13 +9,10 @@ Either ask Claude to use the `world-new` skill (which does all of the below
 for you), or by hand:
 
 ```bash
-# init writes the world files into a new directory
+# init writes the world files into a new directory AND installs the GM
+# agent + skills into it (claude loads .claude/ from the launch directory)
 engine world init ~/ttrpg/saves/world1 \
   --game ~/gh/claude-ttrpg/games/reference --name "World One"
-
-# install the GM agent + skills into the world (claude loads .claude/
-# from the directory you launch it in)
-cp -r ~/gh/claude-ttrpg/.claude ~/ttrpg/saves/world1/.claude
 
 # make it a git repo: the commit is save zero, the tag a named restore point
 cd ~/ttrpg/saves/world1
@@ -28,7 +25,9 @@ claude --agent gm
 ```
 
 (`--game` takes any path to a game directory; use the absolute path unless
-you're running from inside this repo.)
+you're running from inside this repo. A world stays loadable even if that
+path later breaks — the engine falls back to resolving the game by name
+from its bundled `games/`.)
 
 ## Your first session
 
