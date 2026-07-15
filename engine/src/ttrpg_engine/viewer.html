@@ -27,16 +27,49 @@
   }
   header h1 { font-size: 1.05rem; font-weight: 600; letter-spacing: .02em; }
   header .where { color: var(--muted); font-size: .85rem; }
+  header .pulse {
+    margin-left: auto; width: 9px; height: 9px; border-radius: 50%;
+    background: var(--moss); opacity: .3; transition: opacity .2s, box-shadow .2s;
+    flex: none;
+  }
+  header .pulse.beat { opacity: 1; box-shadow: 0 0 7px var(--moss); }
+  header .pulse.stale { background: var(--blood); opacity: .9; box-shadow: none; }
   header .lens {
-    margin-left: auto; font-family: var(--mono); font-size: .7rem;
+    margin-left: .6rem; font-family: var(--mono); font-size: .7rem;
     color: var(--ink); background: var(--gold); padding: .15rem .5rem;
     border-radius: 2px; letter-spacing: .08em;
   }
   header .lens.gm { background: var(--blood); color: var(--parchment); }
 
-  .table { display: grid; grid-template-columns: minmax(0, 7fr) minmax(300px, 4fr);
-           gap: 1.4rem; padding: 1.2rem; max-width: 1500px; margin: 0 auto; }
-  @media (max-width: 900px) { .table { grid-template-columns: 1fr; } }
+  .table { display: grid; grid-template-columns: minmax(0, 7fr) minmax(320px, 4fr);
+           gap: 1.4rem; padding: 1.2rem; max-width: 1500px; margin: 0 auto;
+           align-items: start; }
+  /* the tactical rail stays pinned while the story scrolls — never lose the map */
+  aside { position: sticky; top: 3.4rem; align-self: start;
+          max-height: calc(100vh - 4.6rem); overflow-y: auto; padding-right: .3rem; }
+  @media (max-width: 900px) {
+    .table { grid-template-columns: 1fr; }
+    aside { position: static; max-height: none; overflow: visible; order: 1; }
+    main { order: 2; }   /* on a phone the map comes first, story below */
+  }
+
+  /* ---- empty-state hero: a title card, not a black void ------------------ */
+  .hero { display: flex; flex-direction: column; justify-content: center;
+          align-items: center; min-height: 58vh; text-align: center; gap: 1rem; }
+  .hero h2 { font-size: 2.3rem; font-weight: 600; letter-spacing: .01em; }
+  .hero .sub { color: var(--muted); font-family: var(--mono); font-size: .8rem;
+               letter-spacing: .06em; }
+  .hero .medallions { display: flex; gap: 1.1rem; flex-wrap: wrap;
+                      justify-content: center; margin: .4rem 0; }
+  .hero .med { display: flex; flex-direction: column; align-items: center; gap: .35rem;
+               width: 5.2rem; }
+  .hero .med .disc { width: 3rem; height: 3rem; border-radius: 50%;
+                     background: var(--edge); border: 1px solid var(--gold);
+                     display: grid; place-items: center; font-size: 1.25rem;
+                     color: var(--gold); }
+  .hero .med .who { font-size: .72rem; color: var(--parchment); }
+  .hero .med .sub2 { font-size: .64rem; color: var(--muted); }
+  .hero .cta { color: var(--muted); font-style: italic; max-width: 26rem; }
 
   /* ---- the story: a manuscript column ---------------------------------- */
   #story { max-width: 46rem; }
@@ -73,10 +106,29 @@
   #map .empty { color: var(--muted); font-style: italic; font-size: .9rem; }
   #map .turn { font-family: var(--mono); font-size: .78rem; color: var(--gold);
                margin-bottom: .5rem; }
+  #legend { display: flex; flex-wrap: wrap; gap: .3rem .7rem; margin-top: .55rem; }
+  #legend .item { display: flex; align-items: center; gap: .32rem; font-size: .74rem; }
+  #legend .swatch { width: 16px; height: 16px; border-radius: 50%; color: #fff;
+                    font-family: var(--mono); font-size: .62rem; display: grid;
+                    place-items: center; flex: none; }
+  #legend .item.up { color: var(--ember); }
+  #legend .item.up .swatch { box-shadow: 0 0 0 2px var(--ember); }
 
   .fighter { display: grid; grid-template-columns: 1fr auto; gap: .15rem .7rem;
-             padding: .45rem 0; border-top: 1px solid var(--edge); }
+             padding: .45rem .4rem; border-top: 1px solid var(--edge);
+             margin: 0 -.4rem; border-radius: 3px; }
   .fighter:first-of-type { border-top: 0; }
+  /* whose turn it is, echoed from the map's highlight */
+  .fighter.active { background: rgba(217, 151, 59, .13);
+                    box-shadow: inset 3px 0 0 var(--ember); }
+  #purse { font-family: var(--mono); font-size: .74rem; color: var(--gold);
+           margin-top: .6rem; padding-top: .55rem; border-top: 1px solid var(--edge); }
+  #purse .stash { color: var(--muted); }
+  #internals .row { display: flex; justify-content: space-between; gap: 1rem;
+                    font-family: var(--mono); font-size: .72rem; color: var(--muted);
+                    padding: .18rem 0; border-top: 1px solid var(--edge); }
+  #internals .row:first-child { border-top: 0; }
+  #internals .row .k { color: var(--parchment); }
   .fighter .name { font-size: .92rem; }
   .fighter .name .dead { text-decoration: line-through; color: var(--muted); }
   .fighter .tags { grid-column: 1 / -1; display: flex; gap: .35rem; flex-wrap: wrap; }
@@ -90,6 +142,8 @@
   .hp .bar { width: 84px; height: 7px; background: var(--ink); border-radius: 4px;
              overflow: hidden; }
   .hp .bar i { display: block; height: 100%; }
+  .hp .ac { color: var(--gold); }
+  .hp .ac::before { content: "⛊ "; }
   .status { font-family: var(--mono); font-size: .72rem; }
   .status.healthy { color: var(--moss); } .status.wounded { color: var(--gold); }
   .status.bloodied { color: var(--blood); } .status.down { color: var(--muted); }
@@ -112,24 +166,26 @@
 <header>
   <h1 id="world">…</h1>
   <span class="where" id="where"></span>
+  <span class="pulse" id="pulse" title="live — updates automatically"></span>
   <span class="lens" id="lens"></span>
 </header>
 
 <div class="table">
   <main id="story" aria-live="polite">
     <div class="feed" id="feed"></div>
-    <p class="empty" id="story-empty" hidden>No live session feed — start a session
-      with <code>claude --agent gm</code> in this world and the story appears here.</p>
+    <div class="empty" id="story-empty" hidden></div>
   </main>
 
   <aside>
     <div class="card" id="map"><h2>Map</h2><div class="turn" id="turn" hidden></div>
-      <div id="map-body"><p class="empty">No encounter running.</p></div></div>
-    <div class="card" id="party"><h2>Party</h2><div id="party-body"></div></div>
+      <div id="map-body"><p class="empty">No encounter running.</p></div>
+      <div id="legend"></div></div>
+    <div class="card" id="party"><h2>Party</h2><div id="party-body"></div>
+      <div id="purse" hidden></div></div>
     <div class="card" id="foes" hidden><h2>Opposition</h2><div id="foes-body"></div></div>
     <div class="card" id="quests"><h2>Quests</h2><ul id="quests-body"></ul></div>
     <div class="card" id="timeline" hidden><h2>Timeline</h2><ul id="timeline-body"></ul></div>
-    <div class="card" id="internals" hidden><h2>GM internals</h2><pre id="internals-body"></pre></div>
+    <div class="card" id="internals" hidden><h2>GM internals</h2><div id="internals-body"></div></div>
     <p class="offline" id="offline" hidden>connection lost — retrying…</p>
   </aside>
 </div>
@@ -143,6 +199,8 @@ if (GM) lensEl.classList.add("gm");
 let cursor = { file: null, offset: 0 };
 let fetchingStory = false;
 let storyDirty = false;
+let lastState = null;
+let hasStory = false;
 
 function el(tag, cls, text) {
   const n = document.createElement(tag);
@@ -151,7 +209,7 @@ function el(tag, cls, text) {
   return n;
 }
 
-function hpBar(hp, max) {
+function hpBar(hp, max, ac) {
   const frac = max > 0 ? hp / max : 0;
   const wrap = el("span", "hp");
   const bar = el("span", "bar");
@@ -161,16 +219,18 @@ function hpBar(hp, max) {
   bar.appendChild(fill);
   wrap.appendChild(bar);
   wrap.appendChild(el("span", null, hp + "/" + max));
+  if (ac != null) wrap.appendChild(el("span", "ac", String(ac)));
   return wrap;
 }
 
-function fighterRow(f) {
+function fighterRow(f, up) {
   const row = el("div", "fighter");
+  if (f.id && f.id === up) row.classList.add("active");
   const name = el("span", "name");
   const label = el("span", f.dead ? "dead" : null, f.name);
   name.appendChild(label);
   row.appendChild(name);
-  if ("hp" in f) row.appendChild(hpBar(f.hp, f.max_hp));
+  if ("hp" in f) row.appendChild(hpBar(f.hp, f.max_hp, f.ac));
   else if (f.status) row.appendChild(el("span", "status " + f.status, f.status));
   const tags = el("span", "tags");
   if (f.aloft) tags.appendChild(el("span", "chip aloft", "aloft"));
@@ -182,23 +242,68 @@ function fighterRow(f) {
   return row;
 }
 
+function renderLegend(enc) {
+  const box = document.getElementById("legend");
+  box.replaceChildren();
+  for (const t of (enc && enc.legend) || []) {
+    const item = el("div", "item" + (t.id === enc.up ? " up" : ""));
+    const sw = el("span", "swatch", t.sym);
+    sw.style.background = t.side === "pc" ? "#2563eb" : "#dc2626";
+    item.appendChild(sw);
+    item.appendChild(el("span", null, t.name));
+    box.appendChild(item);
+  }
+}
+
+function renderPurse(s) {
+  const purse = document.getElementById("purse");
+  const gold = s.party_gold, n = (s.stash || []).length;
+  if (gold === undefined && !n) { purse.hidden = true; return; }
+  purse.replaceChildren();
+  purse.appendChild(el("span", null, (gold || 0) + " gp"));
+  if (n) purse.appendChild(el("span", "stash", "  ·  " + n + " in stash"));
+  purse.hidden = false;
+}
+
+function renderInternals(s) {
+  const card = document.getElementById("internals");
+  const obj = s.internals || {};
+  const rows = Object.entries(obj).filter(([, v]) =>
+    v && (typeof v !== "object" || Object.keys(v).length));
+  if (!rows.length) { card.hidden = true; return; }   // nothing to show — no clutter
+  const body = document.getElementById("internals-body");
+  body.replaceChildren();
+  for (const [k, v] of rows) {
+    const row = el("div", "row");
+    row.appendChild(el("span", "k", k));
+    row.appendChild(el("span", null, typeof v === "object" ? JSON.stringify(v) : String(v)));
+    body.appendChild(row);
+  }
+  card.hidden = false;
+}
+
 function renderState(s) {
+  lastState = s;
   document.getElementById("world").textContent = s.world || "claude-ttrpg";
   document.getElementById("where").textContent =
     (s.location || "?") + " — " + (s.clock ? s.clock.date + ", " + s.clock.hour + ":00" : "");
+
+  const enc = s.encounter;
+  const up = enc ? enc.up : null;
 
   const partyBody = document.getElementById("party-body");
   partyBody.replaceChildren();
   for (const pc of s.party || []) {
     partyBody.appendChild(fighterRow({
+      id: pc.id,
       name: pc.name + "  ·  " + pc.race + " " + pc.class + " " + pc.level,
-      hp: pc.hp, max_hp: pc.max_hp, dead: false,
+      hp: pc.hp, max_hp: pc.max_hp, ac: pc.ac, dead: false,
       effects: (pc.effects || []).map(e => e.name),
       aloft: false,
-    }));
+    }, up));
   }
+  renderPurse(s);
 
-  const enc = s.encounter;
   const turn = document.getElementById("turn");
   const mapBody = document.getElementById("map-body");
   const foes = document.getElementById("foes");
@@ -207,17 +312,19 @@ function renderState(s) {
     turn.hidden = false;
     turn.textContent = enc.name + " — round " + enc.round + " — up: " + enc.up;
     mapBody.innerHTML = s.map_svg;
+    renderLegend(enc);
     foesBody.replaceChildren();
     let any = false;
     for (const f of enc.roster || []) {
       if (f.side !== "monster") continue;
       any = true;
-      foesBody.appendChild(fighterRow(f));
+      foesBody.appendChild(fighterRow(f, up));
     }
     foes.hidden = !any;
   } else {
     turn.hidden = true;
     mapBody.replaceChildren(el("p", "empty", "No encounter running."));
+    document.getElementById("legend").replaceChildren();
     foes.hidden = true;
   }
 
@@ -236,11 +343,38 @@ function renderState(s) {
     const tlBody = document.getElementById("timeline-body");
     tlBody.replaceChildren();
     for (const ev of (s.timeline || [])) tlBody.appendChild(el("li", null, ev.summary || ev.id));
-    const internals = document.getElementById("internals");
-    internals.hidden = false;
-    document.getElementById("internals-body").textContent =
-      JSON.stringify(s.internals || {}, null, 1);
+    renderInternals(s);
   }
+  refreshHero();
+}
+
+function buildHero(s) {
+  const box = document.getElementById("story-empty");
+  box.replaceChildren();
+  box.className = "empty hero";
+  box.appendChild(el("h2", null, s.world || "claude-ttrpg"));
+  box.appendChild(el("div", "sub",
+    (s.location || "") + (s.clock ? "  ·  " + s.clock.date + ", " + s.clock.hour + ":00" : "")));
+  const meds = el("div", "medallions");
+  for (const pc of s.party || []) {
+    const m = el("div", "med");
+    const disc = el("div", "disc", (pc.name || "?").slice(0, 1));
+    m.appendChild(disc);
+    m.appendChild(el("div", "who", pc.name));
+    m.appendChild(el("div", "sub2", pc.race + " " + pc.class));
+    meds.appendChild(m);
+  }
+  if ((s.party || []).length) box.appendChild(meds);
+  const cta = el("p", "cta");
+  cta.innerHTML = "Waiting for the session to begin — run <code>claude --agent gm</code> in this world and the story unfolds here.";
+  box.appendChild(cta);
+}
+
+function refreshHero() {
+  const box = document.getElementById("story-empty");
+  if (hasStory || !lastState) { box.hidden = true; return; }
+  buildHero(lastState);
+  box.hidden = false;
 }
 
 async function fetchState() {
@@ -278,7 +412,8 @@ async function fetchStory() {
       }
       feed.appendChild(beat);
     }
-    document.getElementById("story-empty").hidden = cursor.file !== null;
+    hasStory = feed.children.length > 0;
+    refreshHero();
     if (stick && data.entries.length) window.scrollTo(0, document.body.scrollHeight);
   } catch (e) { /* next tick retries */
   } finally {
@@ -287,19 +422,33 @@ async function fetchStory() {
   }
 }
 
+const pulse = document.getElementById("pulse");
+let pulseTimer = null;
+function beat() {
+  pulse.classList.remove("stale");
+  pulse.classList.add("beat");
+  clearTimeout(pulseTimer);
+  pulseTimer = setTimeout(() => pulse.classList.remove("beat"), 450);
+}
+
 let stateTimer = null;
 function connect() {
   const es = new EventSource("/events");
   es.addEventListener("state", () => {
+    beat();
     clearTimeout(stateTimer);
     stateTimer = setTimeout(fetchState, 120);
   });
-  es.addEventListener("story", fetchStory);
+  es.addEventListener("story", () => { beat(); fetchStory(); });
   es.onopen = () => {
     document.getElementById("offline").hidden = true;
+    pulse.classList.remove("stale");
     fetchState(); fetchStory();
   };
-  es.onerror = () => { document.getElementById("offline").hidden = false; };
+  es.onerror = () => {
+    document.getElementById("offline").hidden = false;
+    pulse.classList.add("stale");
+  };
 }
 
 fetchState();

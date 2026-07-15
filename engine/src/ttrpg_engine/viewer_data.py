@@ -6,6 +6,9 @@ from ttrpg_engine.combat import effect_names
 
 _TIMELINE_TAIL = 30
 _INTERNAL_KEYS = ("stealth", "grapples", "sneak_used", "gear_actions", "aloft")
+# coarse health bands for a monster the players only see as a status word — the
+# token ring then matches the healthy/wounded/bloodied word they already have
+_BAND_FRAC = {"healthy": 0.8, "wounded": 0.5, "bloodied": 0.2, "down": 0.0}
 
 
 def player_encounter(enc: dict) -> dict:
@@ -46,6 +49,7 @@ def _roster(root: Path, enc: dict, view: dict, lens: str) -> list[dict]:
             if lens == "gm":
                 entry["hp"] = mon["hp"]
                 entry["max_hp"] = mon["max_hp"]
+                entry["ac"] = mon.get("ac")   # AC stays GM-only for foes
             else:
                 entry["status"] = _monster_status(mon)
         else:
@@ -53,9 +57,30 @@ def _roster(root: Path, enc: dict, view: dict, lens: str) -> list[dict]:
             names = [e["name"] for e in sheet.get("effects", [])]
             entry = {"id": cid, "name": sheet["name"], "side": "pc",
                      "effects": names, "aloft": aloft, "dead": "dead" in names,
-                     "hp": sheet["hp"], "max_hp": sheet["max_hp"]}
+                     "hp": sheet["hp"], "max_hp": sheet["max_hp"],
+                     "ac": sheet.get("ac")}
         entries.append(entry)
     return entries
+
+
+def _token_status(roster: list[dict]) -> dict:
+    """Overlay for render.svg_map so PC tokens (and player-lens monsters, seen
+    only as a word) get health rings and condition pips too."""
+    out = {}
+    for r in roster:
+        if "hp" in r and r.get("max_hp"):
+            frac = r["hp"] / r["max_hp"]
+        else:
+            frac = _BAND_FRAC.get(r.get("status"))
+        names = set(r.get("effects", []))
+        out[r["id"]] = {
+            "hp_frac": None if r.get("dead") else frac,
+            "dead": bool(r.get("dead")),
+            "hidden": "hidden" in names,
+            "bad": bool(names & render._BAD_EFFECTS),
+            "aloft": bool(r.get("aloft")),
+        }
+    return out
 
 
 def _quests(root: Path) -> list[dict]:
@@ -82,7 +107,7 @@ def state_snapshot(root: Path, g: dict, lens: str) -> dict:
         "lens": lens,
         "world": worldfs.read_yaml(root / "world.yaml")["world"],
         "clock": worldfs.read_yaml(worldfs.state(root, "clock")),
-        "location": party["location"],
+        "location": str(party["location"]).replace("-", " ").replace("_", " ").title(),
         "party_gold": party["gold"],
         "stash": party["stash"],
         "party": [worldfs.read_yaml(worldfs.state(root, f"party/{pid}"))
@@ -98,10 +123,17 @@ def state_snapshot(root: Path, g: dict, lens: str) -> dict:
         up = enc["order"][enc["turn"]]
         if up not in view["order"]:
             up = "???"  # a hidden monster's turn must not name it to players
+        roster = _roster(root, enc, view, lens)
+        syms = render.symbols(view)
+        legend = [{"id": r["id"], "sym": syms[r["id"]], "name": r["name"],
+                   "side": r["side"]} for r in roster if r["id"] in syms]
         snap["encounter"] = {"id": enc["id"], "name": enc["name"],
                              "round": enc["round"], "up": up,
-                             "roster": _roster(root, enc, view, lens)}
-        snap["map_svg"] = render.svg_map(view)
+                             "roster": roster, "legend": legend}
+        # a hidden monster's turn passes up="???" (no real cid) -> no highlight
+        snap["map_svg"] = render.svg_map(
+            view, caption=False, status=_token_status(roster),
+            up=up if up != "???" else None)
     if lens == "gm":
         snap["internals"] = {k: (enc or {}).get(k) or {} for k in _INTERNAL_KEYS}
         snap["timeline"] = _timeline_tail(root)

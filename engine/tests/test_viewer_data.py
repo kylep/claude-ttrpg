@@ -37,6 +37,10 @@ def _entry(snap, cid):
     return next(e for e in snap["encounter"]["roster"] if e["id"] == cid)
 
 
+def _legend_ids(snap):
+    return [t["id"] for t in snap["encounter"]["legend"]]
+
+
 def test_no_encounter_snapshot(wroot):
     make_pc()
     snap = viewer_data.state_snapshot(wroot, _game(wroot), "player")
@@ -44,7 +48,7 @@ def test_no_encounter_snapshot(wroot):
     assert snap["encounter"] is None and snap["map_svg"] is None
     assert snap["world"] == "Test World"
     assert snap["clock"] == {"date": "1203-04-17", "hour": 9}
-    assert snap["location"] == "town"
+    assert snap["location"] == "Town"          # slug title-cased for display
     assert snap["party_gold"] == 0 and snap["stash"] == []
     assert snap["quests"] == []
     assert [pc["id"] for pc in snap["party"]] == ["pc-borin"]
@@ -67,17 +71,21 @@ def test_player_lens_hides_hidden_monster_gm_sees_it(wroot):
     snap = viewer_data.state_snapshot(wroot, _game(wroot), "player")
     assert "goblin-1" not in _roster_ids(snap)
     assert "goblin-2" in _roster_ids(snap)
-    assert "goblin-1" not in snap["map_svg"]          # neither token nor legend
-    assert "goblin-2" in snap["map_svg"]
+    # the viewer SVG carries only glyphs; identity lives in the legend. The
+    # masking must reach the drawn map: one token per visible roster entry.
+    assert "goblin-1" not in _legend_ids(snap)
+    assert "goblin-2" in _legend_ids(snap)
+    assert snap["map_svg"].count('class="tok"') == len(snap["encounter"]["roster"])
     # hidden PCs pass through — players know their own rogue
     assert "pc-borin" in _roster_ids(snap)
-    assert "pc-borin" in snap["map_svg"]
+    assert "pc-borin" in _legend_ids(snap)
     assert "hidden" in _entry(snap, "pc-borin")["effects"]
     assert "internals" not in snap and "timeline" not in snap
 
     gm = viewer_data.state_snapshot(wroot, _game(wroot), "gm")
     assert "goblin-1" in _roster_ids(gm)
-    assert "goblin-1" in gm["map_svg"]
+    assert "goblin-1" in _legend_ids(gm)
+    assert gm["map_svg"].count('class="tok"') == len(gm["encounter"]["roster"])
     g1 = _entry(gm, "goblin-1")
     assert g1["hp"] == 7 and g1["max_hp"] == 7
     assert "hidden" in g1["effects"]
