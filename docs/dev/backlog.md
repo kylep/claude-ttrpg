@@ -5,19 +5,7 @@ fix-later; none block play.
 
 ## Engineering
 
-The v1 Engineering backlog is cleared — all nine items shipped in the
-2026-07-15 engine-backlog pass:
-
-- `.claude/` is installed by `engine world init`; the game path resolves
-  by name from the games registry when its stored path breaks; the ruleset
-  tunables (crit/fumble, initiative, diagonal cost, death-save DC/counts)
-  are honored; `dice.parse` caps count/sides; `init_world` cleans up a
-  partial world on failure; monster deaths emit a `death` event; dead PCs
-  keep fight XP and can be revived (see
-  `2026-07-15-death-and-revival.md`); the `session-end` grep is anchored;
-  `render.symbols` has a bounded fallback.
-
-Remaining engineering work (deferred, not blocking):
+Deferred, not blocking:
 
 - **Structural refactors** (see `2026-07-15-refactor.md`): split
   `combat.py`/`cli.py` into packages; broaden `guard()` to map
@@ -60,8 +48,8 @@ Remaining engineering work (deferred, not blocking):
   consider detecting full-roster moves.
 - `level.grant_xp` still grants to all members regardless of splits;
   dead PCs never leave `party.members` (no retire/bury flow).
-- Equip/unequip on a monster id now returns a clean `not_a_pc` error
-  (was an uncaught `KeyError`); equipping monsters is still unsupported.
+- Equipping monsters is unsupported (a monster id gets a clean `not_a_pc`
+  error).
 
 ## From the tactics round (2026-07-14)
 
@@ -105,7 +93,6 @@ Carve-outs from `engine serve` (see docs/dev/2026-07-14-live-viewer-design.md).
   story pane degrades to "no live session feed" and everything else
   keeps working.
 - Current session only; no session-history browsing in the viewer.
-- The SVG map has no aloft/prone/hidden badges on tokens yet.
 - The game ruleset is loaded once at server start; a mid-session
   ruleset change needs a serve restart.
 - When it is a hidden monster's turn, the player lens shows `up: ???` —
