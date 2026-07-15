@@ -61,13 +61,17 @@ def test_export_game_no_world_no_game_flag_errors(tmp_path, monkeypatch):
 
 
 def test_export_game_core_rules_generated_from_yaml(wroot):
+    from conftest import FIXTURE_GAME
+    from ttrpg_engine import game
+    core = game.load(FIXTURE_GAME)["core"]
     res = _export("game")
     html = Path(json.loads(res.stdout)["file"]).read_text()
-    # standard array values from ruleset/core.yaml, not hardcoded text
-    for value in ["15", "14", "13", "12", "10", "8"]:
-        assert value in html
-    # DCs from ruleset/core.yaml
-    assert "10" in html and "16" in html
+    # the standard array renders as one contiguous, ordered list (anchored
+    # context, not stray digits that could match anything in the document)
+    assert ", ".join(str(v) for v in core["standard_array"]) in html
+    # DCs render as labelled thresholds "(DC N)", from ruleset/core.yaml
+    for value in core["dcs"].values():
+        assert f"(DC {value})" in html
 
 
 # --- export world ------------------------------------------------------------

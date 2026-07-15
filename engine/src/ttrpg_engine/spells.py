@@ -1,7 +1,7 @@
 from pathlib import Path
 from random import Random
 
-from ttrpg_engine import combat, dice, grid, timeline, worldfs
+from ttrpg_engine import combat, dice, grid, timeline
 from ttrpg_engine.chargen import attr_mod
 from ttrpg_engine.errors import EngineError
 
@@ -33,16 +33,10 @@ def _spend_slot(root, sheet, level):
 
 def _reveal_caster(root, enc, caster, sheet, result):
     """Casting a spell gives the caster away."""
-    if "hidden" not in combat.effect_names(sheet):
-        return
-    sheet["effects"] = [e for e in sheet["effects"] if e["name"] != "hidden"]
-    combat.save_pc(root, sheet)
-    if enc is not None:
-        enc.get("stealth", {}).pop(caster, None)
-        combat.save_encounter(root, enc)
-    result["revealed"] = True
-    timeline.append_event(root, type_="effect", actors=[caster],
-                          summary=f"{caster} is revealed (cast a spell)")
+    if combat.reveal_actor(root, enc, caster, sheet, "pc", "cast a spell"):
+        if enc is not None:
+            combat.save_encounter(root, enc)
+        result["revealed"] = True
 
 
 def cast(root: Path, g: dict, caster: str, spell_name: str, target: str | None,
@@ -71,12 +65,8 @@ def cast(root: Path, g: dict, caster: str, spell_name: str, target: str | None,
             raise EngineError("no_encounter", "area spells require an active encounter")
         cell = tuple(at)
         if caster in enc["positions"]:
-            caster_pos = tuple(enc["positions"][caster])
-            dist = grid.chebyshev(caster_pos, cell)
-            if dist > spell["range"]:
-                raise EngineError("out_of_range", f"{list(cell)} is {dist} away, range {spell['range']}")
-            if not grid.line_of_sight(enc, caster_pos, cell):
-                raise EngineError("no_los", f"{caster} has no line of sight to {list(cell)}")
+            combat.check_reach(enc, tuple(enc["positions"][caster]), cell, spell["range"],
+                               a_label=caster, b_label=str(list(cell)))
         _spend_slot(root, sheet, level)
         radius = area["radius"]
         affected = [cid for cid, pos in enc["positions"].items()
@@ -111,13 +101,8 @@ def cast(root: Path, g: dict, caster: str, spell_name: str, target: str | None,
     target = target or caster
     _, t_data, _ = combat.resolve_actor(root, target)
     if enc and target != caster and caster in enc["positions"] and target in enc["positions"]:
-        caster_pos = tuple(enc["positions"][caster])
-        target_pos = tuple(enc["positions"][target])
-        dist = grid.chebyshev(caster_pos, target_pos)
-        if dist > spell["range"]:
-            raise EngineError("out_of_range", f"{target} is {dist} away, range {spell['range']}")
-        if not grid.line_of_sight(enc, caster_pos, target_pos):
-            raise EngineError("no_los", f"{caster} has no line of sight to {target}")
+        combat.check_reach(enc, tuple(enc["positions"][caster]), tuple(enc["positions"][target]),
+                           spell["range"], a_label=caster, b_label=target)
     _spend_slot(root, sheet, level)
     result = {"caster": caster, "spell": spell_name, "target": target,
               "slot_level": level or None, "damage": 0, "healed": 0}
@@ -138,8 +123,9 @@ def cast(root: Path, g: dict, caster: str, spell_name: str, target: str | None,
             dis_from.append("ranged_in_melee")
         natural, total = roll_fn(sheet["proficiency"] + castmod,
                                  bool(adv_from), bool(dis_from))
-        lands = natural != 1 and (natural == 20 or total >= t_data["ac"])
-        result["attack"] = {"natural": natural, "total": total, "vs_ac": t_data["ac"], "hit": lands}
+        lands, _ = combat.resolve_hit(natural, total, t_data["ac"])  # spells don't crit
+        result["attack"] = {"natural": natural, "total": total, "vs_ac": t_data["ac"],
+                            "hit": lands}
         if ranged_in_melee:
             result["ranged_in_melee"] = True
         if adv_from:

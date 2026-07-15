@@ -38,6 +38,40 @@ def test_attack_hit_and_crit(wroot):
     assert r2["crit"] == "hit" and r2["damage"] >= 4   # two damage dice + mod
 
 
+def test_resolve_hit_rules():
+    assert combat.resolve_hit(20, 5, 99) == (True, "hit")    # nat 20 always hits + crits
+    assert combat.resolve_hit(1, 99, 5) == (False, "fumble")  # nat 1 always misses
+    assert combat.resolve_hit(10, 15, 14) == (True, None)     # meets AC
+    assert combat.resolve_hit(10, 13, 14) == (False, None)    # under AC
+
+
+def test_roll_damage_doubles_dice_on_crit():
+    import random
+    seed = 7
+    normal = combat.roll_damage("2d6", random.Random(seed), None)
+    crit = combat.roll_damage("2d6", random.Random(seed), "hit")
+    # crit re-rolls the dice: same first roll, plus a second dice-only roll
+    base = dice_total("2d6", seed)
+    extra = second_roll_total("2d6", seed)
+    assert normal == base
+    assert crit == base + extra
+    assert crit > normal
+
+
+def dice_total(expr, seed):
+    import random
+    from ttrpg_engine import dice
+    return dice.roll(expr, random.Random(seed)).total
+
+
+def second_roll_total(expr, seed):
+    import random
+    from ttrpg_engine import dice
+    rng = random.Random(seed)
+    dice.roll(expr, rng)                      # burn the first roll
+    return sum(dice.roll(expr, rng).rolls)    # dice of the second roll
+
+
 def test_nat1_misses_even_vs_ac0(wroot):
     import random
     setup_fight(wroot)

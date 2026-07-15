@@ -1,5 +1,6 @@
 import json
 import random
+import re
 from pathlib import Path
 
 import typer
@@ -33,9 +34,24 @@ def fail(code: str, message: str) -> None:
     raise typer.Exit(1)
 
 
+def split_csv(s: str | None) -> list[str]:
+    """Split a comma-separated option into trimmed, non-empty parts."""
+    return [p.strip() for p in s.split(",") if p.strip()] if s else []
+
+
 def split_pcs(pcs: str | None) -> list[str] | None:
-    """Parse a comma-separated --pcs option into a list, or None if omitted."""
-    return [p.strip() for p in pcs.split(",") if p.strip()] if pcs else None
+    """Parse a comma-separated --pcs option into a list, or None if omitted
+    (None means 'the whole party', distinct from an empty subset)."""
+    return split_csv(pcs) or None
+
+
+def parse_xy(spec: str, option: str) -> tuple[int, int]:
+    """Parse an 'X,Y' cell option into a coordinate tuple."""
+    try:
+        x, y = (int(v) for v in spec.split(","))
+    except ValueError:
+        raise EngineError("bad_coord", f"{option} must be X,Y, got {spec!r}")
+    return x, y
 
 
 def guard(fn, *args, **kwargs):
@@ -50,6 +66,13 @@ def guard(fn, *args, **kwargs):
 
 def require_root() -> Path:
     return guard(worldfs.find_root, _world_override)
+
+
+def require_root_and_game() -> tuple[Path, dict]:
+    """The world root plus its loaded game — the pair almost every stateful
+    command needs."""
+    root = require_root()
+    return root, guard(worldfs.load_game_for, root)
 
 
 def d20_roll(modifier: int, adv: bool, dis: bool) -> tuple[int, int]:
@@ -161,9 +184,8 @@ def session_start():
 @override_app.command("log")
 def override_log(summary: str = typer.Option(...), actors: str = typer.Option("", help="comma-separated ids")):
     root = require_root()
-    actor_list = [a for a in actors.split(",") if a]
     event = timeline.append_event(root, type_="override", summary=summary,
-                                  actors=actor_list, override=True)
+                                  actors=split_csv(actors), override=True)
     emit({"event": event})
 
 
@@ -175,8 +197,8 @@ def parse_kv_ints(spec: str) -> dict[str, int]:
     out = {}
     for pair in spec.split(","):
         k, _, v = pair.partition("=")
-        if not v.lstrip("-").isdigit():
-            fail("bad_assign", f"bad assignment {pair!r}")
+        if not re.fullmatch(r"-?\d+", v.strip()):
+            raise EngineError("bad_assign", f"bad assignment {pair!r}")
         out[k.strip().upper()] = int(v)
     return out
 
@@ -189,10 +211,10 @@ def char_create(
     assign: str = typer.Option(..., help="e.g. DEX=15,WIS=14,INT=13,CON=12,STR=10,CHA=8"),
     skills: str = typer.Option(..., help="comma-separated"),
 ):
-    root = require_root()
-    g = guard(worldfs.load_game_for, root)
+    root, g = require_root_and_game()
     sheet = guard(chargen.create, root, g, name=name, cls_name=cls, race_name=race,
-                  assign=parse_kv_ints(assign), skills=[s.strip() for s in skills.split(",")])
+                  assign=guard(parse_kv_ints, assign),
+                  skills=[s.strip() for s in skills.split(",")])
     emit({"sheet": sheet})
 
 
@@ -217,8 +239,7 @@ app.add_typer(enc_app, name="encounter")
 
 @enc_app.command("start")
 def encounter_start(map_rel: str, pcs: str | None = typer.Option(None, "--pcs", help="comma-separated PC ids")):
-    root = require_root()
-    g = guard(worldfs.load_game_for, root)
+    root, g = require_root_and_game()
     emit(guard(combat.start, root, g, map_rel, rng, split_pcs(pcs)))
 
 
@@ -229,8 +250,7 @@ def encounter_next():
 
 @enc_app.command("end")
 def encounter_end():
-    root = require_root()
-    g = guard(worldfs.load_game_for, root)
+    root, g = require_root_and_game()
     emit(guard(combat.end, root, g, rng))
 
 
@@ -284,15 +304,8 @@ def deathsave(actor: str = typer.Option(...)):
 def cast(caster: str = typer.Option(...), spell: str = typer.Option(...),
          target: str | None = typer.Option(None),
          at: str | None = typer.Option(None, "--at", help="X,Y cell for area spells")):
-    root = require_root()
-    g = guard(worldfs.load_game_for, root)
-    cell = None
-    if at is not None:
-        try:
-            x, y = (int(v) for v in at.split(","))
-        except ValueError:
-            fail("bad_coord", f"--at must be X,Y, got {at!r}")
-        cell = (x, y)
+    root, g = require_root_and_game()
+    cell = guard(parse_xy, at, "--at") if at is not None else None
     emit(guard(spells.cast, root, g, caster, spell, target, roll_fn=d20_roll, rng=rng, at=cell))
 
 
@@ -314,8 +327,7 @@ def fall(actor: str = typer.Option(...),
 
 @app.command()
 def hide(actor: str = typer.Option(...)):
-    root = require_root()
-    g = guard(worldfs.load_game_for, root)
+    root, g = require_root_and_game()
     emit(guard(combat.hide, root, g, actor, roll_fn=d20_roll))
 
 
@@ -349,19 +361,15 @@ def sight(actor: str = typer.Option(...), target: str = typer.Option(...)):
 @app.command()
 def rest(type_: str = typer.Option(..., "--type"),
          pcs: str | None = typer.Option(None, "--pcs", help="comma-separated PC ids")):
-    root = require_root()
-    g = guard(worldfs.load_game_for, root)
+    root, g = require_root_and_game()
     emit(guard(rest_mod.take, root, g, type_, rng, split_pcs(pcs)))
 
 
 @app.command()
 def move(actor: str = typer.Option(...), to: str = typer.Option(..., help="X,Y"),
          force: bool = typer.Option(False, "--force")):
-    try:
-        x, y = (int(v) for v in to.split(","))
-    except ValueError:
-        fail("bad_coord", f"--to must be X,Y, got {to!r}")
-    emit(guard(combat.move, require_root(), actor, (x, y), force=force))
+    cell = guard(parse_xy, to, "--to")
+    emit(guard(combat.move, require_root(), actor, cell, force=force))
 
 
 @app.command()
@@ -392,16 +400,14 @@ app.add_typer(gold_app, name="gold")
 @item_app.command("add")
 def item_add(actor: str = typer.Option(...), item: str = typer.Option(...),
              qty: int = typer.Option(1)):
-    root = require_root()
-    g = guard(worldfs.load_game_for, root)
+    root, g = require_root_and_game()
     emit(guard(inventory.add_item, root, g, actor, item, qty))
 
 
 @item_app.command("remove")
 def item_remove(actor: str = typer.Option(...), item: str = typer.Option(...),
                 qty: int = typer.Option(1)):
-    root = require_root()
-    g = guard(worldfs.load_game_for, root)
+    root, g = require_root_and_game()
     emit(guard(inventory.remove_item, root, g, actor, item, qty))
 
 
@@ -409,31 +415,27 @@ def item_remove(actor: str = typer.Option(...), item: str = typer.Option(...),
 def item_use(actor: str = typer.Option(...), item: str = typer.Option(...),
              target: str | None = typer.Option(None, help="Defaults to the actor."),
              force: bool = typer.Option(False, "--force")):
-    root = require_root()
-    g = guard(worldfs.load_game_for, root)
+    root, g = require_root_and_game()
     emit(guard(inventory.use, root, g, actor, item, target, rng, force=force))
 
 
 @item_app.command("dispel")
 def item_dispel(actor: str = typer.Option(...), item: str = typer.Option(...)):
-    root = require_root()
-    g = guard(worldfs.load_game_for, root)
+    root, g = require_root_and_game()
     emit(guard(inventory.dispel, root, g, actor, item))
 
 
 @app.command()
 def equip(actor: str = typer.Option(...), item: str = typer.Option(...),
           force: bool = typer.Option(False, "--force")):
-    root = require_root()
-    g = guard(worldfs.load_game_for, root)
+    root, g = require_root_and_game()
     emit(guard(inventory.equip, root, g, actor, item, force=force))
 
 
 @app.command()
 def unequip(actor: str = typer.Option(...), item: str = typer.Option(...),
             force: bool = typer.Option(False, "--force")):
-    root = require_root()
-    g = guard(worldfs.load_game_for, root)
+    root, g = require_root_and_game()
     emit(guard(inventory.unequip, root, g, actor, item, force=force))
 
 
@@ -472,8 +474,7 @@ def xp_grant(amount: int = typer.Option(...), reason: str = typer.Option("")):
 
 @level_app.command("up")
 def level_up(actor: str = typer.Option(...)):
-    root = require_root()
-    g = guard(worldfs.load_game_for, root)
+    root, g = require_root_and_game()
     emit(guard(level_mod.up, root, g, actor, rng))
 
 
@@ -494,16 +495,16 @@ def quest_offer(
     spawn: bool = typer.Option(False, "--spawn", help="world only: reward materializes on completion"),
     escrow_from: str | None = typer.Option(None, "--escrow-from", help="npc:ID or pc:ID (world giver only)"),
 ):
-    root = require_root()
-    g = guard(worldfs.load_game_for, root)
+    root, g = require_root_and_game()
     giver_type, giver_id = guard(quests_mod.parse_ref, giver)
     escrow_type = escrow_id = None
     if escrow_from:
         escrow_type, escrow_id = guard(quests_mod.parse_ref, escrow_from, allow_world=False)
-    item_list = [i.strip() for i in items.split(",") if i.strip()] if items else []
+    if not 0 <= deadline_hour <= 23:
+        fail("bad_hour", f"--deadline-hour must be 0–23, got {deadline_hour}")
     deadline_spec = {"date": deadline, "hour": deadline_hour} if deadline else None
     emit(guard(quests_mod.offer, root, g, title=title, description=desc,
-               giver_type=giver_type, giver_id=giver_id, gold=gold, items=item_list,
+               giver_type=giver_type, giver_id=giver_id, gold=gold, items=split_csv(items),
                xp=xp, deadline=deadline_spec, spawn=spawn,
                escrow_from_type=escrow_type, escrow_from_id=escrow_id))
 

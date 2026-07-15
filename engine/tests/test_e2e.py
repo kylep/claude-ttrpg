@@ -73,7 +73,9 @@ def test_full_adventure_loop(tmp_path, monkeypatch):
     run(["encounter", "start", "maps/encounters/kings-tomb.yaml"])
     render = run(["map", "render", "--svg"])
     assert (root / "renders" / "index.html").exists()
-    assert "#" in render["map"] or "~" in render["map"]
+    # assert real terrain in the grid rows, not the always-present legend line
+    grid_rows = render["map"].split("\n\n")[0]
+    assert "#" in grid_rows and "~" in grid_rows       # kings-tomb has walls + difficult
 
     # audit trail exists and never contradicts state
     events = sorted((root / "timeline").glob("*.yaml"))

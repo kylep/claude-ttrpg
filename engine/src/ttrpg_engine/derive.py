@@ -1,8 +1,22 @@
-"""Derives computed sheet stats (AC, attacks) from currently-equipped gear."""
+"""Derives computed sheet stats (AC, attacks) from currently-equipped gear,
+plus a few small shared sheet predicates/formulas."""
+
+from ttrpg_engine import dice
 
 
 def attr_mod(score: int) -> int:
     return (score - 10) // 2
+
+
+def is_dead(sheet: dict) -> bool:
+    """A PC is dead when it carries the `dead` effect."""
+    return "dead" in {e["name"] for e in sheet.get("effects", [])}
+
+
+def hit_die_gain(hit_die: int, con_score: int, rng) -> int:
+    """HP gained from rolling one hit die (leveling up, short rest): the die
+    plus the CON modifier, minimum 1."""
+    return max(1, dice.roll(f"d{hit_die}", rng).total + attr_mod(con_score))
 
 
 def _equipped_items(sheet: dict) -> list[str]:

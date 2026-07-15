@@ -26,14 +26,15 @@ fix-later; none block play.
   `dead: true` for a self-contained audit log.
 - `encounter end` grants XP to dead PCs; `xp grant` skips them — pick one.
 - `session-end` skill: `grep "session: N"` substring-matches 1 vs 1x — anchor it.
-- Shared `resolve_hit()` for the nat-1/nat-20 formula duplicated in
-  `combat.attack` and `spells.cast`; drop unused `worldfs` import in spells.py.
-- Small test gaps: chargen error paths, `grant_xp` dead-skip, `bad_coord`,
-  adv/dis/crit branches of `check`; e2e map assertion is trivially true
-  (legend always contains `#`) — assert grid rows instead.
-- `--actors` comma-split doesn't strip whitespace.
 - `render.symbols` needs a bounded fallback if an encounter ever has >26
   same-case same-initial combatants.
+
+See `2026-07-15-refactor.md` for the structural refactors deliberately
+deferred from that pass (split `combat.py`/`cli.py` into packages, broaden
+`guard()` to map malformed-YAML `KeyError`/`TypeError`, and a set of
+lower-value nits) — plus the correctness/dedup/robustness fixes that pass
+*did* land (spell-crit doubling, shared hit/reach/reveal/xp/is_dead helpers,
+CLI validation, `markdown_render.py`).
 
 ## Decided (carve-outs, documented here)
 
@@ -62,7 +63,8 @@ fix-later; none block play.
   consider detecting full-roster moves.
 - `level.grant_xp` still grants to all members regardless of splits;
   dead PCs never leave `party.members` (no retire/bury flow).
-- Equip/unequip unsupported for monster ids.
+- Equip/unequip on a monster id now returns a clean `not_a_pc` error
+  (was an uncaught `KeyError`); equipping monsters is still unsupported.
 
 ## From the tactics round (2026-07-14)
 

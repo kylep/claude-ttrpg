@@ -72,3 +72,31 @@ def test_create_rejects_padded_duplicate_skills(wroot):
                               "--skills", "athletics,athletics,perception"])
     assert res.exit_code == 1
     assert json.loads(res.stdout)["error"]["code"] == "bad_skills"
+
+
+def _create(**over):
+    args = {"name": "Borin", "class": "fighter", "race": "dwarf",
+            "assign": ASSIGN, "skills": "athletics,perception"}
+    args.update(over)
+    flat = []
+    for k, v in args.items():
+        flat += [f"--{k}", v]
+    return runner.invoke(app, ["char", "create", *flat])
+
+
+def test_create_rejects_unknown_class(wroot):
+    assert json.loads(_create(**{"class": "paladin"}).stdout)["error"]["code"] == "unknown_class"
+
+
+def test_create_rejects_unknown_race(wroot):
+    assert json.loads(_create(race="orc").stdout)["error"]["code"] == "unknown_race"
+
+
+def test_create_rejects_duplicate_pc(wroot):
+    assert _create().exit_code == 0
+    assert json.loads(_create().stdout)["error"]["code"] == "exists"
+
+
+def test_create_rejects_empty_slug_name(wroot):
+    # "!!!" has no alphanumerics -> pc- id would be degenerate
+    assert json.loads(_create(name="!!!").stdout)["error"]["code"] == "bad_name"

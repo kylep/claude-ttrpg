@@ -121,6 +121,24 @@ def test_holy_burst_no_slots_left_fails(wroot):
         assert e.code == "no_slots"
 
 
+def test_attack_spell_does_not_crit(wroot):
+    # spells never crit: a natural 20 auto-hits but rolls damage once (no
+    # doubling) and reports no crit field. fire_dart is an attack cantrip (1d6).
+    _level_cleric_to_3(wroot)
+    _start_encounter_adjacent_to_goblin(wroot)
+    g = worldfs.load_game_for(wroot)
+    enc = worldfs.read_yaml(wroot / "state" / "encounter.yaml")
+    enc["monsters"]["goblin-1"]["hp"] = 100          # avoid damage capping at low HP
+    enc["monsters"]["goblin-1"]["max_hp"] = 100
+    worldfs.write_yaml(wroot / "state" / "encounter.yaml", enc)
+
+    r = spells.cast(wroot, g, "pc-mira", "fire_dart", "goblin-1",
+                    roll_fn=fixed(20), rng=random.Random(3))
+    assert r["attack"]["hit"] is True                 # nat 20 still auto-hits
+    assert "crit" not in r["attack"]                  # but spells carry no crit
+    assert r["damage"] == dice.roll("1d6", random.Random(3)).total   # single die, not doubled
+
+
 def test_unknown_spell_fails(wroot):
     make_pc(**CLERIC)
     res = runner.invoke(app, ["cast", "--caster", "pc-mira", "--spell", "fireball"])

@@ -394,6 +394,40 @@ def apply_heal(root: Path, target: str, amount: int, source: str) -> dict:
     return {"target": target, "amount": amount, "hp": [before, data["hp"]]}
 
 
+def resolve_hit(natural: int, total: int, ac: int) -> tuple[bool, str | None]:
+    """Shared hit/crit resolution: a natural 1 always misses, a natural 20
+    always hits and crits, otherwise compare the total to AC. Returns
+    (hit, crit) where crit is 'hit' | 'fumble' | None."""
+    crit = "hit" if natural == 20 else "fumble" if natural == 1 else None
+    hit = natural != 1 and (natural == 20 or total >= ac)
+    return hit, crit
+
+
+def roll_damage(expr, rng: Random, crit: str | None) -> int:
+    """Roll a damage expression; on a crit, double the dice (not the modifier),
+    matching a fresh re-roll of just the dice."""
+    dmg = dice.roll(str(expr), rng).total
+    if crit == "hit":
+        dmg += sum(dice.roll(str(expr), rng).rolls)
+    return dmg
+
+
+def check_reach(enc: dict, a_pos, b_pos, max_range: int, *,
+                a_label: str, b_label: str) -> None:
+    """Raise if b is out of range of a or blocked from line of sight."""
+    dist = grid.chebyshev(a_pos, b_pos)
+    if dist > max_range:
+        raise EngineError("out_of_range", f"{b_label} is {dist} away, range is {max_range}")
+    if not grid.line_of_sight(enc, a_pos, b_pos):
+        raise EngineError("no_los", f"{a_label} has no line of sight to {b_label}")
+
+
+def same_plane(enc: dict, a: str, b: str) -> bool:
+    """Two combatants share a plane unless exactly one of them is aloft."""
+    aloft = enc.get("aloft", {})
+    return bool(aloft.get(a)) == bool(aloft.get(b))
+
+
 def attack(root: Path, attacker: str, target: str, *, attack_name: str | None,
            adv: bool, dis: bool, roll_fn, rng: Random) -> dict:
     a_kind, a_data, enc = resolve_actor(root, attacker)
@@ -406,20 +440,12 @@ def attack(root: Path, attacker: str, target: str, *, attack_name: str | None,
     if enc and attacker in enc["positions"] and target in enc["positions"]:
         a_pos = tuple(enc["positions"][attacker])
         t_pos = tuple(enc["positions"][target])
-        dist = grid.chebyshev(a_pos, t_pos)
-        if dist > atk.get("range", 1):
-            raise EngineError("out_of_range",
-                              f"{target} is {dist} away, range is {atk.get('range', 1)}")
-        if not grid.line_of_sight(enc, a_pos, t_pos):
-            raise EngineError("no_los", f"{attacker} has no line of sight to {target}")
-        if kind == "melee":
-            aloft = enc.get("aloft", {})
-            a_aloft, t_aloft = bool(aloft.get(attacker)), bool(aloft.get(target))
-            if a_aloft != t_aloft:
-                if t_aloft:
-                    raise EngineError("unreachable", f"{target} is airborne")
-                raise EngineError("unreachable",
-                                  "attacker is airborne, cannot reach a grounded target")
+        check_reach(enc, a_pos, t_pos, atk.get("range", 1), a_label=attacker, b_label=target)
+        if kind == "melee" and not same_plane(enc, attacker, target):
+            if enc.get("aloft", {}).get(target):
+                raise EngineError("unreachable", f"{target} is airborne")
+            raise EngineError("unreachable",
+                              "attacker is airborne, cannot reach a grounded target")
     ranged_in_melee = (kind == "ranged" and enc is not None
                       and adjacent_living_hostile(root, enc, attacker))
     a_eff, t_eff = effect_names(a_data), effect_names(t_data)
@@ -437,14 +463,8 @@ def attack(root: Path, attacker: str, target: str, *, attack_name: str | None,
         dis_from.append("ranged_in_melee")
     eff_adv, eff_dis = bool(adv_from), bool(dis_from)
     natural, total = roll_fn(atk["attack_mod"], eff_adv, eff_dis)
-    crit = "hit" if natural == 20 else "fumble" if natural == 1 else None
-    hit = natural != 1 and (natural == 20 or total >= t_data["ac"])
-    damage = 0
-    if hit:
-        dmg = dice.roll(str(atk["damage"]), rng)
-        damage = dmg.total
-        if crit == "hit":
-            damage += sum(dice.roll(str(atk["damage"]), rng).rolls)  # dice again, modifier once
+    hit, crit = resolve_hit(natural, total, t_data["ac"])
+    damage = roll_damage(atk["damage"], rng, crit) if hit else 0
     result = {"attacker": attacker, "target": target, "attack": atk["name"],
               "natural": natural, "total": total, "vs_ac": t_data["ac"],
               "hit": hit, "crit": crit, "damage": damage}
@@ -469,14 +489,9 @@ def attack(root: Path, attacker: str, target: str, *, attack_name: str | None,
             if enc is not None:
                 enc.setdefault("sneak_used", {})[attacker] = enc["round"]
                 mutated = True
-    if "hidden" in a_eff:
-        a_data["effects"] = [e for e in a_data["effects"] if e["name"] != "hidden"]
-        if enc is not None:
-            enc.get("stealth", {}).pop(attacker, None)
+    if reveal_actor(root, enc, attacker, a_data, a_kind, "attacked from hiding"):
         result["revealed"] = True
         mutated = True
-        timeline.append_event(root, type_="effect", actors=[attacker],
-                              summary=f"{attacker} is revealed (attacked from hiding)")
     if mutated:
         _persist(root, a_kind, a_data, enc)
     verb = "hits" if hit else "misses"
@@ -670,12 +685,15 @@ def stand(root: Path, actor: str) -> dict:
     return {"actor": actor, "effects": data["effects"]}
 
 
-def _reveal_actor(root: Path, enc: dict, cid: str, data: dict, kind: str, note: str) -> bool:
-    """Strip hidden from a combatant that just gave itself away; caller persists."""
+def reveal_actor(root: Path, enc, cid: str, data: dict, kind: str, note: str) -> bool:
+    """Strip hidden from a combatant that just gave itself away (by attacking,
+    casting, grappling, …). Saves the PC sheet; the caller persists the
+    encounter. Returns whether a reveal actually happened."""
     if "hidden" not in effect_names(data):
         return False
     data["effects"] = [e for e in data["effects"] if e["name"] != "hidden"]
-    enc.get("stealth", {}).pop(cid, None)
+    if enc is not None:
+        enc.get("stealth", {}).pop(cid, None)
     if kind == "pc":
         save_pc(root, data)
     timeline.append_event(root, type_="effect", actors=[cid],
@@ -706,8 +724,7 @@ def _require_grabbable(enc: dict, actor: str, target: str) -> None:
     dist = grid.chebyshev(tuple(enc["positions"][actor]), tuple(enc["positions"][target]))
     if dist > 1:
         raise EngineError("out_of_range", f"{target} is {dist} away, must be adjacent")
-    aloft = enc.get("aloft", {})
-    if bool(aloft.get(actor)) != bool(aloft.get(target)):
+    if not same_plane(enc, actor, target):
         raise EngineError("unreachable", f"{actor} and {target} are not on the same plane")
 
 
@@ -736,7 +753,7 @@ def grapple(root: Path, actor: str, target: str, *, roll_fn, release: bool = Fal
         raise EngineError("already_grappled", f"{target} is already grappled")
     a_kind, a_data = get_combatant(root, enc, actor)
     tkind, tdata = get_combatant(root, enc, target)
-    revealed = _reveal_actor(root, enc, actor, a_data, a_kind, "lunged from hiding")
+    revealed = reveal_actor(root, enc, actor, a_data, a_kind, "lunged from hiding")
     contest = _contest(skill_mod(a_data, "STR", "athletics"), _escape_mod(tdata), roll_fn,
                        a_dis=self_dis_conditions(root, enc, actor, a_data),
                        d_dis=self_dis_conditions(root, enc, target, tdata))
@@ -788,7 +805,7 @@ def shove(root: Path, actor: str, target: str, *, roll_fn) -> dict:
         raise EngineError("invalid_target", f"{target} is down")
     a_kind, a_data = get_combatant(root, enc, actor)
     tkind, tdata = get_combatant(root, enc, target)
-    revealed = _reveal_actor(root, enc, actor, a_data, a_kind, "lunged from hiding")
+    revealed = reveal_actor(root, enc, actor, a_data, a_kind, "lunged from hiding")
     contest = _contest(skill_mod(a_data, "STR", "athletics"), _escape_mod(tdata), roll_fn,
                        a_dis=self_dis_conditions(root, enc, actor, a_data),
                        d_dis=self_dis_conditions(root, enc, target, tdata))

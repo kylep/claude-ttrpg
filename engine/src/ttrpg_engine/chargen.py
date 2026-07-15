@@ -7,7 +7,8 @@ from ttrpg_engine.errors import EngineError
 from ttrpg_engine.game import ATTRS
 
 
-def _slug(name: str) -> str:
+def slugify(name: str) -> str:
+    """Lowercase, hyphenate, and trim a display name into an id fragment."""
     return re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
 
 
@@ -28,7 +29,10 @@ def create(root: Path, g: dict, *, name: str, cls_name: str, race_name: str,
     attrs = {a: assign[a] + race.get("bonuses", {}).get(a, 0) for a in ATTRS}
     prof = g["progression"]["proficiency"][1]
     level1 = cls["levels"][1]
-    pc_id = f"pc-{_slug(name)}"
+    slug = slugify(name)
+    if not slug:
+        raise EngineError("bad_name", f"name {name!r} has no usable letters or digits")
+    pc_id = f"pc-{slug}"
     if worldfs.state(root, f"party/{pc_id}").exists():
         raise EngineError("exists", f"{pc_id} already exists")
     party = worldfs.read_yaml(worldfs.state(root, "party"))
