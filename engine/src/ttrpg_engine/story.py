@@ -10,6 +10,7 @@ from pathlib import Path
 from ttrpg_engine.markdown_render import render_markdown
 
 _SYSTEM_REMINDER_RE = re.compile(r"<system-reminder>.*?</system-reminder>", re.DOTALL)
+# user records carrying any of these are command/tool plumbing, not operator prose
 _SKIP_MARKERS = ("<command-name>", "<local-command-stdout>", "<local-command-caveat>")
 _PRE_RE = re.compile(r"<pre\b.*?</pre>", re.DOTALL)
 # a session the viewer is already following must go quiet this long before the
@@ -53,6 +54,9 @@ def _transcript_cwd_matches(project_dir: Path, cwd: str) -> bool:
 
 
 def project_dir_for(world_root: Path, projects_base: Path | None = None) -> Path | None:
+    """Locate the ~/.claude/projects dir holding this world's transcripts. Tries
+    the name Claude Code derives from the cwd, then scans siblings — a record
+    whose `cwd` matches confirms the dir. Returns None if nothing matches."""
     base = projects_base if projects_base is not None else Path.home() / ".claude" / "projects"
     cwd = str(Path(world_root).resolve())
     primary = base / re.sub(r"[^A-Za-z0-9-]", "-", cwd)
@@ -82,6 +86,9 @@ def _joined_text(content) -> str:
 
 
 def _entry_for(rec: dict) -> dict | None:
+    """Turn a transcript record into a feed entry, or None to skip it. User
+    messages become role "operator", assistant messages "gm"; meta/sidechain
+    records, tool plumbing, and error/interrupt lines are dropped."""
     if rec.get("isSidechain") or rec.get("isMeta"):
         return None
     msg = rec.get("message")
@@ -139,6 +146,10 @@ def _apply_lens(entries: list[dict], lens: str) -> list[dict]:
 def read_story(world_root: Path, cursor: dict | None,
                projects_base: Path | None = None,
                lens: str = "gm") -> tuple[list[dict], dict]:
+    """Read new transcript entries past `cursor` (a {file, offset}) and return
+    (entries, next-cursor). Only complete lines are consumed — a partial trailing
+    line stays unread until the next poll — so the byte offset never splits a
+    record."""
     project_dir = project_dir_for(world_root, projects_base)
     transcript = _select_transcript(project_dir, cursor) if project_dir else None
     if transcript is None:

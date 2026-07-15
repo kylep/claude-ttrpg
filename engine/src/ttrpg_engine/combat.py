@@ -253,6 +253,9 @@ def start(root: Path, g: dict, map_rel: str, rng: Random, pcs: list[str] | None 
 
 
 def next_turn(root: Path, rng: Random | None = None) -> dict:
+    """Advance to the next turn. At a round boundary, tick down effect durations
+    and expire the finished ones; a combatant whose `flying` effect expires while
+    aloft (and that cannot otherwise fly) falls."""
     enc = load_encounter(root)
     enc["turn"] += 1
     expired = []
@@ -334,6 +337,9 @@ def _persist(root, kind, data, enc):
 
 def apply_damage(root: Path, target: str, amount: int, source: str,
                  rng: Random | None = None) -> dict:
+    """Subtract damage; on a drop to 0 a monster dies and a PC falls
+    unconscious/dying. A combatant that drops releases anyone it was grappling,
+    and one dropped while aloft falls (extra 2d6 fall damage + prone)."""
     kind, data, enc = resolve_actor(root, target)
     before = data["hp"]
     data["hp"] = max(0, before - amount)
@@ -445,6 +451,11 @@ def same_plane(enc: dict, a: str, b: str) -> bool:
 
 def attack(root: Path, attacker: str, target: str, *, attack_name: str | None,
            adv: bool, dis: bool, roll_fn, rng: Random) -> dict:
+    """Resolve one attack. Enforces targeting: range + line of sight, and melee
+    cannot cross planes (an airborne and a grounded combatant can't reach each
+    other); a ranged attack made with a hostile adjacent takes disadvantage.
+    Then rolls to hit with all condition adv/dis, rolls damage (plus sneak
+    attack when eligible), applies it, and reveals a hidden attacker."""
     a_kind, a_data, enc = resolve_actor(root, attacker)
     _, t_data, _ = resolve_actor(root, target)
     attacks = a_data["attacks"]

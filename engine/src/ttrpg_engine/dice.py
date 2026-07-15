@@ -4,7 +4,7 @@ from random import Random
 
 _DICE_RE = re.compile(r"^(\d*)d(\d+)([+-]\d+)?$")
 _MAX_COUNT = 1000   # bound allocation: `999999d6` should not build a huge list
-_MAX_SIDES = 1000
+_MAX_SIDES = 1000  # cap die faces for the same reason
 
 
 @dataclass

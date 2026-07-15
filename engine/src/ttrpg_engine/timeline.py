@@ -10,6 +10,8 @@ def events_for_date(root: Path, date: str) -> list[Path]:
 def append_event(root: Path, *, type_: str, summary: str,
                  actors: list[str] | None = None, delta: dict | None = None,
                  override: bool = False) -> str:
+    """Write a timeline event stamped with the current clock/session, allocating
+    the next per-day sequence number. Returns the `YYYY-MM-DD-NNN` event id."""
     clk = worldfs.read_yaml(worldfs.state(root, "clock"))
     session = worldfs.read_yaml(worldfs.state(root, "session"))["current"]
     date = str(clk["date"])

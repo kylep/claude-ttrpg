@@ -14,6 +14,9 @@ def slugify(name: str) -> str:
 
 def create(root: Path, g: dict, *, name: str, cls_name: str, race_name: str,
            assign: dict[str, int], skills: list[str]) -> dict:
+    """Validate the choices, then build, persist, and return a level-1 PC sheet;
+    also appends the PC to the party file and logs a timeline event. `assign`
+    must cover every attribute using exactly the ruleset's standard array."""
     if cls_name not in g["classes"]:
         raise EngineError("unknown_class", f"no class {cls_name}")
     if race_name not in g["races"]:

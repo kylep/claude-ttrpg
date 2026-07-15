@@ -30,6 +30,7 @@ def emit(payload: dict) -> None:
 
 
 def fail(code: str, message: str) -> None:
+    """Emit a JSON error payload and exit non-zero; never returns."""
     typer.echo(json.dumps({"error": {"code": code, "message": message}}))
     raise typer.Exit(1)
 
@@ -212,6 +213,9 @@ app.add_typer(char_app, name="char")
 
 
 def parse_kv_ints(spec: str) -> dict[str, int]:
+    """Parse 'STR=10,DEX=15' into {attr: int}, upper-casing keys.
+
+    Raises bad_assign on any pair whose value isn't an integer."""
     out = {}
     for pair in spec.split(","):
         k, _, v = pair.partition("=")
@@ -465,6 +469,8 @@ def unequip(actor: str = typer.Option(...), item: str = typer.Option(...),
 
 
 def _gold_target(actor: str | None, party: bool) -> str:
+    """Resolve the gold target id, requiring exactly one of --actor/--party
+    (the equality check rejects both set and both omitted)."""
     if party == (actor is not None):
         fail("bad_target", "pass exactly one of --actor or --party")
     return "party" if party else actor

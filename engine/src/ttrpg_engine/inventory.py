@@ -103,6 +103,9 @@ def _require_pc(root: Path, actor: str):
 
 
 def equip(root: Path, g: dict, actor: str, item: str, *, force: bool = False) -> dict:
+    """Equip a carried item; a `grants_effect` item adds its effect (permanent,
+    duration -1) while worn, unless the item is dispelled. Armor is exclusive —
+    the current armor must come off first."""
     sheet, enc = _require_pc(root, actor)
     line = _find_line(sheet, item)
     if line is None:
@@ -134,6 +137,8 @@ def equip(root: Path, g: dict, actor: str, item: str, *, force: bool = False) ->
 
 
 def unequip(root: Path, g: dict, actor: str, item: str, *, force: bool = False) -> dict:
+    """Unequip an item; a cursed item must be dispelled first. Its granted
+    effect is only removed if no other equipped item still grants it."""
     sheet, enc = _require_pc(root, actor)
     line = _find_line(sheet, item)
     if line is None:
@@ -215,6 +220,9 @@ def use(root: Path, g: dict, actor: str, item: str, target: str | None,
 
 
 def dispel(root: Path, g: dict, actor: str, item: str) -> dict:
+    """Break a cursed item's curse: mark it dispelled and drop its granted
+    effect (unless another equipped item still grants it). The item stays
+    equipped — dispel only neutralizes it so it can later be unequipped."""
     sheet = _sheet(root, actor)
     line = _find_line(sheet, item)
     if line is None:
