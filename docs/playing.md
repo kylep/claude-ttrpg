@@ -69,7 +69,9 @@ the party can split: `travel`, `encounter start`, and `rest` all take
 actually in the fight. Quests are first-class state too (`engine quest
 offer/accept/complete/cancel/list`): NPC and PC rewards are escrowed up
 front — no vaporware bounties — while world quests can spawn rewards and
-grant XP. Thornbury's quest board ships with two.
+grant XP. Thornbury's board comes with two quests ready to post — the GM
+offers them (`engine quest offer`) in the first town scene, so they don't
+show up in `engine quest list` until play reaches Thornbury.
 
 Combat is tactically honest: walls block line of sight (and shots),
 movement pays for the actual route through difficult terrain, and the

@@ -16,8 +16,10 @@ description: Use when creating a new claude-ttrpg world (campaign) from a game d
 4. Tag the pristine state: `git tag genesis`.
 5. Offer character creation: for each PC run
    `engine char create --name ... --class ... --race ... --assign ... --skills ...`
-   (standard array 15,14,13,12,10,8; class skill lists come from the
-   game's class files). Commit: `git commit -am "party created"`.
+   (standard array 15,14,13,12,10,8; `--skills` takes exactly the class's
+   `skill_choices` count — 2 for most classes, 3 for the rogue — chosen
+   from that class's `skills` list, both in its ruleset file. Passing the
+   wrong number fails with `bad_skills`.) Commit: `git commit -am "party created"`.
 6. Remind the operator: sessions start with the gm-session skill;
    save points are `git tag`; forking a timeline is `git branch` from
    any tag or commit (branches never merge).
