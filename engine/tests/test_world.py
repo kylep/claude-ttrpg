@@ -60,6 +60,54 @@ def test_load_game_for_missing_game_errors(tmp_path):
     assert exc.value.code == "game_not_found"
 
 
+def test_init_world_writes_kit_version(tmp_path):
+    root = tmp_path / "w"
+    worldfs.init_world(root, FIXTURE_GAME, "Marked")
+    marker = worldfs.read_kit_version(root)
+    assert marker is not None
+    assert marker["kit_hash"].startswith("sha256:")
+    assert "engine_version" in marker and "installed" in marker
+    assert worldfs.check_kit(root)["status"] == "up_to_date"   # fresh world is current
+
+
+def test_world_upgrade_restores_drift_and_prunes(tmp_path):
+    root = tmp_path / "w"
+    worldfs.init_world(root, FIXTURE_GAME, "Driftia")
+    # simulate the engine kit having moved on: stamp the world with an old hash
+    marker = worldfs.read_kit_version(root)
+    marker["kit_hash"] = "sha256:old"
+    worldfs.write_yaml(root / ".claude" / ".kit-version", marker)
+    assert worldfs.check_kit(root)["status"] == "outdated"
+
+    # file-level drift the upgrade should fix: an edited skill + a stray file
+    skill = root / ".claude" / "skills" / "gm-combat" / "SKILL.md"
+    original = skill.read_text()                               # == kit content post-init
+    skill.write_text("stale content")
+    stray = root / ".claude" / "skills" / "obsolete" / "SKILL.md"
+    stray.parent.mkdir(parents=True)
+    stray.write_text("removed upstream")
+
+    dry = worldfs.upgrade_agent_kit(root, dry_run=True)
+    assert "skills/gm-combat/SKILL.md" in dry["changed"]
+    assert "skills/obsolete/SKILL.md" in dry["removed"]
+    assert skill.read_text() == "stale content"                # dry run wrote nothing
+
+    res = worldfs.upgrade_agent_kit(root)
+    assert skill.read_text() == original                       # restored from the kit
+    assert not stray.exists()                                  # stale file pruned
+    assert res["removed"] == ["skills/obsolete/SKILL.md"]
+    assert worldfs.check_kit(root)["status"] == "up_to_date"   # marker rewritten
+
+
+def test_cli_world_upgrade_check(tmp_path, monkeypatch):
+    root = tmp_path / "w"
+    worldfs.init_world(root, FIXTURE_GAME, "Cli")
+    monkeypatch.chdir(root)
+    res = runner.invoke(app, ["world", "upgrade", "--check"])
+    assert res.exit_code == 0, res.stdout
+    assert json.loads(res.stdout)["status"] == "up_to_date"
+
+
 def test_init_world_layout(tmp_path):
     root = tmp_path / "w"
     worldfs.init_world(root, FIXTURE_GAME, "Testia")
