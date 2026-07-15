@@ -126,8 +126,11 @@ def test_map_svg_escapes_author_name_against_xss(live):
     status, body = _get(port, "/api/state?lens=player")
     assert status == 200
     svg = json.loads(body)["map_svg"]
-    assert "<img" not in svg                                    # no real tag can break out
-    assert "&lt;img" in svg                                     # escaped to inert text instead
+    # the viewer SVG (caption off) embeds no author names at all — the encounter
+    # name rides in JSON fields the client renders via textContent — so nothing
+    # author-controlled can break out of the innerHTML'd map.
+    assert "<img" not in svg
+    assert "onerror" not in svg
 
 
 def test_story_endpoint_carries_lens(live):

@@ -25,65 +25,52 @@ feature/visual · **P2** polish.
 
 ### P0 — the map and layout
 
-- [ ] **Rail is not sticky (desktop).** `.table` is a plain grid; the
-  `<aside>` scrolls with the page, so the map slides out of view the
-  moment you scroll the story. During combat you lose the battlefield
-  while reading narration. Make the rail `position: sticky; top:<header>`
-  with its own overflow, so the map stays pinned. `viewer.html` `.table`
-  / `aside`.
-- [ ] **Mobile buries the map.** Single-column stack puts the tall story
-  column first and the map/rail dead last — on a phone you scroll past
-  the entire session log to see the battle. Re-order so the map/rail
-  comes first (or is reachable) on narrow widths, at least while an
-  encounter is active. `viewer.html` grid order + media query.
-- [ ] **SVG legend clips off the right edge.** The bottom caption
-  (`name — round N — g=… K=pc-luca[s]`) is one line at `x=4`, wider than
-  the SVG viewBox, so it's cut off in every map (`pc-luca` truncated).
-  `render.svg_map` render.py:81-82.
+- [x] **Rail is not sticky (desktop).** ~~scrolls away.~~ → `aside` is
+  now `position: sticky; top: 3.4rem` with its own `overflow-y` and a
+  `max-height` of the viewport; the map stays pinned while the story
+  scrolls (verified: after scrolling story to 1600px, map card sits at
+  `top: 54`, in view). `viewer.html` `.table` / `aside`.
+- [x] **Mobile buries the map.** ~~map dead last.~~ → on ≤900px the rail
+  gets `order: 1` and `main` `order: 2`, so the map/rail leads and the
+  story follows (verified on the 390px shot). `viewer.html` media query.
+- [x] **SVG legend clips off the right edge.** ~~one line, truncated.~~
+  → `_caption_lines` wraps the caption to the map width and grows the SVG
+  height per line; the live viewer drops the caption entirely
+  (`caption=False`) and renders an HTML legend instead. render.py.
 
 ### P0 — chrome polish
 
-- [ ] **Raw lowercase location id.** Header shows `thornbury`, not
-  `Thornbury`. Title-case the location (and ideally resolve region-node
-  display names). `viewer.html` `renderState` / `viewer_data`.
-- [ ] **GM internals is a raw JSON dump.** `{"stealth": {}, ...}` —
-  mostly-empty debug object, ugly and low-signal. Hide the card when all
-  keys are empty; when populated, render as readable rows, not
-  `JSON.stringify`. `viewer.html` `#internals`.
-- [ ] **No positive liveness signal.** There's an "offline" line on
-  error but nothing that says it's live and updating. Add a small "live"
-  pulse in the header that flashes on each SSE tick, so the operator
-  trusts the auto-refresh. `viewer.html` header + `connect()`.
+- [x] **Raw lowercase location id.** ~~`thornbury`~~ → title-cased in
+  `state_snapshot` (`Thornbury`). viewer_data.py.
+- [x] **GM internals is a raw JSON dump.** ~~mostly-empty blob~~ → the
+  card hides itself when every bucket is empty, and renders readable
+  `key → value` rows when populated. `viewer.html` `renderInternals`.
+- [x] **No positive liveness signal.** → a health-green pulse dot in the
+  header flashes on each SSE state/story tick and turns blood-red on
+  disconnect. `viewer.html` `beat()` / `connect()`.
 
 ### P1 — the battle map is the product
 
-- [ ] **Tokens carry no status.** A prone / poisoned / hidden / bloodied
-  / aloft token looks identical to a healthy one — all are plain colored
-  circles with a letter. Add: a colored HP ring (green/gold/red by
-  fraction), a badge/glyph for aloft + prone + hidden, and dim/strike
-  dead tokens. This enriches the exported round-stamped SVGs too (shared
-  `svg_map`). render.py `svg_map`.
-- [ ] **Whose turn is invisible on the map.** `up` is named only in the
-  text line. Highlight the active combatant's token (glow/outline) and
-  its roster row. `svg_map` + `viewer.html`.
-- [ ] **Token identity is a guessing game.** K/O/L/M/g/h/i decode only
-  via the tiny (clipped) caption. Render an HTML token legend in the rail
-  (swatch + letter + name), and drop the redundant SVG caption for the
-  viewer (keep it for standalone/exported SVGs via a `caption=` flag).
-  Removes the duplicate encounter-name line too.
-- [ ] **Gold and stash are computed but never shown.** `state_snapshot`
-  returns `party_gold` and `stash`; nothing renders them. Add a party
-  purse/stash line (GM sees gold always; decide player visibility).
-  `viewer.html`.
+- [x] **Tokens carry no status.** → tokens now get a health-banded ring
+  (moss/gold/blood), a red warning pip for any bad condition, a dashed
+  ring + `?` for hidden, and an aloft caret. Dead still leave the board.
+  Health rings reach player-lens monsters via the status-word band, and
+  enrich exported SVGs too. render.py `svg_map` + `_token_status`.
+- [x] **Whose turn is invisible on the map.** → the active combatant's
+  cell is tinted + outlined ember on the map, and its roster row and
+  legend entry are highlighted to match. `svg_map` + `viewer.html`.
+- [x] **Token identity is a guessing game.** → an HTML legend under the
+  map (coloured swatch + glyph + name, active one emphasised); the
+  redundant SVG caption is off for the viewer. viewer_data + viewer.html.
+- [x] **Gold and stash are computed but never shown.** → a purse line
+  under the party card (`N gp · M in stash`). `viewer.html` `renderPurse`.
 
 ### P1 — the empty state is the first impression
 
-- [ ] **Empty story = black void.** With no matched session the left
-  ~60% is dead space and one italic line while everything crams into the
-  right rail. Turn the empty story column into a title/hero: world name,
-  location + clock, the party as a portrait/medallion row, and the
-  "start a session" hint framed as a call to action — not an apology.
-  `viewer.html` `#story-empty`.
+- [x] **Empty story = black void.** → the empty story column is now a
+  title card: world name, location · clock, a party medallion row, and
+  the "start a session" line as a call to action. `viewer.html`
+  `buildHero`.
 
 ### P2 — polish
 

@@ -12,7 +12,7 @@ runner = CliRunner()
 def test_svg_contains_tokens_and_walls():
     svg = render.svg_map(ENC)
     assert svg.startswith("<svg")
-    assert svg.count("<circle") == 2          # one PC, one live monster
+    assert svg.count('class="tok"') == 2       # one PC, one live monster
     assert "pc-brin" in svg
 
 
@@ -29,4 +29,24 @@ def test_write_svg_stamps_and_indexes(wroot):
 def test_dead_monsters_not_drawn():
     enc = json.loads(json.dumps(ENC))
     enc["monsters"]["goblin-1"]["dead"] = True
-    assert render.svg_map(enc).count("<circle") == 1
+    assert render.svg_map(enc).count('class="tok"') == 1
+
+
+def test_caption_escapes_author_name():
+    # the standalone/exported SVG (caption on) embeds the encounter name in its
+    # footer and is opened directly in a browser via renders/index.html, so the
+    # author-controlled name must be escaped there.
+    enc = json.loads(json.dumps(ENC))
+    enc["name"] = "Rats </text><img src=x onerror=alert(1)><text>"
+    svg = render.svg_map(enc)                 # caption=True by default
+    assert "<img" not in svg
+    assert "&lt;img" in svg
+
+
+def test_caption_off_omits_author_name():
+    # the live viewer turns the caption off; the name must then not appear in
+    # the SVG at all (it rides in JSON the client escapes via textContent).
+    enc = json.loads(json.dumps(ENC))
+    enc["name"] = "Skirmish <img src=x>"
+    svg = render.svg_map(enc, caption=False)
+    assert "img" not in svg and "Skirmish" not in svg
