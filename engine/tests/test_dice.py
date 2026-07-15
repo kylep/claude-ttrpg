@@ -22,6 +22,19 @@ def test_parse_rejects(bad):
         dice.parse(bad)
 
 
+@pytest.mark.parametrize("huge", ["999999d6", "1001d6", "2d99999", "1d1001"])
+def test_parse_rejects_oversized(huge):
+    # cap count/sides so a huge expression can't allocate a giant list
+    with pytest.raises(ValueError):
+        dice.parse(huge)
+
+
+def test_cli_roll_oversized_is_json_error():
+    res = runner.invoke(app, ["roll", "999999d6"])
+    assert res.exit_code == 1
+    assert json.loads(res.stdout)["error"]["code"] == "bad_expr"
+
+
 def test_roll_bounds():
     rng = random.Random(1)
     r = dice.roll("4d6+2", rng)

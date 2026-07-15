@@ -123,7 +123,9 @@ def cast(root: Path, g: dict, caster: str, spell_name: str, target: str | None,
             dis_from.append("ranged_in_melee")
         natural, total = roll_fn(sheet["proficiency"] + castmod,
                                  bool(adv_from), bool(dis_from))
-        lands, _ = combat.resolve_hit(natural, total, t_data["ac"])  # spells don't crit
+        crit_on, fumble_on = combat.crit_bounds(g)
+        lands, _ = combat.resolve_hit(natural, total, t_data["ac"],  # spells don't crit
+                                      crit_on=crit_on, fumble_on=fumble_on)
         result["attack"] = {"natural": natural, "total": total, "vs_ac": t_data["ac"],
                             "hit": lands}
         if ranged_in_melee:

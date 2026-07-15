@@ -35,11 +35,14 @@ def line_of_sight(enc: dict, a: tuple[int, int], b: tuple[int, int]) -> bool:
 
 def path_cost(enc: dict, src: tuple[int, int], dst: tuple[int, int], *,
               ignore_terrain: bool = False,
-              impassable: frozenset | set = frozenset()) -> int | None:
+              impassable: frozenset | set = frozenset(),
+              diagonal_cost: int = 1) -> int | None:
     """Cheapest 8-way movement cost from src to dst, or None if unreachable.
-    Entering a cell costs 1, +1 if difficult (unless ignore_terrain).
-    Walls and `impassable` cells cannot be crossed (dst itself may be
-    impassable-occupied; the caller decides whether ending there is legal)."""
+    Entering a cell costs 1 (or `diagonal_cost` for a diagonal step), +1 if
+    difficult (unless ignore_terrain). `diagonal_cost` comes from the
+    ruleset's combat.yaml. Walls and `impassable` cells cannot be crossed
+    (dst itself may be impassable-occupied; the caller decides whether ending
+    there is legal)."""
     src, dst = tuple(src), tuple(dst)
     if src == dst:
         return 0
@@ -62,7 +65,8 @@ def path_cost(enc: dict, src: tuple[int, int], dst: tuple[int, int], *,
                     continue
                 if c in walls or (c in impassable and c != dst):
                     continue
-                nd = d + 1 + (1 if c in difficult else 0)
+                step = diagonal_cost if (nx_ != x and ny_ != y) else 1
+                nd = d + step + (1 if c in difficult else 0)
                 if nd < dist.get(c, nd + 1):
                     dist[c] = nd
                     heapq.heappush(pq, (nd, c))

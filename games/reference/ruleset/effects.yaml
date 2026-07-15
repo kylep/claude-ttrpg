@@ -21,8 +21,11 @@ dying:
   impact: "creature is unconscious at 0 hp and rolls a death save each round per recovery.yaml until stable, healed, or dead"
   description: "The creature's breath comes shallow and wet; without help, each passing moment is a coin toss it did not agree to."
 dead:
-  impact: "creature is out of play; no further saves, healing, or actions apply to it"
+  impact: "creature is out of play; no further saves, healing, or actions apply to it (a world may restore it with `engine revive` — the toll is the `weakened` effect below)"
   description: "The creature is beyond wounds, beyond medicine, and beyond argument."
+weakened:
+  impact: "engine-enforced: the toll of being raised from death — the creature's attacks, checks, and contests all take disadvantage until it finishes a long rest, which clears it"
+  description: "The creature walks and breathes again, but something did not come all the way back with it; its hands are slow and its focus keeps slipping toward the cold place it just left."
 prone:
   impact: "engine-enforced: melee attacks against the prone creature get advantage, ranged attacks against it get disadvantage, its own attacks roll at disadvantage, and it crawls at double movement cost until `engine stand`"
   description: "The creature is flat on the ground amid its own dropped gear, scrambling for footing while the fight goes on above it."

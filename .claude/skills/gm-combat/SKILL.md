@@ -74,7 +74,14 @@ description: Use when combat starts in a claude-ttrpg session - runs the encount
      Targets other than the drinker must be adjacent and on the same
      plane; it shares the once-per-round gear action.
 4. A PC hitting 0 HP starts death saves: `engine deathsave --actor X`
-   on each of their turns until revived, stable, or dead.
+   on each of their turns until revived, stable, or dead. A PC that dies
+   still keeps any XP it earned in the fight (encounter-end and `xp grant`
+   both include the dead). Later, a world can raise the dead with `engine
+   revive --actor X [--hp N]` — you decide the fiction and any cost (a
+   temple's price via `engine gold spend`, a priest, a rare potion). The
+   PC returns at 1 HP by default and `weakened` (disadvantage on attacks,
+   checks, and contests) until it finishes a long rest. See
+   `docs/dev/2026-07-15-death-and-revival.md`.
 5. Combat ends when one side is dead, surrendered, or fled:
    `engine encounter end` — report xp and loot from its JSON.
 6. Never move a token, change HP, or decide a hit outside the engine.

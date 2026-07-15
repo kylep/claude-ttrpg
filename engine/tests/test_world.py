@@ -12,6 +12,54 @@ FIXTURE_GAME = Path(__file__).parent / "fixtures" / "minigame"
 runner = CliRunner()
 
 
+def test_init_world_cleans_up_on_failure(tmp_path, monkeypatch):
+    import pytest
+    dest = tmp_path / "brokenworld"
+
+    def boom(*a, **k):
+        raise OSError("disk full")
+
+    monkeypatch.setattr(worldfs.shutil, "copytree", boom)
+    with pytest.raises(EngineError) as exc:
+        worldfs.init_world(dest, FIXTURE_GAME, "Doomed")
+    assert exc.value.code == "init_failed"
+    assert not dest.exists()          # partial world removed so a retry is clean
+
+
+def test_init_world_installs_agent_kit(tmp_path):
+    # engine world init installs .claude/ itself (no manual copy needed)
+    root = tmp_path / "w"
+    worldfs.init_world(root, FIXTURE_GAME, "Kitted")
+    assert (root / ".claude" / "agents" / "gm.md").exists()
+    assert (root / ".claude" / "skills").is_dir()
+    assert not (root / ".claude" / "scheduled_tasks.lock").exists()  # junk pruned
+
+
+def test_load_game_for_falls_back_to_bundled_by_name(tmp_path):
+    # a world whose stored absolute game path is broken still loads by name
+    # from the engine's games registry (portability across machines)
+    ref = Path(__file__).resolve().parents[2] / "games" / "reference"
+    root = tmp_path / "portable"
+    worldfs.init_world(root, ref, "Portable")
+    manifest = worldfs.read_yaml(root / "world.yaml")
+    assert manifest["game"]["name"] == "reference"
+    manifest["game"]["path"] = "/nonexistent/games/reference"
+    worldfs.write_yaml(root / "world.yaml", manifest)
+    g = worldfs.load_game_for(root)                       # resolves via name fallback
+    assert g["meta"]["name"] == "reference"
+
+
+def test_load_game_for_missing_game_errors(tmp_path):
+    root = tmp_path / "orphan"
+    worldfs.init_world(root, FIXTURE_GAME, "Orphan")
+    manifest = worldfs.read_yaml(root / "world.yaml")
+    manifest["game"] = {"name": "no-such-game", "version": "1", "path": "/gone"}
+    worldfs.write_yaml(root / "world.yaml", manifest)
+    with __import__("pytest").raises(EngineError) as exc:
+        worldfs.load_game_for(root)
+    assert exc.value.code == "game_not_found"
+
+
 def test_init_world_layout(tmp_path):
     root = tmp_path / "w"
     worldfs.init_world(root, FIXTURE_GAME, "Testia")

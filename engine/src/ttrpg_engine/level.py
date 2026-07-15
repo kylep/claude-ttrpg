@@ -6,14 +6,13 @@ from ttrpg_engine.errors import EngineError
 
 
 def grant_xp_to(root: Path, recipients: list[str], amount: int, reason: str) -> list[str]:
-    """Grant xp in full to each recipient (living PCs only); log one event.
-    Returns the ids actually granted."""
+    """Grant xp in full to each recipient and log one event. The dead are
+    included on purpose: a PC that fell in the fight still earned the xp, and
+    can be revived (see combat.revive) to spend it. Returns the ids granted."""
     granted = []
     for pc_id in recipients:
         path = worldfs.state(root, f"party/{pc_id}")
         sheet = worldfs.read_yaml(path)
-        if derive.is_dead(sheet):
-            continue
         sheet["xp"] += amount
         worldfs.write_yaml(path, sheet)
         granted.append(pc_id)

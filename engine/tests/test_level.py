@@ -10,16 +10,17 @@ from test_spells import CLERIC
 runner = CliRunner()
 
 
-def test_grant_xp_skips_dead_pcs(wroot):
+def test_grant_xp_includes_dead_pcs(wroot):
+    # a PC that fell in the fight still earns xp (and can be revived to spend it)
     from ttrpg_engine import combat
     make_pc()                                          # pc-borin
     make_pc(name="Vale", cls="fighter", race="human")  # pc-vale
     combat.set_effect(wroot, "pc-vale", "dead", -1)
     res = runner.invoke(app, ["xp", "grant", "--amount", "100", "--reason", "quest"])
     assert res.exit_code == 0, res.stdout
-    assert json.loads(res.stdout)["granted"] == ["pc-borin"]   # the dead PC is skipped
+    assert set(json.loads(res.stdout)["granted"]) == {"pc-borin", "pc-vale"}
     assert worldfs.read_yaml(wroot / "state" / "party" / "pc-borin.yaml")["xp"] == 100
-    assert worldfs.read_yaml(wroot / "state" / "party" / "pc-vale.yaml")["xp"] == 0
+    assert worldfs.read_yaml(wroot / "state" / "party" / "pc-vale.yaml")["xp"] == 100
 
 
 def test_grant_and_levelup_cleric(wroot):

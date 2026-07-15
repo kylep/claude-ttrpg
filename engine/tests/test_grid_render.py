@@ -68,3 +68,14 @@ def test_symbols_collision_walks_alphabet():
     assert syms["goblin-1"] == "g"
     assert syms["gnoll-1"] == "h"       # collision walked g -> h
     assert len(set(syms.values())) == 4  # all glyphs unique
+
+
+def test_symbols_bounded_fallback_beyond_26():
+    # 30 monsters all starting with the same letter must not loop forever and
+    # must still get unique glyphs (letters exhausted -> fallback pool)
+    enc = {"order": [f"goblin-{i}" for i in range(1, 31)],
+           "grid": {"width": 4, "height": 2}, "terrain": [], "positions": {},
+           "monsters": {f"goblin-{i}": {} for i in range(1, 31)}}
+    syms = render.symbols(enc)
+    assert len(syms) == 30
+    assert len(set(syms.values())) == 30    # every combatant got a distinct glyph

@@ -5,36 +5,33 @@ fix-later; none block play.
 
 ## Engineering
 
-- **Ship the GM agent/skills as engine package data** so `engine world
-  init` installs `.claude/` into every world itself. Today the world-new
-  skill (and README) copy this repo's `.claude/` at creation, which
-  snapshots the skills — worlds drift as the repo's skills improve.
-  Related open question: how a live world should upgrade its skills
-  (same shape as the game-version pinning question).
-- **Portable game path in `world.yaml`** — the manifest stores an absolute,
-  machine-local path to the game; worlds break if cloned to another machine.
-  Support a repo-relative or registry-style reference.
-- **Wire ruleset tunables the engine hardcodes** — `core.yaml` declares
-  `crit_on`/`fumble_on`, `combat.yaml` declares initiative die/attr and
-  `diagonal_cost`, `recovery.yaml` declares death-save DC/counts, but the
-  engine hardcodes all of them. Either honor the values or mark the fields
-  descriptive-only.
-- Dice expression bounds (`999999d6` allocates a huge list) — cap count/sides.
-- `init_world` leaves partial `canon/` behind on failure; retry requires a
-  manual clear. Consider cleanup-on-failure.
-- Monster deaths emit no `death` timeline event (PCs get one); add on
-  `dead: true` for a self-contained audit log.
-- `encounter end` grants XP to dead PCs; `xp grant` skips them — pick one.
-- `session-end` skill: `grep "session: N"` substring-matches 1 vs 1x — anchor it.
-- `render.symbols` needs a bounded fallback if an encounter ever has >26
-  same-case same-initial combatants.
+The v1 Engineering backlog is cleared — all nine items shipped in the
+2026-07-15 engine-backlog pass:
 
-See `2026-07-15-refactor.md` for the structural refactors deliberately
-deferred from that pass (split `combat.py`/`cli.py` into packages, broaden
-`guard()` to map malformed-YAML `KeyError`/`TypeError`, and a set of
-lower-value nits) — plus the correctness/dedup/robustness fixes that pass
-*did* land (spell-crit doubling, shared hit/reach/reveal/xp/is_dead helpers,
-CLI validation, `markdown_render.py`).
+- `.claude/` is installed by `engine world init`; the game path resolves
+  by name from the games registry when its stored path breaks; the ruleset
+  tunables (crit/fumble, initiative, diagonal cost, death-save DC/counts)
+  are honored; `dice.parse` caps count/sides; `init_world` cleans up a
+  partial world on failure; monster deaths emit a `death` event; dead PCs
+  keep fight XP and can be revived (see
+  `2026-07-15-death-and-revival.md`); the `session-end` grep is anchored;
+  `render.symbols` has a bounded fallback.
+
+Remaining engineering work (deferred, not blocking):
+
+- **Structural refactors** (see `2026-07-15-refactor.md`): split
+  `combat.py`/`cli.py` into packages; broaden `guard()` to map
+  malformed-YAML `KeyError`/`TypeError`; a set of lower-value nits.
+- **Wheel-bundling of the agent kit + games.** `engine world init`
+  installs `.claude/` and resolves games from the repo tree, which works
+  for the editable/dev install everyone uses. `uv_build` can't force-include
+  files from outside the package dir, so a distributed wheel would need the
+  kit copied into `src/ttrpg_engine/agent_kit/` and `.../games/` (a build
+  step, blocked on not wanting two live copies of `.claude/`). Resolution
+  already prefers a packaged copy if present.
+- **Live-world skill upgrades.** Worlds still snapshot skills at creation;
+  how a live world pulls newer skills is the open question (same shape as
+  game-version pinning).
 
 ## Decided (carve-outs, documented here)
 
