@@ -30,3 +30,29 @@ def test_check_unknown_attr_fails(wroot):
     res = runner.invoke(app, ["check", "--actor", pc, "--attr", "WSI", "--dc", "10"])
     assert res.exit_code == 1
     assert json.loads(res.stdout)["error"]["code"] == "unknown_attr"
+
+
+def test_check_reports_crit_and_fumble(wroot):
+    from ttrpg_engine import checks
+    pc = make_pc()
+    crit = checks.run(wroot, pc, "STR", 10, skill=None, adv=False, dis=False,
+                      roll_fn=lambda m, a, d: (20, 20 + m))
+    assert crit["crit"] == "hit"
+    fumble = checks.run(wroot, pc, "STR", 10, skill=None, adv=False, dis=False,
+                        roll_fn=lambda m, a, d: (1, 1 + m))
+    assert fumble["crit"] == "fumble"
+
+
+def test_check_forwards_adv_dis_flags(wroot):
+    from ttrpg_engine import checks
+    pc = make_pc()
+    seen = {}
+
+    def spy(mod, adv, dis):
+        seen["adv"], seen["dis"] = adv, dis
+        return 10, 10 + mod
+
+    checks.run(wroot, pc, "STR", 10, skill=None, adv=True, dis=False, roll_fn=spy)
+    assert seen == {"adv": True, "dis": False}
+    checks.run(wroot, pc, "STR", 10, skill=None, adv=False, dis=True, roll_fn=spy)
+    assert seen == {"adv": False, "dis": True}
