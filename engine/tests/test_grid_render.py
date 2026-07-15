@@ -32,7 +32,9 @@ def test_blocked():
 
 def test_ascii_map_contents():
     art = render.ascii_map(ENC)
-    assert "B" in art and "g" in art and "#" in art and "~" in art
+    grid_rows = art.split("\n\n")[0]                 # rows only, not the legend block
+    assert "B" in grid_rows and "g" in grid_rows
+    assert "#" in grid_rows and "~" in grid_rows     # real wall + difficult cells drawn
     assert "B=pc-brin" in art and "g=goblin-1" in art
     row1 = art.splitlines()[2]        # header is line 0, row y=0 is line 1
     assert row1.split()[1:][1] == "B"  # x=1 on row y=1
@@ -43,7 +45,7 @@ def test_cli_render(wroot):
     res = runner.invoke(app, ["map", "render"])
     data = json.loads(res.stdout)
     assert data["round"] == 1 and data["turn"] == "pc-brin"
-    assert "#" in data["map"]
+    assert "#" in data["map"].split("\n\n")[0]        # wall drawn in the grid, not just the legend
 
 
 def test_cli_render_no_encounter(wroot):

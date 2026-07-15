@@ -7,7 +7,7 @@ import json
 import re
 from pathlib import Path
 
-from ttrpg_engine import export
+from ttrpg_engine.markdown_render import render_markdown
 
 _SYSTEM_REMINDER_RE = re.compile(r"<system-reminder>.*?</system-reminder>", re.DOTALL)
 _SKIP_MARKERS = ("<command-name>", "<local-command-stdout>", "<local-command-caveat>")
@@ -101,7 +101,7 @@ def _entry_for(rec: dict) -> dict | None:
         if not text or text.startswith("API Error") or text.startswith("Failed to authenticate"):
             return None
         role = "gm"
-    return {"role": role, "html": export._md(text)}
+    return {"role": role, "html": render_markdown(text)}
 
 
 def _select_transcript(project_dir: Path, cursor: dict | None) -> Path | None:
