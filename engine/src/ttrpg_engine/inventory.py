@@ -94,8 +94,16 @@ def _record_gear_action(enc: dict | None, actor: str, spec: dict) -> bool:
     return True
 
 
+def _require_pc(root: Path, actor: str):
+    """Resolve an actor that must be a PC (monsters carry no inventory)."""
+    kind, sheet, enc = combat.resolve_actor(root, actor)
+    if kind != "pc":
+        raise EngineError("not_a_pc", f"{actor} is not a PC; only PCs carry gear")
+    return sheet, enc
+
+
 def equip(root: Path, g: dict, actor: str, item: str, *, force: bool = False) -> dict:
-    _, sheet, enc = combat.resolve_actor(root, actor)
+    sheet, enc = _require_pc(root, actor)
     line = _find_line(sheet, item)
     if line is None:
         raise EngineError("not_carried", f"{actor} does not carry {item}")
@@ -126,7 +134,7 @@ def equip(root: Path, g: dict, actor: str, item: str, *, force: bool = False) ->
 
 
 def unequip(root: Path, g: dict, actor: str, item: str, *, force: bool = False) -> dict:
-    _, sheet, enc = combat.resolve_actor(root, actor)
+    sheet, enc = _require_pc(root, actor)
     line = _find_line(sheet, item)
     if line is None:
         raise EngineError("not_carried", f"{actor} does not carry {item}")
@@ -177,8 +185,7 @@ def use(root: Path, g: dict, actor: str, item: str, target: str | None,
                                   tuple(enc["positions"][target]))
             if dist > 1:
                 raise EngineError("out_of_range", f"{target} is {dist} away, must be adjacent")
-            aloft = enc.get("aloft", {})
-            if bool(aloft.get(actor)) != bool(aloft.get(target)):
+            if not combat.same_plane(enc, actor, target):
                 raise EngineError("unreachable", f"{actor} and {target} are not on the same plane")
     _check_gear_economy(enc, actor, spec, force)
     # spend the item before resolving, mirroring spell-slot spending

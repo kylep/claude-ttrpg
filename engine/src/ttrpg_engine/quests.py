@@ -1,16 +1,12 @@
-import re
 from collections import Counter
 from pathlib import Path
 
 from ttrpg_engine import clock as clock_mod
-from ttrpg_engine import timeline, worldfs
+from ttrpg_engine import derive, level as level_mod, timeline, worldfs
+from ttrpg_engine.chargen import slugify
 from ttrpg_engine.errors import EngineError
 
 _ACTIVE_STATUSES = {"offered", "accepted"}
-
-
-def _slugify(title: str) -> str:
-    return re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
 
 
 def parse_ref(spec: str, *, allow_world: bool = True) -> tuple[str, str | None]:
@@ -115,23 +111,6 @@ def _pay_to_pc(root: Path, pc_id: str, gold: int, items: list[str]) -> None:
     worldfs.write_yaml(worldfs.state(root, f"party/{pc_id}"), sheet)
 
 
-def _grant_xp_scoped(root: Path, recipients: list[str], amount: int, reason: str) -> list[str]:
-    """Grant xp in full to each of `recipients` (not the whole party). Mirrors
-    level.grant_xp but scoped to quest recipients."""
-    granted = []
-    for pc_id in recipients:
-        path = worldfs.state(root, f"party/{pc_id}")
-        sheet = worldfs.read_yaml(path)
-        if "dead" in {e["name"] for e in sheet["effects"]}:
-            continue
-        sheet["xp"] += amount
-        worldfs.write_yaml(path, sheet)
-        granted.append(pc_id)
-    timeline.append_event(root, type_="xp", actors=granted,
-                          summary=f"+{amount} xp each ({reason})")
-    return granted
-
-
 # --- quest file storage ---------------------------------------------------
 
 def _quest_path(root: Path, quest_id: str) -> Path:
@@ -202,7 +181,7 @@ def offer(root: Path, g: dict, *, title: str, description: str,
     items = list(items or [])
     if gold < 0:
         raise EngineError("bad_amount", "gold cannot be negative")
-    quest_id = _slugify(title)
+    quest_id = slugify(title)
     if not quest_id:
         raise EngineError("bad_title", "title must contain at least one alphanumeric character")
     if _quest_path(root, quest_id).exists():
@@ -269,7 +248,7 @@ def accept(root: Path, quest_id: str, pcs: list[str]) -> dict:
         if pid not in party["members"]:
             raise EngineError("not_found", f"no such PC {pid}")
         sheet = worldfs.read_yaml(worldfs.state(root, f"party/{pid}"))
-        if "dead" in {e["name"] for e in sheet["effects"]}:
+        if derive.is_dead(sheet):
             raise EngineError("dead", f"{pid} is dead and cannot accept quests")
     quest["status"] = "accepted"
     quest["accepted_by"] = list(pcs)
@@ -293,7 +272,7 @@ def complete(root: Path, quest_id: str, to: list[str] | None = None) -> dict:
         if pid not in party["members"]:
             raise EngineError("not_found", f"no such PC {pid}")
         sheet = worldfs.read_yaml(worldfs.state(root, f"party/{pid}"))
-        if "dead" in {e["name"] for e in sheet["effects"]}:
+        if derive.is_dead(sheet):
             raise EngineError("dead", f"{pid} is dead and cannot complete quests")
 
     reward = quest["reward"]
@@ -305,7 +284,7 @@ def complete(root: Path, quest_id: str, to: list[str] | None = None) -> dict:
     if items:
         _pay_to_pc(root, recipients[0], 0, items)
 
-    granted = _grant_xp_scoped(root, recipients, xp, f"quest reward: {quest['title']}") if xp else []
+    granted = level_mod.grant_xp_to(root, recipients, xp, f"quest reward: {quest['title']}") if xp else []
 
     quest["escrow"] = {"gold": 0, "items": []}
     quest["status"] = "completed"

@@ -2,8 +2,7 @@ from pathlib import Path
 from random import Random
 
 from ttrpg_engine import clock as clock_mod
-from ttrpg_engine import derive, dice, timeline, worldfs
-from ttrpg_engine.chargen import attr_mod
+from ttrpg_engine import derive, timeline, worldfs
 from ttrpg_engine.errors import EngineError
 
 
@@ -24,13 +23,12 @@ def take(root: Path, g: dict, kind: str, rng: Random, pcs: list[str] | None = No
     healed = {}
     for pc_id in targets:
         sheet = worldfs.read_yaml(worldfs.state(root, f"party/{pc_id}"))
-        if "dead" in {e["name"] for e in sheet["effects"]}:
+        if derive.is_dead(sheet):
             continue
         before = sheet["hp"]
         if kind == "short":
-            hit_die = g["classes"][sheet["class"]]["hit_die"]
-            gain = max(1, dice.roll(f"d{hit_die}", rng).total
-                       + attr_mod(sheet["attributes"]["CON"]))
+            gain = derive.hit_die_gain(g["classes"][sheet["class"]]["hit_die"],
+                                       sheet["attributes"]["CON"], rng)
             sheet["hp"] = min(sheet["max_hp"], sheet["hp"] + gain)
             if sheet["hp"] > 0:
                 sheet["effects"] = [e for e in sheet["effects"]

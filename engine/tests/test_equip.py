@@ -15,6 +15,18 @@ def _sheet(wroot, pc):
     return worldfs.read_yaml(wroot / "state" / "party" / f"{pc}.yaml")
 
 
+def test_equip_on_monster_is_clean_error(wroot):
+    # monsters have no inventory; equip/unequip on a monster id used to KeyError
+    make_pc()
+    res = runner.invoke(app, ["--seed", "5", "encounter", "start",
+                              "maps/encounters/skirmish.yaml"])
+    assert res.exit_code == 0, res.stdout
+    for cmd in ("equip", "unequip"):
+        r = runner.invoke(app, [cmd, "--actor", "goblin-1", "--item", "longsword"])
+        assert r.exit_code == 1
+        assert json.loads(r.stdout)["error"]["code"] == "not_a_pc"
+
+
 def test_starting_gear_marked_equipped(wroot):
     pc = make_pc()
     lines = {l["item"]: l for l in _sheet(wroot, pc)["inventory"]}

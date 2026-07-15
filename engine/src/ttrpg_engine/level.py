@@ -1,23 +1,30 @@
 from pathlib import Path
 from random import Random
 
-from ttrpg_engine import derive, dice, timeline, worldfs
-from ttrpg_engine.chargen import attr_mod
+from ttrpg_engine import derive, timeline, worldfs
 from ttrpg_engine.errors import EngineError
+
+
+def grant_xp_to(root: Path, recipients: list[str], amount: int, reason: str) -> list[str]:
+    """Grant xp in full to each recipient (living PCs only); log one event.
+    Returns the ids actually granted."""
+    granted = []
+    for pc_id in recipients:
+        path = worldfs.state(root, f"party/{pc_id}")
+        sheet = worldfs.read_yaml(path)
+        if derive.is_dead(sheet):
+            continue
+        sheet["xp"] += amount
+        worldfs.write_yaml(path, sheet)
+        granted.append(pc_id)
+    timeline.append_event(root, type_="xp", actors=granted,
+                          summary=f"+{amount} xp each ({reason})")
+    return granted
 
 
 def grant_xp(root: Path, amount: int, reason: str) -> dict:
     party = worldfs.read_yaml(worldfs.state(root, "party"))
-    granted = []
-    for pc_id in party["members"]:
-        sheet = worldfs.read_yaml(worldfs.state(root, f"party/{pc_id}"))
-        if "dead" in {e["name"] for e in sheet["effects"]}:
-            continue
-        sheet["xp"] += amount
-        worldfs.write_yaml(worldfs.state(root, f"party/{pc_id}"), sheet)
-        granted.append(pc_id)
-    timeline.append_event(root, type_="xp", actors=granted,
-                          summary=f"+{amount} xp each ({reason})")
+    granted = grant_xp_to(root, party["members"], amount, reason)
     return {"amount": amount, "granted": granted}
 
 
@@ -32,8 +39,7 @@ def up(root: Path, g: dict, actor: str, rng: Random) -> dict:
         raise EngineError("not_ready", f"needs {threshold} xp, has {sheet['xp']}")
     cls = g["classes"][sheet["class"]]
     row = cls["levels"][new_level]
-    gain = max(1, dice.roll(f"d{cls['hit_die']}", rng).total
-               + attr_mod(sheet["attributes"]["CON"]))
+    gain = derive.hit_die_gain(cls["hit_die"], sheet["attributes"]["CON"], rng)
     sheet["level"] = new_level
     sheet["max_hp"] += gain
     sheet["hp"] += gain
