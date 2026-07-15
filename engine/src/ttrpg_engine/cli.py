@@ -137,6 +137,24 @@ def world_init(dest: Path, game: Path = typer.Option(...), name: str = typer.Opt
     emit({"world": name, "path": str(Path(dest).resolve())})
 
 
+@world_app.command("upgrade")
+def world_upgrade(
+    check: bool = typer.Option(False, "--check", help="Report kit status only; change nothing."),
+    dry_run: bool = typer.Option(False, "--dry-run", help="Show what would change without writing."),
+    force: bool = typer.Option(False, "--force", help="Also overwrite settings.json."),
+):
+    """Re-sync this world's GM agent + skills with the engine's current kit.
+
+    The world is a git repo, so review the diff and commit — the upgrade is
+    a save point. `--check` just reports whether the world is behind.
+    """
+    root = require_root()
+    if check:
+        emit(guard(worldfs.check_kit, root))
+    else:
+        emit(guard(worldfs.upgrade_agent_kit, root, dry_run=dry_run, force=force))
+
+
 @state_app.command("get")
 def state_get(path: str, key: str | None = typer.Option(None)):
     root = require_root()

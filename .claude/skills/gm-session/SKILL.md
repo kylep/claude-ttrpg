@@ -6,6 +6,12 @@ description: Use when starting or resuming a claude-ttrpg play session in a worl
 # Session start / resume
 
 1. Confirm you are in a world repo: `engine state get session` works.
+   Then run `engine world upgrade --check`: if it reports `outdated`, tell
+   the operator the world's GM skills are behind the engine and offer to
+   run `engine world upgrade` (it re-syncs `.claude/`; because the world is
+   a git repo you commit the change as its own save point, and it's
+   reversible). Never upgrade mid-session without asking. `no_kit`/`unknown`
+   status is fine — just proceed.
 2. Read `world.yaml`, `state/party.yaml`, `state/clock.yaml`, every
    sheet in `state/party/`, and the latest `sessions/session-*/summary.md`
    if one exists.

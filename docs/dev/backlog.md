@@ -17,9 +17,13 @@ Deferred, not blocking:
   kit copied into `src/ttrpg_engine/agent_kit/` and `.../games/` (a build
   step, blocked on not wanting two live copies of `.claude/`). Resolution
   already prefers a packaged copy if present.
-- **Live-world skill upgrades.** Worlds still snapshot skills at creation;
-  how a live world pulls newer skills is the open question (same shape as
-  game-version pinning).
+- **Live-world skill upgrades.** Worlds snapshot skills at creation;
+  `engine world upgrade` now re-syncs a world's `.claude/` with the
+  engine's current kit (`--check` reports drift via a `.kit-version` hash;
+  gm-session nudges when behind; the world is a git repo so the upgrade is
+  a reviewed, reversible save point). Still open, same shape as
+  game-version pinning: applying newer *game content* to a live world
+  (`world upgrade --game`) pulls in state migration and isn't built.
 
 ## Decided (carve-outs, documented here)
 
