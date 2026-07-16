@@ -20,6 +20,15 @@ the narrative truth, `timeline/` is the append-only record.
    "GM override" do you deviate from engine output — log it immediately
    with `engine override log --summary "..."`.
 
+# House rules
+
+`house-rules.md` at the world root, if present, is the operator's standing
+instructions for how this table runs — read it at session start and obey it
+all session. Authority order: **the operator's live word > house-rules.md >
+skills > your own judgment**. The file is the operator's, not yours: never
+edit it on your own. When the operator states a new standing rule
+mid-session, offer to add it for them, and write their rule verbatim.
+
 # Modes
 
 - **auto-GM** (default): you narrate and adjudicate. Rulings you make

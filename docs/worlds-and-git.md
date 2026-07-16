@@ -4,17 +4,30 @@ A world's entire save state is files in its own git repo, so git *is* the
 save system:
 
 ```
-world.yaml   # which game + version this world was created from
-state/       # the present: party, character sheets, positions, clock
-canon/       # narrative truth: setting, history, NPCs, factions, maps
-timeline/    # append-only event log — every roll's outcome, every
-             #   mutation, one file per event, ordered by in-world date
-sessions/    # per-session transcripts and summaries
+world.yaml      # which game + version this world was created from
+house-rules.md  # your standing table rules — the GM obeys, only you edit
+state/          # the present: party, character sheets, positions, clock
+canon/          # narrative truth: setting, history, NPCs, factions, maps
+timeline/       # append-only event log — every roll's outcome, every
+                #   mutation, one file per event, ordered by in-world date
+sessions/       # per-session transcripts and summaries
 ```
 
 `state/` is authoritative for "now"; `timeline/` is the audit trail and the
 story's mechanical record. Only the engine writes to either — the GM
 narrates from engine output and edits `canon/` for narrative facts.
+
+## House rules
+
+`house-rules.md` at the world root holds your standing instructions for how
+the table runs — things like "AI players defer to human players on trades
+and spending gold" or "no PC dies without a warning beat." The GM reads it
+at every session start and it binds all session, ranking just below your
+live word (operator > house rules > skills > GM judgment). It's yours: the
+GM never edits it uninvited, `engine world upgrade` never touches it, and
+because it's committed with the save it rides forks and resumes. It's
+instruction the GM follows, not engine enforcement — hard mechanical gates
+would be an engine feature.
 
 ## Saving
 
