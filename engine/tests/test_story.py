@@ -127,6 +127,35 @@ def test_noise_skipped(tmp_path):
     assert "hmm" not in entries[1]["html"]
 
 
+def _gm_stop(text, world, stop):
+    return json.dumps({"type": "assistant", "cwd": str(world.resolve()),
+                       "message": {"role": "assistant", "stop_reason": stop,
+                                   "content": [{"type": "text", "text": text}]}})
+
+
+def test_process_narration_dropped(tmp_path):
+    # the GM's working notes leak as "gm" prose: standalone text emitted on the
+    # way to a tool call carries stop_reason "tool_use"; only end_turn messages
+    # are what it actually said at the table. Also cover the bundled shape.
+    world, base = make_world(tmp_path)
+    write_transcript(base, world, [
+        user("new campaign, party of two", world),
+        _gm_stop("I'll load the session skill first.", world, "tool_use"),
+        _gm_stop("Menu loaded. **Race?** Human, elf, dwarf...", world, "end_turn"),
+        user("dwarf", world),
+        _gm_stop("Sheet built. Committing.", world, "tool_use"),
+        gm([{"type": "text", "text": "Writing the bio."},
+            {"type": "tool_use", "id": "t", "name": "Write", "input": {}}], world),
+    ])
+    entries, _ = story.read_story(world, None, base)
+    texts = [e["html"] for e in entries]
+    assert [e["role"] for e in entries] == ["operator", "gm", "operator"]
+    assert any("Race?" in t for t in texts)                  # table-facing prose kept
+    assert not any("session skill" in t for t in texts)      # process chatter gone
+    assert not any("Committing" in t for t in texts)
+    assert not any("Writing the bio" in t for t in texts)    # bundled tool_use gone
+
+
 def test_script_stripped_from_malicious_entry(tmp_path):
     world, base = make_world(tmp_path)
     write_transcript(base, world, [
