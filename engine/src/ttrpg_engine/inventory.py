@@ -43,7 +43,7 @@ def remove_item(root: Path, g: dict, actor: str, item: str, qty: int) -> dict:
     return {"actor": actor, "inventory": sheet["inventory"]}
 
 
-def adjust_gold(root: Path, target: str, amount: int) -> dict:
+def adjust_gold(root: Path, target: str, amount: int, reason: str = "") -> dict:
     if target == "party":
         data = worldfs.read_yaml(worldfs.state(root, "party"))
     else:
@@ -55,8 +55,11 @@ def adjust_gold(root: Path, target: str, amount: int) -> dict:
     path = worldfs.state(root, "party" if target == "party" else f"party/{target}")
     worldfs.write_yaml(path, data)
     verb = "gains" if amount >= 0 else "spends"
+    summary = f"{target} {verb} {abs(amount)} gp"
+    if reason:
+        summary += f" ({reason})"          # the story context rides the timeline
     timeline.append_event(root, type_="gold", actors=[] if target == "party" else [target],
-                          summary=f"{target} {verb} {abs(amount)} gp",
+                          summary=summary,
                           delta={target: {"gold": [before, data["gold"]]}})
     return {"target": target, "gold": data["gold"]}
 

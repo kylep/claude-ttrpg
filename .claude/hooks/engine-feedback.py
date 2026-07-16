@@ -1,11 +1,19 @@
 #!/usr/bin/env python3
-"""PostToolUse hook: capture engine crashes into the world's feedback.md.
+"""PostToolUse hook: capture engine problems into the world's feedback.md.
 
-Fires only for Bash tool calls that ran an `engine` command whose output
-contains a Python traceback — i.e. a genuine engine bug, not a clean JSON
-error envelope (those are usually the rules working as intended; the GM
-logs disputed ones by hand per gm.md). No-ops outside a world repo, so it
-stays silent during engine development in this repo.
+Fires only for Bash tool calls that ran an `engine` command and captures
+two classes of output:
+
+- **Crashes** — a Python traceback: a genuine engine bug.
+- **CLI mismatches** — a usage error ("No such option", "No such command",
+  "Missing option", unexpected argument): the GM reached for a flag or
+  command it expected to exist. That expectation is premium feedback — it
+  says what the CLI's surface is missing — and the GM usually just retries
+  and moves on without logging it.
+
+Clean JSON error envelopes are neither (the rules working as intended; the
+GM logs disputed ones by hand per gm.md). No-ops outside a world repo, so
+it stays silent during engine development in this repo.
 
 Never blocks: always exits 0.
 """
@@ -16,7 +24,12 @@ import sys
 from pathlib import Path
 
 MARKER = "Traceback (most recent call last)"
+# typer/click usage-error phrasings — the GM asked the CLI for something it
+# doesn't have
+USAGE_RE = re.compile(r"No such option|No such command|Missing option"
+                      r"|Got unexpected extra argument")
 TAIL_LINES = 40
+USAGE_TAIL_LINES = 8   # usage errors are short; keep the entry tight
 
 
 def world_root(start: Path) -> Path | None:
@@ -49,20 +62,24 @@ def main() -> None:
         output = (resp.get("stderr") or "") + "\n" + (resp.get("stdout") or "")
     else:
         output = str(resp or "")
-    if MARKER not in output:
+    if MARKER in output:
+        kind, tail_n = "engine crash", TAIL_LINES
+    elif USAGE_RE.search(output):
+        kind, tail_n = "engine CLI mismatch", USAGE_TAIL_LINES
+    else:
         return
     root = world_root(Path(data.get("cwd") or "."))
     if root is None:
         return
-    tail = output.strip().splitlines()[-TAIL_LINES:]
+    tail = output.strip().splitlines()[-tail_n:]
     last_line = tail[-1] if tail else ""
     feedback = root / "feedback.md"
     existing = feedback.read_text() if feedback.exists() else ""
     if command in existing and last_line and last_line in existing:
-        return  # same crash already recorded
+        return  # same problem already recorded
     stamp = datetime.datetime.now().isoformat(timespec="seconds")
     entry = (
-        f"\n## {stamp} — engine crash (auto-captured, session {session_number(root)})\n\n"
+        f"\n## {stamp} — {kind} (auto-captured, session {session_number(root)})\n\n"
         f"Command: `{command}`\n\n"
         "```\n" + "\n".join(tail) + "\n```\n"
     )
@@ -71,7 +88,7 @@ def main() -> None:
                     "automatically by a hook; the GM adds judgment entries by hand.\n"
                     "Feed these back to the claude-ttrpg repo.\n")
     feedback.write_text(existing + entry)
-    print(json.dumps({"systemMessage": f"engine crash captured in {feedback.name}"}))
+    print(json.dumps({"systemMessage": f"{kind} captured in {feedback.name}"}))
 
 
 if __name__ == "__main__":

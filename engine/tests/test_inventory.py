@@ -53,6 +53,21 @@ def test_gold_pc_and_party(wroot):
     assert party["gold"] == 50
 
 
+def test_gold_reason_lands_in_timeline(wroot):
+    pc = make_pc()
+    res = runner.invoke(app, ["gold", "spend", "--amount", "1", "--actor", pc,
+                              "--reason", "a round for the taproom"])
+    assert res.exit_code == 0, res.stdout
+    summaries = [worldfs.read_yaml(p)["summary"]
+                 for p in (wroot / "timeline").glob("*.yaml")]
+    assert any("spends 1 gp (a round for the taproom)" in s for s in summaries)
+    # no --reason -> the old summary shape, no trailing parens
+    runner.invoke(app, ["gold", "add", "--amount", "2", "--actor", pc])
+    summaries = [worldfs.read_yaml(p)["summary"]
+                 for p in (wroot / "timeline").glob("*.yaml")]
+    assert any(s.endswith("gains 2 gp") for s in summaries)
+
+
 def test_gold_spend_negative_amount_rejected(wroot):
     pc = make_pc()
     before = worldfs.read_yaml(wroot / "state" / "party" / f"{pc}.yaml")["gold"]
