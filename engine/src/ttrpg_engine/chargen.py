@@ -12,6 +12,65 @@ def slugify(name: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
 
 
+def _flavor(text) -> str:
+    """Normalize a ruleset description (often a folded YAML scalar) to a clean
+    one-liner; missing descriptions become an empty string."""
+    return " ".join((text or "").split())
+
+
+def options(g: dict) -> dict:
+    """Everything a party-creation wizard needs to present the game's choices,
+    resolved from the ruleset: the standard array, each race
+    (bonuses/speed/flavor), and each class (hit die, caster attr, skill list and
+    how many to pick, starting gear/gold, level-1 spells/features, plus a
+    recommended attribute spread and skill pick as accept-in-one-tap defaults).
+    `recommended_array` comes from the class's optional `attr_priority` (a full
+    permutation of the six attributes, most to least important) and is null when
+    the class doesn't declare one. Read-only — mutates nothing."""
+    items, spells = g.get("items", {}), g.get("spells", {})
+    array = g["core"]["standard_array"]
+
+    def _item(iid):
+        it = items.get(iid, {})
+        return {"id": iid, "name": iid.replace("_", " "),
+                "type": it.get("type"), "description": _flavor(it.get("description"))}
+
+    def _spell(sid):
+        sp = spells.get(sid, {})
+        return {"id": sid, "name": sid.replace("_", " "),
+                "level": sp.get("level"), "description": _flavor(sp.get("description"))}
+
+    def _recommended_array(cls):
+        pri = cls.get("attr_priority")
+        if not pri or sorted(pri) != sorted(ATTRS):
+            return None
+        ranked = sorted(array, reverse=True)          # highest score to highest priority
+        return {attr: ranked[i] for i, attr in enumerate(pri)}
+
+    races = {name: {"bonuses": r.get("bonuses", {}), "speed": r.get("speed"),
+                    "description": _flavor(r.get("description"))}
+             for name, r in g["races"].items()}
+    classes = {}
+    for name, c in g["classes"].items():
+        level1 = c["levels"][1]
+        classes[name] = {
+            "name": name,
+            "description": _flavor(c.get("description")),
+            "hit_die": c["hit_die"],
+            "cast_attr": c.get("cast_attr"),
+            "skills": list(c["skills"]),
+            "skill_choices": c["skill_choices"],
+            "recommended_skills": list(c["skills"][:c["skill_choices"]]),
+            "starting_gear": [_item(i) for i in c["starting_gear"]],
+            "starting_gold": c["starting_gold"],
+            "level1_spells": [_spell(s) for s in level1["spells"]],
+            "level1_features": list(level1["features"]),
+            "recommended_array": _recommended_array(c),
+        }
+    return {"attributes": list(ATTRS), "standard_array": list(array),
+            "races": races, "classes": classes}
+
+
 def create(root: Path, g: dict, *, name: str, cls_name: str, race_name: str,
            assign: dict[str, int], skills: list[str]) -> dict:
     """Validate the choices, then build, persist, and return a level-1 PC sheet;

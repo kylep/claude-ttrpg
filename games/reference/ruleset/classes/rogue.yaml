@@ -5,6 +5,7 @@ description: >
 hit_die: 8        # d8, controls starting HP, per-level HP gain, and short-rest healing
 cast_attr: null   # non-caster
 skill_choices: 3  # how many skills to pick from the list below at creation
+attr_priority: [DEX, CON, INT, WIS, CHA, STR]  # wizard default: standard array fills these high-to-low
 skills: [stealth, perception, deception, acrobatics, sleight_of_hand]
 starting_gear: [leather_armor, dagger, dagger]  # item ids from ruleset/items.yaml
 starting_gold: 15

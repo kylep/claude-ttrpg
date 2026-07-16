@@ -38,10 +38,14 @@ no command syntax to learn. A typical first prompt:
 > build him for me, then design a rogue, a cleric, and a wizard and run
 > those three yourself. Auto-GM. Start the adventure.
 
-The GM creates every sheet through `engine char create`, plays any PC you
-didn't claim (in combat it takes their turns; out of combat they chime in
-but follow your lead), and opens the first scene. On later launches,
-"resume" (or just "let's play") picks up from the last session summary.
+The GM runs a short **party-creation wizard** — it walks each character
+through race, class, stats (with a class-recommended spread you can accept in
+one word), skills, and a few shaping questions, or you can hand any of them off
+with "you figure it out" and let the GM build them. It creates every sheet
+through `engine char create`, then plays any PC you didn't claim (in combat it
+takes their turns; out of combat they chime in but follow your lead) and opens
+the first scene. On later launches, "resume" (or just "let's play") picks up
+from the last session summary.
 
 ## Steering the GM
 
