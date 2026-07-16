@@ -13,8 +13,9 @@ description: Use when starting or resuming a claude-ttrpg play session in a worl
    reversible). Never upgrade mid-session without asking. `no_kit`/`unknown`
    status is fine — just proceed.
 2. Read `world.yaml`, `state/party.yaml`, `state/clock.yaml`, every
-   sheet in `state/party/`, and the latest `sessions/session-*/summary.md`
-   if one exists.
+   sheet in `state/party/`, `house-rules.md` if it exists (the operator's
+   standing table rules — they bind you all session; see gm.md), and the
+   latest `sessions/session-*/summary.md` if one exists.
 3. **Session zero** — if `state/party.yaml` has no members, build the
    party before anything else with the `party-create` skill: it walks
    each PC through race, class, stats, skills, and a short interview
