@@ -36,6 +36,12 @@ def symbols(enc: dict) -> dict[str, str]:
     return out
 
 
+def _drawn(enc: dict, cid: str) -> bool:
+    """A combatant is on the board unless it's a dead monster. The dead leave
+    the map, so they leave the legend/caption too — no dangling glyph key."""
+    return not enc["monsters"].get(cid, {}).get("dead", False)
+
+
 def ascii_map(enc: dict) -> str:
     """Text battle map with a coordinate frame, terrain glyphs (#/~/:), and one
     glyph per living combatant; the dead are omitted. Ends with legend + key."""
@@ -55,7 +61,8 @@ def ascii_map(enc: dict) -> str:
         cells[y][x] = syms[cid]
     header = "   " + " ".join(str(x % 10) for x in range(w))
     rows = [f"{y:2d} " + " ".join(cells[y]) for y in range(h)]
-    legend = "  ".join(f"{glyph}={cid}" for cid, glyph in syms.items())
+    legend = "  ".join(f"{glyph}={cid}" for cid, glyph in syms.items()
+                       if _drawn(enc, cid))
     key = "#=wall  ~=difficult  :=dark" + ("  (the whole map is dark)" if enc.get("dark") else "")
     return "\n".join([header, *rows, "", legend, key])
 
@@ -106,7 +113,8 @@ def _caption_lines(enc: dict, syms: dict, max_chars: int) -> list[str]:
     """The bottom caption, wrapped to the map width so long rosters don't run
     off the right edge (they used to clip). All fields escaped — author text."""
     head = f'{escape(str(enc["name"]))} — round {enc["round"]} — '
-    items = [f"{escape(s)}={escape(cid)}" for cid, s in syms.items()]
+    items = [f"{escape(s)}={escape(cid)}" for cid, s in syms.items()
+             if _drawn(enc, cid)]
     lines, cur = [], head
     for it in items:
         sep = "" if cur.endswith("— ") else "   "
