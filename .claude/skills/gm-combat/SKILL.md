@@ -13,6 +13,10 @@ description: Use when combat starts in a claude-ttrpg session - runs the encount
    show the ASCII map in a code block. Note: the player web lens strips
    fenced code blocks from the story feed (an ASCII map shows hidden
    monsters and true positions), so a pasted map is GM-facing only.
+   The encounter's start and end land in the story feed automatically;
+   your round narration does not — post each round's table-facing beat
+   with `engine story narrate --text -` before you give it to the
+   operator, exactly as in open play.
 3. On each turn (order comes from `engine encounter next`):
    After `engine encounter start`, the first combatant in the order is
    already up — run their turn before the first `engine encounter next`.

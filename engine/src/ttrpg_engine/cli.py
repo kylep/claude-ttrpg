@@ -1,11 +1,12 @@
 import json
 import random
 import re
+import sys
 from pathlib import Path
 
 import typer
 
-from ttrpg_engine import chargen, checks, combat, dice, export as export_mod, game as game_mod, inventory, level as level_mod, quests as quests_mod, render, rest as rest_mod, serve as serve_mod, spells, timeline, travel as travel_mod, worldfs
+from ttrpg_engine import chargen, checks, combat, dice, export as export_mod, game as game_mod, inventory, level as level_mod, quests as quests_mod, render, rest as rest_mod, serve as serve_mod, spells, story_log, timeline, travel as travel_mod, worldfs
 from ttrpg_engine.errors import EngineError
 
 app = typer.Typer(add_completion=False, no_args_is_help=True)
@@ -197,6 +198,7 @@ def session_start():
     worldfs.write_yaml(worldfs.state(root, "session"), sess)
     (root / "sessions" / f"session-{sess['current']:03d}").mkdir(parents=True, exist_ok=True)
     timeline.append_event(root, type_="session", summary=f"session {sess['current']} started")
+    story_log.post(root, "system", md=f"**Session {sess['current']}** begins.")
     emit({"session": sess["current"]})
 
 
@@ -206,6 +208,75 @@ def override_log(summary: str = typer.Option(...), actors: str = typer.Option(""
     event = timeline.append_event(root, type_="override", summary=summary,
                                   actors=split_csv(actors), override=True)
     emit({"event": event})
+
+
+story_app = typer.Typer()
+app.add_typer(story_app, name="story")
+
+
+def _story_text(text: str) -> str:
+    """'-' reads the prose from stdin (heredoc-friendly for long beats)."""
+    if text == "-":
+        text = sys.stdin.read()
+    text = text.strip()
+    if not text:
+        raise EngineError("empty_text", "no text given")
+    return text
+
+
+@story_app.command("narrate")
+def story_narrate(text: str = typer.Option(..., help="markdown prose; '-' reads stdin")):
+    """Post table-facing narration to the story log (the live viewer's feed)."""
+    root = require_root()
+    emit(guard(story_log.post, root, "narration", md=guard(_story_text, text)))
+
+
+@story_app.command("scene")
+def story_scene(title: str = typer.Option(...),
+                subtitle: str = typer.Option("", help="e.g. a styled date/time line")):
+    """Post a scene header — location and moment, as the table should read them."""
+    root = require_root()
+    emit(guard(story_log.post, root, "scene", title=title, subtitle=subtitle))
+
+
+@story_app.command("choices")
+def story_choices(item: list[str] = typer.Option(..., "--item", help="one option, markdown; repeatable"),
+                  title: str = typer.Option("What you can do right now")):
+    """Post the current action menu — what the players can do from here."""
+    root = require_root()
+    emit(guard(story_log.post, root, "choices", title=title, items=list(item)))
+
+
+@story_app.command("action")
+def story_action(pc: str = typer.Option(...), text: str = typer.Option(..., help="'-' reads stdin")):
+    """Post a player's in-character line, attributed to their PC."""
+    root = require_root()
+    sheet = guard(worldfs.read_yaml, worldfs.state(root, f"party/{pc}"))
+    emit(guard(story_log.post, root, "action", pc=pc, name=sheet["name"],
+               md=guard(_story_text, text)))
+
+
+@story_app.command("reveal")
+def story_reveal(npc: str = typer.Option(None, help="id from canon/npcs.yaml"),
+                 monster: str = typer.Option(None, help="bestiary type id"),
+                 pc: str = typer.Option(None, help="pc id")):
+    """Drop an entity card into the feed when someone is introduced at the table."""
+    root = require_root()
+    if sum(x is not None for x in (npc, monster, pc)) != 1:
+        fail("bad_reveal", "pass exactly one of --npc / --monster / --pc")
+    if npc:
+        npcs = guard(worldfs.read_yaml, root / "canon" / "npcs.yaml")
+        if npc not in npcs:
+            fail("not_found", f"no NPC {npc!r} in canon/npcs.yaml")
+        emit(guard(story_log.post, root, "npc", ref=npc, name=npcs[npc].get("name", npc)))
+    elif monster:
+        g = guard(worldfs.load_game_for, root)
+        entry = guard(game_mod.bestiary_entry, g, monster)
+        emit(guard(story_log.post, root, "monster", ref=monster,
+                   name=entry.get("name", monster)))
+    else:
+        sheet = guard(worldfs.read_yaml, worldfs.state(root, f"party/{pc}"))
+        emit(guard(story_log.post, root, "character", ref=pc, name=sheet["name"]))
 
 
 char_app = typer.Typer()
@@ -241,11 +312,14 @@ def char_create(
     race: str = typer.Option(...),
     assign: str = typer.Option(..., help="e.g. DEX=15,WIS=14,INT=13,CON=12,STR=10,CHA=8"),
     skills: str = typer.Option(..., help="comma-separated"),
+    played_by: str = typer.Option(None, "--played-by",
+                                  help="who runs this PC at the table (a player's name, or GM)"),
 ):
     root, g = require_root_and_game()
     sheet = guard(chargen.create, root, g, name=name, cls_name=cls, race_name=race,
                   assign=guard(parse_kv_ints, assign),
-                  skills=[s.strip() for s in skills.split(",")])
+                  skills=[s.strip() for s in skills.split(",")],
+                  played_by=played_by)
     emit({"sheet": sheet})
 
 

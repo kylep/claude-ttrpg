@@ -56,6 +56,7 @@
   /* ---- empty-state hero: a title card, not a black void ------------------ */
   .hero { display: flex; flex-direction: column; justify-content: center;
           align-items: center; min-height: 58vh; text-align: center; gap: 1rem; }
+  .hero[hidden] { display: none; }   /* [hidden] must beat the flex display */
   .hero h2 { font-size: 2.3rem; font-weight: 600; letter-spacing: .01em; }
   .hero .sub { color: var(--muted); font-family: var(--mono); font-size: .8rem;
                letter-spacing: .06em; }
@@ -84,17 +85,120 @@
   .beat.gm pre { padding: .6rem .8rem; overflow-x: auto; }
   .beat.gm blockquote { border-left: 2px solid var(--edge); color: var(--muted);
     padding-left: .8rem; margin: .6rem 0; }
-  /* an operator line is a spoken line in the script */
-  .beat.operator { margin: 1.4rem 0; }
-  .beat.operator .speaker { font-variant: small-caps; letter-spacing: .12em;
-    color: var(--ember); font-size: .85rem; }
-  .beat.operator .line { color: var(--gold); font-style: italic; }
-  .beat.operator .line::before { content: "— "; }
+  /* a player's spoken line is a line in the script */
+  .beat.action { margin: 1.4rem 0; }
+  .beat.action .speaker { font-variant: small-caps; letter-spacing: .12em;
+    color: var(--ember); font-size: .85rem; cursor: pointer; }
+  .beat.action .speaker:hover { color: var(--gold); }
+  .beat.action .line { color: var(--gold); font-style: italic; }
+  .beat.action .line p { display: inline; margin: 0; }
+  .beat.action .line::before { content: "— "; }
   @media (prefers-reduced-motion: no-preference) {
     .beat.new { animation: settle .5s ease-out; }
     @keyframes settle { from { opacity: 0; transform: translateY(4px); } }
   }
   #story .empty { color: var(--muted); font-style: italic; }
+
+  /* ---- scene headers: chapter breaks ------------------------------------ */
+  .beat.scene { text-align: center; margin: 2.2rem 0 1.6rem; }
+  .beat.scene .rule { width: 5rem; height: 1px; background: var(--edge); margin: .65rem auto; }
+  .beat.scene .title { font-size: 1.5rem; color: var(--gold); letter-spacing: .02em; }
+  .beat.scene .sub { color: var(--muted); font-size: .78rem; font-variant: small-caps;
+                     letter-spacing: .16em; margin-top: .1rem; }
+
+  /* ---- milestones: quiet lines between beats ---------------------------- */
+  .beat.system, .beat.combat { display: flex; align-items: center; gap: .8rem;
+    margin: 1.4rem 0; font-size: .82rem; color: var(--muted); }
+  .beat.system::before, .beat.system::after,
+  .beat.combat::before, .beat.combat::after {
+    content: ""; flex: 1; height: 1px; background: var(--edge); }
+  .beat.system .mid p, .beat.combat .mid p { margin: 0; display: inline; }
+  .beat.combat .mid { color: var(--ember); font-family: var(--mono);
+    font-size: .74rem; letter-spacing: .08em; text-align: center; }
+  .beat.combat .mid .spoils { color: var(--muted); display: block;
+    font-family: var(--serif); font-size: .82rem; letter-spacing: 0; }
+
+  /* ---- choices: the action menu ----------------------------------------- */
+  .beat.choices .box { background: var(--surface); border: 1px solid var(--edge);
+    border-radius: 6px; padding: .9rem 1.1rem; margin: .4rem 0; }
+  .beat.choices h3 { font-family: var(--mono); font-size: .66rem; color: var(--ember);
+    text-transform: uppercase; letter-spacing: .18em; font-weight: 400;
+    margin-bottom: .45rem; }
+  .beat.choices ul { padding: 0; }
+  .beat.choices li { list-style: none; padding: .36rem 0; border-top: 1px solid var(--edge); }
+  .beat.choices li:first-child { border-top: 0; }
+  .beat.choices li p { margin: 0; }
+
+  /* ---- entity chips: cards in the flow of the story ---------------------- */
+  .beat.entity { margin: .9rem 0; }
+  .chip-card { display: flex; align-items: center; gap: .85rem; width: 100%;
+    background: var(--surface); border: 1px solid var(--edge); border-radius: 6px;
+    padding: .7rem .95rem; cursor: pointer; text-align: left; color: inherit;
+    font: inherit; transition: border-color .15s; }
+  .chip-card:hover { border-color: var(--gold); }
+  .chip-card .disc { width: 2.6rem; height: 2.6rem; border-radius: 50%; flex: none;
+    display: grid; place-items: center; font-size: 1.1rem; color: #fff;
+    background: var(--edge); border: 1px solid var(--gold); }
+  .chip-card .disc.pc { background: #2563eb; }
+  .chip-card .disc.monster { background: #dc2626; }
+  .chip-card .disc.npc, .chip-card .disc.quest { color: var(--gold); font-size: 1.2rem; }
+  .chip-card .who { min-width: 0; }
+  .chip-card .who .nm { font-size: 1rem; color: var(--parchment); }
+  .chip-card .who .ln { font-size: .72rem; color: var(--muted); font-family: var(--mono); }
+  .chip-card .pills { margin-left: auto; display: flex; gap: .35rem; flex: none;
+                      flex-wrap: wrap; justify-content: flex-end; }
+  .pill { font-family: var(--mono); font-size: .66rem; padding: .14rem .45rem;
+          border: 1px solid var(--edge); border-radius: 3px; color: var(--muted);
+          white-space: nowrap; }
+  .pill b { color: var(--parchment); font-weight: 600; }
+  .pill.evt { border-color: var(--ember); color: var(--ember); letter-spacing: .06em; }
+
+  /* clickable entity names inside narration */
+  .ent { border-bottom: 1px dotted var(--gold); cursor: pointer; }
+  .ent:hover { color: var(--gold); }
+
+  /* ---- the entity sheet overlay ------------------------------------------ */
+  #overlay { position: fixed; inset: 0; background: rgba(12, 9, 7, .74);
+             display: grid; place-items: center; z-index: 10; padding: 1.2rem; }
+  #overlay[hidden] { display: none; }
+  .sheet { background: var(--surface); border: 1px solid var(--gold); border-radius: 8px;
+           max-width: 34rem; width: 100%; max-height: 86vh; overflow-y: auto;
+           padding: 1.35rem 1.5rem; position: relative; }
+  .sheet .close { position: absolute; top: .55rem; right: .7rem; background: none;
+                  border: 0; color: var(--muted); font-size: 1.15rem; cursor: pointer;
+                  font-family: var(--mono); }
+  .sheet .close:hover { color: var(--parchment); }
+  .sheet .head { display: flex; align-items: center; gap: .95rem; margin-bottom: .4rem; }
+  .sheet .head .disc { width: 3rem; height: 3rem; border-radius: 50%; flex: none;
+    display: grid; place-items: center; font-size: 1.3rem; color: #fff;
+    background: var(--edge); border: 1px solid var(--gold); }
+  .sheet .head .disc.pc { background: #2563eb; }
+  .sheet .head .disc.monster { background: #dc2626; }
+  .sheet .head .disc.npc, .sheet .head .disc.quest { color: var(--gold); }
+  .sheet .head .nm { font-size: 1.25rem; }
+  .sheet .head .ln { font-size: .74rem; color: var(--muted); font-family: var(--mono); }
+  .sheet .vitals { display: flex; gap: .4rem; flex-wrap: wrap; margin: .5rem 0 .2rem; }
+  .sheet .attrs { display: grid; grid-template-columns: repeat(6, 1fr); gap: .4rem;
+                  margin: .75rem 0 .2rem; }
+  .sheet .attrs .a { text-align: center; background: var(--ink);
+    border: 1px solid var(--edge); border-radius: 4px; padding: .32rem .1rem; }
+  .sheet .attrs .a .k { font-family: var(--mono); font-size: .58rem; color: var(--muted);
+                        letter-spacing: .08em; }
+  .sheet .attrs .a .v { font-size: .95rem; }
+  .sheet .sec { margin-top: .85rem; }
+  .sheet .sec h4 { font-family: var(--mono); font-size: .62rem; color: var(--muted);
+    text-transform: uppercase; letter-spacing: .18em; font-weight: 400;
+    margin-bottom: .32rem; }
+  .sheet .tagrow { display: flex; flex-wrap: wrap; gap: .3rem; }
+  .sheet .desc { color: var(--parchment); }
+  .sheet .desc.muted { color: var(--muted); }
+  .sheet .bio { margin-top: .95rem; border-top: 1px solid var(--edge); padding-top: .75rem; }
+  .sheet .bio p { margin: 0 0 .55rem; }
+  .sheet .kv { display: flex; justify-content: space-between; gap: 1rem;
+    font-family: var(--mono); font-size: .74rem; padding: .2rem 0;
+    border-top: 1px solid var(--edge); color: var(--muted); }
+  .sheet .kv:first-of-type { border-top: 0; }
+  .sheet .kv .v { color: var(--parchment); text-align: right; }
 
   /* ---- the rail: cards off the engine ----------------------------------- */
   .card { background: var(--surface); border: 1px solid var(--edge);
@@ -107,7 +211,9 @@
   #map .turn { font-family: var(--mono); font-size: .78rem; color: var(--gold);
                margin-bottom: .5rem; }
   #legend { display: flex; flex-wrap: wrap; gap: .3rem .7rem; margin-top: .55rem; }
-  #legend .item { display: flex; align-items: center; gap: .32rem; font-size: .74rem; }
+  #legend .item { display: flex; align-items: center; gap: .32rem; font-size: .74rem;
+                  cursor: pointer; }
+  #legend .item:hover { color: var(--gold); }
   #legend .swatch { width: 16px; height: 16px; border-radius: 50%; color: #fff;
                     font-family: var(--mono); font-size: .62rem; display: grid;
                     place-items: center; flex: none; }
@@ -118,6 +224,8 @@
              padding: .45rem .4rem; border-top: 1px solid var(--edge);
              margin: 0 -.4rem; border-radius: 3px; }
   .fighter:first-of-type { border-top: 0; }
+  .fighter.click { cursor: pointer; }
+  .fighter.click:hover { background: rgba(217, 151, 59, .07); }
   /* whose turn it is, echoed from the map's highlight */
   .fighter.active { background: rgba(217, 151, 59, .13);
                     box-shadow: inset 3px 0 0 var(--ember); }
@@ -149,7 +257,8 @@
   .status.bloodied { color: var(--blood); } .status.down { color: var(--muted); }
 
   #quests li { list-style: none; padding: .3rem 0; font-size: .88rem;
-               border-top: 1px solid var(--edge); }
+               border-top: 1px solid var(--edge); cursor: pointer; }
+  #quests li:hover { color: var(--gold); }
   #quests li:first-child { border-top: 0; }
   #quests .q-status { font-family: var(--mono); font-size: .68rem; color: var(--muted);
                       margin-left: .5rem; }
@@ -190,13 +299,16 @@
   </aside>
 </div>
 
+<div id="overlay" hidden role="dialog" aria-modal="true"></div>
+
 <script>
 const GM = location.pathname.replace(/\/+$/, "") === "/gm";
+const LENS = GM ? "gm" : "player";
 const lensEl = document.getElementById("lens");
 lensEl.textContent = GM ? "GM TABLE" : "PLAYER TABLE";
 if (GM) lensEl.classList.add("gm");
 
-let cursor = { file: null, offset: 0 };
+let cursor = { offset: 0 };
 let fetchingStory = false;
 let storyDirty = false;
 let lastState = null;
@@ -208,6 +320,310 @@ function el(tag, cls, text) {
   if (text !== undefined) n.textContent = text;
   return n;
 }
+
+/* ---- entity cards ------------------------------------------------------- */
+
+async function fetchEntity(ref) {
+  const r = await fetch("/api/entity/" + encodeURIComponent(ref) + "?lens=" + LENS);
+  if (!r.ok) return null;
+  return r.json();
+}
+
+function disc(kind, name) {
+  const d = el("span", "disc " + kind);
+  d.textContent = kind === "quest" ? "❧" : kind === "npc" ? "☺" : (name || "?").slice(0, 1);
+  return d;
+}
+
+function pill(label, value) {
+  const p = el("span", "pill");
+  if (value === undefined) { p.textContent = label; return p; }
+  const b = el("b", null, String(value));
+  p.appendChild(b);
+  p.appendChild(document.createTextNode(" " + label));
+  return p;
+}
+
+function chipLine(card) {
+  // the one-line subtitle under a chip's name
+  if (card.kind === "pc") {
+    let ln = card.race + " " + card.class + " · level " + card.level;
+    if (card.played_by) ln += " · " + card.played_by;
+    return ln;
+  }
+  if (card.kind === "monster") return card.status || (card.dead ? "dead" : "bestiary");
+  if (card.kind === "npc")
+    return [card.role, card.disposition].filter(Boolean).join(" · ");
+  if (card.kind === "quest") return card.status;
+  return "";
+}
+
+function chipPills(card) {
+  const out = [];
+  if (card.kind === "pc") {
+    out.push(pill("hp", card.hp + "/" + card.max_hp));
+    out.push(pill("ac", card.ac));
+  } else if (card.kind === "monster" && "hp" in card && card.hp != null) {
+    out.push(pill("hp", card.hp + "/" + card.max_hp));
+    if (card.ac != null) out.push(pill("ac", card.ac));
+  } else if (card.kind === "quest" && card.reward) {
+    if (card.reward.gold) out.push(pill("gp", card.reward.gold));
+    if (card.reward.xp) out.push(pill("xp", card.reward.xp));
+    if ((card.reward.items || []).length) out.push(pill("item", card.reward.items.length));
+  }
+  return out;
+}
+
+function entityChip(ref, hintName, hintKind, eventTag) {
+  const btn = el("button", "chip-card");
+  btn.appendChild(disc(hintKind || "npc", hintName));
+  const who = el("span", "who");
+  who.appendChild(el("div", "nm", hintName || ref));
+  who.appendChild(el("div", "ln", "…"));
+  btn.appendChild(who);
+  const pills = el("span", "pills");
+  if (eventTag) pills.appendChild(Object.assign(el("span", "pill evt", eventTag)));
+  btn.appendChild(pills);
+  btn.addEventListener("click", () => openEntity(ref));
+  fetchEntity(ref).then(card => {
+    if (!card || card.error) { who.querySelector(".ln").textContent = ""; return; }
+    btn.replaceChildren();
+    btn.appendChild(disc(card.kind, card.name));
+    const w = el("span", "who");
+    w.appendChild(el("div", "nm", card.name));
+    w.appendChild(el("div", "ln", chipLine(card)));
+    btn.appendChild(w);
+    const ps = el("span", "pills");
+    if (eventTag) ps.appendChild(el("span", "pill evt", eventTag));
+    for (const p of chipPills(card)) ps.appendChild(p);
+    btn.appendChild(ps);
+  });
+  return btn;
+}
+
+function sheetSection(title, node) {
+  const s = el("div", "sec");
+  s.appendChild(el("h4", null, title));
+  s.appendChild(node);
+  return s;
+}
+
+function tagRow(items, cls) {
+  const row = el("div", "tagrow");
+  for (const t of items || []) row.appendChild(el("span", "chip" + (cls ? " " + cls : ""), t));
+  return row;
+}
+
+function kvRow(k, v) {
+  const r = el("div", "kv");
+  r.appendChild(el("span", "k", k));
+  r.appendChild(el("span", "v", v));
+  return r;
+}
+
+function buildSheet(card) {
+  const sh = el("div", "sheet");
+  const close = el("button", "close", "✕");
+  close.setAttribute("aria-label", "close");
+  close.addEventListener("click", closeOverlay);
+  sh.appendChild(close);
+
+  const head = el("div", "head");
+  head.appendChild(disc(card.kind, card.name));
+  const who = el("div");
+  who.appendChild(el("div", "nm", card.name));
+  who.appendChild(el("div", "ln", chipLine(card)));
+  head.appendChild(who);
+  sh.appendChild(head);
+
+  const vitals = el("div", "vitals");
+  for (const p of chipPills(card)) vitals.appendChild(p);
+  if (card.kind === "pc") {
+    vitals.appendChild(pill("speed", card.speed));
+    vitals.appendChild(pill("gold", card.gold));
+    vitals.appendChild(pill("xp", card.xp));
+  }
+  if (vitals.children.length) sh.appendChild(vitals);
+
+  if (card.attributes) {
+    const grid = el("div", "attrs");
+    for (const [k, v] of Object.entries(card.attributes)) {
+      const a = el("div", "a");
+      a.appendChild(el("div", "k", k));
+      a.appendChild(el("div", "v", String(v)));
+      grid.appendChild(a);
+    }
+    sh.appendChild(grid);
+  }
+
+  if (card.description) sh.appendChild(sheetSection("Description",
+      el("p", "desc muted", card.description)));
+  if ((card.skills || []).length) sh.appendChild(sheetSection("Skills", tagRow(card.skills)));
+  if ((card.effects || []).length) sh.appendChild(sheetSection("Effects", tagRow(card.effects, "warn")));
+  if ((card.features || []).length) sh.appendChild(sheetSection("Features", tagRow(card.features)));
+  if ((card.spells_known || []).length) sh.appendChild(sheetSection("Spells", tagRow(card.spells_known)));
+  if ((card.equipped || []).length) sh.appendChild(sheetSection("Equipped",
+      tagRow(card.equipped.map(i => i.replace(/_/g, " ")))));
+  if ((card.attacks || []).length) {
+    const box = el("div");
+    for (const a of card.attacks)
+      box.appendChild(kvRow(a.name, "+" + a.attack_mod + " · " + a.damage +
+                            (a.range > 1 ? " · range " + a.range : "")));
+    sh.appendChild(sheetSection("Attacks", box));
+  }
+  if (card.kind === "npc") {
+    const box = el("div");
+    if (card.location) box.appendChild(kvRow("location", card.location));
+    if (card.disposition) box.appendChild(kvRow("disposition", card.disposition));
+    if (box.children.length) sh.appendChild(sheetSection("Standing", box));
+    if (card.wants) sh.appendChild(sheetSection("Wants (GM)", el("p", "desc muted", card.wants)));
+  }
+  if (card.kind === "quest") {
+    const box = el("div");
+    box.appendChild(kvRow("status", card.status));
+    if (card.reward) {
+      const r = card.reward;
+      const bits = [];
+      if (r.gold) bits.push(r.gold + " gp");
+      if (r.xp) bits.push(r.xp + " xp");
+      for (const i of r.items || []) bits.push(i.replace(/_/g, " "));
+      if (bits.length) box.appendChild(kvRow("reward", bits.join(" · ")));
+    }
+    if (card.deadline) box.appendChild(kvRow("deadline", card.deadline.date));
+    if ((card.accepted_by || []).length)
+      box.appendChild(kvRow("accepted by", card.accepted_by.join(", ")));
+    sh.appendChild(sheetSection("Terms", box));
+  }
+  if (card.notes) sh.appendChild(sheetSection("Notes (GM)", el("p", "desc muted", card.notes)));
+  if (card.bio_html) {
+    const bio = el("div", "bio");
+    bio.innerHTML = card.bio_html;
+    sh.appendChild(bio);
+  }
+  return sh;
+}
+
+const overlay = document.getElementById("overlay");
+async function openEntity(ref) {
+  const card = await fetchEntity(ref);
+  if (!card || card.error) return;
+  overlay.replaceChildren(buildSheet(card));
+  overlay.hidden = false;
+  overlay.querySelector(".close").focus();
+}
+function closeOverlay() { overlay.hidden = true; overlay.replaceChildren(); }
+overlay.addEventListener("click", e => { if (e.target === overlay) closeOverlay(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeOverlay(); });
+
+/* ---- linking names in prose to their cards ------------------------------ */
+
+function knownEntities() {
+  const map = new Map();
+  if (!lastState) return map;
+  for (const pc of lastState.party || []) map.set(pc.name, pc.id);
+  const enc = lastState.encounter;
+  for (const f of (enc && enc.roster) || []) map.set(f.name, f.id);
+  return map;
+}
+
+function linkNames(node) {
+  const known = knownEntities();
+  if (!known.size) return;
+  const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT, {
+    acceptNode: t => t.parentElement.closest("pre, code, .ent")
+      ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT
+  });
+  const seen = new Set();
+  const texts = [];
+  while (walker.nextNode()) texts.push(walker.currentNode);
+  for (const t of texts) {
+    for (const [name, ref] of known) {
+      if (seen.has(ref)) continue;
+      const i = t.data.indexOf(name);
+      if (i < 0) continue;
+      // only once per beat — the first mention becomes the link
+      const after = t.splitText(i);
+      after.deleteData(0, name.length);
+      const span = el("span", "ent", name);
+      span.addEventListener("click", () => openEntity(ref));
+      t.parentNode.insertBefore(span, after);
+      seen.add(ref);
+    }
+  }
+}
+
+/* ---- rendering the feed by entry type ------------------------------------ */
+
+function renderEntry(e) {
+  if (e.type === "narration") {
+    const beat = el("div", "beat new gm");
+    beat.innerHTML = e.html;
+    linkNames(beat);
+    return beat;
+  }
+  if (e.type === "scene") {
+    const beat = el("div", "beat new scene");
+    beat.appendChild(el("div", "rule"));
+    beat.appendChild(el("div", "title", e.title));
+    if (e.subtitle) beat.appendChild(el("div", "sub", e.subtitle));
+    beat.appendChild(el("div", "rule"));
+    return beat;
+  }
+  if (e.type === "system") {
+    const beat = el("div", "beat new system");
+    const mid = el("span", "mid");
+    mid.innerHTML = e.html;
+    beat.appendChild(mid);
+    return beat;
+  }
+  if (e.type === "combat") {
+    const beat = el("div", "beat new combat");
+    const mid = el("span", "mid");
+    mid.appendChild(document.createTextNode(
+      (e.event === "end" ? "⚔ " : "⚔ ") +
+      (e.event === "end" ? e.name + " — the dust settles" : e.name)));
+    if (e.html) {
+      const spoils = el("span", "spoils");
+      spoils.innerHTML = e.html;
+      mid.appendChild(spoils);
+    }
+    beat.appendChild(mid);
+    return beat;
+  }
+  if (e.type === "choices") {
+    const beat = el("div", "beat new choices");
+    const box = el("div", "box");
+    box.appendChild(el("h3", null, e.title || "What you can do right now"));
+    const ul = el("ul");
+    for (const item of e.items || []) {
+      const li = el("li");
+      li.innerHTML = item;
+      ul.appendChild(li);
+    }
+    box.appendChild(ul);
+    beat.appendChild(box);
+    return beat;
+  }
+  if (e.type === "action") {
+    const beat = el("div", "beat new action");
+    const speaker = el("div", "speaker", e.name || e.pc);
+    if (e.pc) speaker.addEventListener("click", () => openEntity(e.pc));
+    beat.appendChild(speaker);
+    const line = el("div", "line");
+    line.innerHTML = e.html;
+    beat.appendChild(line);
+    return beat;
+  }
+  if (["character", "npc", "monster", "quest"].includes(e.type) && e.ref) {
+    const beat = el("div", "beat new entity");
+    const kind = e.type === "character" ? "pc" : e.type;
+    beat.appendChild(entityChip(e.ref, e.name, kind, e.type === "quest" ? e.event : null));
+    return beat;
+  }
+  return null;   // unknown type from a newer engine — skip, don't break the feed
+}
+
+/* ---- rail rendering ------------------------------------------------------ */
 
 function hpBar(hp, max, ac) {
   const frac = max > 0 ? hp / max : 0;
@@ -226,6 +642,10 @@ function hpBar(hp, max, ac) {
 function fighterRow(f, up) {
   const row = el("div", "fighter");
   if (f.id && f.id === up) row.classList.add("active");
+  if (f.id) {
+    row.classList.add("click");
+    row.addEventListener("click", () => openEntity(f.id));
+  }
   const name = el("span", "name");
   const label = el("span", f.dead ? "dead" : null, f.name);
   name.appendChild(label);
@@ -251,6 +671,7 @@ function renderLegend(enc) {
     sw.style.background = t.side === "pc" ? "#2563eb" : "#dc2626";
     item.appendChild(sw);
     item.appendChild(el("span", null, t.name));
+    item.addEventListener("click", () => openEntity(t.id));
     box.appendChild(item);
   }
 }
@@ -333,6 +754,7 @@ function renderState(s) {
   for (const q of s.quests || []) {
     const li = el("li", null, q.title || q.id);
     li.appendChild(el("span", "q-status", q.status || ""));
+    li.addEventListener("click", () => openEntity(q.id));
     quests.appendChild(li);
   }
   if (!quests.children.length) quests.appendChild(el("li", null, "The board is empty."));
@@ -379,7 +801,7 @@ function refreshHero() {
 
 async function fetchState() {
   try {
-    const r = await fetch("/api/state?lens=" + (GM ? "gm" : "player"));
+    const r = await fetch("/api/state?lens=" + LENS);
     if (r.ok) renderState(await r.json());
   } catch (e) { /* next tick retries */ }
 }
@@ -388,29 +810,19 @@ async function fetchStory() {
   if (fetchingStory) { storyDirty = true; return; }  // a tick during a fetch isn't lost
   fetchingStory = true;
   try {
-    const params = new URLSearchParams({ offset: cursor.offset, lens: GM ? "gm" : "player" });
-    if (cursor.file) params.set("file", cursor.file);
+    const params = new URLSearchParams({ offset: cursor.offset, lens: LENS });
     const r = await fetch("/api/story?" + params);
     if (!r.ok) return;
     const data = await r.json();
-    if (data.cursor.file !== cursor.file && cursor.file !== null) {
-      document.getElementById("feed").replaceChildren();   // new session started
+    const feed = document.getElementById("feed");
+    if (data.cursor.offset < cursor.offset) {
+      feed.replaceChildren();   // the world was rewound — start the story over
     }
     cursor = data.cursor;
-    const feed = document.getElementById("feed");
     const stick = window.innerHeight + window.scrollY >= document.body.offsetHeight - 200;
     for (const entry of data.entries || []) {
-      const beat = el("div", "beat new " + entry.role);
-      if (entry.role === "operator") {
-        beat.appendChild(el("div", "speaker", "player"));
-        const line = el("div", "line");
-        line.innerHTML = entry.html;
-        beat.appendChild(line);
-      } else {
-        beat.innerHTML = entry.html;
-        beat.className = "beat new gm";
-      }
-      feed.appendChild(beat);
+      const beat = renderEntry(entry);
+      if (beat) feed.appendChild(beat);
     }
     hasStory = feed.children.length > 0;
     refreshHero();
