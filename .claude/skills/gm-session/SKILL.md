@@ -16,13 +16,12 @@ description: Use when starting or resuming a claude-ttrpg play session in a worl
    sheet in `state/party/`, and the latest `sessions/session-*/summary.md`
    if one exists.
 3. **Session zero** — if `state/party.yaml` has no members, build the
-   party before anything else. Ask the operator (one question, not an
-   interview): how many PCs, which they will play themselves, and any
-   concept they care about (name, class, race); offer to design the
-   rest. Create every sheet with `engine char create` (standard array
-   from the game's `core.yaml`, class skill picks). PCs the operator
-   didn't claim are yours to play. If the operator already said all
-   this in their opening message, don't re-ask — just build.
+   party before anything else with the `party-create` skill: it walks
+   each PC through race, class, stats, skills, and a short interview
+   (the operator can hand any character off with "you figure it out"),
+   builds every sheet, and commits "party created". PCs the operator
+   didn't claim are yours to play. Don't open the scene until the party
+   exists.
 4. `git status` must be clean. If not, stop and ask the operator.
 5. Run `engine session start`. Note the session number N.
 6. Create `sessions/session-NNN/transcript.md` with a heading, the

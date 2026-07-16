@@ -5,6 +5,7 @@ description: >
 hit_die: 8        # d8, controls starting HP, per-level HP gain, and short-rest healing
 cast_attr: WIS    # attribute behind spell attack rolls, save DCs, and CASTMOD
 skill_choices: 2  # how many skills to pick from the list below at creation
+attr_priority: [WIS, CON, STR, CHA, DEX, INT]  # wizard default: standard array fills these high-to-low
 skills: [insight, medicine, persuasion, religion]
 starting_gear: [leather_armor, mace]  # item ids from ruleset/items.yaml
 starting_gold: 15

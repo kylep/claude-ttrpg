@@ -225,6 +225,15 @@ def parse_kv_ints(spec: str) -> dict[str, int]:
     return out
 
 
+@char_app.command("options")
+def char_options():
+    """Character-creation options for the world's game (standard array, races,
+    classes with skill counts and recommended defaults) as JSON — the menu a
+    party-creation wizard presents. Read-only."""
+    root, g = require_root_and_game()
+    emit(chargen.options(g))
+
+
 @char_app.command("create")
 def char_create(
     name: str = typer.Option(...),

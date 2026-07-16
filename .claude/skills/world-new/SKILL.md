@@ -14,12 +14,12 @@ description: Use when creating a new claude-ttrpg world (campaign) from a game d
    this repo's `.claude/` into `<dir>/.claude`.)
 3. `cd <dir> && git init && git add -A && git commit -m "world created: <name>"`
 4. Tag the pristine state: `git tag genesis`.
-5. Offer character creation: for each PC run
-   `engine char create --name ... --class ... --race ... --assign ... --skills ...`
-   (standard array 15,14,13,12,10,8; `--skills` takes exactly the class's
-   `skill_choices` count — 2 for most classes, 3 for the rogue — chosen
-   from that class's `skills` list, both in its ruleset file. Passing the
-   wrong number fails with `bad_skills`.) Commit: `git commit -am "party created"`.
+5. Build the party with the `party-create` skill — it walks each PC through
+   race, class, stats, skills, and a short interview (reading the menu from
+   `engine char options` and building each sheet with `engine char create`),
+   then commits "party created". Invoke it now if the operator is ready; if
+   they'd rather set characters up at the table later, skip it — session zero
+   in `gm-session` runs the same wizard on the first launch.
 6. Remind the operator: sessions start with the gm-session skill;
    save points are `git tag`; forking a timeline is `git branch` from
    any tag or commit (branches never merge).

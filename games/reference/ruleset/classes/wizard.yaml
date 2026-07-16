@@ -5,6 +5,7 @@ description: >
 hit_die: 6        # d6, controls starting HP, per-level HP gain, and short-rest healing
 cast_attr: INT    # attribute behind spell attack rolls, save DCs, and CASTMOD
 skill_choices: 2  # how many skills to pick from the list below at creation
+attr_priority: [INT, DEX, CON, WIS, CHA, STR]  # wizard default: standard array fills these high-to-low
 skills: [arcana, investigation, history, insight]
 starting_gear: [dagger]  # item ids from ruleset/items.yaml
 starting_gold: 20

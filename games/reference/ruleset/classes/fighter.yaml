@@ -5,6 +5,7 @@ description: >
 hit_die: 10       # d10, controls starting HP, per-level HP gain, and short-rest healing
 cast_attr: null   # non-caster
 skill_choices: 2  # how many skills to pick from the list below at creation
+attr_priority: [STR, CON, DEX, WIS, INT, CHA]  # wizard default: standard array fills these high-to-low
 skills: [athletics, intimidation, perception, survival]
 starting_gear: [chain_mail, longsword]  # item ids from ruleset/items.yaml
 starting_gold: 10

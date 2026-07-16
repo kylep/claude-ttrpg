@@ -100,3 +100,33 @@ def test_create_rejects_duplicate_pc(wroot):
 def test_create_rejects_empty_slug_name(wroot):
     # "!!!" has no alphanumerics -> pc- id would be degenerate
     assert json.loads(_create(name="!!!").stdout)["error"]["code"] == "bad_name"
+
+
+def test_char_options_cli_shape(wroot):
+    res = runner.invoke(app, ["char", "options"])
+    assert res.exit_code == 0, res.stdout
+    opts = json.loads(res.stdout)
+    assert opts["standard_array"] == [15, 14, 13, 12, 10, 8]
+    assert set(opts["attributes"]) == {"STR", "DEX", "CON", "INT", "WIS", "CHA"}
+    f = opts["classes"]["fighter"]
+    assert f["skill_choices"] == 2 and len(f["recommended_skills"]) == 2
+    assert set(f["recommended_skills"]) <= set(f["skills"])
+    assert f["starting_gear"][0]["id"] == "chain_mail"
+    assert opts["races"]["dwarf"]["bonuses"] == {"CON": 2}
+    # minigame classes declare no attr_priority -> no recommended spread
+    assert f["recommended_array"] is None
+
+
+def test_char_options_recommended_array_maps_priority():
+    from pathlib import Path
+
+    from ttrpg_engine import game
+    ref = Path(__file__).resolve().parents[2] / "games" / "reference"
+    g = game.load(ref)
+    opts = chargen.options(g)
+    rec = opts["classes"]["fighter"]["recommended_array"]
+    # a recommendation the engine would accept: every attribute, standard array
+    assert sorted(rec) == sorted(opts["attributes"])
+    assert sorted(rec.values()) == sorted(opts["standard_array"])
+    top = g["classes"]["fighter"]["attr_priority"][0]
+    assert rec[top] == max(opts["standard_array"])             # best score to top priority
