@@ -85,10 +85,25 @@ def _joined_text(content) -> str:
     return ""
 
 
+def _is_process_narration(msg: dict) -> bool:
+    """True when an assistant message is the GM's working narration ("let me
+    load the skill", "committing") rather than table-facing prose. Two shapes:
+    the turn stopped to call a tool (`stop_reason == "tool_use"`), or the text
+    is bundled with a tool_use block in the same message. Table-facing messages
+    end the turn (`stop_reason == "end_turn"`), so anything else is kept."""
+    if msg.get("stop_reason") == "tool_use":
+        return True
+    content = msg.get("content")
+    return isinstance(content, list) and any(
+        isinstance(p, dict) and p.get("type") == "tool_use" for p in content)
+
+
 def _entry_for(rec: dict) -> dict | None:
     """Turn a transcript record into a feed entry, or None to skip it. User
     messages become role "operator", assistant messages "gm"; meta/sidechain
-    records, tool plumbing, and error/interrupt lines are dropped."""
+    records, tool plumbing, error/interrupt lines, and assistant text that
+    accompanies a tool call (the GM's own process narration) are dropped — the
+    feed is the story told at the table, not the agent's working notes."""
     if rec.get("isSidechain") or rec.get("isMeta"):
         return None
     msg = rec.get("message")
@@ -104,6 +119,8 @@ def _entry_for(rec: dict) -> dict | None:
             return None
         role = "operator"
     else:
+        if _is_process_narration(msg):
+            return None  # the GM's working notes, not the story told at the table
         text = text.strip()
         if not text or text.startswith("API Error") or text.startswith("Failed to authenticate"):
             return None

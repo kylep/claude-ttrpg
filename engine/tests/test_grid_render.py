@@ -40,6 +40,17 @@ def test_ascii_map_contents():
     assert row1.split()[1:][1] == "B"  # x=1 on row y=1
 
 
+def test_dead_monster_dropped_from_legend():
+    # a dead monster leaves the board, so it must leave the legend too
+    enc = {**ENC, "order": ["pc-brin", "goblin-1", "goblin-2"],
+           "positions": {"pc-brin": [1, 1], "goblin-2": [5, 2]},
+           "monsters": {"goblin-1": {"name": "Goblin 1", "hp": 0, "dead": True},
+                        "goblin-2": {"name": "Goblin 2", "hp": 7, "dead": False}}}
+    art = render.ascii_map(enc)
+    assert "goblin-2" in art          # living combatant still keyed
+    assert "goblin-1" not in art      # dead one gone from the legend
+
+
 def test_cli_render(wroot):
     worldfs.write_yaml(wroot / "state" / "encounter.yaml", ENC)
     res = runner.invoke(app, ["map", "render"])
