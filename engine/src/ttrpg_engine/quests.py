@@ -2,7 +2,7 @@ from collections import Counter
 from pathlib import Path
 
 from ttrpg_engine import clock as clock_mod
-from ttrpg_engine import derive, level as level_mod, timeline, worldfs
+from ttrpg_engine import derive, level as level_mod, story_log, timeline, worldfs
 from ttrpg_engine.chargen import slugify
 from ttrpg_engine.errors import EngineError
 
@@ -238,6 +238,7 @@ def offer(root: Path, g: dict, *, title: str, description: str,
     save_quest(root, quest)
     timeline.append_event(root, type_="quest", actors=[giver_id] if giver_id else [],
                           summary=f"quest offered: {title} ({quest_id})")
+    story_log.post(root, "quest", ref=quest_id, name=title, event="offered")
     return quest
 
 
@@ -259,6 +260,7 @@ def accept(root: Path, quest_id: str, pcs: list[str]) -> dict:
     save_quest(root, quest)
     timeline.append_event(root, type_="quest", actors=list(pcs),
                           summary=f"quest accepted: {quest['title']} ({quest_id})")
+    story_log.post(root, "quest", ref=quest_id, name=quest["title"], event="accepted")
     return quest
 
 
@@ -302,6 +304,7 @@ def complete(root: Path, quest_id: str, to: list[str] | None = None) -> dict:
                           summary=f"quest completed: {quest['title']} ({quest_id})",
                           delta={"recipients": recipients, "gold": shares, "items": items,
                                  "xp": xp if granted else 0})
+    story_log.post(root, "quest", ref=quest_id, name=quest["title"], event="completed")
     return quest
 
 
@@ -314,6 +317,7 @@ def cancel(root: Path, quest_id: str) -> dict:
     save_quest(root, quest)
     timeline.append_event(root, type_="quest", actors=[],
                           summary=f"quest cancelled: {quest['title']} ({quest_id})")
+    story_log.post(root, "quest", ref=quest_id, name=quest["title"], event="cancelled")
     return quest
 
 

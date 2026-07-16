@@ -1,7 +1,9 @@
 """Read-only live viewer for a world: engine serve.
 
-Serves a player lens (/) and a GM lens (/gm) over the world's files plus
-the Claude Code session transcript (story feed). Never writes anything.
+Serves a player lens (/) and a GM lens (/gm) over the world's files. The
+story feed reads the engine-written story log (state/story.jsonl) — never
+the Claude transcript — and /api/entity resolves live entity cards.
+Never writes anything.
 """
 import errno
 import json
@@ -12,7 +14,7 @@ from importlib import resources
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-from ttrpg_engine import story, viewer_data, worldfs
+from ttrpg_engine import story_log, viewer_data, worldfs
 from ttrpg_engine.errors import EngineError
 
 _POLL_SECONDS = 0.3
@@ -35,9 +37,8 @@ def _world_mtime(root: Path) -> float:
 
 
 def _story_mtime(root: Path) -> float:
-    t = story.latest_transcript(root)
     try:
-        return t.stat().st_mtime if t else 0.0
+        return (root / "state" / "story.jsonl").stat().st_mtime
     except OSError:
         return 0.0
 
@@ -75,15 +76,19 @@ class _Handler(BaseHTTPRequestHandler):
                 self._json(viewer_data.state_snapshot(self.root, self.game, lens))
             elif path == "/api/story":
                 lens = "gm" if query.get("lens", ["player"])[0] == "gm" else "player"
-                cursor = None
-                if "file" in query:
-                    try:
-                        offset = int(query.get("offset", ["0"])[0])
-                    except ValueError:
-                        offset = 0
-                    cursor = {"file": query["file"][0], "offset": offset}
-                entries, cursor = story.read_story(self.root, cursor, lens=lens)
-                self._json({"entries": entries, "cursor": cursor})
+                try:
+                    offset = max(0, int(query.get("offset", ["0"])[0]))
+                except ValueError:
+                    offset = 0
+                entries, offset = story_log.read(self.root, offset, lens=lens)
+                self._json({"entries": entries, "cursor": {"offset": offset}})
+            elif path.startswith("/api/entity/"):
+                lens = "gm" if query.get("lens", ["player"])[0] == "gm" else "player"
+                ref = path.removeprefix("/api/entity/")
+                try:
+                    self._json(viewer_data.entity_card(self.root, self.game, ref, lens))
+                except EngineError as e:
+                    self._json({"error": e.code}, 404)
             elif path == "/events":
                 self._events()
             elif path.startswith("/renders/"):

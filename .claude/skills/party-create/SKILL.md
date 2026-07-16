@@ -56,19 +56,22 @@ Create every member the same way:
 
 ```
 engine char create --name "<name>" --class <class> --race <race> \
-  --assign STR=..,DEX=..,CON=..,INT=..,WIS=..,CHA=.. --skills a,b
+  --assign STR=..,DEX=..,CON=..,INT=..,WIS=..,CHA=.. --skills a,b \
+  --played-by "<player's name | GM>"
 ```
 
 `--assign` must be the full standard array across all six attributes and
 `--skills` exactly the class's `skill_choices` from its list, or the engine
-rejects it (`bad_assign` / `bad_skills`).
+rejects it (`bad_assign` / `bad_skills`). `--played-by` records who runs the
+character; each creation also drops the character's card into the live
+viewer's story feed automatically.
 
-## 4. Record bios + played-by
+## 4. Record bios
 
-For each member write `canon/party/<pc-id>.md` — the interview answers (concept,
-bond, flaw, ties, detail) and a `**Played by:** <human name | GM>` line. The
-engine sheet holds the mechanics; canon holds the story, and the played-by line
-is how `gm-session` knows whose turns to run.
+For each member write `canon/party/<pc-id>.md` — the interview answers
+(concept, bond, flaw, ties, detail) as short prose. The engine sheet holds
+the mechanics and the played-by; canon holds the story, and the viewer's
+character card shows both together.
 
 ## 5. Finish
 

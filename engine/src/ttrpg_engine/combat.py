@@ -1,7 +1,7 @@
 from pathlib import Path
 from random import Random
 
-from ttrpg_engine import dice, grid, timeline, worldfs
+from ttrpg_engine import dice, grid, story_log, timeline, worldfs
 from ttrpg_engine.chargen import attr_mod
 from ttrpg_engine.errors import EngineError
 from ttrpg_engine.game import bestiary_entry
@@ -248,6 +248,7 @@ def start(root: Path, g: dict, map_rel: str, rng: Random, pcs: list[str] | None 
     save_encounter(root, enc)
     timeline.append_event(root, type_="encounter", actors=order,
                           summary=f"encounter started: {emap['name']}")
+    story_log.post(root, "combat", event="start", name=emap["name"])
     return {"id": enc["id"], "order": order,
             "initiative": {c: scores[c][0] for c in order}}
 
@@ -311,6 +312,10 @@ def end(root: Path, g: dict, rng: Random) -> dict:
     timeline.append_event(root, type_="encounter",
                           summary=f"encounter ended: {enc['name']} (+{total_xp} xp, +{gold} gp)",
                           delta={"party": {"gold": gold}})
+    spoils = f"+{xp_each} xp each · +{gold} gp"
+    if items:
+        spoils += " · " + ", ".join(i.replace("_", " ") for i in items)
+    story_log.post(root, "combat", event="end", name=enc["name"], md=spoils)
     return {"xp_each": xp_each, "gold": gold, "items": items}
 
 
@@ -591,6 +596,7 @@ def revive(root: Path, actor: str, *, hp: int = 1) -> dict:
     _persist(root, kind, sheet, enc)
     timeline.append_event(root, type_="revive", actors=[actor],
                           summary=f"{actor} is restored to life at {sheet['hp']} hp (weakened)")
+    story_log.post(root, "system", md=f"**{sheet['name']}** returns to life — weakened until a long rest.")
     return {"actor": actor, "hp": sheet["hp"], "max_hp": sheet["max_hp"],
             "effects": [e["name"] for e in sheet["effects"]]}
 
@@ -630,6 +636,7 @@ def death_save(root: Path, actor: str, *, roll_fn) -> dict:
     if result == "dead":
         timeline.append_event(root, type_="death", actors=[actor],
                               summary=f"{actor} has died")
+        story_log.post(root, "system", md=f"**{sheet['name']}** has died.")
     return {"actor": actor, "natural": natural, "result": result,
             "saves": sheet.get("death_saves")}
 

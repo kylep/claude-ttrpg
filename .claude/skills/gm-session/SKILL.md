@@ -38,13 +38,18 @@ description: Use when starting or resuming a claude-ttrpg play session in a worl
 9. Recap the previous summary to the players in 3-5 sentences, state
    the party's location and date, then open the scene. For a brand-new
    world there is nothing to recap: open at the game's start location
-   with the first beat of `canon/adventure.md`.
+   with the first beat of `canon/adventure.md`. Post the opening to the
+   story log before you say it (see gm.md, "The table record"):
+   `engine story scene --title <location> --subtitle "<in-world date>"`,
+   then the opening prose via `engine story narrate --text -` (heredoc),
+   and `engine story reveal --npc <id>` for anyone on stage.
 10. After opening, give the operator a short **"what you can do right
     now"** list grounded in the current state — the NPCs and hooks
     present in this scene, quests on the board (`engine quest list`), the
     exits out of this location (`canon/maps/region.yaml` edges), and the
     standing options (rest, shop, gear prep, split the party with
-    `--pcs`). A new player should always see their menu without having to
-    ask for it; refresh it whenever the party arrives somewhere new.
+    `--pcs`). Post the same menu with `engine story choices --item ...`.
+    A new player should always see their menu without having to ask for
+    it; refresh it whenever the party arrives somewhere new.
 
 Ending a session is the session-end skill — never improvise it.

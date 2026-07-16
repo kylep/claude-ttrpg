@@ -67,13 +67,56 @@ def test_state_lenses_diverge_on_hidden_monster(live):
     assert foe["hp"] == 7
 
 
-def test_story_endpoint_degrades_without_transcripts(live):
+def test_story_endpoint_empty_without_log(live):
     _, port = live
     status, body = _get(port, "/api/story")
     assert status == 200
     data = json.loads(body)
     assert data["entries"] == []
-    assert data["cursor"]["file"] is None
+    assert data["cursor"] == {"offset": 0}
+
+
+def test_story_endpoint_serves_posted_entries(live):
+    _, port = live
+    make_pc()                                  # auto-emits a character card entry
+    res = runner.invoke(app, ["story", "narrate", "--text", "The door *creaks* open."])
+    assert res.exit_code == 0, res.stdout
+    status, body = _get(port, "/api/story")
+    assert status == 200
+    data = json.loads(body)
+    types = [e["type"] for e in data["entries"]]
+    assert types == ["character", "narration"]
+    assert data["entries"][0]["ref"] == "pc-borin"
+    assert "<em>creaks</em>" in data["entries"][1]["html"]
+    # incremental read: same offset back means nothing new
+    status, body = _get(port, "/api/story?offset=" + str(data["cursor"]["offset"]))
+    again = json.loads(body)
+    assert again["entries"] == [] and again["cursor"] == data["cursor"]
+
+
+def test_entity_endpoint_cards_and_lens(live):
+    wroot, port = live
+    make_pc()
+    status, body = _get(port, "/api/entity/pc-borin")
+    assert status == 200
+    card = json.loads(body)
+    assert card["kind"] == "pc" and card["name"] == "Borin"
+    status, _ = _get(port, "/api/entity/no-such-thing")
+    assert status == 404
+    # a hidden monster's card exists for the GM and 404s for players
+    res = runner.invoke(app, ["--seed", "5", "encounter", "start",
+                              "maps/encounters/hideout.yaml"])
+    assert res.exit_code == 0, res.stdout
+    combat.set_effect(wroot, "goblin-1", "hidden", -1)
+    status, _ = _get(port, "/api/entity/goblin-1?lens=player")
+    assert status == 404
+    status, body = _get(port, "/api/entity/goblin-1?lens=gm")
+    assert status == 200
+    assert json.loads(body)["hp"] == 7
+    # players get a status word, never numbers
+    status, body = _get(port, "/api/entity/goblin_archer-1?lens=player")
+    card = json.loads(body)
+    assert "status" in card and "hp" not in card
 
 
 def test_events_stream_ticks_on_state_change(live):
@@ -135,8 +178,8 @@ def test_map_svg_escapes_author_name_against_xss(live):
 
 def test_story_endpoint_carries_lens(live):
     _, port = live
-    # no transcript in a test world, but the param must be accepted, not 500
+    # empty log or not, the lens param must be accepted, not 500
     for lens in ("player", "gm"):
         status, body = _get(port, "/api/story?lens=" + lens)
         assert status == 200
-        assert json.loads(body)["cursor"]["file"] is None
+        assert json.loads(body)["cursor"]["offset"] == 0

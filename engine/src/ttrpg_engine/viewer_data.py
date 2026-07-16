@@ -1,8 +1,11 @@
 import copy
 from pathlib import Path
 
+from ttrpg_engine import game as game_mod
 from ttrpg_engine import render, worldfs
 from ttrpg_engine.combat import effect_names
+from ttrpg_engine.errors import EngineError
+from ttrpg_engine.markdown_render import render_markdown
 
 _TIMELINE_TAIL = 30  # how many recent timeline events the GM lens shows
 # encounter bookkeeping surfaced only in the GM lens, never to players
@@ -99,6 +102,114 @@ def _timeline_tail(root: Path) -> list[dict]:
         ev = worldfs.read_yaml(p)
         out.append({"id": p.stem, "type": ev.get("type"), "summary": ev.get("summary")})
     return out
+
+
+# --- entity cards -----------------------------------------------------------
+#
+# One resolver for everything a feed card or a roster click can reference.
+# Cards read live state at request time, so an open card is always current.
+
+def _pc_card(root: Path, ref: str) -> dict:
+    sheet = worldfs.read_yaml(worldfs.state(root, f"party/{ref}"))
+    bio = root / "canon" / "party" / f"{ref}.md"
+    return {
+        "kind": "pc", "id": ref, "name": sheet["name"],
+        "race": sheet["race"], "class": sheet["class"], "level": sheet["level"],
+        "xp": sheet["xp"], "hp": sheet["hp"], "max_hp": sheet["max_hp"],
+        "ac": sheet["ac"], "speed": sheet["speed"],
+        "played_by": sheet.get("played_by"),
+        "attributes": sheet["attributes"], "skills": sheet["skills"],
+        "effects": [e["name"] for e in sheet.get("effects", [])],
+        "features": sheet.get("features", []),
+        "spells_known": sheet.get("spells_known", []),
+        "equipped": [l["item"] for l in sheet.get("inventory", []) if l.get("equipped")],
+        "gold": sheet.get("gold", 0),
+        "bio_html": render_markdown(bio.read_text()) if bio.exists() else None,
+    }
+
+
+def _monster_instance_card(g: dict, enc: dict, ref: str, lens: str) -> dict:
+    mon = enc["monsters"][ref]
+    if lens != "gm" and "hidden" in effect_names(mon):
+        raise EngineError("not_found", f"no entity {ref!r}")   # don't leak existence
+    try:
+        desc = game_mod.bestiary_entry(g, mon["type"]).get("description", "")
+    except EngineError:
+        desc = ""
+    card = {"kind": "monster", "id": ref, "name": mon["name"],
+            "type": mon.get("type"), "description": " ".join(str(desc).split()),
+            "effects": [e["name"] for e in mon.get("effects", [])],
+            "aloft": bool(enc.get("aloft", {}).get(ref)),
+            "dead": bool(mon.get("dead"))}
+    if lens == "gm":
+        card.update(hp=mon["hp"], max_hp=mon["max_hp"], ac=mon.get("ac"),
+                    attributes=mon.get("attributes"), attacks=mon.get("attacks"),
+                    xp=mon.get("xp"))
+    else:
+        card["status"] = _monster_status(mon)
+    return card
+
+
+def _monster_type_card(entry: dict, ref: str, lens: str) -> dict:
+    card = {"kind": "monster", "id": ref,
+            "name": entry.get("name", ref),
+            "description": " ".join(str(entry.get("description", "")).split())}
+    if lens == "gm":
+        card.update(hp=entry.get("hp"), max_hp=entry.get("hp"), ac=entry.get("ac"),
+                    speed=entry.get("speed"), attributes=entry.get("attributes"),
+                    attacks=entry.get("attacks"), xp=entry.get("xp"),
+                    notes=" ".join(str(entry.get("notes", "")).split()) or None)
+    return card
+
+
+def _npc_card(npc: dict, ref: str, lens: str) -> dict:
+    card = {"kind": "npc", "id": ref, "name": npc.get("name", ref),
+            "role": npc.get("role"), "disposition": npc.get("disposition"),
+            "location": npc.get("location"),
+            "description": " ".join(str(npc.get("description", "")).split()) or None}
+    if lens == "gm":
+        card["wants"] = " ".join(str(npc.get("wants", "")).split()) or None
+    return card
+
+
+def _quest_card(quest: dict, lens: str) -> dict:
+    card = {"kind": "quest", "id": quest["id"], "name": quest["title"],
+            "status": quest["status"], "description": quest.get("description"),
+            "giver": quest.get("giver"), "deadline": quest.get("deadline"),
+            "accepted_by": quest.get("accepted_by", []),
+            "reward": quest.get("reward")}
+    if lens == "gm":
+        card["escrow"] = quest.get("escrow")
+        card["escrow_from"] = quest.get("escrow_from")
+    return card
+
+
+def entity_card(root: Path, g: dict, ref: str, lens: str) -> dict:
+    """Resolve `ref` — a PC id, an encounter combatant, a bestiary type, an
+    NPC key from canon/npcs.yaml, or a quest id — into a lens-aware card of
+    its live state. Raises not_found for anything unknown, including monsters
+    a player lens isn't allowed to see."""
+    lens = "gm" if lens == "gm" else "player"
+    if ref.startswith("pc-"):
+        if worldfs.state(root, f"party/{ref}").exists():
+            return _pc_card(root, ref)
+        raise EngineError("not_found", f"no entity {ref!r}")
+    if (root / "state" / "encounter.yaml").exists():
+        enc = render.load_encounter(root)
+        if ref in enc["monsters"]:
+            return _monster_instance_card(g, enc, ref, lens)
+    bestiary = game_mod.bestiary(g)
+    if ref in bestiary:
+        return _monster_type_card(bestiary[ref], ref, lens)
+    npcs_path = root / "canon" / "npcs.yaml"
+    if npcs_path.exists():
+        npcs = worldfs.read_yaml(npcs_path)
+        if ref in npcs:
+            return _npc_card(npcs[ref], ref, lens)
+    quest_path = root / "state" / "quests" / f"{ref}.yaml"
+    if quest_path.exists():
+        return _quest_card(worldfs.read_yaml(quest_path), lens)
+    raise EngineError("not_found", f"no entity {ref!r}")
 
 
 def state_snapshot(root: Path, g: dict, lens: str) -> dict:

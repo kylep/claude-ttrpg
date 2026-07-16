@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from ttrpg_engine import clock as clock_mod
-from ttrpg_engine import timeline, worldfs
+from ttrpg_engine import story_log, timeline, worldfs
 from ttrpg_engine.errors import EngineError
 
 
@@ -60,4 +60,12 @@ def go(root: Path, dest: str, pcs: list[str] | None = None) -> dict:
                    "rest of the party stays behind")
 
     timeline.append_event(root, type_="travel", actors=movers, summary=summary)
+    dest_name = region["nodes"][dest].get("name", dest)
+    if pcs is None:
+        who = "The party"
+    else:
+        names = [worldfs.read_yaml(worldfs.state(root, f"party/{p}"))["name"] for p in movers]
+        who = ", ".join(names)
+    story_log.post(root, "system",
+                   md=f"{who} arrives at **{dest_name}** — {edge['hours']}h on the road.")
     return {"from": here, "to": dest, "hours": edge["hours"], "clock": clk, "pcs": movers}

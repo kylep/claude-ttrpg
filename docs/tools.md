@@ -6,15 +6,22 @@ image generation.
 ## Live table view
 
 `engine serve` (run inside a world; default port 8787) hosts a local,
-read-only web view that updates live as you play — the story feed (your
-prompts and the GM's narration, recovered from the Claude session itself,
-none of the tool noise), a live battle map that moves when tokens move,
-party HP and effects, and the quest board. `/` is the player-safe lens:
-hidden monsters are actually hidden (tokens, legend, turn order), monster
-health shows as words instead of numbers. `/gm` shows everything, plus the
-timeline and engine internals. The terminal stays the only way to *act* —
-the browser is the good reading surface, for you or for whoever's following
-along.
+read-only web view that updates live as you play. The story feed reads the
+world's own **story log** (`state/story.jsonl`) — a record the engine
+writes deliberately, never a transcript of the terminal. Structured beats
+land automatically (character cards when a PC is created, quest cards as
+the board changes, combat start/end, travel, level-ups, deaths) and the GM
+posts the narration, scene headers, and "what you can do" menus with
+`engine story ...`. Character, NPC, monster, and quest cards are clickable
+— in the feed, the party rail, the map legend, even names in the prose —
+and open a live sheet (HP, effects, gear, bio) with player/GM lens rules
+applied. Alongside the feed: a live battle map that moves when tokens
+move, party HP and effects, and the quest board. `/` is the player-safe
+lens: hidden monsters are actually hidden (tokens, legend, turn order,
+cards), monster health shows as words instead of numbers. `/gm` shows
+everything, plus the timeline and engine internals. The terminal stays the
+only way to *act* — the browser is the good reading surface, for you or
+for whoever's following along.
 
 ## Printable handbooks
 

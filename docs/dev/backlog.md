@@ -92,11 +92,11 @@ Carve-outs from the stealth/LOS/terrain/grapple/darkness work on the
 
 Carve-outs from `engine serve` (see docs/dev/2026-07-14-live-viewer-design.md).
 
-- The story pane parses Claude Code session transcripts — deliberate
-  coupling, quarantined in `story.py`; if the JSONL format shifts, the
-  story pane degrades to "no live session feed" and everything else
-  keeps working.
-- Current session only; no session-history browsing in the viewer.
+- ~~The story pane parses Claude Code session transcripts~~ — resolved
+  2026-07-16: the feed now reads the engine-written story log
+  (`state/story.jsonl`); the transcript coupling (`story.py`) is gone.
+- Session-history browsing: the full story log renders as one feed, but
+  there's no per-session jump/filter UI.
 - The game ruleset is loaded once at server start; a mid-session
   ruleset change needs a serve restart.
 - When it is a hidden monster's turn, the player lens shows `up: ???` —

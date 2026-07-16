@@ -1,7 +1,7 @@
 from pathlib import Path
 from random import Random
 
-from ttrpg_engine import derive, timeline, worldfs
+from ttrpg_engine import derive, story_log, timeline, worldfs
 from ttrpg_engine.errors import EngineError
 
 
@@ -56,5 +56,6 @@ def up(root: Path, g: dict, actor: str, rng: Random) -> dict:
     worldfs.write_yaml(worldfs.state(root, f"party/{actor}"), sheet)
     timeline.append_event(root, type_="level", actors=[actor],
                           summary=f"{actor} reaches level {new_level} (+{gain} hp)")
+    story_log.post(root, "system", md=f"**{sheet['name']}** reaches level {new_level}.")
     return {"actor": actor, "level": new_level, "hp_gain": gain,
             "features": sheet["features"], "spells_known": sheet["spells_known"]}

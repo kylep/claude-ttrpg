@@ -1,7 +1,7 @@
 import re
 from pathlib import Path
 
-from ttrpg_engine import derive, timeline, worldfs
+from ttrpg_engine import derive, story_log, timeline, worldfs
 from ttrpg_engine.derive import attr_mod
 from ttrpg_engine.errors import EngineError
 from ttrpg_engine.game import ATTRS
@@ -72,10 +72,13 @@ def options(g: dict) -> dict:
 
 
 def create(root: Path, g: dict, *, name: str, cls_name: str, race_name: str,
-           assign: dict[str, int], skills: list[str]) -> dict:
+           assign: dict[str, int], skills: list[str],
+           played_by: str | None = None) -> dict:
     """Validate the choices, then build, persist, and return a level-1 PC sheet;
-    also appends the PC to the party file and logs a timeline event. `assign`
-    must cover every attribute using exactly the ruleset's standard array."""
+    also appends the PC to the party file, logs a timeline event, and drops the
+    character's card into the story log. `assign` must cover every attribute
+    using exactly the ruleset's standard array. `played_by` records who runs
+    the character at the table (a player's name, or "GM")."""
     if cls_name not in g["classes"]:
         raise EngineError("unknown_class", f"no class {cls_name}")
     if race_name not in g["races"]:
@@ -113,10 +116,13 @@ def create(root: Path, g: dict, *, name: str, cls_name: str, race_name: str,
         "gold": cls["starting_gold"], "effects": [],
         "location": party["location"],
     }
+    if played_by:
+        sheet["played_by"] = played_by
     derive.recompute(sheet, g)
     worldfs.write_yaml(worldfs.state(root, f"party/{pc_id}"), sheet)
     party["members"].append(pc_id)
     worldfs.write_yaml(worldfs.state(root, "party"), party)
     timeline.append_event(root, type_="character", actors=[pc_id],
                           summary=f"{name} the {race_name} {cls_name} joins the party")
+    story_log.post(root, "character", ref=pc_id, name=name)
     return sheet
