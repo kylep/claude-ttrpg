@@ -63,7 +63,7 @@ the same rhythm, so no class outshines another:
   spells by ~L17–19; cantrips (level 0) at will; a *known/prepared* list that
   grows per level. Curated ~8–12 spell options offered at each spell level
   (not an exhaustive list — depth without overwhelm).
-- **Martials (fighter, barbarian, rogue, ranger, monk):** scaling combat
+- **Martials (fighter, barbarian, rogue, monk):** scaling combat
   features — extra attacks, damage riders, defensive reactions, mobility,
   resource dice (rage/ki/etc., our own versions) — budgeted to match caster
   power at each tier.
@@ -74,24 +74,26 @@ power spikes. The bestiary is tuned to this: a 4-PC party of level N handles a
 "standard" encounter of tier N, with **easy / standard / tough / boss** threat
 tiers as a light guideline (not a full CR system).
 
-## Classes (8, flattened — one path each)
+## Classes (7, flattened — one path each)
 
 | Class | One-line fantasy | Role | Key attr | Type | Hit die |
 |---|---|---|---|---|---|
 | Fighter | The knight: armor, blades, holds the line | tank/striker | STR or DEX | martial | d10 |
 | Barbarian | The berserker: rage and smash | striker/tank | STR | martial | d12 |
 | Rogue | The sneak: stealth, traps, precise strikes | skirmisher | DEX | martial | d8 |
-| Ranger | The hunter: bow + an animal companion | ranged/scout | DEX | martial | d10 |
 | Monk | The martial artist: fast, unarmed, evasive | skirmisher | DEX/WIS | martial | d8 |
 | Wizard | The spellbook blaster | controller | INT | full caster | d6 |
 | Cleric | The healer who smites the dark | support/caster | WIS | full caster | d8 |
 | Druid | Turns into a bear; nature's magic | caster/shifter | WIS | full caster | d8 |
 
+(No ranger: its defining beast-master pet is a mechanic we're deliberately not
+building, and a bow-martial without it would just be a narrower fighter.)
+
 Each class file carries: `hit_die`, `cast_attr`, `attr_priority` (for the
 wizard's recommended-spread default), `skill_choices` + `skills`,
 `starting_gear`, `starting_gold`, and a **`levels` table 1–20** listing the
 features (and, for casters, spells learned + slots) unlocked at each level.
-Signature resources (rage, ki, the ranger's companion, wild-shape) are authored
+Signature resources (rage, ki, wild-shape) are authored
 as features with precise, GM-executable mechanical text.
 
 ## Races (~15)

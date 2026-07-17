@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Author `games/familyrpg/` — a complete, original, balanced 1–20 tabletop RPG ruleset (8 classes, ~15 races, ~250 spells across 3 lists, items, effects, a family bestiary) that passes `engine game validate` and is playable end-to-end, with **zero engine code changes**.
+**Goal:** Author `games/familyrpg/` — a complete, original, balanced 1–20 tabletop RPG ruleset (7 classes, ~15 races, ~250 spells across 3 lists, items, effects, a family bestiary) that passes `engine game validate` and is playable end-to-end, with **zero engine code changes**.
 
 **Architecture:** A claude-ttrpg *game definition* is pure YAML read by the existing engine (`engine/src/ttrpg_engine/game.py`). We build a **walking skeleton** first — a minimal-but-complete game that validates and runs one encounter — then add classes, spells, and bestiary in additive waves. The validator allows orphan (defined-but-unreferenced) spells and features, so we author spell lists *before* the caster classes that reference them, and every task after the skeleton re-runs the full validator and keeps it green.
 
@@ -18,7 +18,7 @@ Copied verbatim from `docs/superpowers/specs/2026-07-17-familyrpg-ruleset-design
 - **Levels 1–20, no empty levels.** Every class's `levels` table has a row for all of 1–20. Signature at L1, identity by L3, **power spikes at L5/L11/L17**, meaningful new abilities at L2/6/9/13/15/20; "quiet" levels give a numeric bump (a scaling die, another use per rest).
 - **Proficiency bonus by level:** `+2` (1–4), `+3` (5–8), `+4` (9–12), `+5` (13–16), `+6` (17–20).
 - **Standard array** `[15,14,13,12,10,8]`, assigned at creation, plus race bonuses.
-- **8 classes, one path each** — no subclasses/feats/multiclassing. Fighter d10, Barbarian d12, Rogue d8, Ranger d10, Monk d8, Wizard d6, Cleric d8, Druid d8.
+- **7 classes, one path each** — no subclasses/feats/multiclassing. Fighter d10, Barbarian d12, Rogue d8, Monk d8, Wizard d6, Cleric d8, Druid d8. (No ranger — the beast-master's pet is a mechanic we're deliberately not building.)
 - **Skill vocabulary is exactly these 10** (draw class `skills:` lists from this set only): `athletics, acrobatics, stealth, perception, investigation, arcana, nature, medicine, survival, persuasion`. **`athletics`, `acrobatics`, `stealth`, `perception` are engine-load-bearing** (hardcoded in `combat.py` for grapple/hide/perception/initiative-adjacent contests) — their spelling must be exact.
 - **Full-caster slot table (wizard/cleric/druid share it exactly)** — max slots per spell level by character level:
 
@@ -183,8 +183,8 @@ games/familyrpg/
     spells.yaml            # assembled from 3 lists
     features.yaml          # assembled from 8 class feature sets
     classes/
-      fighter.yaml barbarian.yaml rogue.yaml ranger.yaml
-      monk.yaml wizard.yaml cleric.yaml druid.yaml
+      fighter.yaml barbarian.yaml rogue.yaml monk.yaml
+      wizard.yaml cleric.yaml druid.yaml
   content/                 # MINIMAL placeholder here; full campaign world is a SEPARATE spec
     maps/
       region.yaml
@@ -308,21 +308,17 @@ git commit -m "feat(familyrpg): barbarian class (1-20)"
 
 ---
 
-### Task 4: Ranger (martial, d10) & Monk (martial, d8)
-
-Two classes in one task (both martial, no spell dependency; small enough to review together).
+### Task 4: Monk (martial, d8)
 
 **Files:**
-- Create: `games/familyrpg/ruleset/classes/ranger.yaml`, `games/familyrpg/ruleset/classes/monk.yaml`
+- Create: `games/familyrpg/ruleset/classes/monk.yaml`
 - Modify: `games/familyrpg/ruleset/features.yaml`
 
-- [ ] **Step 1: Author `classes/ranger.yaml`, 1–20.** `hit_die: 10`, `cast_attr: null` (this ranger is a martial beast-master, not a half-caster — keeps the caster/martial split clean and avoids partial-slot tables), `skill_choices: 3`, `attr_priority: [DEX, WIS, CON, STR, INT, CHA]`, `skills: [survival, nature, perception, stealth, athletics]`, `starting_gear: [studded_leather, longbow, shortsword]`, `starting_gold: 15`. Cadence: L1 `hunters_mark_strike` (signature damage rider, GM-run), L1 `natural_explorer`, L3 `animal_companion` (identity — a companion stat block the GM runs; describe its scaling by ranger level in the feature text), **L5 `extra_attack` (spike)**, L7 `deft_tracker`, L9 `volley` (bump), **L11 `companion_ferocity` (spike)**, L13 `camouflage`, L15 `apex_bond`, **L17 `storm_of_arrows` (spike)**, L20 capstone `perfect_hunter`.
+- [ ] **Step 1: Author `classes/monk.yaml`, 1–20.** `hit_die: 8`, `cast_attr: null`, `skill_choices: 2`, `attr_priority: [DEX, WIS, CON, STR, INT, CHA]`, `skills: [acrobatics, athletics, stealth, perception]`, `starting_gear: [quarterstaff]`, `starting_gold: 5`. Cadence: L1 `martial_arts` (signature — unarmed die + DEX finesse, GM-run) + `ki` (a per-rest resource pool that scales with level), L1 `unarmored_defense` (WIS-based AC, GM-adjudicated), L3 `flurry_of_blows`/`deflect_missiles` (identity), **L5 `extra_attack` + `stunning_strike` (spike)**, L7 `evasion`, L9 `wholeness_of_body` (bump), **L11 `improved_flurry` (spike)**, L13 `tongue_of_sun_and_moon`, L15 `timeless_body`, **L17 `quivering_palm` (spike)**, L20 capstone `perfect_self`. Ki count = level; martial-arts die grows at spikes. Append all monk feature ids to `features.yaml`.
 
-- [ ] **Step 2: Author `classes/monk.yaml`, 1–20.** `hit_die: 8`, `cast_attr: null`, `skill_choices: 2`, `attr_priority: [DEX, WIS, CON, STR, INT, CHA]`, `skills: [acrobatics, athletics, stealth, perception]`, `starting_gear: [quarterstaff]`, `starting_gold: 5`. Cadence: L1 `martial_arts` (signature — unarmed die + DEX finesse, GM-run) + `ki` (a per-rest resource pool that scales with level), L1 `unarmored_defense` (WIS-based AC, GM-adjudicated), L3 `flurry_of_blows`/`deflect_missiles` (identity), **L5 `extra_attack` + `stunning_strike` (spike)**, L7 `evasion`, L9 `wholeness_of_body` (bump), **L11 `improved_flurry` (spike)**, L13 `tongue_of_sun_and_moon`, L15 `timeless_body`, **L17 `quivering_palm` (spike)**, L20 capstone `perfect_self`. Ki count = level; martial-arts die grows at spikes. Append all ranger+monk feature ids to `features.yaml`.
+- [ ] **Step 2: Validate — expect PASS.** `engine game validate games/familyrpg` → exit 0.
 
-- [ ] **Step 3: Validate — expect PASS.** `engine game validate games/familyrpg` → exit 0.
-
-- [ ] **Step 4: Commit.** `git add games/familyrpg/ruleset/classes/ranger.yaml games/familyrpg/ruleset/classes/monk.yaml games/familyrpg/ruleset/features.yaml && git commit -m "feat(familyrpg): ranger & monk classes (1-20)"`
+- [ ] **Step 3: Commit.** `git add games/familyrpg/ruleset/classes/monk.yaml games/familyrpg/ruleset/features.yaml && git commit -m "feat(familyrpg): monk class (1-20)"`
 
 ---
 
@@ -450,7 +446,7 @@ Content, not ruleset — but it's needed for the final integration smoke and for
 
 ---
 
-### Task 12: Final integration smoke — one PC of every class, spells, a boss fight
+### Task 12: Final integration smoke — one PC of every class (7), spells, a boss fight
 
 **Files:** none created; drives a throwaway world.
 
@@ -462,13 +458,12 @@ rm -rf /tmp/fam-final && engine world init /tmp/fam-final --game games/familyrpg
 engine char create --name Borin --class fighter   --race dwarf     --assign "STR=15,CON=14,DEX=13,WIS=12,INT=10,CHA=8" --skills "athletics,perception"
 engine char create --name Gruul --class barbarian  --race half_orc  --assign "STR=15,CON=14,DEX=13,WIS=12,INT=8,CHA=10" --skills "athletics,survival"
 engine char create --name Pip   --class rogue       --race halfling  --assign "DEX=15,INT=14,WIS=13,CON=12,CHA=10,STR=8" --skills "stealth,acrobatics,perception,investigation"
-engine char create --name Sylla --class ranger      --race elf       --assign "DEX=15,WIS=14,CON=13,STR=12,INT=10,CHA=8" --skills "survival,nature,stealth"
 engine char create --name Kai   --class monk        --race tabaxi    --assign "DEX=15,WIS=14,CON=13,STR=12,INT=10,CHA=8" --skills "acrobatics,stealth"
 engine char create --name Vek   --class wizard      --race gnome     --assign "INT=15,DEX=14,CON=13,WIS=12,CHA=10,STR=8" --skills "arcana,investigation"
 engine char create --name Mira  --class cleric      --race human     --assign "WIS=15,CON=14,STR=13,CHA=12,DEX=10,INT=8" --skills "medicine,persuasion"
 engine char create --name Thorn --class druid       --race firbolg   --assign "WIS=15,CON=14,DEX=13,STR=12,INT=10,CHA=8" --skills "nature,survival"
 ```
-Expected: 8 sheets created, no traceback. Casters (Vek/Mira/Thorn) show `spells_known` and `spell_slots: {1: {max: 2, current: 2}}`.
+Expected: 7 sheets created, no traceback. Casters (Vek/Mira/Thorn) show `spells_known` and `spell_slots: {1: {max: 2, current: 2}}`.
 
 - [ ] **Step 2: Cast a representative single-target and an AOE spell in an encounter.** Start the skirmish map, then have the wizard cast one attack/save spell at a goblin (`engine cast --caster pc-vek --spell <arc_id> --target goblin-1`) and one `area:` spell (`engine cast --caster pc-vek --spell <arc_area_id> --at X,Y`). Expected: single-target resolves hit/save; area hits all living in radius. No traceback.
 
@@ -489,7 +484,7 @@ If Steps 1–3 surfaced fixes, commit them: `git add games/familyrpg && git comm
 **Spec coverage** (each spec section → task):
 - Design principles / engine spine → Global Constraints + Task 1 foundations. ✓
 - Balance framework (attributes fixed, progression 1–20, proficiency bands, power cadence, caster/martial parity, combat math) → Global Constraints (numbers locked) + Task 9 (enforcement). ✓
-- 8 classes flattened → Tasks 1 (fighter), 2 (barbarian), 3 (rogue), 4 (ranger, monk), 8 (wizard, cleric, druid). ✓
+- 7 classes flattened → Tasks 1 (fighter), 2 (barbarian), 3 (rogue), 4 (monk), 8 (wizard, cleric, druid). No ranger (dropped — no pet mechanic). ✓
 - ~15 races → Task 1 Step 2 (full roster incl. tortle/tabaxi/aarakocra/goliath/lizardfolk/firbolg/kenku). ✓
 - Lean ~10 skills → Global Constraints (fixed 10-skill vocab, engine-load-bearing four called out). ✓
 - Curated spells 0–9, three lists → Tasks 5 (arcane), 6 (divine), 7 (primal). ✓
