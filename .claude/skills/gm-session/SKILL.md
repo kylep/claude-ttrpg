@@ -43,7 +43,8 @@ description: Use when starting or resuming a claude-ttrpg play session in a worl
    story log before you say it (see gm.md, "The table record"):
    `engine story scene --title <location> --subtitle "<in-world date>"`,
    then the opening prose via `engine story narrate --text -` (heredoc),
-   and `engine story reveal --npc <id>` for anyone on stage.
+   `engine story reveal --location <node-id>` for the place itself, and
+   `engine story reveal --npc <id>` for anyone on stage.
 10. After opening, give the operator a short **"what you can do right
     now"** list grounded in the current state — the NPCs and hooks
     present in this scene, quests on the board (`engine quest list`), the

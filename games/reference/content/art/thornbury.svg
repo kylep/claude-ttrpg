@@ -1,0 +1,189 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 280">
+  <!-- Thornbury: palisaded farming village. House style: parchment ground, flat fills, ink outlines. -->
+
+  <!-- ground / parchment -->
+  <rect x="0" y="0" width="420" height="280" fill="#e8dcc0"/>
+
+  <!-- aged blotches -->
+  <ellipse cx="52" cy="34" rx="36" ry="16" fill="#d8c9a6" opacity="0.5"/>
+  <ellipse cx="382" cy="252" rx="40" ry="18" fill="#d8c9a6" opacity="0.5"/>
+  <ellipse cx="330" cy="42" rx="28" ry="12" fill="#d8c9a6" opacity="0.4"/>
+  <ellipse cx="60" cy="256" rx="34" ry="14" fill="#d8c9a6" opacity="0.4"/>
+
+  <!-- big sky: clouds -->
+  <g stroke="#8a7a5f" stroke-width="1" fill="#efe6d2">
+    <path d="M64 52 q6 -12 20 -10 q6 -10 20 -7 q14 -3 18 8 q12 0 10 9 q-2 7 -14 7 l-44 0 q-12 0 -10 -7 z"/>
+    <path d="M282 66 q5 -10 17 -9 q5 -8 17 -6 q12 -2 15 7 q10 0 8 8 q-1 6 -12 6 l-36 0 q-10 0 -9 -6 z"/>
+    <path d="M190 32 q4 -8 13 -7 q4 -6 13 -4 q9 -2 11 5 q8 0 6 6 q-1 5 -9 5 l-27 0 q-8 0 -7 -5 z"/>
+  </g>
+
+  <!-- birds -->
+  <g stroke="#8a7a5f" stroke-width="1.1" fill="none" stroke-linecap="round">
+    <path d="M142 50 q4 -4 7 0 q3 -4 7 0"/>
+    <path d="M162 42 q3 -3 5.5 0 q2.5 -3 5.5 0"/>
+  </g>
+
+  <!-- rolling farmland: far hills -->
+  <path d="M0 116 C 48 98 104 94 162 108 C 214 120 262 96 312 100 C 356 104 392 96 420 104 L420 140 L0 140 Z"
+        fill="#8f9a72" stroke="#8a7a5f" stroke-width="1"/>
+  <!-- field strips on the far hill -->
+  <path d="M28 112 L74 104 L96 122 L44 128 Z" fill="#b3ad85" stroke="#8a7a5f" stroke-width="0.8"/>
+  <path d="M236 106 L292 100 L306 116 L252 122 Z" fill="#b3ad85" stroke="#8a7a5f" stroke-width="0.8"/>
+  <g stroke="#8a7a5f" stroke-width="0.8" fill="none" opacity="0.8">
+    <path d="M36 116 L82 109"/>
+    <path d="M42 121 L90 114"/>
+    <path d="M244 111 L298 105"/>
+    <path d="M250 117 L302 111"/>
+  </g>
+  <!-- nearer farmland band -->
+  <path d="M0 132 C 70 120 150 130 224 122 C 290 116 352 126 420 118 L420 152 L0 152 Z"
+        fill="#7d8a63" stroke="#8a7a5f" stroke-width="1"/>
+  <g stroke="#6f7f52" stroke-width="0.9" fill="none" opacity="0.9">
+    <path d="M96 134 Q 150 128 208 130"/>
+    <path d="M108 141 Q 160 136 214 137"/>
+    <path d="M282 128 Q 330 124 376 127"/>
+  </g>
+
+  <!-- village ground -->
+  <path d="M0 146 C 80 138 180 146 260 140 C 330 136 380 142 420 138 L420 280 L0 280 Z" fill="#e0d4b2"/>
+
+  <!-- tree at the left fringe -->
+  <g>
+    <path d="M40 176 L40 156" stroke="#4a3527" stroke-width="2.2" fill="none"/>
+    <path d="M40 160 q-16 2 -18 -10 q-8 -4 -2 -12 q-2 -10 10 -10 q4 -8 14 -4 q12 -2 12 8 q10 4 4 14 q2 12 -12 12 q-4 3 -8 2 z"
+          fill="#6f7f52" stroke="#4a3527" stroke-width="1.6"/>
+  </g>
+
+  <!-- cottage C (far right, small) -->
+  <g>
+    <rect x="354" y="180" width="38" height="23" fill="#efe6d2" stroke="#4a3527" stroke-width="1.6"/>
+    <path d="M348 182 L373 160 L398 182 Z" fill="#c0b48c" stroke="#4a3527" stroke-width="1.6"/>
+    <path d="M354 178 Q 373 167 392 178" stroke="#4a3527" stroke-width="0.8" fill="none"/>
+    <rect x="368" y="188" width="9" height="15" fill="#4a3527"/>
+    <rect x="382" y="188" width="6" height="6" fill="none" stroke="#4a3527" stroke-width="0.9"/>
+  </g>
+
+  <!-- cottage B (right of hall) -->
+  <g>
+    <rect x="288" y="172" width="46" height="31" fill="#efe6d2" stroke="#4a3527" stroke-width="1.8"/>
+    <path d="M281 175 L311 149 L341 175 Z" fill="#c0b48c" stroke="#4a3527" stroke-width="1.8"/>
+    <path d="M288 171 Q 311 158 334 171" stroke="#4a3527" stroke-width="0.9" fill="none"/>
+    <path d="M292 174 L300 167 M326 167 L332 173" stroke="#4a3527" stroke-width="0.8"/>
+    <rect x="304" y="184" width="10" height="19" fill="#4a3527"/>
+    <rect x="320" y="181" width="7" height="7" fill="none" stroke="#4a3527" stroke-width="1"/>
+    <rect x="293" y="181" width="7" height="7" fill="none" stroke="#4a3527" stroke-width="1"/>
+    <!-- chimney + smoke -->
+    <rect x="322" y="153" width="6" height="12" fill="#b3a68a" stroke="#4a3527" stroke-width="1"/>
+    <path d="M325 150 q-4 -6 1 -11 q4 -5 0 -10" stroke="#8a7a5f" stroke-width="1" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- moot-hall (focal) -->
+  <g>
+    <rect x="145" y="164" width="86" height="39" fill="#efe6d2" stroke="#4a3527" stroke-width="2.2"/>
+    <!-- timber frame -->
+    <g stroke="#4a3527" stroke-width="1" fill="none">
+      <path d="M162 164 L162 203 M214 164 L214 203"/>
+      <path d="M145 181 L231 181"/>
+      <path d="M148 168 L159 178 M217 178 L228 168"/>
+    </g>
+    <!-- big thatch roof -->
+    <path d="M135 167 L188 122 L241 167 Z" fill="#c0b48c" stroke="#4a3527" stroke-width="2.2"/>
+    <path d="M144 162 Q 188 136 232 162" stroke="#4a3527" stroke-width="0.9" fill="none"/>
+    <path d="M152 155 Q 188 133 224 155" stroke="#4a3527" stroke-width="0.9" fill="none"/>
+    <path d="M140 164 L146 158 M236 164 L230 158 M183 127 L188 122 L193 127" stroke="#4a3527" stroke-width="0.9" fill="none"/>
+    <!-- gable vent -->
+    <circle cx="188" cy="150" r="4" fill="none" stroke="#4a3527" stroke-width="1"/>
+    <!-- door with hearth-glow (the one ember accent) -->
+    <path d="M179 203 L179 182 Q 188 174 197 182 L197 203 Z" fill="#4a3527"/>
+    <path d="M183 203 L183 185 Q 188 180 193 185 L193 203 Z" fill="#a33d2f"/>
+    <!-- windows -->
+    <rect x="151" y="185" width="8" height="8" fill="none" stroke="#4a3527" stroke-width="1"/>
+    <rect x="218" y="185" width="8" height="8" fill="none" stroke="#4a3527" stroke-width="1"/>
+    <!-- ridge smoke -->
+    <path d="M196 120 q-4 -7 2 -12 q5 -5 1 -11" stroke="#8a7a5f" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- cottage A (left) -->
+  <g>
+    <rect x="60" y="175" width="48" height="28" fill="#efe6d2" stroke="#4a3527" stroke-width="1.8"/>
+    <path d="M53 178 L84 151 L115 178 Z" fill="#c0b48c" stroke="#4a3527" stroke-width="1.8"/>
+    <path d="M61 174 Q 84 160 107 174" stroke="#4a3527" stroke-width="0.9" fill="none"/>
+    <path d="M66 176 L73 170 M96 169 L103 175" stroke="#4a3527" stroke-width="0.8"/>
+    <rect x="66" y="186" width="10" height="17" fill="#4a3527"/>
+    <rect x="86" y="184" width="8" height="8" fill="none" stroke="#4a3527" stroke-width="1"/>
+  </g>
+
+  <!-- the village well, in the yard right of the hall, peeking over the palisade -->
+  <g>
+    <!-- round stone curb, cresting the palisade so the well reads plainly -->
+    <path d="M244 185 q14 -6 28 0 l0 15 q-14 6 -28 0 z" fill="#b3a68a" stroke="#4a3527" stroke-width="1.6"/>
+    <ellipse cx="258" cy="185" rx="14" ry="4.6" fill="#9c907a" stroke="#4a3527" stroke-width="1.2"/>
+    <path d="M250 188 L250 198 M258 189 L258 199 M266 188 L266 198" stroke="#4a3527" stroke-width="0.7" fill="none" opacity="0.7"/>
+    <!-- posts + cross-beam -->
+    <path d="M249 185 L249 162 M267 185 L267 162 M246 163 L270 163" stroke="#4a3527" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <!-- rope + hanging bucket -->
+    <path d="M258 163 L258 173" stroke="#4a3527" stroke-width="0.8" fill="none"/>
+    <path d="M254 173 q4 -2 8 0 l-1 7 q-3 2 -6 0 z" fill="#8c7f63" stroke="#4a3527" stroke-width="1"/>
+  </g>
+
+  <!-- cart-ruts inside the gate, up to the hall door -->
+  <g stroke="#8a7a5f" stroke-width="1" fill="none" opacity="0.9">
+    <path d="M181 231 Q 180 218 182 206"/>
+    <path d="M196 231 Q 197 218 196 206"/>
+  </g>
+
+  <!-- palisade: left run -->
+  <path d="M16 233 L16 214 L20 206 L24 214 L24 213 L28 205 L32 213 L33 214 L37 206 L41 214 L41 212 L45 204 L49 212 L50 214 L54 206 L58 214 L58 213 L62 205 L66 213 L67 214 L71 206 L75 214 L75 212 L79 204 L83 212 L84 214 L88 206 L92 214 L92 213 L96 205 L100 213 L101 214 L105 206 L109 214 L109 212 L113 204 L117 212 L118 214 L122 206 L126 214 L126 213 L130 205 L134 213 L135 214 L139 206 L143 214 L143 212 L147 204 L151 212 L152 214 L156 206 L160 214 L160 213 L164 205 L168 213 L168 233 Z"
+        fill="#b3a68a" stroke="#4a3527" stroke-width="1.4"/>
+  <!-- palisade: right run -->
+  <path d="M208 233 L208 213 L212 205 L216 213 L217 214 L221 206 L225 214 L225 213 L229 205 L233 213 L234 214 L238 206 L242 214 L242 212 L246 204 L250 212 L251 214 L255 206 L259 214 L259 213 L263 205 L267 213 L268 214 L272 206 L276 214 L276 212 L280 204 L284 212 L285 214 L289 206 L293 214 L293 213 L297 205 L301 213 L302 214 L306 206 L310 214 L310 212 L314 204 L318 212 L319 214 L323 206 L327 214 L327 213 L331 205 L335 213 L336 214 L340 206 L344 214 L344 212 L348 204 L352 212 L353 214 L357 206 L361 214 L361 213 L365 205 L369 213 L370 214 L374 206 L378 214 L378 212 L382 204 L386 212 L387 214 L391 206 L395 214 L395 213 L399 205 L403 213 L404 233 Z"
+        fill="#b3a68a" stroke="#4a3527" stroke-width="1.4"/>
+  <!-- log seams -->
+  <g stroke="#4a3527" stroke-width="0.7" opacity="0.7">
+    <path d="M28 212 L28 232 M45 211 L45 232 M62 212 L62 232 M79 211 L79 232 M96 212 L96 232 M113 211 L113 232 M130 212 L130 232 M147 211 L147 232 M164 212 L164 232"/>
+    <path d="M212 213 L212 232 M229 212 L229 232 M246 211 L246 232 M263 212 L263 232 M280 211 L280 232 M297 212 L297 232 M314 211 L314 232 M331 212 L331 232 M348 211 L348 232 M365 212 L365 232 M382 211 L382 232 M399 212 L399 232"/>
+  </g>
+  <!-- gate posts, taller than the fence, no lintel -->
+  <g fill="#b3a68a" stroke="#4a3527" stroke-width="1.4">
+    <path d="M168 233 L168 202 L172 195 L176 202 L176 233 Z"/>
+    <path d="M200 233 L200 202 L204 195 L208 202 L208 233 Z"/>
+  </g>
+
+  <!-- cart road through the gate -->
+  <path d="M158 274 L218 274 L204 233 L172 233 Z" fill="#e4d9b8" stroke="#8a7a5f" stroke-width="0.9"/>
+  <g stroke="#8a7a5f" stroke-width="1.2" fill="none" stroke-linecap="round">
+    <path d="M171 272 C 173 258 176 244 179 234"/>
+    <path d="M205 272 C 202 258 199 244 197 234"/>
+  </g>
+
+  <!-- hedgerow, lower left -->
+  <g fill="#6f7f52" stroke="#4a3527" stroke-width="1.4">
+    <path d="M20 268 q-4 -12 8 -14 q2 -10 14 -8 q6 -8 15 -3 q10 -4 13 6 q10 2 6 12 q3 8 -8 9 l-40 0 q-8 0 -8 -2 z"/>
+    <path d="M78 268 q-3 -10 7 -12 q3 -8 13 -5 q9 -3 11 6 q8 2 5 9 q1 3 -6 3 l-25 0 q-5 0 -5 -1 z"/>
+  </g>
+
+  <!-- pig-pen at the right fringe -->
+  <g>
+    <ellipse cx="330" cy="258" rx="34" ry="8" fill="#d8c9a6"/>
+    <!-- pigs -->
+    <g fill="#c99a80" stroke="#4a3527" stroke-width="1.2">
+      <path d="M312 262 L312 256 M324 262 L324 256" stroke-linecap="round"/>
+      <ellipse cx="318" cy="252" rx="11" ry="7"/>
+      <path d="M326 247 l3.5 -5 l2.5 4 z"/>
+      <circle cx="330" cy="250" r="5"/>
+      <path d="M346 258 L346 253 M356 258 L356 253" stroke-linecap="round"/>
+      <ellipse cx="351" cy="250" rx="9" ry="6"/>
+      <path d="M357.5 246 l3 -4.5 l2.5 3.5 z"/>
+      <circle cx="361" cy="248" r="4"/>
+    </g>
+    <path d="M306 249 q-4 -1 -3 3 M341 248 q-4 -1 -3 3" stroke="#4a3527" stroke-width="0.9" fill="none"/>
+    <!-- rails -->
+    <g stroke="#4a3527" stroke-width="1.6" fill="none">
+      <path d="M292 268 L292 244 M316 267 L316 243 M340 267 L340 243 M364 268 L364 244"/>
+      <path d="M290 249 L366 248 M290 259 L366 258"/>
+    </g>
+  </g>
+
+  <!-- frame -->
+  <rect x="6" y="6" width="408" height="268" rx="8" fill="none" stroke="#4a3527" stroke-width="2.4"/>
+</svg>

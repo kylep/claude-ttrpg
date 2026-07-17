@@ -59,7 +59,8 @@ def go(root: Path, dest: str, pcs: list[str] | None = None) -> dict:
         summary = (f"{', '.join(movers)} travel {here} -> {dest} ({edge['hours']}h); "
                    "rest of the party stays behind")
 
-    timeline.append_event(root, type_="travel", actors=movers, summary=summary)
+    timeline.append_event(root, type_="travel", actors=movers, summary=summary,
+                          delta={"from": here, "to": dest})
     dest_name = region["nodes"][dest].get("name", dest)
     if pcs is None:
         who = "The party"

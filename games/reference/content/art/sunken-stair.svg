@@ -1,0 +1,216 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 280">
+  <!-- The Sunken Stair — inside the breached barrow -->
+  <rect x="0" y="0" width="420" height="280" fill="#e8dcc0"/>
+  <rect x="6" y="6" width="408" height="268" fill="#d8c9a6"/>
+  <clipPath id="scene">
+    <rect x="12" y="12" width="396" height="256"/>
+  </clipPath>
+  <g clip-path="url(#scene)">
+    <!-- base: deep shadow -->
+    <rect x="8" y="8" width="404" height="264" fill="#241c14"/>
+
+    <!-- ceiling: barrow capstones -->
+    <polygon points="8,8 412,8 412,58 320,74 232,92 188,92 100,74 8,58" fill="#3f3729"/>
+    <path d="M52,8 Q66,40 92,70" stroke="#2b2118" stroke-width="1" fill="none" opacity="0.8"/>
+    <path d="M298,10 Q288,48 272,84" stroke="#2b2118" stroke-width="1" fill="none" opacity="0.8"/>
+    <path d="M358,8 Q340,40 328,70" stroke="#2b2118" stroke-width="0.9" fill="none" opacity="0.7"/>
+    <path d="M232,20 q14,3 24,10" stroke="#2b2118" stroke-width="0.8" fill="none" opacity="0.6"/>
+
+    <!-- breach: torn hole to pale daylight -->
+    <polygon points="108,8 214,8 222,24 210,40 188,54 158,58 134,52 116,40 104,22" fill="#2b2118"/>
+    <polygon points="122,8 202,8 209,23 197,36 180,47 157,50 139,45 125,33 117,20" fill="#efe6d2"/>
+    <!-- grass blades and moss fringe at the rim, seen from below -->
+    <path d="M127,31 q-6,-4 -8,-11" stroke="#5c6a44" stroke-width="1.2" fill="none"/>
+    <path d="M133,39 q-8,-2 -12,-8" stroke="#6f7f52" stroke-width="1.1" fill="none"/>
+    <path d="M197,33 q7,-3 9,-10" stroke="#5c6a44" stroke-width="1.2" fill="none"/>
+    <path d="M186,44 q8,0 12,-6" stroke="#6f7f52" stroke-width="1" fill="none"/>
+    <path d="M158,51 q1,4 3,5 q2,-2 2,-5 Z" fill="#5c6a44"/>
+
+    <!-- light shaft from the breach onto the landing -->
+    <polygon points="132,48 196,46 254,238 92,242" fill="#efe6d2" opacity="0.10"/>
+    <circle cx="168" cy="96" r="1.1" fill="#efe6d2" opacity="0.55"/>
+    <circle cx="150" cy="132" r="0.9" fill="#efe6d2" opacity="0.45"/>
+    <circle cx="188" cy="158" r="1" fill="#efe6d2" opacity="0.5"/>
+    <circle cx="136" cy="186" r="0.9" fill="#efe6d2" opacity="0.4"/>
+    <circle cx="206" cy="207" r="1.1" fill="#efe6d2" opacity="0.45"/>
+
+    <!-- left wall, stepped values receding -->
+    <polygon points="8,270 55,270 102,220 75,69 8,58" fill="#8f8268"/>
+    <polygon points="102,220 145,173 140,84 75,69" fill="#6f6450"/>
+    <polygon points="145,173 188,128 188,92 140,84" fill="#3a3226"/>
+    <path d="M8,128 Q60,136 96,130 L134,120" stroke="#3a2c20" stroke-width="1" fill="none" opacity="0.6"/>
+    <path d="M8,196 Q52,202 84,196 L128,182" stroke="#3a2c20" stroke-width="1" fill="none" opacity="0.55"/>
+    <path d="M44,62 L52,130" stroke="#3a2c20" stroke-width="0.9" fill="none" opacity="0.5"/>
+    <path d="M30,132 L36,198" stroke="#3a2c20" stroke-width="0.9" fill="none" opacity="0.5"/>
+    <path d="M66,130 L72,196" stroke="#3a2c20" stroke-width="0.9" fill="none" opacity="0.5"/>
+    <path d="M52,200 L58,258" stroke="#3a2c20" stroke-width="0.9" fill="none" opacity="0.45"/>
+    <path d="M112,96 L118,158" stroke="#241c14" stroke-width="0.8" fill="none" opacity="0.5"/>
+    <path d="M120,168 L124,204" stroke="#241c14" stroke-width="0.7" fill="none" opacity="0.45"/>
+
+    <!-- right wall, stepped values receding -->
+    <polygon points="412,270 365,270 318,220 345,69 412,58" fill="#877a60"/>
+    <polygon points="318,220 275,173 280,84 345,69" fill="#695e4a"/>
+    <polygon points="275,173 232,128 232,92 280,84" fill="#352d21"/>
+    <path d="M412,126 Q362,134 326,128 L288,118" stroke="#3a2c20" stroke-width="1" fill="none" opacity="0.6"/>
+    <path d="M412,194 Q370,200 338,194 L294,180" stroke="#3a2c20" stroke-width="1" fill="none" opacity="0.55"/>
+    <path d="M378,62 L372,128" stroke="#3a2c20" stroke-width="0.9" fill="none" opacity="0.5"/>
+    <path d="M392,130 L388,196" stroke="#3a2c20" stroke-width="0.9" fill="none" opacity="0.5"/>
+    <path d="M352,130 L348,194" stroke="#3a2c20" stroke-width="0.9" fill="none" opacity="0.5"/>
+    <path d="M368,198 L364,256" stroke="#3a2c20" stroke-width="0.9" fill="none" opacity="0.45"/>
+    <path d="M340,98 l-7,20 l5,16" stroke="#241c14" stroke-width="0.8" fill="none" opacity="0.55"/>
+    <path d="M300,166 L297,196" stroke="#241c14" stroke-width="0.7" fill="none" opacity="0.45"/>
+
+    <!-- landing: where the party stands, brightest stone -->
+    <polygon points="55,270 365,270 348,252 72,252" fill="#ece1c6"/>
+    <path d="M86.6,270 L100,252" stroke="#4a3527" stroke-width="0.9" fill="none" opacity="0.45"/>
+    <path d="M153.9,270 L160,252" stroke="#4a3527" stroke-width="0.9" fill="none" opacity="0.45"/>
+    <path d="M268.3,270 L262,252" stroke="#4a3527" stroke-width="0.9" fill="none" opacity="0.45"/>
+    <path d="M333.4,270 L320,252" stroke="#4a3527" stroke-width="0.9" fill="none" opacity="0.45"/>
+
+    <!-- the stair: tread + shadowed riser strip per step, light dying fast -->
+    <!-- step 1 -->
+    <polygon points="77.5,246 342.5,246 348,252 72,252" fill="#b6a98c"/>
+    <polygon points="91,232 329,232 342.5,246 77.5,246" fill="#e7dcbe"/>
+    <!-- step 2 -->
+    <polygon points="95,227 325,227 329,232 91,232" fill="#a5977a"/>
+    <polygon points="106.5,215 313.5,215 325,227 95,227" fill="#d6c9a8"/>
+    <!-- step 3 -->
+    <polygon points="110,211 310,211 313.5,215 106.5,215" fill="#93856a"/>
+    <polygon points="120,200.5 300,200.5 310,211 110,211" fill="#c4b799"/>
+    <!-- step 4 -->
+    <polygon points="123,197 297,197 300,200.5 120,200.5" fill="#7d705a"/>
+    <polygon points="132,188 288,188 297,197 123,197" fill="#af9f83"/>
+    <!-- step 5 -->
+    <polygon points="135,185 285,185 288,188 132,188" fill="#685d4a"/>
+    <polygon points="142,177.5 278,177.5 285,185 135,185" fill="#94866b"/>
+    <!-- step 6 -->
+    <polygon points="144,175 276,175 278,177.5 142,177.5" fill="#564c3c"/>
+    <polygon points="150,168.5 270,168.5 276,175 144,175" fill="#7b6e58"/>
+    <!-- step 7 -->
+    <polygon points="152,166.5 268,166.5 270,168.5 150,168.5" fill="#3e372a"/>
+    <polygon points="157,161 263,161 268,166.5 152,166.5" fill="#584e3e"/>
+    <!-- step 8 -->
+    <polygon points="159,159.5 261,159.5 263,161 157,161" fill="#322c20"/>
+    <polygon points="163,154.5 257,154.5 261,159.5 159,159.5" fill="#453d2f"/>
+    <!-- step 9 -->
+    <polygon points="164,153.5 256,153.5 257,154.5 163,154.5" fill="#2a241a"/>
+    <polygon points="168,149 252,149 256,153.5 164,153.5" fill="#362f23"/>
+    <!-- deep steps dissolving into dark -->
+    <polygon points="168,149 252,149 248,144.5 172,144.5" fill="#2b251b"/>
+    <polygon points="172,144.5 248,144.5 244,141 176,141" fill="#242017"/>
+    <polygon points="176,141 244,141 241,138 179,138" fill="#1f1a12"/>
+    <polygon points="179,138 241,138 232,128 188,128" fill="#18130d"/>
+
+    <!-- step edge lines (wobbled ink, fading with depth) -->
+    <path d="M72,252 Q210,254 348,252" stroke="#4a3527" stroke-width="2.2" fill="none"/>
+    <path d="M77.5,246 Q210,247.4 342.5,246" stroke="#4a3527" stroke-width="0.8" fill="none" opacity="0.5"/>
+    <path d="M91,232 Q210,233.6 329,232" stroke="#4a3527" stroke-width="1.8" fill="none"/>
+    <path d="M95,227 L325,227" stroke="#4a3527" stroke-width="0.7" fill="none" opacity="0.5"/>
+    <path d="M106.5,215 Q210,216.3 313.5,215" stroke="#4a3527" stroke-width="1.6" fill="none"/>
+    <path d="M110,211 L310,211" stroke="#4a3527" stroke-width="0.7" fill="none" opacity="0.45"/>
+    <path d="M120,200.5 Q210,201.6 300,200.5" stroke="#4a3527" stroke-width="1.4" fill="none"/>
+    <path d="M132,188 Q210,189 288,188" stroke="#4a3527" stroke-width="1.2" fill="none"/>
+    <path d="M142,177.5 Q210,178.3 278,177.5" stroke="#3a2c20" stroke-width="1.1" fill="none"/>
+    <path d="M150,168.5 Q210,169.2 270,168.5" stroke="#3a2c20" stroke-width="1" fill="none"/>
+    <path d="M157,161 L263,161" stroke="#2b2118" stroke-width="0.9" fill="none"/>
+    <path d="M163,154.5 L257,154.5" stroke="#241c14" stroke-width="0.8" fill="none"/>
+    <path d="M168,149 L252,149" stroke="#1c1610" stroke-width="0.8" fill="none"/>
+    <path d="M172,144.5 L248,144.5" stroke="#1c1610" stroke-width="0.7" fill="none" opacity="0.8"/>
+    <path d="M176,141 L244,141" stroke="#17110c" stroke-width="0.7" fill="none" opacity="0.7"/>
+
+    <!-- tread joints, fitted stone -->
+    <path d="M120,232 L110,246" stroke="#4a3527" stroke-width="0.9" fill="none" opacity="0.5"/>
+    <path d="M175,232 L171,246" stroke="#4a3527" stroke-width="0.9" fill="none" opacity="0.5"/>
+    <path d="M250,232 L254.5,246" stroke="#4a3527" stroke-width="0.9" fill="none" opacity="0.5"/>
+    <path d="M305,232 L315.5,246" stroke="#4a3527" stroke-width="0.9" fill="none" opacity="0.5"/>
+    <path d="M145,215 L138,227" stroke="#4a3527" stroke-width="0.8" fill="none" opacity="0.5"/>
+    <path d="M230,215 L232,227" stroke="#4a3527" stroke-width="0.8" fill="none" opacity="0.5"/>
+    <path d="M290,215 L298.5,227" stroke="#4a3527" stroke-width="0.8" fill="none" opacity="0.5"/>
+    <path d="M165,200.5 L160,211" stroke="#4a3527" stroke-width="0.8" fill="none" opacity="0.45"/>
+    <path d="M245,200.5 L249,211" stroke="#4a3527" stroke-width="0.8" fill="none" opacity="0.45"/>
+    <path d="M150,188 L143.5,197" stroke="#3a2c20" stroke-width="0.7" fill="none" opacity="0.45"/>
+    <path d="M240,188 L243,197" stroke="#3a2c20" stroke-width="0.7" fill="none" opacity="0.45"/>
+    <path d="M190,177.5 L188,185" stroke="#3a2c20" stroke-width="0.7" fill="none" opacity="0.4"/>
+    <path d="M255,177.5 L259.5,185" stroke="#3a2c20" stroke-width="0.7" fill="none" opacity="0.4"/>
+
+    <!-- stair side edges -->
+    <path d="M55,270 Q118,204 145,173" stroke="#4a3527" stroke-width="2.2" fill="none"/>
+    <path d="M145,173 L188,128" stroke="#4a3527" stroke-width="1.2" fill="none"/>
+    <path d="M365,270 Q302,204 275,173" stroke="#4a3527" stroke-width="2.2" fill="none"/>
+    <path d="M275,173 L232,128" stroke="#4a3527" stroke-width="1.2" fill="none"/>
+
+    <!-- the mouth of the deep: barely-seen lintel and jambs, then nothing -->
+    <polygon points="179,83 241,83 238,93 182,93" fill="#2b2519"/>
+    <polygon points="184,93 190,93 190,130 184,132" fill="#231d13"/>
+    <polygon points="230,93 236,93 236,132 230,130" fill="#211b11"/>
+    <rect x="190" y="93" width="40" height="38" fill="#120d08"/>
+    <path d="M182,93 L238,93" stroke="#17110c" stroke-width="1" fill="none"/>
+
+    <!-- roots dangling through the breach -->
+    <path d="M150,50 C146,62 155,70 150,82 C147,90 153,96 150,104 L152,112" stroke="#4a3527" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+    <path d="M152,112 C150,120 154,126 151,134 l1,6" stroke="#4a3527" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+    <path d="M151,80 q-8,6 -10,15" stroke="#4a3527" stroke-width="1" fill="none"/>
+    <path d="M150,96 q7,5 8,13" stroke="#4a3527" stroke-width="0.9" fill="none"/>
+    <path d="M141,89 l-3,6" stroke="#4a3527" stroke-width="0.7" fill="none"/>
+    <path d="M180,48 C183,58 176,66 180,78 l-2,8" stroke="#4a3527" stroke-width="1.7" fill="none" stroke-linecap="round"/>
+    <path d="M178,86 q-4,8 -2,16" stroke="#4a3527" stroke-width="0.8" fill="none"/>
+    <path d="M180,76 q5,4 5,10" stroke="#4a3527" stroke-width="0.7" fill="none"/>
+
+    <!-- the great root working down the left wall, elbowing between joints -->
+    <path d="M8,110 C28,118 44,126 50,132 L54,150 C56,166 48,176 50,190 L44,214 C48,232 62,244 78,256" stroke="#4a3527" stroke-width="4.6" fill="none" stroke-linecap="round"/>
+    <path d="M8,110 C28,118 44,126 50,132 L54,150 C56,166 48,176 50,190 L44,214 C48,232 62,244 78,256" stroke="#8a7a5f" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+    <path d="M53,146 C66,152 76,164 76,180 l-2,14" stroke="#4a3527" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M74,194 q4,12 0,22" stroke="#4a3527" stroke-width="1" fill="none"/>
+    <path d="M44,214 C36,224 30,238 32,252" stroke="#4a3527" stroke-width="1.7" fill="none" stroke-linecap="round"/>
+    <path d="M78,256 q12,3 20,9" stroke="#4a3527" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    <path d="M30,116 q10,-3 16,2" stroke="#4a3527" stroke-width="1.1" fill="none"/>
+    <path d="M50,132 q10,-2 14,-8" stroke="#4a3527" stroke-width="1" fill="none"/>
+
+    <!-- moss where root and damp hold the stone: ragged clumps -->
+    <path d="M42,140 q4,-5 10,-4 q7,0 8,5 q4,-2 6,2 q1,5 -6,6 q-3,4 -9,2 q-8,0 -9,-11 Z" fill="#6f7f52"/>
+    <path d="M48,141 q5,-3 9,0 q3,3 -1,6 q-6,2 -8,-6 Z" fill="#7d8a63"/>
+    <path d="M40,208 q3,-6 10,-5 q6,1 6,7 q5,1 3,6 q-6,4 -12,0 q-7,-1 -7,-8 Z" fill="#6f7f52"/>
+    <path d="M66,246 q5,-5 11,-2 q5,3 1,8 q-3,3 -8,1 q-6,-2 -4,-7 Z" fill="#5c6a44"/>
+    <path d="M71,247 q4,-2 7,1 q1,3 -3,4 q-5,0 -4,-5 Z" fill="#7d8a63"/>
+    <circle cx="60" cy="136" r="1.4" fill="#6f7f52"/>
+    <circle cx="36" cy="204" r="1.2" fill="#6f7f52"/>
+    <circle cx="84" cy="256" r="1.3" fill="#5c6a44"/>
+    <circle cx="94" cy="249" r="1" fill="#6f7f52"/>
+
+    <!-- seep-water: damp stains at wall joints, a wet track running away down the steps -->
+    <polygon points="326,128 335,128 324,160 316,160" fill="#3a3226" opacity="0.35"/>
+    <path d="M331,131 C329,141 326,151 321,159" stroke="#4a6a7a" stroke-width="1.1" fill="none" stroke-linecap="round" opacity="0.7"/>
+    <polygon points="269,197 277,197 243.5,141 240,141" fill="#3a5563" opacity="0.4"/>
+    <path d="M264,188 q5,0.5 9,0" stroke="#818678" stroke-width="1" fill="none" opacity="0.8"/>
+    <path d="M258,177.5 q4,0.5 8,0" stroke="#818678" stroke-width="0.9" fill="none" opacity="0.75"/>
+    <path d="M253,168.5 q4,0.4 7,0" stroke="#818678" stroke-width="0.8" fill="none" opacity="0.7"/>
+    <path d="M249,161 q3,0.4 5,0" stroke="#818678" stroke-width="0.8" fill="none" opacity="0.6"/>
+    <path d="M246,154.5 q3,0.3 4,0" stroke="#818678" stroke-width="0.7" fill="none" opacity="0.5"/>
+    <!-- a second seep bleeding down the near wall to pool on the landing -->
+    <polygon points="378,198 388,198 368,254 358,254" fill="#3a3226" opacity="0.3"/>
+    <path d="M383,200 C380,218 374,238 364,254" stroke="#4a6a7a" stroke-width="1.2" fill="none" stroke-linecap="round" opacity="0.75"/>
+    <path d="M322,258 q14,-4 28,0 q7,2 5,5 q-4,4 -19,4 q-16,0 -18,-4 q-1,-3 4,-5 Z" fill="#cfc2a2"/>
+    <ellipse cx="337" cy="262.5" rx="14" ry="3.2" fill="#43555c" opacity="0.72"/>
+    <path d="M323,262.5 Q337,258.8 351,262.5" stroke="#3a5563" stroke-width="0.9" fill="none"/>
+    <path d="M329,262 q8,-1.4 15,0.4" stroke="#818678" stroke-width="0.8" fill="none" opacity="0.85"/>
+    <polygon points="102,140 110,140 114,166 106,166" fill="#3a3226" opacity="0.3"/>
+    <path d="M106,142 q2,12 6,22" stroke="#4a6a7a" stroke-width="0.9" fill="none" opacity="0.55"/>
+
+    <!-- fine rootlet probing the top step joint -->
+    <path d="M92,240 q8,6 10,14" stroke="#4a3527" stroke-width="1" fill="none"/>
+
+    <!-- fallen rubble from the breach, foreground -->
+    <polygon points="8,272 8,244 26,236 48,246 56,262 44,272" fill="#2e2519"/>
+    <path d="M26,236 L34,252 L56,262" stroke="#17110c" stroke-width="1" fill="none"/>
+    <polygon points="376,272 368,252 384,242 406,248 412,262 412,272" fill="#2e2519"/>
+    <path d="M384,242 L388,258 L376,272" stroke="#17110c" stroke-width="1" fill="none"/>
+    <polygon points="126,260 138,253 152,257 148,266 130,268" fill="#4c4334"/>
+    <path d="M138,253 L142,266" stroke="#241c14" stroke-width="0.8" fill="none"/>
+    <polygon points="180,254 190,250 198,254 194,260 182,260" fill="#5a4f3d"/>
+    <polygon points="160,264 168,261 173,264 170,268 161,268" fill="#3f3729"/>
+  </g>
+
+  <!-- frame -->
+  <rect x="12" y="12" width="396" height="256" fill="none" stroke="#4a3527" stroke-width="2.2"/>
+  <rect x="7.5" y="7.5" width="405" height="265" fill="none" stroke="#8a7a5f" stroke-width="1" opacity="0.8"/>
+</svg>

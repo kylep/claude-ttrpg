@@ -90,7 +90,9 @@ prose. Your chat with the operator never reaches the viewer.
   `engine story choices --item "..." --item "..."` (markdown; lead with an
   emoji where it helps).
 - When an NPC or monster steps on stage for the first time, drop its card:
-  `engine story reveal --npc <id>` / `--monster <type>`.
+  `engine story reveal --npc <id>` / `--monster <type>`. When the party
+  arrives somewhere, drop the place's card: `engine story reveal
+  --location <node-id>` (it carries the location's art and description).
 - A player's spoken in-character line worth keeping: `engine story action
   --pc <id> --text "..."`.
 - Never post bookkeeping, engine output, or anything about your workflow.

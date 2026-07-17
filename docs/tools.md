@@ -12,14 +12,18 @@ writes deliberately, never a transcript of the terminal. Structured beats
 land automatically (character cards when a PC is created, quest cards as
 the board changes, combat start/end, travel, level-ups, deaths) and the GM
 posts the narration, scene headers, and "what you can do" menus with
-`engine story ...`. Character, NPC, monster, and quest cards are clickable
-— in the feed, the party rail, the map legend, even names in the prose —
-and open a live sheet (HP, effects, gear, bio) with player/GM lens rules
-applied. Alongside the feed: a live battle map that moves when tokens
-move, party HP and effects, and the quest board. `/` is the player-safe
+`engine story ...`. Character, NPC, monster, quest, and location cards are
+clickable — in the feed, the party rail, the map legend, even names in the
+prose — and open a live sheet (HP, effects, gear, bio, or a place's art
+and ways out) with player/GM lens rules applied. Alongside the feed: a
+live battle map during encounters, and between them a hand-drawn **region
+map** rendered from `canon/maps/region.yaml` — the party's pennant moves
+with `engine travel`, and on the player lens fog of war lifts as places
+are visited (neighbours of anywhere you've been show as rumors). Visited
+nodes are clickable and open their location card. `/` is the player-safe
 lens: hidden monsters are actually hidden (tokens, legend, turn order,
-cards), monster health shows as words instead of numbers. `/gm` shows
-everything, plus the timeline and engine internals. The terminal stays the
+cards), monster health shows as words instead of numbers, unvisited lands
+stay dark. `/gm` shows everything, plus the timeline and engine internals. The terminal stays the
 only way to *act* — the browser is the good reading surface, for you or
 for whoever's following along.
 
@@ -35,6 +39,19 @@ repo-side with `--game games/reference` (no world needed); files land in
 `gws` is installed and authenticated, uploads them as Google Docs;
 otherwise it falls back gracefully and hands you the local HTML files —
 handy for a printout your kid can actually read.
+
+## Vector art (no image model needed)
+
+Location vignettes and map assets are hand-authored **SVG** in a shared
+house style — parchment, ink outlines, flat fills — written by Claude
+directly, no image-model spend. The `svg-art` skill runs an adversarial
+loop so no one has to squint at jank by hand: an `svg-artist` agent drafts,
+renders, and self-critiques; a fresh `svg-art-reviewer` agent hunts defects
+in the pixels; the artist fixes; capped rounds. Game-owned art lives in
+`games/<game>/content/art/<id>.svg` (copied into a world's `canon/art/` at
+init); a file named after a region node appears automatically on that
+node's location card in the live viewer. The reference game ships vignettes
+for all seven of its locations.
 
 ## Generating images
 

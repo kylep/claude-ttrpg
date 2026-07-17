@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 280">
+  <!-- parchment ground + aged blotches in the margins -->
+  <rect width="420" height="280" fill="#e8dcc0"/>
+  <path d="M28 6 Q62 2 92 7 Q60 10 28 6 Z" fill="#d8c9a6"/>
+  <path d="M318 273 Q352 269 388 274 Q350 278 318 273 Z" fill="#d8c9a6"/>
+  <path d="M6 190 Q3 220 7 246 Q10 218 6 190 Z" fill="#d8c9a6"/>
+
+  <clipPath id="fr"><rect x="14" y="12" width="392" height="256"/></clipPath>
+  <g clip-path="url(#fr)">
+
+    <!-- nearest wall and ceiling surfaces -->
+    <rect x="14" y="12" width="392" height="202" fill="#b3a68a"/>
+
+    <!-- overhead vault falling into shadow behind the viewer -->
+    <path d="M14 70 Q76 18 210 18 Q344 18 406 70 L406 12 L14 12 Z" fill="#2c2318"/>
+    <path d="M14 70 Q76 18 210 18 Q344 18 406 70" fill="none" stroke="#4a3527" stroke-width="2"/>
+
+    <!-- receding arched openings, each darker than the last -->
+    <path d="M108 214 L108 88 Q108 62 210 62 Q312 62 312 88 L312 214 Z" fill="#8a7a5f"/>
+    <path d="M144 214 L144 110 Q144 90 210 90 Q276 90 276 110 L276 214 Z" fill="#57503f"/>
+    <path d="M168 214 L168 124 Q168 108 210 108 Q252 108 252 124 L252 214 Z" fill="#3b3427"/>
+    <path d="M184 214 L184 136 Q184 124 210 124 Q236 124 236 136 L236 214 Z" fill="#241c14"/>
+
+    <!-- arch faces -->
+    <path d="M108 88 Q108 62 210 62 Q312 62 312 88" fill="none" stroke="#4a3527" stroke-width="1.8"/>
+    <path d="M114 92 Q114 68 210 68 Q306 68 306 92" fill="none" stroke="#6b5e46" stroke-width="0.9"/>
+    <path d="M144 110 Q144 90 210 90 Q276 90 276 110" fill="none" stroke="#4a3527" stroke-width="1.4"/>
+    <path d="M149 113 Q149 95 210 95 Q271 95 271 113" fill="none" stroke="#463f30" stroke-width="0.8"/>
+    <path d="M168 124 Q168 108 210 108 Q252 108 252 124" fill="none" stroke="#4a3527" stroke-width="1.1"/>
+    <path d="M184 136 Q184 124 210 124 Q236 124 236 136" fill="none" stroke="#241c14" stroke-width="1"/>
+
+    <!-- faint ashlar courses on the near walls -->
+    <path d="M14 96 L108 104 M14 136 L108 138 M14 172 L108 168" fill="none" stroke="#a5987c" stroke-width="0.8"/>
+    <path d="M406 96 L312 104 M406 136 L312 138 M406 172 L312 168" fill="none" stroke="#a5987c" stroke-width="0.8"/>
+
+    <!-- ceiling seams converging toward the dark -->
+    <path d="M148 28 L172 62 M272 28 L248 62 M98 42 L136 72 M322 42 L284 72" fill="none" stroke="#a5987c" stroke-width="0.9"/>
+
+    <!-- a distant lantern, deep in the dark -->
+    <circle cx="210" cy="147" r="2.6" fill="#a33d2f"/>
+    <circle cx="210" cy="146.4" r="1" fill="#e8dcc0"/>
+
+    <!-- black still water -->
+    <path d="M14 206 L177 156 L243 156 L406 206 L406 268 L14 268 Z" fill="#1d2428"/>
+    <path d="M14 206 L177 156 M243 156 L406 206 M177 156 L243 156" fill="none" stroke="#241c14" stroke-width="1.2"/>
+
+    <!-- reflection of the far opening and the lantern -->
+    <path d="M184 156 L185 168 L183 178 Q193 184 203 181 L210 184 L219 180 Q229 184 237 177 L235 166 L236 156 Z" fill="#171c1f"/>
+    <path d="M210 158 L210 165 M209.4 168 L210.6 168 M210 171.5 L210 175" fill="none" stroke="#a33d2f" stroke-width="1.5"/>
+
+    <!-- pillar reflections, broken by thin sleeping ripples -->
+    <path d="M40 209 L41 226 L39 244 L41 258 L40 268 L76 268 L75 256 L77 240 L75 224 L76 209 Z" fill="#38424a"/>
+    <path d="M49 216 L57 224 L49 232 L57 240 L49 248" fill="none" stroke="#262f35" stroke-width="1"/>
+    <circle cx="66" cy="232" r="3.5" fill="none" stroke="#262f35" stroke-width="0.9"/>
+    <rect x="38" y="230" width="40" height="2" fill="#1d2428"/>
+    <rect x="39" y="249" width="38" height="1.6" fill="#1d2428"/>
+
+    <path d="M344 209 L345 226 L343 244 L345 258 L344 268 L380 268 L379 256 L381 240 L379 224 L380 209 Z" fill="#38424a"/>
+    <path d="M371 216 L363 224 L371 232 L363 240 L371 248" fill="none" stroke="#262f35" stroke-width="1"/>
+    <circle cx="354" cy="232" r="3.5" fill="none" stroke="#262f35" stroke-width="0.9"/>
+    <rect x="342" y="230" width="40" height="2" fill="#1d2428"/>
+    <rect x="343" y="249" width="38" height="1.6" fill="#1d2428"/>
+
+    <path d="M108 184 L109 202 L107 222 L109 246 L108 268 L130 268 L129 246 L131 224 L129 202 L130 184 Z" fill="#313b42"/>
+    <path d="M113 214 L119 208 L113 202 L119 196 L113 190" fill="none" stroke="#28313a" stroke-width="0.8"/>
+    <rect x="107" y="228" width="24" height="1.6" fill="#1d2428"/>
+
+    <path d="M290 184 L291 202 L289 222 L291 246 L290 268 L312 268 L311 246 L313 224 L311 202 L312 184 Z" fill="#313b42"/>
+    <path d="M307 214 L301 208 L307 202 L301 196 L307 190" fill="none" stroke="#28313a" stroke-width="0.8"/>
+    <rect x="289" y="228" width="24" height="1.6" fill="#1d2428"/>
+
+    <path d="M145 171 L146 188 L144 206 L145 224 L145 236 L159 236 L158 220 L160 202 L158 186 L159 171 Z" fill="#2b343b"/>
+    <path d="M261 171 L262 188 L260 206 L261 224 L261 236 L275 236 L274 220 L276 202 L274 186 L275 171 Z" fill="#2b343b"/>
+    <path d="M169.5 162 L170 180 L169 196 L170 204 L178.5 204 L178 194 L179 178 L178.5 162 Z" fill="#272f35"/>
+    <path d="M241.5 162 L242 180 L241 196 L242 204 L250.5 204 L250 194 L251 178 L250.5 162 Z" fill="#272f35"/>
+
+    <!-- pillars, far pair first -->
+    <g stroke="#4a3527" stroke-width="0.8" fill="#6e6250">
+      <rect x="167" y="115" width="14" height="7"/>
+      <rect x="169.5" y="121" width="9" height="40"/>
+      <rect x="239" y="115" width="14" height="7"/>
+      <rect x="241.5" y="121" width="9" height="40"/>
+    </g>
+    <path d="M170 138 L178 138 M242 138 L250 138" stroke="#4a3527" stroke-width="0.7"/>
+
+    <g stroke="#4a3527" stroke-width="1" fill="#8a7a5f">
+      <rect x="141.5" y="100" width="21" height="8"/>
+      <rect x="145" y="107" width="14" height="63"/>
+      <rect x="257.5" y="100" width="21" height="8"/>
+      <rect x="261" y="107" width="14" height="63"/>
+    </g>
+    <path d="M146 124 L158 124 M146 142 L158 142 M262 124 L274 124 M262 142 L274 142" stroke="#4a3527" stroke-width="0.8"/>
+
+    <g stroke="#4a3527" stroke-width="1.4" fill="#beb195">
+      <rect x="104" y="74" width="30" height="11"/>
+      <rect x="108" y="84" width="22" height="99"/>
+      <rect x="286" y="74" width="30" height="11"/>
+      <rect x="290" y="84" width="22" height="99"/>
+    </g>
+    <g stroke="#4a3527" stroke-width="0.9" fill="none">
+      <path d="M109 104 L129 104 M109 107 L129 107 M109 142 L129 142 M109 145 L129 145"/>
+      <path d="M113 150 L119 156 L113 162 L119 168 L113 174"/>
+      <path d="M291 104 L311 104 M291 107 L311 107 M291 142 L311 142 M291 145 L311 145"/>
+      <path d="M307 150 L301 156 L307 162 L301 168 L307 174"/>
+    </g>
+
+    <!-- nearest pair: carvings marching down into the water -->
+    <g stroke="#4a3527" stroke-width="2" fill="#c9bda3">
+      <rect x="34" y="26" width="48" height="12"/>
+      <rect x="40" y="38" width="36" height="169"/>
+      <rect x="338" y="26" width="48" height="12"/>
+      <rect x="344" y="38" width="36" height="169"/>
+    </g>
+    <path d="M45 42 L45 200 M71 42 L71 200 M349 42 L349 200 M375 42 L375 200" stroke="#8a7a5f" stroke-width="0.9"/>
+    <g stroke="#4a3527" stroke-width="1" fill="none">
+      <path d="M41 56 L75 56 M41 59 L75 59 M41 118 L75 118 M41 121 L75 121"/>
+      <path d="M58 72 L64 80 L58 88 L52 80 Z M58 96 L64 104 L58 112 L52 104 Z"/>
+      <path d="M49 132 L57 140 L49 148 L57 156 L49 164 L57 172 L49 180 L57 188 L49 196"/>
+      <circle cx="66" cy="138" r="3.5"/><circle cx="66" cy="160" r="3.5"/><circle cx="66" cy="182" r="3.5"/>
+      <path d="M345 56 L379 56 M345 59 L379 59 M345 118 L379 118 M345 121 L379 121"/>
+      <path d="M362 72 L368 80 L362 88 L356 80 Z M362 96 L368 104 L362 112 L356 104 Z"/>
+      <path d="M371 132 L363 140 L371 148 L363 156 L371 164 L363 172 L371 180 L363 188 L371 196"/>
+      <circle cx="354" cy="138" r="3.5"/><circle cx="354" cy="160" r="3.5"/><circle cx="354" cy="182" r="3.5"/>
+    </g>
+    <circle cx="66" cy="138" r="1" fill="#4a3527"/><circle cx="66" cy="160" r="1" fill="#4a3527"/><circle cx="66" cy="182" r="1" fill="#4a3527"/>
+    <circle cx="354" cy="138" r="1" fill="#4a3527"/><circle cx="354" cy="160" r="1" fill="#4a3527"/><circle cx="354" cy="182" r="1" fill="#4a3527"/>
+
+    <!-- waterline kissing each shaft -->
+    <path d="M37 206 L79 206" stroke="#efe6d2" stroke-width="1.2"/>
+    <path d="M341 206 L383 206" stroke="#efe6d2" stroke-width="1.2"/>
+    <path d="M106 182.5 L132 182.5 M288 182.5 L314 182.5" stroke="#efe6d2" stroke-width="0.9"/>
+    <path d="M144 169.5 L160 169.5 M260 169.5 L276 169.5" stroke="#efe6d2" stroke-width="0.7"/>
+    <path d="M169 160.5 L179 160.5 M241 160.5 L251 160.5" stroke="#efe6d2" stroke-width="0.6"/>
+
+    <!-- sleeping ripples, and one ring where a step just answered -->
+    <path d="M86 218 Q122 215 158 218" fill="none" stroke="#3a545f" stroke-width="0.8"/>
+    <path d="M252 226 Q300 223 348 226" fill="none" stroke="#3a545f" stroke-width="0.8"/>
+    <path d="M60 252 Q105 249 150 252" fill="none" stroke="#3a545f" stroke-width="0.8"/>
+    <path d="M168 247 Q210 241 252 247" fill="none" stroke="#3a545f" stroke-width="0.9"/>
+    <path d="M184 252 Q210 247.5 236 252" fill="none" stroke="#3a545f" stroke-width="0.8"/>
+  </g>
+
+  <!-- frame -->
+  <rect x="14" y="12" width="392" height="256" fill="none" stroke="#4a3527" stroke-width="2.5"/>
+  <rect x="9.5" y="7.5" width="401" height="265" fill="none" stroke="#8a7a5f" stroke-width="1"/>
+</svg>
