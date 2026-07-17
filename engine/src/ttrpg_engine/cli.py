@@ -313,6 +313,14 @@ def char_options():
     emit(chargen.options(g))
 
 
+@char_app.command("control")
+def char_control(pc: str = typer.Option(...),
+                 played_by: str = typer.Option(..., "--played-by",
+                                               help="who runs this PC: a player's name, or GM")):
+    """Set or reassign who runs an existing PC at the table."""
+    emit(guard(chargen.set_control, require_root(), pc, played_by))
+
+
 @char_app.command("create")
 def char_create(
     name: str = typer.Option(...),

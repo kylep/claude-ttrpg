@@ -102,6 +102,20 @@ def test_create_rejects_empty_slug_name(wroot):
     assert json.loads(_create(name="!!!").stdout)["error"]["code"] == "bad_name"
 
 
+def test_char_control_sets_and_reassigns_played_by(wroot):
+    assert _create().exit_code == 0                      # pc-borin, no --played-by
+    p = wroot / "state" / "party" / "pc-borin.yaml"
+    assert "played_by" not in worldfs.read_yaml(p)
+    res = runner.invoke(app, ["char", "control", "--pc", "pc-borin", "--played-by", "GM"])
+    assert res.exit_code == 0, res.stdout
+    assert worldfs.read_yaml(p)["played_by"] == "GM"
+    runner.invoke(app, ["char", "control", "--pc", "pc-borin", "--played-by", "Kyle"])
+    assert worldfs.read_yaml(p)["played_by"] == "Kyle"    # reassigns
+    res = runner.invoke(app, ["char", "control", "--pc", "pc-nobody", "--played-by", "GM"])
+    assert res.exit_code == 1
+    assert json.loads(res.stdout)["error"]["code"] == "not_found"
+
+
 def test_char_options_cli_shape(wroot):
     res = runner.invoke(app, ["char", "options"])
     assert res.exit_code == 0, res.stdout

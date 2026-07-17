@@ -20,11 +20,21 @@ description: Use when combat starts in a claude-ttrpg session - runs the encount
 3. On each turn (order comes from `engine encounter next`):
    After `engine encounter start`, the first combatant in the order is
    already up — run their turn before the first `engine encounter next`.
-   - **PC (human player)**: ask for their action; execute it via
-     engine commands; narrate the JSON result.
-   - **PC (simulated) / monster**: choose a tactically sensible action
-     (attack in range; else move toward the nearest threat using
-     `engine move`, then attack if now in range), execute, narrate.
+   Both `encounter start` and `encounter next` report who runs each
+   combatant: `controls` on start, `up_control` each turn — `"monster"`,
+   a player's name, or `"GM"`. **Use it to decide who acts:**
+   - **PC controlled by a human** (`up_control` is that player's name):
+     ask that player for their action; execute it; narrate the JSON.
+   - **PC controlled by the GM / an AI companion** (`up_control` is `"GM"`)
+     **or a monster**: *you* choose a tactically sensible action (attack in
+     range; else `engine move` toward the nearest threat, then attack if
+     now in range), execute, narrate. Never ask the operator to take a turn
+     for a PC they don't play.
+   - If `up_control` is `null` (a sheet made before played-by existed),
+     fall back to the session's played-by line; a PC the human never
+     claimed is yours to run. Retrofit it once with
+     `engine char control --pc <id> --played-by "<name|GM>"` so future
+     turns report correctly.
    - Attacks: `engine attack --attacker X --target Y [--adv|--dis]`.
      Apply --adv/--dis per the effects on either side (see the game's
      effects.yaml impact notes). The engine already enforces prone,
@@ -32,6 +42,12 @@ description: Use when combat starts in a claude-ttrpg session - runs the encount
      `adv_from`/`dis_from` lists say what applied) — only pass flags
      for GM-adjudicated effects like blessed or frightened.
    - Spells: `engine cast --caster X --spell s [--target Y | --at X,Y]`.
+     The engine resolves the spell's attack/save, damage, and effects —
+     never grep the ruleset or read files to look up what a spell does;
+     cast it and narrate the JSON. (Unsure of a command? `engine <group>
+     --help`. The encounter commands are only `start`, `next`, `end`;
+     read live combat state with `engine state get encounter` or
+     `engine map render` — there is no `encounter status`.)
    - Line of sight: walls block attacks and spells (`no_los` error).
      `engine sight --actor X --target Y` answers "can X see Y, and how
      far" before you commit to an action.

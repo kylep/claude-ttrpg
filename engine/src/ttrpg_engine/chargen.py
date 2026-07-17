@@ -71,6 +71,18 @@ def options(g: dict) -> dict:
             "races": races, "classes": classes}
 
 
+def set_control(root: Path, pc_id: str, played_by: str) -> dict:
+    """Set (or reassign) who runs an existing PC at the table — a player's
+    name, or "GM". Retrofits sheets created before the field existed."""
+    path = worldfs.state(root, f"party/{pc_id}")
+    if not path.exists():
+        raise EngineError("not_found", f"no PC {pc_id}")
+    sheet = worldfs.read_yaml(path)
+    sheet["played_by"] = played_by
+    worldfs.write_yaml(path, sheet)
+    return {"pc": pc_id, "played_by": played_by}
+
+
 def create(root: Path, g: dict, *, name: str, cls_name: str, race_name: str,
            assign: dict[str, int], skills: list[str],
            played_by: str | None = None) -> dict:
