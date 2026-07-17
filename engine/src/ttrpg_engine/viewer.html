@@ -194,6 +194,11 @@
   .sheet .desc.muted { color: var(--muted); }
   .sheet .bio { margin-top: .95rem; border-top: 1px solid var(--edge); padding-top: .75rem; }
   .sheet .bio p { margin: 0 0 .55rem; }
+  .sheet .artwork { margin: .8rem 0 .2rem; }
+  .sheet .artwork svg { display: block; width: 100%; height: auto; border-radius: 5px;
+                        border: 1px solid var(--edge); }
+  .chip-card .disc.location, .sheet .head .disc.location { color: var(--gold); font-size: 1.25rem; }
+  #map-body [data-ref]:hover text { fill: var(--ember); }
   .sheet .kv { display: flex; justify-content: space-between; gap: 1rem;
     font-family: var(--mono); font-size: .74rem; padding: .2rem 0;
     border-top: 1px solid var(--edge); color: var(--muted); }
@@ -331,7 +336,8 @@ async function fetchEntity(ref) {
 
 function disc(kind, name) {
   const d = el("span", "disc " + kind);
-  d.textContent = kind === "quest" ? "❧" : kind === "npc" ? "☺" : (name || "?").slice(0, 1);
+  d.textContent = kind === "quest" ? "❧" : kind === "npc" ? "☺"
+    : kind === "location" ? "⌖" : (name || "?").slice(0, 1);
   return d;
 }
 
@@ -355,6 +361,9 @@ function chipLine(card) {
   if (card.kind === "npc")
     return [card.role, card.disposition].filter(Boolean).join(" · ");
   if (card.kind === "quest") return card.status;
+  if (card.kind === "location")
+    return [card.terrain, card.rumored ? "rumored" : card.party_here ? "the party is here" : null]
+      .filter(Boolean).join(" · ");
   return "";
 }
 
@@ -494,6 +503,23 @@ function buildSheet(card) {
       box.appendChild(kvRow("accepted by", card.accepted_by.join(", ")));
     sh.appendChild(sheetSection("Terms", box));
   }
+  if (card.kind === "location" && !card.rumored) {
+    if (card.art_svg) {
+      const art = el("div", "artwork");
+      art.innerHTML = card.art_svg;
+      sh.appendChild(art);
+    }
+    const box = el("div");
+    for (const c of card.connections || [])
+      box.appendChild(kvRow(c.name, c.hours + "h"));
+    if (box.children.length) sh.appendChild(sheetSection("Ways out", box));
+    if ((card.npcs || []).length) {
+      const nbox = el("div");
+      for (const n of card.npcs)
+        nbox.appendChild(kvRow(n.name, n.role || ""));
+      sh.appendChild(sheetSection("Folk here (GM)", nbox));
+    }
+  }
   if (card.notes) sh.appendChild(sheetSection("Notes (GM)", el("p", "desc muted", card.notes)));
   if (card.bio_html) {
     const bio = el("div", "bio");
@@ -614,7 +640,7 @@ function renderEntry(e) {
     beat.appendChild(line);
     return beat;
   }
-  if (["character", "npc", "monster", "quest"].includes(e.type) && e.ref) {
+  if (["character", "npc", "monster", "quest", "location"].includes(e.type) && e.ref) {
     const beat = el("div", "beat new entity");
     const kind = e.type === "character" ? "pc" : e.type;
     beat.appendChild(entityChip(e.ref, e.name, kind, e.type === "quest" ? e.event : null));
@@ -742,6 +768,15 @@ function renderState(s) {
       foesBody.appendChild(fighterRow(f, up));
     }
     foes.hidden = !any;
+  } else if (s.region_svg) {
+    // between fights the map pane shows the world: fogged for players,
+    // complete for the GM; visited nodes open their location cards
+    turn.hidden = true;
+    mapBody.innerHTML = s.region_svg;
+    for (const node of mapBody.querySelectorAll("[data-ref]"))
+      node.addEventListener("click", () => openEntity(node.dataset.ref));
+    document.getElementById("legend").replaceChildren();
+    foes.hidden = true;
   } else {
     turn.hidden = true;
     mapBody.replaceChildren(el("p", "empty", "No encounter running."));

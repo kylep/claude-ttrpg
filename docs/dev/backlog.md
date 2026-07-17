@@ -38,7 +38,9 @@ Deferred, not blocking:
 
 - Insert-mode play + predestination validator (hard layer).
 - Fork/save-management skill; never-merge enforcement hook for world repos.
-- Region-map image generation from node coords/terrain tags.
+- ~~Region-map image generation from node coords/terrain tags~~ — shipped
+  2026-07-16 as the procedural region map (`engine map region` + the
+  viewer's fogged world map) plus the svg-art authored-vignette pipeline.
 
 ## From the equipment / party-split round (2026-07-13)
 

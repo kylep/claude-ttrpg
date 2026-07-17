@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 280">
+  <!-- The Old Road — heaved flagstones, shaggy hedgerows, a leaning milestone, a crooked signpost -->
+
+  <!-- sky -->
+  <rect x="0" y="0" width="420" height="280" fill="#e8dcc0"/>
+
+  <!-- clouds -->
+  <path d="M44,40 Q56,28 74,32 Q84,22 100,28 Q116,26 122,38 Q112,46 94,44 Q76,50 60,46 Q48,46 44,40 Z" fill="#efe6d2"/>
+  <path d="M318,40 Q328,30 344,33 Q354,26 368,32 Q378,34 376,42 Q362,46 346,44 Q330,48 318,40 Z" fill="#efe6d2"/>
+
+  <!-- birds -->
+  <path d="M244,42 q5,-5 10,-1 q5,-4 9,1" fill="none" stroke="#4a3527" stroke-width="1.4" stroke-linecap="round"/>
+  <path d="M268,31 q4,-4 8,-1 q4,-3 7,1" fill="none" stroke="#4a3527" stroke-width="1.1" stroke-linecap="round"/>
+
+  <!-- distant ridge in the gap, with the road glimpsed climbing it -->
+  <path d="M172,124 Q194,88 214,87 Q235,88 258,124 Z" fill="#c9bda3" stroke="#8a7a5f" stroke-width="1"/>
+  <path d="M198,124 Q206,104 214,103 Q222,104 230,124 Z" fill="#bcae90"/>
+  <path d="M211,123 L214,102 L220,102 L223,123 Z" fill="#b3a68a" stroke="#8a7a5f" stroke-width="0.7"/>
+
+  <!-- ground / verges -->
+  <rect x="0" y="118" width="420" height="162" fill="#97a274"/>
+
+  <!-- road base (earth showing between stones) -->
+  <path d="M95,280 L206,122 L230,122 L345,280 Z" fill="#b3a68a"/>
+
+  <!-- flagstones: row 1 (foreground) -->
+  <path d="M99,278 L163,277 L167,256 L120,255 Z" fill="#c9bda3" stroke="#4a3527" stroke-width="0.9"/>
+  <path d="M250,251 L254,275 L249,276 L245,252 Z" fill="#4a3527"/>
+  <path d="M174,279 L249,276 L245,252 L177,258 Z" fill="#cfc4aa" stroke="#4a3527" stroke-width="0.9"/>
+  <path d="M258,277 L340,278 L321,255 L254,254 Z" fill="#c9bda3" stroke="#4a3527" stroke-width="0.9"/>
+
+  <!-- row 2 -->
+  <path d="M118,250 L198,249 L200,231 L134,232 Z" fill="#cfc4aa" stroke="#4a3527" stroke-width="0.9"/>
+  <path d="M206,250 L268,249 L266,230 L207,231 Z" fill="#c9bda3" stroke="#4a3527" stroke-width="0.9"/>
+  <path d="M275,250 L322,249 L306,230 L272,231 Z" fill="#d8c9a6" stroke="#4a3527" stroke-width="0.9"/>
+
+  <!-- row 3 (one stone missing — moss and rubble in the gap) -->
+  <path d="M206,212 L258,209 L262,224 L204,227 Z" fill="#cfc4aa" stroke="#4a3527" stroke-width="0.9"/>
+  <path d="M204,227 L262,224 L263,227 L205,230 Z" fill="#4a3527"/>
+  <path d="M270,226 L305,226 L292,211 L266,211 Z" fill="#c9bda3" stroke="#4a3527" stroke-width="0.9"/>
+  <path d="M150,224 L162,222 L160,217 L151,219 Z" fill="#c9bda3" stroke="#4a3527" stroke-width="0.7"/>
+  <path d="M166,220 L173,218 L171,214 L165,216 Z" fill="#c9bda3" stroke="#4a3527" stroke-width="0.7"/>
+  <path d="M158,218 c1,-5 3,-7 4,-2 c1,-5 3,-5 4,-1 c1,-4 3,-3 3,1 l-11,3 z" fill="#6f7f52"/>
+
+  <!-- row 4 -->
+  <path d="M149,206 L214,205 L216,194 L160,193 Z" fill="#cfc4aa" stroke="#4a3527" stroke-width="0.9"/>
+  <path d="M222,206 L289,206 L279,193 L223,194 Z" fill="#c9bda3" stroke="#4a3527" stroke-width="0.9"/>
+
+  <!-- row 5 -->
+  <path d="M161,189 L230,189 L231,180 L168,179 Z" fill="#c9bda3" stroke="#4a3527" stroke-width="0.9"/>
+  <path d="M238,189 L277,189 L269,179 L238,180 Z" fill="#d8c9a6" stroke="#4a3527" stroke-width="0.9"/>
+
+  <!-- row 6 -->
+  <path d="M170,175 L221,175 L222,169 L176,169 Z" fill="#cfc4aa" stroke="#4a3527" stroke-width="0.9"/>
+  <path d="M228,175 L267,175 L262,169 L228,169 Z" fill="#c9bda3" stroke="#4a3527" stroke-width="0.9"/>
+
+  <!-- distant joints -->
+  <g stroke="#8a7a5f" stroke-width="0.8" fill="none">
+    <path d="M178,163 Q219,161.5 259,163"/>
+    <path d="M183,156 L254,156"/>
+    <path d="M186,150 Q219,149 250,150"/>
+    <path d="M190,145 L247,145"/>
+    <path d="M193,141 L244,141"/>
+    <path d="M195,137 L241,137"/>
+    <path d="M198,133.5 L238,133.5"/>
+    <path d="M200,130.5 L236,130.5"/>
+    <path d="M202,128 L234,128"/>
+  </g>
+
+  <!-- moss creeping into foreground joints -->
+  <path d="M166,272 c1,-6 3,-8 4,-3 c1,-6 3,-6 4,-1 c1,-4 3,-4 3,1 l-11,4 z" fill="#6f7f52"/>
+  <path d="M249,266 c1,-5 3,-7 4,-2 c1,-5 3,-5 4,-1 c1,-4 2,-3 2,1 l-10,3 z" fill="#6f7f52"/>
+  <path d="M200,242 c1,-4 2,-6 3,-2 c1,-4 3,-4 3,0 l-6,3 z" fill="#6f7f52"/>
+
+  <!-- road edges -->
+  <path d="M95,280 C130,230 158,190 178,160 C192,139 200,129 206,122" fill="none" stroke="#4a3527" stroke-width="2"/>
+  <path d="M345,280 C310,232 285,196 262,164 C248,143 238,131 230,122" fill="none" stroke="#4a3527" stroke-width="2"/>
+
+  <!-- left hedgerow -->
+  <path d="M0,280 L0,84 Q10,70 20,76 Q30,64 42,72 Q52,60 64,70 Q76,62 86,74 Q96,66 108,80 Q118,72 128,86 Q138,80 148,92 Q156,86 164,98 Q172,92 180,102 Q188,98 194,108 Q199,105 202,114 L204,118 L196,124 Q180,136 166,150 Q146,170 124,196 Q100,226 80,254 L62,280 Z"
+        fill="#6f7f52" stroke="#4a3527" stroke-width="1.8" stroke-linejoin="round"/>
+  <path d="M20,78 Q28,66 40,73 Q46,68 54,75 Q50,86 38,88 Q26,88 20,78 Z" fill="#7d8a63"/>
+  <path d="M80,76 Q88,66 98,72 Q104,68 110,76 Q106,86 94,86 Q84,84 80,76 Z" fill="#7d8a63"/>
+  <path d="M142,94 Q150,86 158,92 Q162,98 156,104 Q146,104 142,94 Z" fill="#7d8a63"/>
+  <!-- a shadowed gap deep in the hedge, and something in it -->
+  <path d="M89,183 Q98,178 105,182 Q112,180 116,188 Q112,192 115,198 Q117,204 110,207 Q106,204 101,208 Q93,210 90,203 Q85,199 89,192 Q86,187 89,183 Z" fill="#241c14"/>
+  <circle cx="99" cy="194" r="1.7" fill="#a33d2f"/>
+  <circle cx="107" cy="195" r="1.7" fill="#a33d2f"/>
+
+  <!-- right hedgerow -->
+  <path d="M420,280 L420,58 Q408,46 396,56 Q384,44 372,56 Q360,46 348,58 Q338,50 328,62 Q318,54 306,68 Q296,60 288,74 Q278,68 268,82 Q258,76 250,90 Q243,86 238,98 Q233,96 230,108 L228,116 L236,124 Q252,138 268,156 Q292,182 316,210 Q338,238 356,262 L368,280 Z"
+        fill="#6f7f52" stroke="#4a3527" stroke-width="1.8" stroke-linejoin="round"/>
+  <path d="M362,58 Q372,48 382,55 Q388,50 396,58 Q392,68 380,68 Q368,66 362,58 Z" fill="#7d8a63"/>
+  <path d="M296,70 Q304,60 314,66 Q320,64 324,72 Q318,80 308,80 Q300,78 296,70 Z" fill="#7d8a63"/>
+  <path d="M246,92 Q252,84 260,90 Q262,96 256,100 Q248,100 246,92 Z" fill="#7d8a63"/>
+
+  <!-- crooked signpost -->
+  <path d="M122,204 L134,125 L140,126 L131,204 Z" fill="#8a7a5f" stroke="#4a3527" stroke-width="1.4" stroke-linejoin="round"/>
+  <path d="M137,129 L184,133 L190,137 L184,142 L136,138 Z" fill="#8a7a5f" stroke="#4a3527" stroke-width="1.2" stroke-linejoin="round"/>
+  <path d="M131,149 L84,159 L77,164 L84,168 L131,160 Z" fill="#8a7a5f" stroke="#4a3527" stroke-width="1.2" stroke-linejoin="round"/>
+  <g stroke="#4a3527" stroke-width="0.7" fill="none">
+    <path d="M146,135 l9,0.7"/>
+    <path d="M159,135.8 l7,0.6"/>
+    <path d="M170,136.5 l6,0.5"/>
+    <path d="M92,161.5 l10,-2.2"/>
+    <path d="M106,158.6 l9,-2"/>
+    <path d="M128,146 L127,172"/>
+  </g>
+  <circle cx="134" cy="135.5" r="1.1" fill="#4a3527"/>
+  <circle cx="126" cy="155" r="1.1" fill="#4a3527"/>
+  <path d="M120,206 c1,-5 3,-7 4,-2 c1,-5 3,-5 4,-1 c1,-4 3,-3 3,1 l-11,4 z" fill="#6f7f52"/>
+
+  <!-- leaning milestone -->
+  <path d="M336,259 Q350,264 365,258 Q350,262 336,259 Z" fill="#241c14"/>
+  <path d="M341,259 L327,215 Q324,203 334,201 Q345,199 348,208 L364,258 Z" fill="#c9bda3" stroke="#4a3527" stroke-width="1.8" stroke-linejoin="round"/>
+  <path d="M347,207 L364,258 L356,258 L341,208 Z" fill="#b3a68a"/>
+  <g stroke="#8a7a5f" stroke-width="1.4" fill="none" stroke-linecap="round">
+    <path d="M332,222 L338,234"/>
+    <path d="M338,222 L332,234"/>
+    <path d="M342,221.5 L344,234"/>
+    <path d="M346.5,221 L348.5,233.5"/>
+  </g>
+  <path d="M334,259 c1,-5 3,-7 4,-2 c1,-5 3,-5 4,-1 l-8,4 z" fill="#6f7f52"/>
+  <path d="M360,258 c1,-5 3,-6 4,-2 c1,-4 3,-4 3,0 l-7,3 z" fill="#6f7f52"/>
+
+  <!-- verge tufts and pebbles -->
+  <path d="M96,254 c1,-6 3,-8 4,-3 c1,-6 3,-6 4,-1 c1,-4 3,-4 3,1 l-11,4 z" fill="#7d8a63"/>
+  <path d="M125,220 c1,-5 3,-7 4,-2 c1,-5 3,-5 4,-1 l-8,4 z" fill="#7d8a63"/>
+  <path d="M316,234 c1,-5 3,-7 4,-2 c1,-5 3,-5 4,-1 l-8,4 z" fill="#7d8a63"/>
+  <path d="M344,272 c1,-6 3,-8 4,-3 c1,-6 3,-6 4,-1 c1,-4 3,-4 3,1 l-11,4 z" fill="#7d8a63"/>
+  <!-- parchment mat + frame -->
+  <path fill-rule="evenodd" fill="#e8dcc0"
+        d="M0,0 H420 V280 H0 Z M21,13 H399 A8,8 0 0 1 407,21 V259 A8,8 0 0 1 399,267 H21 A8,8 0 0 1 13,259 V21 A8,8 0 0 1 21,13 Z"/>
+  <rect x="13" y="13" width="394" height="254" rx="8" fill="none" stroke="#4a3527" stroke-width="2.5"/>
+</svg>

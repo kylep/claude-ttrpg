@@ -21,7 +21,7 @@ from ttrpg_engine.markdown_render import render_markdown
 # every type the feed knows how to render; post() rejects anything else so a
 # typo'd auto-emit fails loudly at write time, not silently at render time
 _TYPES = frozenset({"narration", "scene", "system", "choices", "action",
-                    "character", "npc", "monster", "quest", "combat"})
+                    "character", "npc", "monster", "quest", "location", "combat"})
 
 
 def _path(root: Path) -> Path:
@@ -65,7 +65,7 @@ def _rendered(rec: dict) -> dict | None:
     elif t == "choices":
         out["title"] = str(rec.get("title", ""))
         out["items"] = [render_markdown(str(i)) for i in rec.get("items", [])]
-    elif t in ("character", "npc", "monster", "quest"):
+    elif t in ("character", "npc", "monster", "quest", "location"):
         out["ref"] = rec.get("ref")
         out["name"] = rec.get("name")          # display hint if the ref goes stale
         if t == "quest":

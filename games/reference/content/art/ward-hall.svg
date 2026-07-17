@@ -1,0 +1,227 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 280">
+  <!-- The Ward-Hall: vaulted sepulcher, great circular seal, carved warding marks -->
+
+  <!-- deep dark of the barrow -->
+  <rect x="0" y="0" width="420" height="280" fill="#241c14"/>
+
+  <!-- ================= back wall (inside the innermost arch) ================= -->
+  <g>
+    <rect x="96" y="52" width="228" height="148" fill="#5d5240"/>
+    <!-- stepped lamplight on the wall -->
+    <circle cx="210" cy="150" r="112" fill="#6e6149"/>
+    <circle cx="210" cy="148" r="82" fill="#7d6f55"/>
+    <!-- masonry joints, fading into shadow -->
+    <g stroke="#241c14" stroke-width="0.9" opacity="0.35" fill="none">
+      <path d="M104,118 H316"/>
+      <path d="M100,142 H320"/>
+      <path d="M98,166 H322"/>
+      <path d="M98,190 H322"/>
+      <path d="M150,118 V142 M258,118 V142"/>
+      <path d="M126,142 V166 M290,142 V166"/>
+      <path d="M112,166 V190 M304,166 V190"/>
+    </g>
+  </g>
+
+  <!-- ================= floor ================= -->
+  <g>
+    <path d="M96,200 H324 L364,280 H56 Z" fill="#3a3023"/>
+    <!-- pool of pale light before the seal -->
+    <ellipse cx="210" cy="226" rx="94" ry="24" fill="#5f5440"/>
+    <!-- flag joints -->
+    <g stroke="#241c14" stroke-width="1.1" opacity="0.5" fill="none">
+      <path d="M148,206 L118,280"/>
+      <path d="M210,208 V280"/>
+      <path d="M272,206 L302,280"/>
+      <path d="M88,224 Q210,238 332,224"/>
+      <path d="M74,252 Q210,268 346,252"/>
+    </g>
+    <!-- carved threshold ward-line: the boundary the dead may not cross -->
+    <g stroke="#8a7a5f" fill="none">
+      <path d="M138,220 Q210,240 282,220" stroke-width="1.7"/>
+      <path d="M155,222.5 V229.5 M181,226 V233 M210,228.5 V235.5 M239,226 V233 M265,222.5 V229.5" stroke-width="1.1"/>
+    </g>
+  </g>
+
+  <!-- ================= faint lamplight shaft ================= -->
+  <path d="M203,72 L217,72 L260,202 L160,202 Z" fill="#efe6d2" opacity="0.05"/>
+
+  <!-- ================= the warded portal ================= -->
+  <!-- recess behind the seal -->
+  <circle cx="210" cy="156" r="52" fill="#241c14"/>
+
+  <!-- the seal itself: a great stone plug, carved to keep something in -->
+  <g>
+    <circle cx="210" cy="156" r="48" fill="#c9bda3" stroke="#4a3527" stroke-width="2.2"/>
+    <!-- age-blotch on the stone -->
+    <g fill="#d8c9a6">
+      <path d="M180,132 Q192,124 202,130 Q196,140 184,141 Q178,137 180,132 Z"/>
+      <path d="M232,180 Q244,176 248,166 Q240,158 230,166 Q226,175 232,180 Z"/>
+      <path d="M186,178 Q194,184 190,192 Q180,190 179,182 Q182,177 186,178 Z"/>
+    </g>
+    <!-- outer carved grooves -->
+    <circle cx="210" cy="156" r="43" fill="none" stroke="#4a3527" stroke-width="1.1"/>
+    <circle cx="210" cy="156" r="39" fill="none" stroke="#8a7a5f" stroke-width="0.9"/>
+    <!-- radial score-marks between the grooves -->
+    <g stroke="#4a3527" stroke-width="1.2">
+      <line x1="210" y1="109" x2="210" y2="116"/>
+      <g transform="rotate(30 210 156)"><line x1="210" y1="109" x2="210" y2="116"/></g>
+      <g transform="rotate(60 210 156)"><line x1="210" y1="109" x2="210" y2="116"/></g>
+      <g transform="rotate(90 210 156)"><line x1="210" y1="109" x2="210" y2="116"/></g>
+      <g transform="rotate(120 210 156)"><line x1="210" y1="109" x2="210" y2="116"/></g>
+      <g transform="rotate(150 210 156)"><line x1="210" y1="109" x2="210" y2="116"/></g>
+      <g transform="rotate(180 210 156)"><line x1="210" y1="109" x2="210" y2="116"/></g>
+      <g transform="rotate(210 210 156)"><line x1="210" y1="109" x2="210" y2="116"/></g>
+      <g transform="rotate(240 210 156)"><line x1="210" y1="109" x2="210" y2="116"/></g>
+      <g transform="rotate(270 210 156)"><line x1="210" y1="109" x2="210" y2="116"/></g>
+      <g transform="rotate(300 210 156)"><line x1="210" y1="109" x2="210" y2="116"/></g>
+      <g transform="rotate(330 210 156)"><line x1="210" y1="109" x2="210" y2="116"/></g>
+    </g>
+    <!-- middle ring of warding glyphs -->
+    <circle cx="210" cy="156" r="24" fill="none" stroke="#4a3527" stroke-width="1.1"/>
+    <g stroke="#4a3527" stroke-width="1.2" fill="none">
+      <!-- top: the closed eye -->
+      <g transform="translate(210 125)"><path d="M-5,0 L0,-3.5 L5,0 L0,3.5 Z"/><line x1="-2" y1="0" x2="2" y2="0"/></g>
+      <!-- upper-right: zigzag -->
+      <g transform="rotate(45 210 156) translate(210 125)"><path d="M-5,3 L-2,-3 L1,3 L4,-3"/></g>
+      <!-- right: three bars -->
+      <g transform="rotate(90 210 156) translate(210 125)"><path d="M-4,-3 H4 M-4,0 H4 M-4,3 H4"/></g>
+      <!-- lower-right: bound arrow -->
+      <g transform="rotate(135 210 156) translate(210 125)"><path d="M0,-5 V5 M-4,1 L0,5 L4,1"/></g>
+      <!-- bottom: crossed circle -->
+      <g transform="rotate(180 210 156) translate(210 125)"><circle r="4"/><line x1="-4.5" y1="4.5" x2="4.5" y2="-4.5"/></g>
+      <!-- lower-left: bound arrow -->
+      <g transform="rotate(225 210 156) translate(210 125)"><path d="M0,-5 V5 M-4,1 L0,5 L4,1"/></g>
+      <!-- left: three bars -->
+      <g transform="rotate(270 210 156) translate(210 125)"><path d="M-4,-3 H4 M-4,0 H4 M-4,3 H4"/></g>
+      <!-- upper-left: zigzag -->
+      <g transform="rotate(315 210 156) translate(210 125)"><path d="M-5,3 L-2,-3 L1,3 L4,-3"/></g>
+    </g>
+    <!-- central boss: the great binding sigil -->
+    <circle cx="210" cy="156" r="15" fill="#b3a68a" stroke="#4a3527" stroke-width="1.6"/>
+    <g stroke="#4a3527" stroke-width="1.3" fill="none">
+      <path d="M210,144.5 L220,161.5 H200 Z"/>
+      <circle cx="210" cy="156" r="5.5"/>
+      <line x1="203" y1="149" x2="217" y2="163"/>
+    </g>
+    <circle cx="210" cy="156" r="1.6" fill="#4a3527"/>
+    <!-- iron clamps staked through the rim: it was meant never to turn -->
+    <g fill="#8a7a5f" stroke="#4a3527" stroke-width="1.3">
+      <g transform="rotate(45 210 156)"><rect x="205" y="99" width="10" height="17" rx="1.5"/></g>
+      <g transform="rotate(135 210 156)"><rect x="205" y="99" width="10" height="17" rx="1.5"/></g>
+      <g transform="rotate(225 210 156)"><rect x="205" y="99" width="10" height="17" rx="1.5"/></g>
+      <g transform="rotate(315 210 156)"><rect x="205" y="99" width="10" height="17" rx="1.5"/></g>
+    </g>
+    <g fill="#4a3527">
+      <g transform="rotate(45 210 156)"><circle cx="210" cy="103.5" r="1.3"/><circle cx="210" cy="112" r="1.3"/></g>
+      <g transform="rotate(135 210 156)"><circle cx="210" cy="103.5" r="1.3"/><circle cx="210" cy="112" r="1.3"/></g>
+      <g transform="rotate(225 210 156)"><circle cx="210" cy="103.5" r="1.3"/><circle cx="210" cy="112" r="1.3"/></g>
+      <g transform="rotate(315 210 156)"><circle cx="210" cy="103.5" r="1.3"/><circle cx="210" cy="112" r="1.3"/></g>
+    </g>
+  </g>
+
+  <!-- ================= sealing-stone frame ================= -->
+  <g stroke="#4a3527" stroke-width="1.8">
+    <!-- plinth -->
+    <rect x="126" y="198" width="168" height="13" fill="#a89a7e"/>
+    <!-- jambs -->
+    <rect x="132" y="108" width="26" height="90" fill="#b3a68a"/>
+    <rect x="262" y="108" width="26" height="90" fill="#b3a68a"/>
+    <!-- lintel -->
+    <rect x="126" y="88" width="168" height="20" fill="#b3a68a"/>
+  </g>
+  <!-- lintel rune-row: the long charm, cut deep -->
+  <g stroke="#4a3527" stroke-width="1.1" fill="none">
+    <path d="M138,94 V102 M138,98 L143,94 M138,98 L143,102"/>
+    <path d="M152,94 L149,102 M149,94 L156,102"/>
+    <path d="M163,102 V94 L168,102 V94"/>
+    <path d="M176,94 V102 M173,96 H179"/>
+    <path d="M186,94 L191,98 L186,102 M191,94 V102"/>
+    <path d="M199,94 L204,102 M204,94 L199,102 M198,98 H205"/>
+    <path d="M212,94 V102 M212,94 L217,98 L212,98"/>
+    <path d="M225,102 L228,94 L231,102 M226.5,99 H229.5"/>
+    <path d="M239,94 V102 M244,94 V102 M239,98 H244"/>
+    <path d="M252,94 L257,98 L252,102"/>
+    <path d="M265,94 V102 M265,102 L270,94 M270,102 V94"/>
+    <path d="M278,98 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 M275,101 L281,95"/>
+  </g>
+  <!-- jamb glyph columns -->
+  <g stroke="#4a3527" stroke-width="1.1" fill="none">
+    <g transform="translate(145 122)"><path d="M-5,0 L0,-3.5 L5,0 L0,3.5 Z"/><line x1="-2" y1="0" x2="2" y2="0"/></g>
+    <g transform="translate(145 142)"><path d="M-5,3 L-2,-3 L1,3 L4,-3"/></g>
+    <g transform="translate(145 162)"><circle r="4"/><line x1="-4.5" y1="4.5" x2="4.5" y2="-4.5"/></g>
+    <g transform="translate(145 182)"><path d="M0,-5 V5 M-4,1 L0,5 L4,1"/></g>
+    <g transform="translate(275 122)"><path d="M-5,0 L0,-3.5 L5,0 L0,3.5 Z"/><line x1="-2" y1="0" x2="2" y2="0"/></g>
+    <g transform="translate(275 142)"><path d="M-4,-3 H4 M-4,0 H4 M-4,3 H4"/></g>
+    <g transform="translate(275 162)"><circle r="4"/><line x1="-4.5" y1="4.5" x2="4.5" y2="-4.5"/></g>
+    <g transform="translate(275 182)"><path d="M0,-5 V5 M-4,1 L0,5 L4,1"/></g>
+  </g>
+  <!-- damp moss creeping over the old stones -->
+  <g stroke="none">
+    <path d="M132,198 Q136,188 142,193 Q147,186 152,194 Q156,190 158,198 Z" fill="#6f7f52"/>
+    <path d="M138,196 Q142,191 146,195 Q150,192 153,198 L138,198 Z" fill="#7d8a63"/>
+    <path d="M262,198 Q267,189 272,194 Q276,187 282,193 Q286,190 288,198 Z" fill="#6f7f52"/>
+    <path d="M268,196 Q272,192 276,196 Q279,193 282,198 L268,198 Z" fill="#7d8a63"/>
+    <path d="M126,206 Q132,200 138,205 Q142,202 146,208 Q136,212 126,211 Z" fill="#6f7f52" opacity="0.85"/>
+    <path d="M276,207 Q282,201 288,205 Q292,203 294,209 Q284,212 276,210 Z" fill="#6f7f52" opacity="0.85"/>
+    <path d="M126,88 Q131,82 136,86 Q140,83 143,88 Z" fill="#6f7f52" opacity="0.8"/>
+    <path d="M280,88 Q284,83 288,86 Q291,84 294,88 Z" fill="#7d8a63" opacity="0.8"/>
+  </g>
+
+  <!-- ================= the single lamp ================= -->
+  <g>
+    <circle cx="210" cy="63" r="34" fill="#efe6d2" opacity="0.10"/>
+    <circle cx="210" cy="63" r="18" fill="#efe6d2" opacity="0.16"/>
+    <line x1="210" y1="40" x2="210" y2="52" stroke="#4a3527" stroke-width="1.4"/>
+    <path d="M205,56 L210,51 L215,56 Z" fill="#4a3527"/>
+    <rect x="203.5" y="56" width="13" height="15" rx="2" fill="#4a3527"/>
+    <rect x="206" y="58.5" width="8" height="10" rx="1" fill="#efe6d2"/>
+    <path d="M210,66.5 Q207.8,63.5 210,60.5 Q212.2,63.5 210,66.5 Z" fill="#8a7a5f"/>
+    <rect x="202.5" y="70.5" width="15" height="2.5" rx="1" fill="#4a3527"/>
+  </g>
+  <!-- drifting dust in the lamplight -->
+  <g fill="#efe6d2" opacity="0.45">
+    <circle cx="193" cy="90" r="1"/>
+    <circle cx="226" cy="99" r="0.8"/>
+    <circle cx="201" cy="118" r="0.9"/>
+    <circle cx="230" cy="80" r="0.7"/>
+  </g>
+
+  <!-- ================= vault arches, nearest last ================= -->
+  <!-- inner arch band -->
+  <path fill="#46392a" fill-rule="evenodd"
+        d="M0,0 H420 V280 H0 Z
+           M210,42 C158,62 122,126 118,280 L302,280 C298,126 262,62 210,42 Z"/>
+  <path d="M118,280 C122,126 158,62 210,42 C262,62 298,126 302,280"
+        fill="none" stroke="#241c14" stroke-width="2"/>
+  <!-- voussoir joints on the inner band -->
+  <g stroke="#241c14" stroke-width="1" opacity="0.6" fill="none">
+    <path d="M210,42 L210,26"/>
+    <path d="M178,52 L170,38"/>
+    <path d="M242,52 L250,38"/>
+    <path d="M150,76 L138,64"/>
+    <path d="M270,76 L282,64"/>
+    <path d="M132,110 L118,102"/>
+    <path d="M288,110 L302,102"/>
+    <path d="M122,160 L106,156"/>
+    <path d="M298,160 L314,156"/>
+    <path d="M119,220 L102,218"/>
+    <path d="M301,220 L318,218"/>
+  </g>
+  <!-- moss at the arch footing -->
+  <path d="M118,262 Q124,254 130,260 Q135,255 139,263 Q142,259 145,266 Q132,272 118,270 Z" fill="#6f7f52" opacity="0.75"/>
+  <path d="M302,264 Q296,256 290,261 Q285,257 282,264 Q278,261 276,267 Q289,272 302,271 Z" fill="#6f7f52" opacity="0.75"/>
+  <!-- nearest arch band, mostly swallowed by dark -->
+  <path fill="#2b2318" fill-rule="evenodd"
+        d="M0,0 H420 V280 H0 Z
+           M210,18 C140,44 90,124 86,280 L334,280 C330,124 280,44 210,18 Z"/>
+  <path d="M86,280 C90,124 140,44 210,18 C280,44 330,124 334,280"
+        fill="none" stroke="#241c14" stroke-width="2.2"/>
+
+  <!-- soft vignette corners (kept inside the canvas) -->
+  <g fill="#241c14" opacity="0.6">
+    <path d="M0,0 H120 Q30,30 0,110 Z"/>
+    <path d="M420,0 H300 Q390,30 420,110 Z"/>
+    <path d="M0,280 H110 Q28,255 0,180 Z"/>
+    <path d="M420,280 H310 Q392,255 420,180 Z"/>
+  </g>
+</svg>

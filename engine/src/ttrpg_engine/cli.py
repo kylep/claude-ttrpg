@@ -6,7 +6,7 @@ from pathlib import Path
 
 import typer
 
-from ttrpg_engine import chargen, checks, combat, dice, export as export_mod, game as game_mod, inventory, level as level_mod, quests as quests_mod, render, rest as rest_mod, serve as serve_mod, spells, story_log, timeline, travel as travel_mod, worldfs
+from ttrpg_engine import chargen, checks, combat, dice, export as export_mod, game as game_mod, inventory, level as level_mod, quests as quests_mod, region_map, render, rest as rest_mod, serve as serve_mod, spells, story_log, timeline, travel as travel_mod, worldfs
 from ttrpg_engine.errors import EngineError
 
 app = typer.Typer(add_completion=False, no_args_is_help=True)
@@ -259,11 +259,13 @@ def story_action(pc: str = typer.Option(...), text: str = typer.Option(..., help
 @story_app.command("reveal")
 def story_reveal(npc: str = typer.Option(None, help="id from canon/npcs.yaml"),
                  monster: str = typer.Option(None, help="bestiary type id"),
-                 pc: str = typer.Option(None, help="pc id")):
-    """Drop an entity card into the feed when someone is introduced at the table."""
+                 pc: str = typer.Option(None, help="pc id"),
+                 location: str = typer.Option(None, help="region node id")):
+    """Drop an entity card into the feed when someone or somewhere is
+    introduced at the table."""
     root = require_root()
-    if sum(x is not None for x in (npc, monster, pc)) != 1:
-        fail("bad_reveal", "pass exactly one of --npc / --monster / --pc")
+    if sum(x is not None for x in (npc, monster, pc, location)) != 1:
+        fail("bad_reveal", "pass exactly one of --npc / --monster / --pc / --location")
     if npc:
         npcs = guard(worldfs.read_yaml, root / "canon" / "npcs.yaml")
         if npc not in npcs:
@@ -274,6 +276,12 @@ def story_reveal(npc: str = typer.Option(None, help="id from canon/npcs.yaml"),
         entry = guard(game_mod.bestiary_entry, g, monster)
         emit(guard(story_log.post, root, "monster", ref=monster,
                    name=entry.get("name", monster)))
+    elif location:
+        region = guard(worldfs.read_yaml, root / "canon" / "maps" / "region.yaml")
+        if location not in region.get("nodes", {}):
+            fail("not_found", f"no region node {location!r}")
+        emit(guard(story_log.post, root, "location", ref=location,
+                   name=region["nodes"][location].get("name", location)))
     else:
         sheet = guard(worldfs.read_yaml, worldfs.state(root, f"party/{pc}"))
         emit(guard(story_log.post, root, "character", ref=pc, name=sheet["name"]))
@@ -336,6 +344,19 @@ def map_render(svg: bool = typer.Option(False, "--svg")):
     if svg:
         payload["svg"] = str(guard(render.write_svg, root, enc))
     emit(payload)
+
+
+@map_app.command("region")
+def map_region(lens: str = typer.Option("gm", help="gm shows all; player gets fog of war"),
+               out: str = typer.Option(None, help="output path (default renders/region.svg)")):
+    """Render the region map — the world map with travel fog — to an SVG file."""
+    root, g = require_root_and_game()
+    content = guard(region_map.svg, root, g, lens)
+    path = Path(out) if out else root / "renders" / "region.svg"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content)
+    emit({"file": str(path), "lens": "gm" if lens == "gm" else "player",
+          "visited": sorted(guard(region_map.visited_nodes, root, g))})
 
 
 enc_app = typer.Typer()

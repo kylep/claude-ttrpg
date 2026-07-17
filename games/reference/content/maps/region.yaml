@@ -1,13 +1,21 @@
 # nodes: travel destinations; coords are approximate map placement (also image-gen hints), terrain is flavor
 # edges: undirected routes; hours advance the world clock on `engine travel`
+# description: shown on the location card in the live viewer; keep to 1-2 sentences
 nodes:
-  thornbury: {name: Thornbury, coords: [0, 0], terrain: settlement}
-  old-road: {name: The Old Road, coords: [4, 1], terrain: road}
-  barrow-woods: {name: Barrow Woods, coords: [7, 3], terrain: forest}
-  barrowdeep: {name: Barrowdeep, coords: [8, 5], terrain: hills}
-  sunken-stair: {name: The Sunken Stair, coords: [9, 7], terrain: underground}
-  drowned-gallery: {name: The Drowned Gallery, coords: [10, 9], terrain: flooded}
-  ward-hall: {name: The Ward-Hall, coords: [11, 11], terrain: sepulcher}
+  thornbury: {name: Thornbury, coords: [0, 0], terrain: settlement,
+    description: "A palisaded farming village of thatch and cart-ruts, run near enough by Reeve Halda from the moot-hall. The Wattle & Gale pours the only beer for a day's walk in any direction."}
+  old-road: {name: The Old Road, coords: [4, 1], terrain: road,
+    description: "The kingdom's road east, older than the kingdom: heaved flagstones, leaning mile-markers, and hedgerows tall enough to hide anything that wants to stay hidden."}
+  barrow-woods: {name: Barrow Woods, coords: [7, 3], terrain: forest,
+    description: "Dark-needled pines pressed close over moss-swallowed stones that were set standing on purpose, long ago. The locals don't cut wood here, and don't say why."}
+  barrowdeep: {name: Barrowdeep, coords: [8, 5], terrain: hills,
+    description: "A procession of grassed-over burial mounds climbing the hills, the greatest of them split open by last spring's flood — a doorway of old dark stone where no doorway should be."}
+  sunken-stair: {name: The Sunken Stair, coords: [9, 7], terrain: underground,
+    description: "Beyond the breached mound, a stair of fitted stone descends farther than any barrow has a right to go, roots and seep-water working between the joints."}
+  drowned-gallery: {name: The Drowned Gallery, coords: [10, 9], terrain: flooded,
+    description: "A pillared hall flooded shin-deep and black, where every footstep answers itself twice and the carvings continue below the waterline."}
+  ward-hall: {name: The Ward-Hall, coords: [11, 11], terrain: sepulcher,
+    description: "The barrow's warded heart: a vaulted sepulcher whose sealing-stones were cut with care by people who wanted, very much, for something to stay inside."}
 edges:
   - {between: [thornbury, old-road], hours: 4}
   - {between: [old-road, barrow-woods], hours: 3}

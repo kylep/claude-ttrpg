@@ -1,11 +1,24 @@
 import copy
+import re
 from pathlib import Path
 
 from ttrpg_engine import game as game_mod
-from ttrpg_engine import render, worldfs
+from ttrpg_engine import region_map, render, worldfs
 from ttrpg_engine.combat import effect_names
 from ttrpg_engine.errors import EngineError
-from ttrpg_engine.markdown_render import render_markdown
+from ttrpg_engine.markdown_render import render_markdown, sanitize_html
+
+# authored SVG art is canon content run through the same sanitizer as
+# markdown, plus a foreignObject strip (it can smuggle arbitrary HTML)
+_FOREIGN_RE = re.compile(r"<foreignObject\b.*?</foreignObject>",
+                         re.DOTALL | re.IGNORECASE)
+
+
+def _art_svg(root: Path, ref: str) -> str | None:
+    p = root / "canon" / "art" / f"{ref}.svg"
+    if not p.is_file():
+        return None
+    return _FOREIGN_RE.sub("", sanitize_html(p.read_text()))
 
 _TIMELINE_TAIL = 30  # how many recent timeline events the GM lens shows
 # encounter bookkeeping surfaced only in the GM lens, never to players
@@ -184,11 +197,47 @@ def _quest_card(quest: dict, lens: str) -> dict:
     return card
 
 
+def _location_card(root: Path, g: dict, region: dict, ref: str, lens: str) -> dict:
+    """A region node as a card: description, ways out, authored art. Player
+    lens honors the fog — a merely-rumored node shows its name and nothing
+    more, an unknown one doesn't resolve at all."""
+    node = region["nodes"][ref]
+    vis = region_map.visited_nodes(root, g)
+    if lens != "gm" and ref not in vis:
+        neighbours = {b if a == ref else a
+                      for e in region.get("edges", [])
+                      for a, b in [e["between"]] if ref in (a, b)}
+        if neighbours & vis:
+            return {"kind": "location", "id": ref, "name": node.get("name", ref),
+                    "terrain": node.get("terrain"), "rumored": True}
+        raise EngineError("not_found", f"no entity {ref!r}")
+    party = worldfs.read_yaml(worldfs.state(root, "party"))
+    card = {"kind": "location", "id": ref, "name": node.get("name", ref),
+            "terrain": node.get("terrain"),
+            "description": " ".join(str(node.get("description", "")).split()) or None,
+            "visited": ref in vis,
+            "party_here": str(party["location"]) == ref,
+            "connections": [
+                {"id": other, "name": region["nodes"].get(other, {}).get("name", other),
+                 "hours": e["hours"]}
+                for e in region.get("edges", [])
+                for a, b in [e["between"]] if ref in (a, b)
+                for other in [b if a == ref else a]
+            ],
+            "art_svg": _art_svg(root, ref)}
+    if lens == "gm":
+        npcs_path = root / "canon" / "npcs.yaml"
+        npcs = worldfs.read_yaml(npcs_path) if npcs_path.exists() else {}
+        card["npcs"] = [{"id": nid, "name": n.get("name", nid), "role": n.get("role")}
+                        for nid, n in npcs.items() if n.get("location") == ref]
+    return card
+
+
 def entity_card(root: Path, g: dict, ref: str, lens: str) -> dict:
     """Resolve `ref` — a PC id, an encounter combatant, a bestiary type, an
-    NPC key from canon/npcs.yaml, or a quest id — into a lens-aware card of
-    its live state. Raises not_found for anything unknown, including monsters
-    a player lens isn't allowed to see."""
+    NPC key from canon/npcs.yaml, a quest id, or a region node — into a
+    lens-aware card of its live state. Raises not_found for anything unknown,
+    including monsters and locations a player lens isn't allowed to see."""
     lens = "gm" if lens == "gm" else "player"
     if ref.startswith("pc-"):
         if worldfs.state(root, f"party/{ref}").exists():
@@ -209,6 +258,11 @@ def entity_card(root: Path, g: dict, ref: str, lens: str) -> dict:
     quest_path = root / "state" / "quests" / f"{ref}.yaml"
     if quest_path.exists():
         return _quest_card(worldfs.read_yaml(quest_path), lens)
+    region_path = root / "canon" / "maps" / "region.yaml"
+    if region_path.exists():
+        region = worldfs.read_yaml(region_path)
+        if ref in region.get("nodes", {}):
+            return _location_card(root, g, region, ref, lens)
     raise EngineError("not_found", f"no entity {ref!r}")
 
 
@@ -246,6 +300,12 @@ def state_snapshot(root: Path, g: dict, lens: str) -> dict:
         snap["map_svg"] = render.svg_map(
             view, caption=False, status=_token_status(roster),
             up=up if up != "???" else None)
+    elif (root / "canon" / "maps" / "region.yaml").exists():
+        # no fight running: the map pane shows the world instead of a void
+        try:
+            snap["region_svg"] = region_map.svg(root, g, lens)
+        except Exception:
+            snap["region_svg"] = None   # a malformed region must not kill the viewer
     if lens == "gm":
         snap["internals"] = {k: (enc or {}).get(k) or {} for k in _INTERNAL_KEYS}
         snap["timeline"] = _timeline_tail(root)

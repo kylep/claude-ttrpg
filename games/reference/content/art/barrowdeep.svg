@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 280">
+  <!-- Barrowdeep: burial mounds climbing a hillside; the greatest mound flood-split,
+       revealing a dark stone doorway. House cartography style. -->
+
+  <!-- sky: parchment under storm -->
+  <rect x="0" y="0" width="420" height="280" fill="#e8dcc0"/>
+
+  <!-- upper storm mass -->
+  <path d="M-6,-6 L426,-6 L426,26 C 386,38 344,22 298,34 C 250,44 208,26 162,38 C 112,48 62,30 -6,44 Z"
+        fill="#c6b794"/>
+  <!-- second cloud band -->
+  <path d="M-6,40 C 58,30 122,48 188,36 C 254,26 322,44 426,30 L426,62 C 350,74 296,54 236,66 C 176,76 96,62 -6,74 Z"
+        fill="#d8c9a6"/>
+  <!-- pale storm-light rift above the far crest -->
+  <path d="M156,112 C 176,102 202,104 226,98 C 252,92 274,94 300,86 C 328,78 352,80 378,72 C 396,66 412,66 426,62 L426,90 C 330,102 240,118 156,134 Z"
+        fill="#efe6d2"/>
+
+  <!-- slanting rain off to the east -->
+  <g stroke="#8a7a5f" stroke-width="0.8" stroke-linecap="round">
+    <line x1="316" y1="60" x2="305" y2="104"/>
+    <line x1="330" y1="56" x2="319" y2="100"/>
+    <line x1="344" y1="54" x2="333" y2="98"/>
+    <line x1="358" y1="51" x2="347" y2="95"/>
+    <line x1="372" y1="48" x2="361" y2="92"/>
+    <line x1="386" y1="46" x2="375" y2="90"/>
+    <line x1="400" y1="43" x2="389" y2="87"/>
+    <line x1="412" y1="41" x2="401" y2="85"/>
+  </g>
+
+  <!-- distant birds -->
+  <g stroke="#4a3527" stroke-width="1" fill="none" stroke-linecap="round">
+    <path d="M254,62 C 257,59 260,59 262,62 C 264,59 267,59 270,62"/>
+    <path d="M280,72 C 282,70 284,70 286,72 C 288,70 290,70 292,72"/>
+  </g>
+
+  <!-- hillside -->
+  <path d="M-6,206 C 58,198 128,192 190,182 C 258,170 330,148 426,122 L426,286 L-6,286 Z"
+        fill="#7d8a63" stroke="#4a3527" stroke-width="1.8"/>
+
+  <!-- worn track winding up between the mounds (behind them) -->
+  <path d="M242,216 C 268,206 298,194 318,182 C 340,169 356,161 372,151 C 384,143 396,137 408,131"
+        fill="none" stroke="#a99c80" stroke-width="2.6" stroke-linecap="round"/>
+
+  <!-- procession of lesser mounds, receding uphill -->
+  <!-- farthest -->
+  <path d="M356,137 C 358,124 366,117 379,117 C 392,117 400,124 402,137 C 387,140 371,140 356,137 Z"
+        fill="#8a9670" stroke="#4a3527" stroke-width="1.3"/>
+  <path d="M365,131 C 371,126 387,126 393,131" fill="none" stroke="#5d6a45" stroke-width="0.8"/>
+  <!-- middle -->
+  <path d="M318,157 C 320,140 331,131 348,131 C 365,131 376,140 378,157 C 358,161 338,161 318,157 Z"
+        fill="#86936c" stroke="#4a3527" stroke-width="1.4"/>
+  <path d="M329,148 C 337,141 359,141 367,148" fill="none" stroke="#5d6a45" stroke-width="0.8"/>
+  <!-- nearest of the small ones -->
+  <path d="M250,181 C 253,158 268,147 291,147 C 314,147 329,158 332,181 C 305,186 277,186 250,181 Z"
+        fill="#86936c" stroke="#4a3527" stroke-width="1.6"/>
+  <path d="M264,168 C 275,159 307,159 318,168" fill="none" stroke="#5d6a45" stroke-width="0.9"/>
+  <path d="M272,178 C 282,171 300,171 310,178" fill="none" stroke="#5d6a45" stroke-width="0.8"/>
+
+  <!-- foreground turf band -->
+  <path d="M-6,248 C 78,240 190,244 300,238 C 348,236 390,234 426,232 L426,286 L-6,286 Z"
+        fill="#6f7f52"/>
+
+  <!-- ================= the great mound ================= -->
+  <path d="M50,238 C 56,180 96,136 152,132 C 210,134 250,176 260,238 C 200,246 110,246 50,238 Z"
+        fill="#7d8a63" stroke="#4a3527" stroke-width="2.4"/>
+  <!-- shaded western flank -->
+  <path d="M52,237 C 58,184 94,140 138,134 C 118,154 102,180 94,208 C 90,222 88,232 88,239 C 74,239 61,238 52,237 Z"
+        fill="#66744c"/>
+  <!-- turf contours -->
+  <path d="M96,168 C 116,150 148,144 176,150" fill="none" stroke="#5d6a45" stroke-width="0.9"/>
+  <path d="M86,198 C 100,186 118,178 138,175" fill="none" stroke="#5d6a45" stroke-width="0.8"/>
+  <path d="M212,168 C 226,178 236,192 242,208" fill="none" stroke="#5d6a45" stroke-width="0.8"/>
+
+  <!-- flood-torn breach in the mound's face -->
+  <path d="M164,160 C 170,154 176,158 182,152 C 188,147 196,152 202,148 C 210,145 218,152 224,158 C 220,164 226,170 230,178 C 226,184 234,192 236,202 C 232,208 240,218 242,228 C 238,232 244,236 244,239 C 216,242 182,242 156,240 C 158,234 152,228 154,220 C 158,214 152,206 156,198 C 160,192 154,184 158,176 C 162,170 158,164 164,160 Z"
+        fill="#b3a68a" stroke="#4a3527" stroke-width="1.8"/>
+  <!-- torn turf lip over the breach -->
+  <path d="M164,160 C 170,163 176,158 182,161 C 190,164 198,158 206,162 C 212,164 220,162 224,158 C 218,152 210,145 202,148 C 196,152 188,147 182,152 C 176,158 170,154 164,160 Z"
+        fill="#5d6a45" stroke="#4a3527" stroke-width="1"/>
+  <!-- lighter scoured earth at the breach edges -->
+  <path d="M158,176 C 164,172 170,174 174,172 C 172,192 170,214 170,239 C 165,239 160,240 156,240 C 158,234 152,228 154,220 C 158,214 152,206 156,198 C 160,192 154,184 158,176 Z"
+        fill="#c9bda3"/>
+  <path d="M226,172 C 230,180 234,190 236,202 C 232,208 240,218 242,228 C 238,232 244,236 244,239 C 240,239 236,240 232,240 C 232,216 230,192 226,172 Z"
+        fill="#c9bda3"/>
+  <!-- earth overhang shadow above the doorway -->
+  <path d="M170,166 C 184,160 208,160 222,166 C 224,172 225,178 226,184 C 208,176 188,176 170,182 C 170,176 170,170 170,166 Z"
+        fill="#8a7a5f"/>
+
+  <!-- doorway of old dark stone -->
+  <!-- lintel, slightly settled -->
+  <path d="M169,168 L 225,172 L 224,184 L 168,180 Z"
+        fill="#8c7f63" stroke="#4a3527" stroke-width="1.7"/>
+  <!-- left upright -->
+  <path d="M174,180 L 188,181 L 187,238 L 173,238 Z"
+        fill="#8c7f63" stroke="#4a3527" stroke-width="1.7"/>
+  <!-- right upright -->
+  <path d="M206,182 L 220,183 L 221,238 L 207,238 Z"
+        fill="#8c7f63" stroke="#4a3527" stroke-width="1.7"/>
+  <!-- the dark within -->
+  <path d="M188,181 L 206,182 L 207,238 L 187,238 Z" fill="#241c14"/>
+  <!-- steps sinking into the dark -->
+  <path d="M189,224 L 205,224" stroke="#3a2e1f" stroke-width="1.2" fill="none"/>
+  <path d="M190,231 L 204,231" stroke="#3a2e1f" stroke-width="1.2" fill="none"/>
+  <!-- weathering on the stones -->
+  <path d="M178,192 C 179,204 179,218 178,232" fill="none" stroke="#4a3527" stroke-width="0.8"/>
+  <path d="M214,194 C 215,208 215,222 214,234" fill="none" stroke="#4a3527" stroke-width="0.8"/>
+  <path d="M176,173 L 216,176" fill="none" stroke="#4a3527" stroke-width="0.8"/>
+  <!-- moss creeping onto the lintel -->
+  <path d="M169,168 C 175,166 181,168 185,169 L 184,174 C 178,173 173,172 169,173 Z"
+        fill="#6f7f52"/>
+
+  <!-- tumbled stones washed out of the breach -->
+  <path d="M150,236 L 162,232 L 168,238 L 158,243 Z" fill="#b3a68a" stroke="#4a3527" stroke-width="1.1"/>
+  <path d="M228,234 L 240,232 L 244,240 L 232,242 Z" fill="#c9bda3" stroke="#4a3527" stroke-width="1.1"/>
+
+  <!-- floodwater pooled below, still draining east -->
+  <path d="M56,252 C 104,244 170,240 240,241 C 306,243 366,249 426,245 L426,286 L 28,286 C 34,272 44,260 56,252 Z"
+        fill="#4a6a7a" stroke="#4a3527" stroke-width="1.6"/>
+  <!-- silt fan spilling from the breach into the water -->
+  <path d="M164,240 C 180,238 200,238 218,240 C 228,244 236,250 240,256 C 216,254 188,254 170,256 C 164,250 162,244 164,240 Z"
+        fill="#b3a68a" stroke="#4a3527" stroke-width="1"/>
+  <!-- ripples -->
+  <path d="M104,260 C 120,256 140,256 154,259" fill="none" stroke="#7f99a6" stroke-width="1.1" stroke-linecap="round"/>
+  <path d="M250,254 C 270,251 294,251 312,254" fill="none" stroke="#7f99a6" stroke-width="1.1" stroke-linecap="round"/>
+  <path d="M330,262 C 348,259 370,259 386,262" fill="none" stroke="#7f99a6" stroke-width="1" stroke-linecap="round"/>
+  <path d="M156,268 C 176,264 202,264 222,267" fill="none" stroke="#7f99a6" stroke-width="1" stroke-linecap="round"/>
+
+  <!-- grass tufts -->
+  <g stroke="#4a3527" stroke-width="0.9" fill="none" stroke-linecap="round">
+    <path d="M96,158 l -2,-6 M100,158 l 0,-7 M104,158 l 2,-6"/>
+    <path d="M132,142 l -2,-6 M136,142 l 0,-7 M140,142 l 2,-6"/>
+    <path d="M282,158 l -2,-5 M286,158 l 0,-6 M290,158 l 2,-5"/>
+    <path d="M344,140 l -2,-5 M348,140 l 0,-5"/>
+    <path d="M36,232 l -2,-6 M40,232 l 0,-7 M44,232 l 2,-6"/>
+    <path d="M60,244 l -2,-6 M64,244 l 0,-7 M68,244 l 2,-6"/>
+  </g>
+
+  <!-- parchment margin masking anything outside the frame -->
+  <rect x="-12" y="-12" width="444" height="18" fill="#e8dcc0"/>
+  <rect x="-12" y="274" width="444" height="18" fill="#e8dcc0"/>
+  <rect x="-12" y="-12" width="18" height="304" fill="#e8dcc0"/>
+  <rect x="414" y="-12" width="18" height="304" fill="#e8dcc0"/>
+  <!-- frame -->
+  <rect x="6" y="6" width="408" height="268" rx="5" fill="none" stroke="#4a3527" stroke-width="2"/>
+</svg>
