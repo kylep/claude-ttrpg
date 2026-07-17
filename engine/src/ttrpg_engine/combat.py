@@ -250,7 +250,18 @@ def start(root: Path, g: dict, map_rel: str, rng: Random, pcs: list[str] | None 
                           summary=f"encounter started: {emap['name']}")
     story_log.post(root, "combat", event="start", name=emap["name"])
     return {"id": enc["id"], "order": order,
-            "initiative": {c: scores[c][0] for c in order}}
+            "initiative": {c: scores[c][0] for c in order},
+            "controls": {c: control_of(root, enc, c) for c in order}}
+
+
+def control_of(root: Path, enc: dict, cid: str) -> str | None:
+    """Who runs this combatant at the table: "monster", or a PC's `played_by`
+    (a player's name, or "GM"). None when a PC sheet predates the field — the
+    GM then falls back to the session's played-by line."""
+    if cid in enc.get("monsters", {}):
+        return "monster"
+    sheet = worldfs.read_yaml(worldfs.state(root, f"party/{cid}"))
+    return sheet.get("played_by")
 
 
 def next_turn(root: Path, rng: Random | None = None) -> dict:
@@ -282,8 +293,10 @@ def next_turn(root: Path, rng: Random | None = None) -> dict:
                     and rng is not None):
                 falling.append(cid)
     save_encounter(root, enc)
+    up = enc["order"][enc["turn"]]
     result = {"round": enc["round"], "turn": enc["turn"],
-              "up": enc["order"][enc["turn"]], "expired_effects": expired}
+              "up": up, "up_control": control_of(root, enc, up),
+              "expired_effects": expired}
     if falling:
         result["fell"] = [fall(root, cid, rng) for cid in falling]
     return result

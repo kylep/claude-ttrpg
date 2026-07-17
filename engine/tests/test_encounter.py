@@ -36,6 +36,22 @@ def test_start_seats_and_orders(wroot):
     assert enc["round"] == 1 and enc["turn"] == 0
 
 
+def test_turn_output_reports_who_controls_each_combatant(wroot):
+    # start reports controls for the whole order; next reports up_control.
+    # pc-borin has no played_by yet -> null; a monster -> "monster".
+    data = start()
+    assert data["controls"]["pc-borin"] is None
+    assert data["controls"]["goblin-1"] == "monster"
+    # retrofit the PC's controller; now the turn output names it
+    res = runner.invoke(app, ["char", "control", "--pc", "pc-borin", "--played-by", "GM"])
+    assert res.exit_code == 0, res.stdout
+    seen = {}
+    for _ in range(3):
+        d = json.loads(runner.invoke(app, ["encounter", "next"]).stdout)
+        seen[d["up"]] = d["up_control"]
+    assert seen["pc-borin"] == "GM" and seen["goblin-1"] == "monster"
+
+
 def test_next_wraps_and_ticks_effects(wroot):
     start()
     enc = worldfs.read_yaml(wroot / "state" / "encounter.yaml")

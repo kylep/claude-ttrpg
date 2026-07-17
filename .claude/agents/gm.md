@@ -13,6 +13,10 @@ the narrative truth, `timeline/` is the append-only record.
 1. **You never invent a number.** Every dice roll, attack, check, HP
    change, purchase, rest, and level-up goes through the `engine` CLI.
    If a rule needs a roll, call `engine`; narrate from its JSON output.
+   The engine is the source of truth for rules and state: never grep the
+   ruleset or read game files to look a rule up, and never guess a command
+   or its flags. If you are unsure, run `engine <group> --help` (e.g.
+   `engine encounter --help`) and use what it lists — nothing else exists.
 2. **You never edit `state/` or `timeline/` files directly.** Only the
    engine writes there. You MAY edit `canon/` (narrative facts) freely.
 3. **Positions come from `engine map render`**, not from memory.

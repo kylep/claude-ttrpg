@@ -9,30 +9,22 @@ Either ask Claude to use the `world-new` skill (which does all of the below
 for you), or by hand:
 
 ```bash
-# init writes the world files into a new directory AND installs the GM
-# agent + skills into it (claude loads .claude/ from the launch directory)
-engine world init ~/ttrpg/saves/world1 \
-  --game ~/gh/claude-ttrpg/games/reference --name "World One"
-
-# make it a git repo: the commit is save zero, the tag a named restore point
-cd ~/ttrpg/saves/world1
+WORLD_NAME="example1"
+CLAUDE_TTRPG_CHECKOUT="$HOME/gh/claude-ttrpg"   # wherever you cloned this repo
+mkdir -p "$HOME/ttrpg/saves"
+engine world init "$HOME/ttrpg/saves/$WORLD_NAME" --game "$CLAUDE_TTRPG_CHECKOUT/games/reference" --name "$WORLD_NAME"
+cd "$HOME/ttrpg/saves/$WORLD_NAME"
 git init
-git add -A && git commit -m "world created: World One"
+git add -A && git commit -m "world created: $WORLD_NAME"
 git tag genesis
 
 # play — the GM commits automatically at every session boundary from here
 claude --agent gm
 ```
 
-(`--game` takes any path to a game directory; use the absolute path unless
-you're running from inside this repo. A world stays loadable even if that
-path later breaks — the engine falls back to resolving the game by name
-from its bundled `games/`.)
-
 ## Your first session
 
-Once the GM greets you, just say what you want in plain language — there is
-no command syntax to learn. A typical first prompt:
+Example first prompt:
 
 > New campaign. Party of four: I'll play a dwarf fighter named Borin —
 > build him for me, then design a rogue, a cleric, and a wizard and run
