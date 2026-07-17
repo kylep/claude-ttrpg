@@ -4,13 +4,13 @@
 club: {type: weapon, damage: "1d4", finesse: false, range: 1, price: 1,
   description: "A shaped length of hard wood, heavier at one end; the first weapon anyone ever picked up, and still an honest answer to a fight."}
 dagger: {type: weapon, damage: "1d4", finesse: true, range: 1, price: 2,
-  description: "A hand-span of sharpened steel that hides in a boot or sleeve; quick hands matter more than strong ones, and it can be thrown in a pinch."}
+  description: "A hand-span of sharpened steel that hides in a boot or sleeve; quick wrists turn it into a deadly close-quarters dance."}
 handaxe: {type: weapon, damage: "1d6", finesse: false, range: 1, price: 5,
-  description: "A short, single-bladed axe made for splitting kindling or skulls; light enough to hurl across a room when the moment calls for it."}
+  description: "A short, single-bladed axe made for splitting kindling or skulls alike; an efficient weapon in the thick of melee."}
 quarterstaff: {type: weapon, damage: "1d6", finesse: false, range: 1, price: 2,
   description: "A shoulder-height pole of seasoned oak, plain and forgiving; a shepherd's tool that a trained hand turns into a whirl of bruising strikes."}
 spear: {type: weapon, damage: "1d6", finesse: false, range: 1, price: 1,
-  description: "A leaf-shaped head on a long ash haft; it keeps trouble at arm's length and can be flung as a parting gift."}
+  description: "A leaf-shaped head on a long ash haft; it keeps enemies at bay and rewards a steady hand in a tight press."}
 shortsword: {type: weapon, damage: "1d6", finesse: true, range: 1, price: 10,
   description: "A short, sharp thrusting blade favored in tight quarters; rewards a quick wrist over a strong arm."}
 longsword: {type: weapon, damage: "1d8", finesse: false, range: 1, price: 15,
