@@ -93,3 +93,126 @@ champion:
     Capstone. The fighter's attack action now makes four attacks (four
     separate `engine attack` rolls), and whenever they spend a battle_focus
     point the die always counts as its maximum value instead of being rolled.
+# ── Barbarian ────────────────────────────────────────────────────────────
+rage:
+  description: >
+    Signature. Once per long rest to start (see rugged_recovery, tireless_fury,
+    deeper_fury, and endless_fury for more uses), as a bonus or free action
+    before their turn's action the barbarian flies into a rage: the GM applies
+    the `raging` effect to them, lasting until the fight ends, they choose to
+    calm down, or (before persistent_rage) they go a full turn without
+    attacking or taking damage. On top of raging's own +2 melee bonus, every
+    melee `engine attack` hit while raging also adds a rage rider die — 1d4 at
+    this level — to the damage total by hand. Later features grow the die.
+unarmored_defense:
+  description: >
+    Signature, GM-adjudicated. While wearing no armor, the barbarian's own
+    toughness is their armor: AC = 10 + DEX modifier + CON modifier. Since
+    `derive.armor_class` only reads equipped armor items, the GM sets this by
+    hand on the sheet at creation (attributes are fixed for life, so it never
+    needs recalculating). A carried shield still adds its +2 by hand on top.
+wild_sprint:
+  description: >
+    The barbarian's legs never tire of open ground: their speed increases by
+    2 squares at all times, and difficult terrain costs them no extra
+    movement — the GM waives the doubled move cost for them.
+reckless_assault:
+  description: >
+    Identity. On their turn, before attacking, the barbarian may declare a
+    reckless assault: every `engine attack` they make this turn rolls with
+    --adv, but every attack made against them before the start of their next
+    turn also rolls with --adv. The GM notes the exposure and clears it at
+    the top of the barbarian's next turn.
+rugged_recovery:
+  description: >
+    Numeric bump. The barbarian gains a second rage per long rest. Once per
+    short rest they may also catch their breath: the GM applies `engine heal`
+    for 1d12 + the barbarian's level to them.
+surging_fury:
+  description: >
+    Numeric bump. The rage rider die grows from 1d4 to 1d6.
+feral_resilience:
+  description: >
+    While raging, the barbarian's nerve cannot be broken: the GM never applies
+    the frightened effect to them, and every saving throw they make while
+    raging rolls with --adv (`engine save --adv`).
+danger_sense:
+  description: >
+    The barbarian's instincts scream before the trap springs: they roll DEX
+    saving throws with --adv (`engine save --adv`) against dangers they can
+    see coming — falling floors, swinging blades, gouts of flame — and the GM
+    rolls their `engine initiative` with --adv as well, since they are rarely
+    caught flat-footed.
+hardened_hide:
+  description: >
+    Numeric bump. While raging, in addition to halving physical damage (per
+    the `raging` effect) the barbarian now also halves damage from fire, cold,
+    and lightning; the GM applies the extra reduction by hand.
+brutal_strike:
+  description: >
+    Numeric bump. The rage rider die grows from 1d6 to 1d8. Once per turn,
+    when the barbarian hits with a melee `engine attack` while raging, they
+    may add a second rage rider die to that single hit.
+tireless_fury:
+  description: >
+    Numeric bump. The barbarian now rages three times per long rest, and the
+    short-rest recovery granted by rugged_recovery may be used twice per
+    short rest.
+relentless_rage:
+  description: >
+    Spike. The rage rider die grows from 1d8 to 1d10. While raging, if damage
+    would drop the barbarian to 0 HP without killing them outright, they may
+    make a CON saving throw (GM sets the DC at 10, +5 for each time they've
+    used this since their last long rest); on a success the GM leaves them at
+    1 HP instead of dropping them.
+unbroken_will:
+  description: >
+    Numeric bump. The barbarian is immune to the frightened effect at all
+    times, not only while raging, and every CON saving throw they make rolls
+    with --adv (`engine save --adv`).
+call_of_the_wild:
+  description: >
+    The wilds answer the barbarian's call: they roll Survival, Nature, and
+    Perception checks with --adv (`engine check --adv`) while outdoors, and
+    their presence unsettles ordinary beasts — the GM may rule a mundane
+    animal backs off rather than press an attack against them.
+deeper_fury:
+  description: >
+    Numeric bump. The barbarian now rages four times per long rest. The first
+    time their rage rider die would be rolled in each rage, the GM instead
+    counts it at its maximum value automatically.
+persistent_rage:
+  description: >
+    The barbarian's fury no longer gutters on its own: a rage no longer ends
+    early for going a turn without attacking or taking damage — only choosing
+    to calm down, being knocked unconscious, or the fight ending clears it.
+iron_constitution:
+  description: >
+    Numeric bump. The rage rider die grows from 1d10 to 1d12, matching the
+    barbarian's hit die. The barbarian also gains a flat +2 HP per level from
+    this point forward, added directly to their hit-die total as a feature
+    bonus (their CON score itself never changes).
+might_of_the_wilds:
+  description: >
+    Spike. While raging, the barbarian's blows carry the wild's whole weight:
+    the rage rider die becomes two dice (2d12) added to every melee hit, and
+    their melee `engine attack` rolls gain --adv for as long as the rage
+    lasts.
+unstoppable:
+  description: >
+    Numeric bump. While raging, the barbarian cannot be knocked prone or
+    restrained: the GM waives the engine's automatic prone/restrained
+    penalties for them, since nothing wild enough to trip them yet exists.
+endless_fury:
+  description: >
+    Numeric bump. The barbarian may rage as many times per long rest as they
+    need — the GM stops tracking a limit — though a short or long rest is
+    still required to catch their breath between fights.
+avatar_of_fury:
+  description: >
+    Capstone. While raging, the barbarian becomes a living avatar of fury:
+    their melee `engine attack` rolls count a natural 19 as well as 20 as a
+    critical hit (the GM doubles the damage dice by hand on a 19, since the
+    engine only auto-crits on a 20), the rage rider die becomes 3d12, and the
+    GM treats their raging damage reduction as full immunity to non-magical
+    physical damage for the rest of the encounter.
