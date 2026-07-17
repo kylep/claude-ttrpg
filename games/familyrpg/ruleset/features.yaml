@@ -1,0 +1,95 @@
+# Class feature tags. The engine treats these as opaque tags on the sheet;
+# each description tells the GM how to adjudicate the feature at the table
+# (via --adv/--dis flags, `engine heal`, `engine attack`, extra rolls, or
+# plain rulings). description is the GM's how-to; keep it precise.
+#
+# ── Fighter ──────────────────────────────────────────────────────────────
+second_wind:
+  description: >
+    Signature. Once per short rest, as their action or a spare moment, the
+    fighter catches a second wind: the GM applies `engine heal` for 1d10 +
+    the fighter's level to the fighter.
+combat_style:
+  description: >
+    At creation of this feature the player picks one fighting style, a
+    lasting edge the GM applies by hand: Blade (--adv on the first attack
+    roll each encounter), Guard (+1 AC while a shield or two-handed weapon is
+    held), Archer (ignore the in-melee --dis on ranged attacks), or Brawler
+    (+2 damage on every melee hit). Note the pick on the sheet; it never
+    changes.
+battle_focus:
+  description: >
+    Identity. The fighter has a focus die (a d6) and 2 focus points per short
+    rest. Before or after any one `engine attack`, `engine save`, or `engine
+    check` roll, spend a point and the GM adds one focus die to that roll's
+    total. Later features grow the die and the number of points.
+deep_reserves:
+  description: >
+    Numeric bump. Second_wind now heals 2d10 + level instead of 1d10 + level,
+    and the fighter has a second use of it per short rest.
+extra_attack:
+  description: >
+    Spike. Whenever the fighter takes the attack action, they attack twice:
+    the GM runs two separate `engine attack` rolls.
+sharper_focus:
+  description: >
+    Numeric bump. The battle_focus die grows from a d6 to a d8, and the
+    fighter now has 3 focus points per short rest.
+battle_tested:
+  description: >
+    The fighter rolls initiative with --adv (`engine initiative --adv`) and
+    cannot be surprised while conscious; the GM never denies them their first
+    turn to an ambush.
+extra_wind:
+  description: >
+    Numeric bump. The fighter gains one more use of second_wind per short
+    rest (three total once combined with deep_reserves).
+indomitable:
+  description: >
+    Once per long rest, when the fighter fails a saving throw, they may reroll
+    it and must take the new result: the GM re-runs that `engine save`.
+keen_focus:
+  description: >
+    Numeric bump. The battle_focus die grows from a d8 to a d10.
+improved_extra_attack:
+  description: >
+    Spike. The fighter's attack action now makes three attacks: the GM runs
+    three separate `engine attack` rolls.
+relentless_focus:
+  description: >
+    Numeric bump. Whenever the fighter scores a critical hit (natural 20) on
+    an `engine attack`, they immediately regain one spent focus point.
+hardened_resolve:
+  description: >
+    Numeric bump. The fighter gains a second use of indomitable per long rest.
+mighty_focus:
+  description: >
+    Numeric bump. The battle_focus die grows from a d10 to a d12.
+unyielding:
+  description: >
+    Numeric bump. When the fighter uses indomitable, they reroll the failed
+    save with --adv (`engine save --adv`) and take the better result.
+master_at_arms:
+  description: >
+    Spike. Pick a second combat_style (apply both). In addition, once per
+    turn when the fighter misses with an `engine attack`, they may reroll that
+    single attack once.
+sure_strike:
+  description: >
+    Numeric bump. The fighter's weapon attacks now score a critical hit on a
+    natural 19 as well as 20; the GM doubles the damage dice by hand on a 19,
+    since the engine only auto-crits on a 20.
+third_wind:
+  description: >
+    Numeric bump. The fighter gains a fourth focus point per short rest and a
+    third use of indomitable per long rest.
+tireless:
+  description: >
+    Numeric bump. At the start of each of the fighter's turns in combat, if
+    they are below half their maximum HP, the GM applies `engine heal` for 5
+    to them automatically.
+champion:
+  description: >
+    Capstone. The fighter's attack action now makes four attacks (four
+    separate `engine attack` rolls), and whenever they spend a battle_focus
+    point the die always counts as its maximum value instead of being rolled.
