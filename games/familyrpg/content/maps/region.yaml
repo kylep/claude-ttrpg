@@ -1,13 +1,78 @@
-# nodes: travel destinations; coords are approximate map placement, terrain is flavor
-# edges: undirected routes; hours advance the world clock on `engine travel`
-# description: shown on the location card in the live viewer; keep to 1-2 sentences
+# High-level world node map for the familyrpg campaign world ("The Known World").
+# Carved from the world bible + source map. HIGH-LEVEL only — the major named
+# places, linked by the roads / Ironline rail / sea lanes. Interstitial nodes
+# (waypoints, encounter sites, dungeon rooms) get added later as depth is added.
+#
+# nodes: travel destinations. coords are the source-map position (viewBox/100,
+#   also image-gen hints); terrain is flavor.
+# edges: undirected routes; `hours` advances the world clock on `engine travel`.
+#   Travel model (first pass, tunable): foot ~1h per mile (a day's march ~24mi);
+#   the Ironline rail ~5x faster; sea passage ~2.5x faster.
 nodes:
-  greenhollow: {name: Greenhollow, coords: [0, 0], terrain: settlement,
-    description: "A snug village of green-shuttered cottages around a duck pond and a well, where everyone knows your name and half of them are your cousin. The Kettle & Cat serves stew and news in equal measure."}
-  kings_road: {name: The King's Road, coords: [4, 1], terrain: road,
-    description: "The broad packed-earth road that ties the valley to the wider realm: milestones, hedgerows, and the occasional overturned cart that turns out to be bait."}
-  hollow_wood: {name: Hollow Wood, coords: [7, 3], terrain: forest,
-    description: "A tangle of old oaks and green shade just off the road, pretty by day and full of small mean things by dusk; the village children are told to be home before the light goes."}
+  millbrook: {name: Millbrook, coords: [6.4, 9.0], terrain: farmland,
+    description: "A cozy mill-village where the West Road leaves the Great Plains for the dwarf-mountains — a quiet, friendly place for green adventurers to begin."}
+  kingsreach: {name: Kingsreach, coords: [8.0, 9.9], terrain: coast,
+    description: "Walled castle-city on the southern shore, seat of a Duke and the lead voice among the free human cities; the trade roads all answer to Kingsreach."}
+  greenhollow: {name: Greenhollow, coords: [10.1, 8.7], terrain: farmland,
+    description: "A small farming village on the Free Road between Kingsreach and Bridgeton, where the Duskhold Road branches off south into worse country."}
+  bridgeton: {name: Bridgeton, coords: [9.0, 7.2], terrain: river-crossing,
+    description: "A free human city and Duke's seat guarding the great bridge where the East River leaves Heartmere; every road east or west runs through it."}
+  rivergate: {name: Rivergate, coords: [11.2, 7.0], terrain: river,
+    description: "A river and logging town on the East River at the eaves of the Deepwoods, where the Forest Road turns north into elf-country."}
+  eastharbor: {name: Eastharbor, coords: [14.3, 7.2], terrain: coast,
+    description: "The easternmost free city, a busy port ruled by the Duchess; ships leave here for the Storm rock and the Tortle isles."}
+  duskhold: {name: Duskhold, coords: [11.8, 9.5], terrain: ruins,
+    description: "A cursed, broken city and castle shunned by the living, reached only by a lonely spur of road; something old still keeps its halls."}
+  ironford: {name: Ironford, coords: [5.0, 7.8], terrain: mountains,
+    description: "Capital of the dwarves, built where the West River meets the mountains over the great bridge they keep; southern terminus of the Ironline rail."}
+  stonewatch: {name: Stonewatch, coords: [5.7, 8.3], terrain: mountain-pass,
+    description: "A dwarven checkpoint watching the mouth of the mountain pass, where the West Road climbs from the plains toward Ironford."}
+  westharbor: {name: Westharbor, coords: [2.3, 9.0], terrain: coast,
+    description: "A dwarf-led but mixed-race port where the West River spills into the western sea at the foot of the mountains; ships sail from here to Dragon Isle."}
+  ashhaven: {name: Ashhaven, coords: [3.0, 6.6], terrain: volcano,
+    description: "A walled tiefling town built right into the living volcano — warm, proud, and unbothered by the fire that would drive anyone else out."}
+  wastewall: {name: Wastewall, coords: [4.5, 6.2], terrain: fort,
+    description: "A dwarven fort at the mouth of the Ironline's wasteland tunnel, standing watch over the border with the badlands and the orcs beyond."}
+  wasteland_outpost: {name: Wasteland Outpost, coords: [4.3, 5.45], terrain: wasteland,
+    description: "A lonely fortified rail-stop deep in the wastes, where the underground Ironline surfaces briefly to breathe; the last safe roof before the Orc Warcamp."}
+  orc_warcamp: {name: Orc Warcamp, coords: [3.5, 5.8], terrain: wasteland,
+    description: "A hostile war-camp of the pure orcs out in the badlands — tents, banners, and trouble; no place for the unready to wander."}
+  cogwick: {name: Cogwick, coords: [7.7, 5.45], terrain: tundra,
+    description: "A gnome town on the Ironline where the rail crosses the North River on a great fancy bridge, guarded by the gnomish fort of Gearwatch."}
+  elfward: {name: Elfward, coords: [10.1, 5.45], terrain: forest-edge,
+    description: "A quiet frontier fort where the Ironline ends at the border of the Deepwoods — the peaceful, watchful line between dwarf iron and elf green."}
+  emberport: {name: Emberport, coords: [1.5, 9.6], terrain: island,
+    description: "A small dragonborn fishing town on Dragon Isle, in the shadow of the wyrms their people serve; reached only by ship from Westharbor."}
+  shellhaven: {name: Shellhaven, coords: [14.5, 9.0], terrain: island,
+    description: "A tortle village among the East Islands, unhurried and welcoming, where travelers trade news and dry out between sea-crossings."}
+  stormhaven: {name: Stormhaven, coords: [15.2, 7.8], terrain: island,
+    description: "A lonely storm-lashed rock port far out in the eastern waters, wind-scoured and half-wild, where few stay longer than the weather forces."}
 edges:
-  - {between: [greenhollow, kings_road], hours: 2}
-  - {between: [kings_road, hollow_wood], hours: 3}
+  # --- Great Plains: the Free Road & spurs (foot) ---
+  - {between: [kingsreach, greenhollow], hours: 102}
+  - {between: [greenhollow, bridgeton], hours: 78}
+  - {between: [bridgeton, rivergate], hours: 96}
+  - {between: [rivergate, eastharbor], hours: 132}
+  - {between: [greenhollow, duskhold], hours: 78}     # the lonely Duskhold Road
+  # --- The West Road: plains -> dwarf mountains (foot) ---
+  - {between: [kingsreach, millbrook], hours: 78}
+  - {between: [millbrook, bridgeton], hours: 132}
+  - {between: [millbrook, stonewatch], hours: 42}
+  - {between: [stonewatch, ironford], hours: 36}
+  - {between: [ironford, westharbor], hours: 126}     # West River pass to the coast
+  # --- Western highlands (foot) ---
+  - {between: [ashhaven, ironford], hours: 96}
+  - {between: [ashhaven, wastewall], hours: 66}
+  - {between: [orc_warcamp, wastewall], hours: 48}
+  # --- Forest Road into the Deepwoods (foot) ---
+  - {between: [rivergate, elfward], hours: 78}
+  # --- The Ironline (dwarven magitech rail — fast) ---
+  - {between: [ironford, wastewall], hours: 15}       # underground through the wastes
+  - {between: [wastewall, wasteland_outpost], hours: 6}
+  - {between: [wasteland_outpost, cogwick], hours: 30} # surfaces in the tundra
+  - {between: [cogwick, elfward], hours: 21}
+  # --- Sea lanes (ship) ---
+  - {between: [westharbor, emberport], hours: 18}
+  - {between: [eastharbor, shellhaven], hours: 30}
+  - {between: [eastharbor, stormhaven], hours: 18}
+  - {between: [shellhaven, stormhaven], hours: 24}

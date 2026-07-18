@@ -3,4 +3,4 @@ version: 0.1.0
 description: A family-heroic tabletop ruleset — scary-but-beatable adventures where death is soft and every hero has one clear thing they are best at.
 start_date: "0001-01-01"   # calendar is 12 months x 30 days
 start_hour: 9              # world clock at creation, 0-23
-start_location: greenhollow  # region-map node id the party starts at
+start_location: millbrook  # region-map node id the party starts at (the starter village)
