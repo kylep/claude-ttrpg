@@ -1,0 +1,175 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 280">
+  <!-- Owlbear: owl-headed bear rearing in the dusk wood. House style: parchment, flat fills, ink outlines. -->
+  <defs>
+    <clipPath id="frame">
+      <rect x="7" y="7" width="406" height="266" rx="12"/>
+    </clipPath>
+  </defs>
+
+  <!-- parchment ground -->
+  <rect x="0" y="0" width="420" height="280" fill="#e8dcc0"/>
+
+  <g clip-path="url(#frame)">
+    <!-- dusk air of the wood -->
+    <rect x="7" y="7" width="406" height="266" fill="#cdbfa0"/>
+
+    <!-- low moon behind the canopy -->
+    <circle cx="322" cy="70" r="30" fill="#efe6d2" opacity="0.55"/>
+    <circle cx="322" cy="70" r="30" fill="#efe6d2" opacity="0.35"/>
+
+    <!-- distant canopy masses, pressing down from the top -->
+    <path d="M7,7 L413,7 L413,58 L398,66 L388,44 L372,64 L358,42 L342,66 L328,46
+             L310,68 L296,46 L278,68 L262,46 L246,68 L232,48 L214,68 L198,46 L180,66
+             L164,44 L148,64 L132,44 L114,62 L100,42 L84,62 L70,42 L52,60 L38,40
+             L22,58 L7,44 Z" fill="#4a3527"/>
+    <path d="M7,7 L413,7 L413,36 L400,42 L390,24 L374,42 L358,24 L342,44 L326,26
+             L308,42 L292,26 L274,42 L258,26 L240,42 L222,26 L204,40 L186,26 L168,42
+             L150,26 L132,40 L114,26 L96,42 L78,26 L60,40 L44,24 L26,40 L7,30 Z"
+          fill="#241c14"/>
+
+    <!-- far pines flanking the clearing -->
+    <path d="M92,214 L92,192 L80,196 L90,166 L82,168 L92,140 L86,142 L94,116 L102,142
+             L96,140 L104,169 L96,166 L106,197 L96,194 L96,214 Z" fill="#3a2b1f"/>
+    <path d="M334,210 L334,190 L324,193 L332,166 L326,167 L334,142 L329,143 L336,120
+             L344,143 L339,142 L346,168 L339,166 L347,193 L338,190 L338,210 Z" fill="#3a2b1f"/>
+
+    <!-- framing trunks, near-dark, at the edges -->
+    <path d="M8,58 L36,56 L32,120 L36,200 L30,272 L8,272 Z"
+          fill="#241c14" stroke="#4a3527" stroke-width="1.6"/>
+    <path d="M8,90 L32,80 L30,96 L36,110 L28,124 L34,150 L24,142 L18,116 L14,92 Z"
+          fill="#241c14"/>
+    <path d="M412,58 L384,56 L388,130 L384,210 L390,272 L412,272 Z"
+          fill="#241c14" stroke="#4a3527" stroke-width="1.6"/>
+    <path d="M412,92 L388,82 L390,98 L384,112 L392,126 L386,150 L396,142 L402,118
+             L406,94 Z" fill="#241c14"/>
+
+    <!-- mossy clearing floor -->
+    <path d="M7,254 L60,250 L120,253 L180,249 L240,253 L300,249 L360,252 L413,249
+             L413,273 L7,273 Z" fill="#6f7f52"/>
+    <ellipse cx="128" cy="256" rx="30" ry="6" fill="#7d8a63"/>
+    <ellipse cx="300" cy="255" rx="26" ry="5" fill="#7d8a63"/>
+    <path d="M7,262 L90,258 L180,263 L280,257 L370,262 L413,258 L413,273 L7,273 Z"
+          fill="#4a3527"/>
+    <path d="M7,269 L120,266 L240,270 L360,265 L413,268 L413,273 L7,273 Z"
+          fill="#241c14"/>
+
+    <!-- fallen mossy log, foreground left -->
+    <path d="M20,244 Q70,232 118,240 L118,250 Q70,244 20,254 Z"
+          fill="#6b5c46" stroke="#241c14" stroke-width="1.6"/>
+    <ellipse cx="118" cy="245" rx="5" ry="7" fill="#8a7a5f" stroke="#241c14" stroke-width="1.4"/>
+    <ellipse cx="118" cy="245" rx="2.4" ry="3.4" fill="#4a3527"/>
+    <path d="M30,240 Q64,232 100,236" stroke="#7d8a63" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <path d="M40,238 L40,232 M52,236 L52,229 M64,235 L64,228 M78,235 L78,229"
+          stroke="#5c6a44" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+
+    <!-- grounding shadow -->
+    <ellipse cx="210" cy="256" rx="66" ry="9" fill="#241c14" opacity="0.22"/>
+
+    <!-- ============ THE OWLBEAR ============ -->
+
+    <!-- torso (fur base) -->
+    <path d="M168,120 C144,140 138,175 150,210 C156,232 168,244 182,248 L206,248
+             L236,248 C252,244 264,230 270,208 C282,175 276,140 252,120
+             Q210,110 168,120 Z" fill="#6b5c46" stroke="#241c14" stroke-width="2.2"/>
+
+    <!-- hind feet -->
+    <path d="M176,240 C166,246 164,256 176,258 L204,258 C206,250 204,242 194,238 Z"
+          fill="#6b5c46" stroke="#241c14" stroke-width="2"/>
+    <path d="M244,240 C254,246 256,256 244,258 L216,258 C214,250 216,242 226,238 Z"
+          fill="#6b5c46" stroke="#241c14" stroke-width="2"/>
+    <g fill="#efe6d2" stroke="#4a3527" stroke-width="1">
+      <path d="M180,256 L177,269 L185,258 Z"/>
+      <path d="M188,258 L187,270 L193,258 Z"/>
+      <path d="M197,258 L198,269 L202,257 Z"/>
+      <path d="M240,256 L243,269 L235,258 Z"/>
+      <path d="M232,258 L233,270 L227,258 Z"/>
+      <path d="M223,258 L222,269 L218,257 Z"/>
+    </g>
+
+    <!-- raised forelimbs framing the head -->
+    <path d="M174,128 C154,124 138,118 124,108 C120,112 120,118 124,122
+             C140,128 158,138 174,144 Z" fill="#6b5c46" stroke="#241c14" stroke-width="2"/>
+    <path d="M246,128 C266,124 282,118 296,108 C300,112 300,118 296,122
+             C280,128 262,138 246,144 Z" fill="#6b5c46" stroke="#241c14" stroke-width="2"/>
+    <!-- fore-claws -->
+    <g fill="#efe6d2" stroke="#4a3527" stroke-width="1">
+      <path d="M124,110 L110,94 L129,106 Z"/>
+      <path d="M129,108 L120,88 L135,104 Z"/>
+      <path d="M135,107 L131,86 L141,103 Z"/>
+      <path d="M141,106 L142,88 L148,104 Z"/>
+      <path d="M296,110 L310,94 L291,106 Z"/>
+      <path d="M291,108 L300,88 L285,104 Z"/>
+      <path d="M285,107 L289,86 L279,103 Z"/>
+      <path d="M279,106 L278,88 L272,104 Z"/>
+    </g>
+
+    <!-- lighter feathered chest/belly panel -->
+    <path d="M182,132 C165,156 165,202 183,232 Q210,248 237,232 C255,202 255,156 238,132
+             Q210,120 182,132 Z" fill="#a3967c"/>
+    <!-- breast plumage: down-chevron feather streaks -->
+    <g stroke="#4a3527" stroke-width="1" fill="none" opacity="0.8" stroke-linecap="round">
+      <path d="M186,148 l6,6 l6,-6 M204,148 l6,6 l6,-6 M222,148 l6,6 l6,-6"/>
+      <path d="M178,164 l6,6 l6,-6 M196,164 l6,6 l6,-6 M214,164 l6,6 l6,-6 M232,164 l6,6 l6,-6"/>
+      <path d="M180,181 l6,6 l6,-6 M198,181 l6,6 l6,-6 M216,181 l6,6 l6,-6 M234,181 l6,6 l6,-6"/>
+      <path d="M184,198 l6,6 l6,-6 M202,198 l6,6 l6,-6 M220,198 l6,6 l6,-6"/>
+      <path d="M192,214 l6,6 l6,-6 M210,214 l6,6 l6,-6"/>
+    </g>
+    <!-- shoulder fur strokes -->
+    <g stroke="#4a3527" stroke-width="0.9" fill="none" opacity="0.7">
+      <path d="M158,142 q-6,10 -4,22 M150,160 q-4,10 -2,20 M262,142 q6,10 4,22 M270,160 q4,10 2,20"/>
+    </g>
+
+    <!-- feather horns (ear tufts) -->
+    <path d="M172,64 L176,40 L189,66 Z" fill="#4a3527" stroke="#241c14" stroke-width="1.6"/>
+    <path d="M248,64 L244,40 L231,66 Z" fill="#4a3527" stroke="#241c14" stroke-width="1.6"/>
+
+    <!-- feathered head / ruff -->
+    <path d="M172,66 C157,80 155,102 170,118 C180,130 195,134 210,134
+             C225,134 240,130 250,118 C265,102 263,80 248,66
+             Q210,52 172,66 Z" fill="#6b5c46" stroke="#241c14" stroke-width="2.2"/>
+    <!-- head feather flecks -->
+    <g stroke="#4a3527" stroke-width="0.8" fill="none" opacity="0.75">
+      <path d="M180,72 l-4,-7 M192,66 l-2,-8 M210,63 l0,-8 M228,66 l2,-8 M240,72 l4,-7"/>
+      <path d="M166,96 l-8,-3 M168,108 l-8,0 M254,96 l8,-3 M252,108 l8,0"/>
+    </g>
+
+    <!-- facial disc -->
+    <path d="M210,72 C193,64 176,71 172,88 C169,102 177,116 191,120
+             Q210,126 229,120 C243,116 251,102 248,88 C244,71 227,64 210,72 Z"
+          fill="#c9bda3" stroke="#8a7a5f" stroke-width="1.2"/>
+    <!-- disc split + heavy scowling brows overhanging the eyes -->
+    <path d="M210,74 L210,116" stroke="#8a7a5f" stroke-width="0.8" opacity="0.6"/>
+    <path d="M174,80 C186,81 196,85 203,93" stroke="#4a3527" stroke-width="3.2"
+          fill="none" stroke-linecap="round"/>
+    <path d="M246,80 C234,81 224,85 217,93" stroke="#4a3527" stroke-width="3.2"
+          fill="none" stroke-linecap="round"/>
+
+    <!-- eyes -->
+    <g>
+      <circle cx="191" cy="94" r="13" fill="#efe6d2" stroke="#4a3527" stroke-width="1.4"/>
+      <circle cx="229" cy="94" r="13" fill="#efe6d2" stroke="#4a3527" stroke-width="1.4"/>
+      <circle cx="191" cy="94" r="8.6" fill="#a3543c"/>
+      <circle cx="229" cy="94" r="8.6" fill="#a3543c"/>
+      <circle cx="191" cy="94" r="4.4" fill="#241c14"/>
+      <circle cx="229" cy="94" r="4.4" fill="#241c14"/>
+      <circle cx="193.4" cy="91.4" r="1.8" fill="#efe6d2"/>
+      <circle cx="231.4" cy="91.4" r="1.8" fill="#efe6d2"/>
+    </g>
+
+    <!-- great hooked beak -->
+    <path d="M201,96 C204,90 216,90 219,96 C221,107 218,118 210,126
+             C202,118 199,107 201,96 Z" fill="#d8c9a6" stroke="#4a3527" stroke-width="1.5"/>
+    <path d="M204,109 C205,116 210,126 210,126 C210,126 215,116 216,109
+             Q210,114 204,109 Z" fill="#a3543c"/>
+    <circle cx="206" cy="100" r="1.1" fill="#4a3527"/>
+    <circle cx="214" cy="100" r="1.1" fill="#4a3527"/>
+
+    <!-- vignette: shafts of pale light -->
+    <path d="M300,7 L316,7 L268,150 L256,150 Z" fill="#efe6d2" opacity="0.10"/>
+    <path d="M120,7 L134,7 L156,150 L146,150 Z" fill="#efe6d2" opacity="0.07"/>
+  </g>
+
+  <!-- frame -->
+  <rect x="7" y="7" width="406" height="266" rx="12" fill="none"
+        stroke="#4a3527" stroke-width="2.5"/>
+</svg>
