@@ -1,143 +1,208 @@
-# familyrpg — World Bible v0 (gazetteer + source map spec)
+# familyrpg — World Bible v1 (gazetteer + source map spec)
 
 The foundation for the familyrpg campaign world, drawn from a hand-map by Kyle
-and his kids. This is the **text source of truth**; the SVG world map
-(`games/familyrpg/content/maps/world-map.svg`) is the **visual source of truth**
-derived from it. Everything downstream — the engine node map (`region.yaml`),
-points of interest, travel times — is carved from these two.
+and his kids and iterated with him. This is the **text source of truth**; the SVG
+world map (`games/familyrpg/content/maps/world-map.svg`) is the **visual source of
+truth** derived from it. The engine node map (`region.yaml`), points of interest,
+and travel times are carved from these two.
 
-Continent is **unnamed** for now (working map title: "The Known World") — Kyle
-and the kids get to name it. Names marked ★ are Claude-coined placeholders open
-to redline. `familyrpg` itself is still a placeholder game name.
+Continent is **unnamed** (Kyle + kids to name it). Names marked ★ are
+Claude-coined placeholders open to redline. `familyrpg` is a placeholder game name.
 
-## The frame: seas & water
+## Shape & frame
 
-- **North Sea** (north) and **South Sea** (south) bound the continent; open ocean
-  wraps the rest.
-- ★**Heartmere** — a great **inland lake** at the heart of the continent (an
-  island or two dot it). It is a *catchment*: it collects the land's runoff and
-  drains to the oceans. (Could be renamed; needn't read as a "sea." Alts: the
-  Kettle, Mirrenmere.)
-- **Hydrology** (per Kyle): rain/runoff flows *into* Heartmere; Heartmere drains
-  *out* to the seas.
-  - **North River** — flows *in* to Heartmere from the northern highlands (inflow).
-  - **East River** — drains *out* of Heartmere's east side, past **Bridgeton**
-    (the Bridge), curving to the east coast near **Eastharbor**.
-  - **South River** — drains *out* of Heartmere's south side, past **Ironford**
-    (its big bridge), down to the **South Sea**.
+- The continent is **vaguely heart-shaped** (two top lobes — NW highlands, NE
+  forest — a top-center cleft where the North River enters, tapering to a rounded
+  southern point at Kingsreach), per the family's source drawing.
+- **North Sea** (north), **South Sea** (south), **Ocean** (east & west) wrap it.
+- **Territory shading is contiguous** — each people's land touches the next,
+  divided vaguely along biome and river lines. **The Human Plains is the largest
+  territory** and the connective tissue bordering all the others.
 
-## Peoples & holds (who lives where)
+## Water
 
-| People | Region | Seat(s) | Notes |
+- ★**Heartmere** — the great **inland lake** at the center (an island or two dot
+  it). Alts: the Kettle, Mirrenmere.
+- **North River** — enters at the top-center cleft from the northern highlands and
+  runs down to Heartmere. The **Ironline** crosses it at **Cogwick** on a big
+  fancy dwarven-gnomish **bridge** (a **gnomish fort**, ★Gearwatch, guards it).
+- **East River** — runs from Heartmere/Bridgeton east and **reaches the eastern
+  shore**; Rivergate sits on it at the forest's edge.
+- **West River** (the river the dwarves own) — runs from Heartmere southwest
+  **through the mountains**, past **Ironford** (its big bridge) and **Westharbor**,
+  to the western shore. A **mountain pass** follows the river; a dwarven
+  **checkpoint** (★Stonewatch) guards the range's mouth.
+- (Do NOT annotate inflow/outflow on the map — just draw the rivers naturally.)
+
+## Major territories (contiguous; sizes matter)
+
+| Territory | People | Size | Notes |
 |---|---|---|---|
-| **Humans** | the Plains (south-center) | Kingsreach · Bridgeton · Eastharbor | Unified *against* the other races but have **no king** — three **free city-states**, each ruled by a **Duke** (Eastharbor by a **Duchess**). |
-| **Dwarves** | White Cliff Mountains (SW) | **Ironford** (capital) · Westharbor | Peaceful, inventive, fiercely protective of their land. Big bridge at Ironford over the South River. |
-| **Gnomes** | the Tundra (north) | ★Cogwick | The dwarves' magitech partners; tinkerers. |
-| **Elves** | the Forest (east) | — | Woodland folk of the eastern forest. |
-| **Tieflings** | the Volcano (west) | **Ashhaven** | Fire-touched; now a playable race (CHA/INT, heat-shrugging). Oliver's favorite. |
-| **Orcs / half-orcs** | the Orc Camp (central) | Orc Camp | A wilder people on the neck of land by Heartmere. |
-| **Dragonborn** | **Dragon Isle** (offshore SW) | ★Emberport | A small dragonborn **fishing town** on the mountain-island where the **dragons** dwell. |
-| **Tortle** | the **Turtle Islands** (SE) | ★Shellhaven | Turtle-folk of the southeastern isles. |
+| **The Plains** | Humans | **largest** | Central-south-east body of the heart, down to the southern point. Three free city-states. |
+| **White Cliff Mountains** | Dwarves | large | The western/SW arm. West River + pass run through it. |
+| **The Forest** | Elves | large | The NE lobe. |
+| **The Tundra** | Gnomes | medium | North-center, between the lobes, around the North River. |
+| **The Volcano (Ashhaven)** | Tieflings | **small** | A small western patch — the volcano itself. |
+| **The Wasteland** | (hostile — Orcs) | medium | NW; **extends to the water**. Holds the Orc Warcamp. Unclaimed/menacing. |
+| **East Islands** | Tortle | — | Offshore SE archipelago. |
+| **West Island (Dragon Isle)** | Dragons & Dragonborn | — | Offshore west/SW. |
 
-**Westharbor** (renamed from the kids' "Port-Town") — a **dwarf-led but
-mixed-race** coastal town, SW.
+**Half-orcs** are a **sparse, scattered population** with **no town of their own**.
+The **Orc Warcamp** is a **hostile, pure-Ork wasteland warcamp** — a threat, not a
+friendly settlement.
 
-**Unplaced races — deliberate room for possibility** (do NOT force onto the map):
+**Unplaced races — deliberate room for possibility** (don't force onto the map):
 halfling, half-elf, tabaxi, aarakocra, goliath, lizardfolk, firbolg, kenku. Light
-future hooks (not canon yet): aarakocra ↔ the storm-isle cliffs; halflings among
-the plains humans; goliath ↔ the high White Cliffs; a marsh for lizardfolk TBD.
+hooks: aarakocra ↔ the lonely storm-rock port (Stormhaven); halflings among the
+plains humans; goliath ↔ the high White Cliffs.
 
 ## Settlements
 
-**Free human city-states (each a Duke's/Duchess's seat):**
-- **Kingsreach** — south coast, the plains; a walled castle-city; the lead city
-  (keeps the trade road). Duke.
-- **Bridgeton** — Heartmere's east-river mouth, guarding the Bridge. Duke.
+**Free human city-states (each a Duke's/Duchess's seat), the Plains:**
+- **Kingsreach** — southern point, coast; walled castle-city; the lead city. Duke.
+- **Bridgeton** — Heartmere's SE mouth, guarding the East River bridge. Duke.
 - **Eastharbor** — east coast. Ruled by *the* **Duchess**.
 
-**Dwarven:**
-- **Ironford** — dwarf **capital**, White Cliff Mountains; big bridge over the
-  South River.
-- **Westharbor** — dwarf-led, mixed-race coastal town.
+**Dwarven, the mountains:**
+- **Ironford** — dwarf **capital**, sited right at the mountains/West River/its big
+  bridge.
+- **Westharbor** — dwarf-led, mixed-race town, up the **West River inside the
+  mountains** (on the pass).
+- ★**Stonewatch** — dwarven checkpoint at the mountain pass's mouth.
 
 **Others:**
-- **Ashhaven** — tiefling town at the Volcano.
-- **Stormhaven** — free port on the main **Storm Isle** (SE); storm-lashed,
-  mixed seafarers (aarakocra a candidate majority).
-- ★**Emberport** — dragonborn fishing town, Dragon Isle.
+- **Ashhaven** — the **walled tiefling town built into the Volcano**.
+- ★**Cogwick** — gnome town on the **Ironline and the North River**, at the fancy
+  rail-bridge; ★Gearwatch gnomish fort at the crossing.
+- ★**Emberport** — dragonborn fishing town, **Dragon Isle** (west island).
+- **Stormhaven** — a lonely storm-lashed rock port in the eastern waters (minor).
 
-**Minor towns (light — just getting ahead of it, don't scope deeply):**
-- ★**Greenhollow** — small plains farming village between Kingsreach and Bridgeton
-  (reuses the engine skeleton's town name — nice continuity).
-- ★**Cogwick** — gnome tinker-town in the tundra.
+**Minor towns (light — getting ahead of it):**
+- ★**Millbrook** — a **cute little starter village** on the **West Road**, in the
+  plains-to-mountains transition (a natural PC starting point).
+- ★**Greenhollow** — small plains farming village (reuses the engine skeleton
+  town name).
 - ★**Rivergate** — river/logging town on the East River at the forest's edge.
-- ★**Shellhaven** — tortle village on the Turtle Islands.
+- ★**Shellhaven** — tortle village, East Islands.
+- ★**Duskhold** — a **cursed, ruined city and castle** in the SE, with a road to
+  it (a dungeon-shaped adventure hook; fallen and shunned).
 
 ## The Ironline — dwarven magitech railway ★
 
-The dwarves (with gnome tinker-craft) run a **magitech railway** as the spine of
-their peaceful, watchful northern frontier:
-- From **Ironford** north along the mountains' flank into the **Tundra**,
-- across the **North River** (a magitech span),
-- anchored by two frontier forts: ★**Wastewall** (a camp/wall guarding against
-  the **Wasteland**, NW) and ★**Elfward** (the elf-border fort, E).
-- Purpose: move goods and troops, and watch the borders. Defensive, not
-  aggressive — the dwarves are protective, not expansionist.
+The dwarves' (gnome-assisted) magitech rail — the spine of their peaceful,
+watchful frontier:
+- From **Ironford** (mountains) it runs north and **dives underground through the
+  Wasteland** — a magitech **subway** (WoW-deeprun-tram style) — with a
+  ★**Wasteland Outpost** stop and the fort ★**Wastewall** at the tunnel mouth.
+- It surfaces in the **Tundra**, crosses the **North River at Cogwick** on the big
+  fancy bridge (gnomish fort **Gearwatch**),
+- and continues east to the fort ★**Elfward** at the elf-forest border.
+- Defensive, inventive, protective — not expansionist.
 
-## Roads (major)
+## Roads (major, dotted)
 
-- ★**The Free Road** — the human league's trade road linking the three
-  city-states: **Kingsreach → Greenhollow → Bridgeton → Eastharbor**.
-- ★**The West Road** — Bridgeton around Heartmere's south to **Ironford**, on to
-  **Westharbor**.
-- ★**The Forest Road** — Eastharbor into the elven forest (via Rivergate).
-- (The kids' dashed lines on the original = these roads.)
+- ★**The Free Road** — human league trade road: **Kingsreach → Greenhollow →
+  Bridgeton → Eastharbor**.
+- ★**The West Road** — Bridgeton → **Millbrook** → **Ironford** → (mountain pass) →
+  Westharbor.
+- ★**The Forest Road** — Eastharbor → Rivergate → into the forest.
+- ★**The Duskhold Road** — a lonely spur off the Free Road running SE to the cursed
+  ruin of Duskhold.
 
-## Scale
+## Scale (assessed for family-play feasibility)
 
-- Continent ≈ **1,100 miles** east–west, ≈ **750 miles** north–south — big, with
-  lots of unmapped space left "for possibility."
-- Overland travel ≈ **24 miles/day** (wagon/marching) — so crossing the whole
-  continent is a multi-week journey; adjacent city-states are a **few days**
-  apart. (Used later to set engine node-map edge `hours`.)
-- The SVG map carries a **scale bar** (0–100–200 miles) and a **compass**.
+- Continent ≈ **550 miles** east–west, ≈ **430 miles** north–south — a "small
+  continent / great island." Lots of unmapped space remains "for possibility."
+- Overland ≈ **24 miles/day** (foot/wagon); the **magitech rail ≈ 120 miles/day**.
+- Consequences (the point of this scale): neighboring regions are **a few days'
+  walk** apart; the **whole world is crossable in ~3 weeks on foot**; the rail is a
+  **beloved fast-travel** (a day between forts vs a week walking) — a real
+  story-lever the kids will love. (Used later to set node-map edge `hours`.)
+- Map carries a **scale bar** (0–50–100 miles) and a small **compass**.
 
 ---
 
-## MAP LAYOUT SPEC (for the SVG artist — exact placement)
+## MAP LAYOUT SPEC (for the SVG artist — read literally)
 
-`viewBox="0 0 1600 1080"` (x → right, y → down). Landmass = one irregular blob
-roughly x 150→1460, y 150→960, with a western-highland lobe and an eastern-forest
-lobe and the plains/lake between (mirror the kids' drawing). Ocean fills the
-margins; keep the interior open and uncluttered — leave breathing room.
+`viewBox="0 0 1600 1080"` (x → right, y → down). Draw the landmass as ONE organic,
+**vaguely heart-shaped** continent: two rounded top lobes (NW ~x400,y210 and
+NE ~x1150,y210), a top-center cleft ~(760, 300) where the North River enters,
+sides bulging out to ~(190, 560) west and ~(1410, 560) east, tapering to a rounded
+southern point ~(770, 950). Coastline hand-drawn/organic (not geometric). Ocean
+fills the margins. **Territory fills must be contiguous** (touching along biome/
+river lines), muted house tints, organic boundaries — NOT rectangular patches.
 
-Feature → approximate center (x, y) and how to render:
+**Removed from the previous version:** the top-left title/cartouche box (gone
+entirely), all river inflow/outflow arrows and drainage text. **Legend** goes in
+the OCEAN margin (e.g. lower-right water), never over land. **Compass** top-left,
+SMALL (~half the previous size).
 
-- **North Sea** label ~(800, 48); **South Sea** label ~(1150, 1040); ocean tint in margins.
-- **Wasteland** ~(360, 255), with a **dashed frontier arc** cutting it off from the settled north (NW).
-- **Volcano** peak icon ~(300, 430); **Ashhaven** (town dot + label) ~(365, 520); "Tieflings" ~(345, 470).
-- **White Cliff Mountains** range of peaks along ~(230–520, 560–930); label "White Cliff Mountains · Dwarves" ~(300, 955).
-- **Ironford** (capital — larger dot/star + label) ~(430, 700); **big bridge** glyph just south over the South River.
-- **Westharbor** (town dot + label) ~(320, 890).
-- **Tundra** band ~(560–900, 300–430); label "Tundra · Gnomes" ~(760, 330); **Cogwick** (small dot) ~(720, 372).
-- **Heartmere** (inland lake — water ellipse) ~(560–780, 500–730) with a **small island** ~(685, 620); label ~(660, 615).
-- **North River** — from ~(700, 150) at the north edge flowing *down into* Heartmere's north shore ~(690, 500) (arrow implies inflow).
-- **Orc Camp** ~(600, 450) on the neck (small camp glyph + label).
-- **Bridgeton** (human city dot + label) ~(815, 655) at Heartmere's east mouth; **Bridge** glyph ~(850, 625).
-- **East River** — from Bridgeton ~(830, 650) curving E/NE to the sea near Eastharbor; label "East River" ~(1055, 590).
-- **Eastharbor** (human city dot + label, note "Duchess") ~(1315, 560), east coast.
-- **Forest** — pine icons filling the east lobe ~(950–1380, 320–540); label "Forest · Elves" ~(1120, 400).
-- **Rivergate** (small dot) ~(1010, 585) at the East River/forest edge.
-- **Plains** — open ground ~(720–1080, 730–930); label "Plains · Humans" ~(890, 835).
-- **Greenhollow** (small dot) ~(880, 872).
-- **Kingsreach** (human city — castle glyph + label) ~(720, 950), south coast.
-- **South River** — Heartmere south shore ~(600, 720) curving SW past **Ironford** ~(440, 710) down to the South Sea ~(430, 970); label "South River" ~(505, 825).
-- **The Ironline** (railway — a distinct ticked/dashed rail line, NOT a road): from Ironford ~(430, 680) north to ~(540, 430), then W–E across the top: west spur to **Wastewall** (fort glyph) ~(465, 335); east across the North River (cross at ~(700, 350)) to **Elfward** (fort glyph) ~(890, 380). Label "the Ironline · dwarven magitech railway".
-- **Roads** (dotted lines, distinct from the rail): Free Road Kingsreach→Greenhollow→Bridgeton→Eastharbor; West Road Bridgeton→Ironford→Westharbor; Forest Road Eastharbor→Rivergate.
-- **Storm Isles** — scatter of small isles ~(1150–1420, 660–930); **Stormhaven** (town dot) ~(1300, 770); label "Storm Isles / Stormhaven".
-- **Turtle Islands** — island group ~(1220–1300, 850–930); **Shellhaven** (small dot) ~(1250, 895); label "Turtle Islands · Tortle".
-- **Dragon Isle** — a small mountain-island offshore SW in the South Sea ~(200, 1000); **Emberport** (small dot) ~(210, 992); label "Dragon Isle · Dragons & Dragonborn".
-- **Scale bar** bottom-right ~(1230–1450, 1005): "0 — 100 — 200 miles".
-- **Compass rose** top-left corner ~(130, 210).
-- **Title cartouche** (a corner): "The Known World" + small sub "familyrpg · source map v1".
-- **Legend** (small corner box): capital (star) · city (large dot) · town (small dot) · fort · ▬▬ road (dotted) · + + railway · ~ river.
+Territory fills (contiguous, human largest):
+- **The Wasteland** — NW, reaching the NW/W ocean; a **dashed frontier arc** on its
+  inland (SE) side; barren tint. Holds **Orc Warcamp** (a hostile camp glyph +
+  label) ~(330, 430).
+- **The Volcano / Ashhaven** (tiefling) — small W patch ~(300, 570): a volcano with
+  a **walled town built into it**; single label "**Ashhaven** · Tieflings".
+- **White Cliff Mountains** (dwarf) — SW arm, peaks ~(220–540, 560–900); label
+  "White Cliff Mtns · Dwarves".
+- **The Tundra** (gnome) — N-center between the lobes ~(560–920, 300–480); label
+  "The Tundra · Gnomes".
+- **The Forest** (elf) — NE lobe, pines ~(920–1380, 270–560); label "The Forest ·
+  Elves".
+- **The Plains** (human, LARGEST) — the big central-south-east body ~(560–1320,
+  540–940); label "The Plains · Humans".
+
+Settlements & features (place at these centers):
+- **Ironford** (capital — ember star + label "dwarf capital") ~(475, 690), sited on
+  the mountains at the **West River** with a **bridge glyph** on the river beside it.
+- **West River** — from Heartmere's SW ~(650, 690) running SW **through the
+  mountains** past Ironford and **Westharbor** ~(365, 770) to the W shore ~(235,
+  845); a faint **mountain-pass** line following the river; **Stonewatch**
+  (dwarven checkpoint, small fort glyph) ~(560, 720) at the range's mouth.
+- **Heartmere** (inland lake, water fill) ~(620–830, 500–700) with a small island
+  ~(720, 600); label "Heartmere".
+- **North River** — from the cleft ~(760, 300) down to Heartmere ~(735, 500);
+  crossed at **Cogwick** ~(775, 405) by the **Ironline** on a **big fancy bridge**
+  with **Gearwatch** (gnomish fort glyph) at the crossing.
+- **East River** — from Bridgeton ~(845, 640) curving E and **reaching the eastern
+  shore** ~(1405, 645); **Rivergate** (small dot) ~(1035, 590) at the forest edge.
+- **Bridgeton** (free city — ringed dot + ducal pennant, label "Duke") ~(835, 640)
+  at Heartmere's SE, bridge glyph on the East River.
+- **Eastharbor** (free city — ringed dot + pennant, label "the Duchess") ~(1330,
+  600) on the east coast — **keep the label clear of other elements** (previous
+  version had an overlap glitch here).
+- **Kingsreach** (free city — castle glyph + label "Duke · lead city") ~(770, 915)
+  at the southern point/coast.
+- **Greenhollow** (small dot) ~(950, 800), plains.
+- **Millbrook** (small dot, label "starter village") ~(600, 820) on the West Road.
+- **Duskhold** (a **ruined city + broken castle** glyph, label "cursed ruin")
+  ~(1180, 860), SE plains, with the **Duskhold Road** (dotted spur) reaching it.
+- **The Ironline** (ticked/crosstied RAILWAY, distinct from dotted roads): from
+  Ironford ~(475, 665) north; the stretch **through the Wasteland is UNDERGROUND**
+  — render as a **tunnel** (e.g. dashed/hollow rail or a dotted-tunnel style
+  clearly different from the surface rail), with **Wastewall** (fort, tunnel mouth)
+  ~(430, 500) and **Wasteland Outpost** (small stop glyph) ~(400, 405); it
+  surfaces and runs E through the tundra to **Cogwick** ~(775, 405) (fancy North
+  River bridge + Gearwatch), then E to **Elfward** (fort) ~(955, 420) at the elf
+  border. Label "the Ironline · dwarven magitech railway".
+- **Roads** (dotted, clearly distinct from the rail): Free Road (Kingsreach→
+  Greenhollow→Bridgeton→Eastharbor); West Road (Bridgeton→Millbrook→Ironford→
+  Westharbor, following the pass); Forest Road (Eastharbor→Rivergate→forest);
+  Duskhold Road (Free Road→Duskhold).
+- **Dragon Isle** (west island) — a small mountain-island offshore W/SW ~(150,
+  760); **Emberport** (small dot) ~(160, 752); label "Dragon Isle · Dragons &
+  Dragonborn".
+- **East Islands** (Tortle) — an archipelago offshore SE ~(1200–1420, 780–960);
+  **Shellhaven** (small dot) ~(1300, 870); label "East Islands · Tortle".
+- **Stormhaven** — a single lonely storm-rock port ~(1440, 720) in the eastern
+  waters (minor dot + label).
+
+Map furniture:
+- **Compass rose** — top-left ocean, SMALL ~(140, 200).
+- **Scale bar** — an ocean corner (e.g. bottom-left or bottom-right water):
+  "0 — 50 — 100 miles".
+- **Legend** — in the OCEAN (lower-right water preferred), not over land: capital
+  (star) · free city (ringed dot) · town (small dot) · fort · ruin · ▬▬ road
+  (dotted) · +++ railway · ═ underground rail · ~ river.
+- **Sea labels**: North Sea, South Sea, Ocean (E & W).
+- Spelling exact: **Eastharbor**, **Westharbor** (both "-harbor").
