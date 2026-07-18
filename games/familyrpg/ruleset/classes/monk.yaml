@@ -1,0 +1,30 @@
+name: monk
+description: "The hero who needed no sword at all — bare hands, a calm breath, and a body trained until it becomes the weapon."
+hit_die: 8        # d8: starting HP, per-level HP gain, and short-rest healing
+cast_attr: null   # non-caster
+skill_choices: 2  # skills chosen from the list below at creation
+attr_priority: [DEX, WIS, CON, STR, INT, CHA]  # standard array fills these high-to-low
+skills: [acrobatics, athletics, stealth, perception]  # from the 10-skill vocabulary
+starting_gear: [quarterstaff]  # item ids from ruleset/items.yaml
+starting_gold: 5
+levels:  # keys 1..20; features (feature ids), spells learned, spell slots {level: count}
+  1:  {features: [martial_arts, ki, unarmored_defense], spells: [], slots: {}}
+  2:  {features: [unarmored_movement], spells: [], slots: {}}
+  3:  {features: [flurry_of_blows, deflect_missiles], spells: [], slots: {}}
+  4:  {features: [step_of_the_wind], spells: [], slots: {}}
+  5:  {features: [extra_attack, stunning_strike], spells: [], slots: {}}
+  6:  {features: [purity_of_body], spells: [], slots: {}}
+  7:  {features: [evasion], spells: [], slots: {}}
+  8:  {features: [slow_fall], spells: [], slots: {}}
+  9:  {features: [wholeness_of_body], spells: [], slots: {}}
+  10: {features: [stillness_of_mind], spells: [], slots: {}}
+  11: {features: [improved_flurry], spells: [], slots: {}}
+  12: {features: [diamond_soul], spells: [], slots: {}}
+  13: {features: [tongue_of_sun_and_moon], spells: [], slots: {}}
+  14: {features: [focused_ki], spells: [], slots: {}}
+  15: {features: [timeless_body], spells: [], slots: {}}
+  16: {features: [empty_body], spells: [], slots: {}}
+  17: {features: [quivering_palm], spells: [], slots: {}}
+  18: {features: [unerring_body], spells: [], slots: {}}
+  19: {features: [deepened_ki], spells: [], slots: {}}
+  20: {features: [perfect_self], spells: [], slots: {}}

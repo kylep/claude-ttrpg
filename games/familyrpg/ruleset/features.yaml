@@ -106,11 +106,15 @@ rage:
     this level — to the damage total by hand. Later features grow the die.
 unarmored_defense:
   description: >
-    Signature, GM-adjudicated. While wearing no armor, the barbarian's own
-    toughness is their armor: AC = 10 + DEX modifier + CON modifier. Since
-    `derive.armor_class` only reads equipped armor items, the GM sets this by
-    hand on the sheet at creation (attributes are fixed for life, so it never
-    needs recalculating). A carried shield still adds its +2 by hand on top.
+    Signature, GM-adjudicated, shared by the barbarian and the monk. While
+    wearing no armor, the character's own conditioning stands in for armor:
+    AC = 10 + DEX modifier + a second attribute modifier. For the barbarian
+    that second attribute is CON, and a carried shield still adds its usual
+    +2 by hand on top. For the monk it is WIS instead, and the monk's hands
+    must both be free (or holding only a quarterstaff) — no shield — for
+    this AC to apply. Since `derive.armor_class` only reads equipped armor
+    items, the GM sets the resulting total by hand on the sheet at creation
+    (attributes are fixed for life, so it never needs recalculating).
 wild_sprint:
   description: >
     The barbarian's legs never tire of open ground: their speed increases by
@@ -269,12 +273,12 @@ combat_instincts:
     while conscious.
 evasion:
   description: >
-    Identity. When the rogue fails a DEX saving throw against an effect that
-    deals half damage on a success (an area spell or a trap), they take no
-    damage at all instead of half; a successful save already takes none. The
-    GM applies this after `engine save` resolves: on a failed DEX save
-    against a half-on-save effect, treat the outcome as a full success for
-    damage purposes only.
+    Identity, shared by the rogue and the monk. When the character fails a
+    DEX saving throw against an effect that deals half damage on a success
+    (an area spell or a trap), they take no damage at all instead of half; a
+    successful save already takes none. The GM applies this after `engine
+    save` resolves: on a failed DEX save against a half-on-save effect,
+    treat the outcome as a full success for damage purposes only.
 greater_deft_hands:
   description: >
     Numeric bump. Deft_hands now succeeds automatically on any thieves_tools
@@ -356,3 +360,177 @@ perfect_ambush:
     adds one extra sneak die BY HAND to that first hit — the same die count
     their level grants (capped at 3d6) — since the engine's own scaling caps
     at 3d6 and won't add more automatically.
+# ── Monk ─────────────────────────────────────────────────────────────────
+martial_arts:
+  description: >
+    Signature, GM-run. The monk's hands and feet count as weapons: unarmed
+    strikes and quarterstaff attacks may use DEX instead of STR for both the
+    attack roll and damage whenever DEX is higher, and an unarmed strike
+    deals a martial-arts die of damage instead of a single point — 1d4 at
+    this level. There is no unarmed-strike entry in items.yaml, so the GM
+    runs each unarmed hit as a normal `engine attack` using the
+    martial-arts die by hand as the weapon damage. Whenever the monk takes
+    the attack action using an unarmed strike or a quarterstaff, they may
+    also make one extra unarmed strike as a bonus action at no ki cost (one
+    more `engine attack` roll for the martial-arts die). The die grows to
+    1d6 at level 5, 1d8 at level 11, and 1d10 at level 17.
+ki:
+  description: >
+    Signature, GM-tracked resource. The monk carries a pool of ki points
+    equal to their level (1 at level 1, growing by 1 each level up through
+    20), noted on the sheet by hand; there is no engine ki counter, so the
+    player marks points spent and the GM restores the pool to full after
+    any short or long rest (`engine rest short` or `engine rest long`). Ki
+    fuels flurry_of_blows, deflect_missiles' catch-and-throw,
+    step_of_the_wind, diamond_soul's reroll, empty_body, and quivering_palm
+    — each of those entries states its own ki cost in points.
+unarmored_movement:
+  description: >
+    Meaningful. As long as the monk wears no armor and carries no shield,
+    their speed increases by 2 squares at all times; the GM marks the
+    higher speed on the sheet as their new baseline movement (used for
+    `engine move`, dash distance, and jump distance) for as long as they
+    stay unarmored.
+flurry_of_blows:
+  description: >
+    Identity, ki-spent. Immediately after taking the attack action, the
+    monk may spend 1 ki point to make two additional unarmed strikes as a
+    bonus action: the GM runs two more `engine attack` rolls at the
+    martial-arts die. This stacks with martial_arts' own free extra unarmed
+    strike, so a full turn can produce the attack action's hits plus up to
+    three bonus unarmed strikes when ki is spent.
+deflect_missiles:
+  description: >
+    Identity, GM-adjudicated. When hit by a ranged weapon attack, the monk
+    may use their reaction to catch or bat the missile aside: the GM
+    reduces the damage from that one hit by 1d10 + the monk's DEX modifier
+    + their level, applied by hand before recording the remainder as
+    damage taken (damage cannot go below 0). If the reduction brings the
+    damage to 0, the monk may spend 1 ki point to immediately hurl the
+    deflected missile back: the GM runs one `engine attack` against the
+    original attacker (if within the weapon's normal range) using the
+    martial-arts die.
+step_of_the_wind:
+  description: >
+    Numeric bump, ki-spent. As a bonus action, the monk may spend 1 ki
+    point to Dash or Disengage (the GM waives any free attack an enemy
+    would otherwise get on the disengage), and while doing so their jump
+    distance is doubled for the turn — the GM extends any Athletics jump
+    check's normal distance accordingly.
+stunning_strike:
+  description: >
+    Spike. The martial-arts die grows to 1d6 at this level. Once per turn,
+    when the monk hits a creature with a melee weapon or unarmed strike,
+    they may spend 1 ki point to attempt a stunning strike: the GM has the
+    target roll a CON save (`engine save`) against DC 8 + the monk's
+    proficiency bonus (progression.yaml) + WIS modifier — computed by hand,
+    since this is not an engine-tracked spell DC. On a failed save, the
+    target is stunned until the end of the monk's next turn: the GM rules
+    it can take no actions or reactions and cannot move, every attack
+    against it during that window resolves with advantage, and any attack
+    the target itself attempts automatically misses.
+purity_of_body:
+  description: >
+    Meaningful. The monk's discipline burns out sickness and poison: from
+    this level the GM treats them as immune to disease and to the
+    `poisoned` effect (any attempt to apply poisoned to them is ignored).
+    Their unarmed strikes and quarterstaff hits also count as enchanted for
+    the purpose of overcoming a monster's resistance or immunity to
+    nonmagical weapon damage — the GM applies full damage where a mundane
+    weapon would be halved or blocked.
+slow_fall:
+  description: >
+    Numeric bump, GM-adjudicated. When the monk falls and is not
+    incapacitated, they may use their reaction to reduce the fall damage by
+    5 times their level (an amount that only grows as they level up); the
+    GM subtracts it from the fall damage total by hand before applying the
+    remainder.
+wholeness_of_body:
+  description: >
+    Numeric bump. Once per long rest, as an action, the monk may draw on
+    their own discipline to mend themself: the GM applies `engine heal` for
+    an amount equal to twice their monk level to them, no roll required.
+stillness_of_mind:
+  description: >
+    Numeric bump, GM-adjudicated. Once per long rest, as an action, the
+    monk may steady their own mind: the GM immediately removes the
+    `frightened` or `charmed` effect from them (their choice if both are
+    active), no save needed.
+improved_flurry:
+  description: >
+    Spike. The martial-arts die grows to 1d8 at this level. The first use
+    of flurry_of_blows each turn now costs no ki; only a second use of
+    flurry_of_blows on the same turn still costs its usual 1 ki point.
+diamond_soul:
+  description: >
+    Numeric bump, GM-adjudicated. The monk's training steadies every kind
+    of nerve: from this level the GM treats them as proficient in all six
+    saving throws (add their proficiency bonus to every `engine save`, not
+    only ones already trained). In addition, once per short rest, when the
+    monk fails a saving throw they may spend 1 ki point to reroll it: the
+    GM re-runs that `engine save` and the new result stands.
+tongue_of_sun_and_moon:
+  description: >
+    The monk's stillness lets them understand and be understood by any
+    creature capable of language, spoken or otherwise; the GM rules that
+    any creature able to speak at all can converse with them, no roll or
+    spell required, though this does not grant the ability to read
+    unfamiliar script.
+focused_ki:
+  description: >
+    Numeric bump. The monk's control over their own ki sharpens: whenever
+    they spend a ki point on flurry_of_blows, deflect_missiles, or
+    step_of_the_wind, it works automatically with no roll needed (only
+    quivering_palm still calls for the target's save). In addition, the
+    monk regains 1 spent ki point (GM's choice which) whenever they roll a
+    natural 20 on an `engine attack`.
+timeless_body:
+  description: >
+    The monk's aging slows to a crawl and hunger and thirst no longer wear
+    them down: the GM rules they suffer no ill effect from old age (though
+    they can still die of it eventually) and can go without food or water
+    far longer than an ordinary person before any exhaustion penalty
+    applies.
+empty_body:
+  description: >
+    Numeric bump, ki-spent. As an action, the monk may spend 4 ki points to
+    turn invisible for 1 minute (the GM applies the `hidden` effect to them
+    with no `engine hide` roll needed; it persists through movement and
+    attacking, and clears early only if the monk chooses to end it or is
+    knocked unconscious). Spending 8 ki points instead grants the same
+    invisibility plus resistance to all damage but force for the same
+    minute — the GM halves incoming damage from any other source by hand
+    for its duration.
+quivering_palm:
+  description: >
+    Spike. The martial-arts die grows to 1d10 at this level. Once per long
+    rest, when the monk hits a creature with an unarmed strike, they may
+    spend 3 ki points to set vibrations lingering in the target's body. At
+    any point within the next 24 hours, as an action, the monk may spend
+    their remaining ki to trigger them: the target rolls a CON save
+    (`engine save`) against DC 8 + the monk's proficiency bonus + WIS
+    modifier, computed by hand by the GM. On a failure the GM reduces the
+    target to 0 HP; on a success the GM applies 10d10 damage instead.
+    Ending the vibrations early, or the monk's death, harmlessly clears the
+    effect.
+unerring_body:
+  description: >
+    Numeric bump. The monk's reflexes are honed past the reach of chance:
+    once per short rest, when they miss with an `engine attack` using an
+    unarmed strike or quarterstaff, the GM lets them reroll that single
+    attack and take the new result.
+deepened_ki:
+  description: >
+    Numeric bump. Empty_body's two ki costs both drop by 1 (3 ki for
+    invisibility alone, 7 ki for invisibility plus damage resistance), and
+    diamond_soul's reroll may now be used twice per short rest instead of
+    once.
+perfect_self:
+  description: >
+    Capstone. If the monk would need to spend ki but their pool is already
+    empty, once per long rest the GM grants them 4 ki points back
+    immediately — their body finds discipline even when their reserves run
+    dry. In addition, their martial-arts unarmed strikes now score a
+    critical hit on a natural 19 as well as 20; the GM doubles the
+    martial-arts die by hand on a 19, since the engine only auto-crits on a
+    20.
