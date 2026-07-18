@@ -1,0 +1,455 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1080">
+  <!-- The Known World — familyrpg source map v1. Parchment/ink cartography. Hand-authored, static. -->
+
+  <defs>
+    <!-- reusable pine -->
+    <g id="pine">
+      <rect x="-1.6" y="2" width="3.2" height="7" fill="#5b4630"/>
+      <path d="M0,-25 L-9,-5 L9,-5 Z" fill="#5c7448" stroke="#33472b" stroke-width="0.8"/>
+      <path d="M0,-15 L-11,4 L11,4 Z" fill="#476438" stroke="#33472b" stroke-width="0.8"/>
+    </g>
+    <!-- reusable mountain peak -->
+    <g id="peak">
+      <path d="M0,-40 L-30,10 L30,10 Z" fill="#c9bda3" stroke="#4a3527" stroke-width="2"/>
+      <path d="M0,-40 L30,10 L9,10 L0,-27 Z" fill="#b3a68a"/>
+      <path d="M0,-40 L-11,-22 L-3,-27 L2,-20 L10,-24 Z" fill="#efe6d2" stroke="#4a3527" stroke-width="0.8"/>
+    </g>
+    <!-- fort glyph -->
+    <g id="fort">
+      <path d="M-11,6 L-11,-6 L-7,-6 L-7,-10 L-3,-10 L-3,-6 L3,-6 L3,-10 L7,-10 L7,-6 L11,-6 L11,6 Z"
+            fill="#b3a68a" stroke="#4a3527" stroke-width="1.6"/>
+      <path d="M0,-10 L0,-22 L12,-18 L0,-15" fill="#a33d2f" stroke="#4a3527" stroke-width="1.2"/>
+    </g>
+  </defs>
+
+  <!-- ===================== OCEAN ===================== -->
+  <rect x="0" y="0" width="1600" height="1080" fill="#a4bcbe"/>
+  <!-- open-water tone blotches -->
+  <g fill="#9ab3b6" opacity="0.6">
+    <ellipse cx="120" cy="90" rx="150" ry="70"/>
+    <ellipse cx="1450" cy="960" rx="180" ry="90"/>
+    <ellipse cx="80" cy="820" rx="120" ry="140"/>
+    <ellipse cx="1520" cy="200" rx="120" ry="110"/>
+  </g>
+  <!-- wave hatches -->
+  <g stroke="#8fabae" stroke-width="1.4" fill="none" stroke-linecap="round" opacity="0.7">
+    <path d="M70,120 q10,-6 20,0 q10,6 20,0"/>
+    <path d="M120,150 q10,-6 20,0 q10,6 20,0"/>
+    <path d="M1360,150 q10,-6 20,0 q10,6 20,0"/>
+    <path d="M1420,200 q10,-6 20,0 q10,6 20,0"/>
+    <path d="M60,930 q10,-6 20,0 q10,6 20,0"/>
+    <path d="M110,970 q10,-6 20,0 q10,6 20,0"/>
+    <path d="M1470,880 q10,-6 20,0 q10,6 20,0"/>
+    <path d="M1400,1000 q10,-6 20,0 q10,6 20,0"/>
+    <path d="M900,1010 q10,-6 20,0 q10,6 20,0"/>
+  </g>
+
+  <!-- ===================== LANDMASS ===================== -->
+  <!-- soft coastal shelf under coast -->
+  <path d="M178,318 L210,268 L300,224 L430,206 L560,214 L655,200 L690,180 L720,202 L840,214 L985,232 L1130,255 L1275,296 L1372,362 L1428,452 L1442,540 L1410,626 L1338,724 L1250,806 L1150,872 L1040,918 L918,942 L800,952 L690,958 L596,952 L512,958 L452,972 L405,968 L356,940 L312,908 L268,858 L222,782 L196,690 L192,596 L204,496 L196,404 Z"
+        fill="none" stroke="#7fa0a3" stroke-width="14" opacity="0.55" stroke-linejoin="round"/>
+  <!-- land fill + ink coast -->
+  <path d="M178,318 L210,268 L300,224 L430,206 L560,214 L655,200 L690,180 L720,202 L840,214 L985,232 L1130,255 L1275,296 L1372,362 L1428,452 L1442,540 L1410,626 L1338,724 L1250,806 L1150,872 L1040,918 L918,942 L800,952 L690,958 L596,952 L512,958 L452,972 L405,968 L356,940 L312,908 L268,858 L222,782 L196,690 L192,596 L204,496 L196,404 Z"
+        fill="#e8dcc0" stroke="#4a3527" stroke-width="2.6" stroke-linejoin="round"/>
+
+  <!-- ===================== BIOME TINTS ===================== -->
+  <!-- wasteland -->
+  <path d="M196,398 L300,408 L425,398 L505,338 L468,240 L300,232 L210,270 Z" fill="#c6b48c" opacity="0.55"/>
+  <!-- tundra -->
+  <path d="M552,296 L890,286 L930,392 L900,440 L560,436 L548,360 Z" fill="#cdd3c9" opacity="0.6"/>
+  <!-- forest -->
+  <path d="M948,300 L1130,262 L1300,300 L1400,346 L1440,540 L1150,560 L1050,548 L945,440 Z" fill="#7d8a63" opacity="0.42"/>
+  <!-- plains -->
+  <path d="M700,725 L1095,720 L1100,918 L760,940 L705,860 Z" fill="#a9b285" opacity="0.5"/>
+  <!-- white cliff mountain base -->
+  <path d="M205,560 L520,560 L520,928 L360,940 L268,858 L222,782 L196,690 L200,600 Z" fill="#cfc7b0" opacity="0.55"/>
+
+  <!-- ===================== HEARTMERE ===================== -->
+  <path d="M560,560 Q560,505 640,502 Q722,500 772,540 Q796,600 782,666 Q760,726 680,732 Q598,730 566,678 Q548,616 560,560 Z"
+        fill="#5f8592" stroke="#3f6270" stroke-width="2.2"/>
+  <path d="M566,566 Q566,512 642,510 Q718,508 766,545" fill="none" stroke="#7fa0aa" stroke-width="1.4" opacity="0.7"/>
+  <!-- island -->
+  <path d="M690,610 q22,-6 34,8 q6,16 -12,22 q-24,4 -28,-12 q-2,-14 6,-18 Z" fill="#e0d4b2" stroke="#4a3527" stroke-width="1.6"/>
+  <use href="#pine" x="704" y="616" transform="scale(0.55)" opacity="0"/>
+  <path d="M708,618 L702,628 L714,628 Z" fill="#5c7448" stroke="#33472b" stroke-width="0.7"/>
+
+  <!-- ===================== MOUNTAINS ===================== -->
+  <g>
+    <use href="#peak" transform="translate(250,650) scale(0.95)"/>
+    <use href="#peak" transform="translate(305,690) scale(1.15)"/>
+    <use href="#peak" transform="translate(365,712) scale(0.95)"/>
+    <use href="#peak" transform="translate(232,730) scale(0.85)"/>
+    <use href="#peak" transform="translate(288,770) scale(1.2)"/>
+    <use href="#peak" transform="translate(352,792) scale(1.0)"/>
+    <use href="#peak" transform="translate(262,840) scale(1.05)"/>
+    <use href="#peak" transform="translate(392,832) scale(1.0)"/>
+    <use href="#peak" transform="translate(470,808) scale(0.85)"/>
+    <use href="#peak" transform="translate(245,895) scale(0.8)"/>
+    <use href="#peak" transform="translate(360,905) scale(1.0)"/>
+    <use href="#peak" transform="translate(432,895) scale(0.9)"/>
+    <use href="#peak" transform="translate(500,870) scale(0.82)"/>
+  </g>
+
+  <!-- ===================== VOLCANO ===================== -->
+  <g>
+    <path d="M300,432 L250,530 L350,530 Z" fill="#8a7361" stroke="#4a3527" stroke-width="2.2"/>
+    <path d="M300,432 L350,530 L308,530 L300,470 Z" fill="#6b564a"/>
+    <path d="M283,470 L300,432 L317,470 L308,460 L300,478 L292,460 Z" fill="#a33d2f"/>
+    <path d="M292,468 q-6,14 4,26 M308,468 q7,14 -2,28" fill="none" stroke="#a33d2f" stroke-width="2.2" stroke-linecap="round"/>
+    <!-- smoke -->
+    <path d="M300,428 q-10,-16 4,-28 q12,-12 2,-26" fill="none" stroke="#8a7a5f" stroke-width="2.2" stroke-linecap="round" opacity="0.8"/>
+  </g>
+
+  <!-- ===================== FOREST ===================== -->
+  <g>
+    <use href="#pine" transform="translate(985,362) scale(1.05)"/>
+    <use href="#pine" transform="translate(1032,406) scale(1.15)"/>
+    <use href="#pine" transform="translate(1000,470) scale(1.0)"/>
+    <use href="#pine" transform="translate(1055,504) scale(1.1)"/>
+    <use href="#pine" transform="translate(1082,452) scale(0.95)"/>
+    <use href="#pine" transform="translate(1160,528) scale(1.05)"/>
+    <use href="#pine" transform="translate(1210,470) scale(1.1)"/>
+    <use href="#pine" transform="translate(1250,412) scale(1.0)"/>
+    <use href="#pine" transform="translate(1305,452) scale(1.1)"/>
+    <use href="#pine" transform="translate(1350,500) scale(1.0)"/>
+    <use href="#pine" transform="translate(1398,436) scale(0.95)"/>
+    <use href="#pine" transform="translate(1300,520) scale(1.05)"/>
+    <use href="#pine" transform="translate(1240,530) scale(1.0)"/>
+    <use href="#pine" transform="translate(1372,372) scale(1.0)"/>
+    <use href="#pine" transform="translate(1180,368) scale(1.0)"/>
+    <use href="#pine" transform="translate(1080,540) scale(1.0)"/>
+  </g>
+
+  <!-- ===================== TUNDRA TEXTURE ===================== -->
+  <g stroke="#8a9385" stroke-width="1.3" fill="none" stroke-linecap="round" opacity="0.85">
+    <path d="M600,352 l0,-8 M604,352 l3,-7 M596,352 l-3,-7"/>
+    <path d="M660,392 l0,-8 M664,392 l3,-7 M656,392 l-3,-7"/>
+    <path d="M830,340 l0,-8 M834,340 l3,-7 M826,340 l-3,-7"/>
+    <path d="M870,400 l0,-8 M874,400 l3,-7 M866,400 l-3,-7"/>
+    <path d="M580,415 l0,-8 M584,415 l3,-7 M576,415 l-3,-7"/>
+    <path d="M760,415 l0,-8 M764,415 l3,-7 M756,415 l-3,-7"/>
+  </g>
+  <g stroke="#9aa596" stroke-width="1.1" fill="none" opacity="0.7">
+    <path d="M700,318 l14,4 M708,326 l12,-3"/>
+    <path d="M860,318 l14,4 M868,326 l12,-3"/>
+  </g>
+
+  <!-- ===================== WASTELAND TEXTURE ===================== -->
+  <g stroke="#8a7358" stroke-width="1.4" fill="none" stroke-linecap="round" opacity="0.8">
+    <path d="M260,300 l16,10 l-8,8 l14,10"/>
+    <path d="M360,350 l18,-8 l-6,12 l16,6"/>
+    <path d="M420,300 l14,12 l-10,6"/>
+    <path d="M300,380 l20,6 l-8,10"/>
+  </g>
+  <g fill="#8a7358" opacity="0.55">
+    <circle cx="330" cy="320" r="1.6"/><circle cx="345" cy="335" r="1.6"/>
+    <circle cx="395" cy="345" r="1.6"/><circle cx="280" cy="345" r="1.6"/>
+    <circle cx="420" cy="370" r="1.6"/><circle cx="360" cy="300" r="1.6"/>
+  </g>
+  <!-- dashed frontier arc: wasteland cut off from the settled south -->
+  <path d="M200,392 Q360,470 516,340" fill="none" stroke="#4a3527" stroke-width="2" stroke-dasharray="10 8" opacity="0.85"/>
+
+  <!-- ===================== RIVERS ===================== -->
+  <g fill="none" stroke="#4a6a7a" stroke-width="4.2" stroke-linecap="round">
+    <!-- North River (inflow -> into Heartmere) -->
+    <path d="M700,150 Q694,240 706,320 Q700,410 690,500"/>
+    <!-- South River (drains out -> to South Sea) -->
+    <path d="M614,716 Q556,730 505,748 Q460,752 442,756 Q432,820 430,880 Q429,925 430,958"/>
+    <!-- East River (drains out -> to the sea near Eastharbor) -->
+    <path d="M792,650 Q878,634 968,602 Q1058,590 1152,576 Q1252,562 1352,550"/>
+  </g>
+  <!-- flow arrowheads -->
+  <path d="M690,506 L682,490 L698,490 Z" fill="#4a6a7a"/>            <!-- North River inflow (down into lake) -->
+  <path d="M430,966 L422,948 L438,948 Z" fill="#4a6a7a"/>            <!-- South River outflow (down to sea) -->
+  <path d="M1360,550 L1342,542 L1342,558 Z" fill="#4a6a7a"/>         <!-- East River outflow (east to sea) -->
+  <!-- midstream chevrons reinforcing direction -->
+  <g fill="none" stroke="#4a6a7a" stroke-width="2" stroke-linecap="round" opacity="0.9">
+    <path d="M697,300 l8,10 l-9,9"/>            <!-- North: pointing down -->
+    <path d="M470,830 l-9,9 l-9,-9"/>           <!-- South: pointing down -->
+    <path d="M1150,576 l-11,-7 M1150,576 l-11,7"/> <!-- East: pointing right -->
+  </g>
+
+  <!-- ===================== BRIDGES ===================== -->
+  <!-- Ironford big bridge over the South River -->
+  <g stroke="#4a3527" stroke-width="2" fill="#d8c9a6">
+    <path d="M430,742 L456,742 L456,758 L430,758 Z"/>
+    <path d="M436,758 q7,10 14,0" fill="none" stroke-width="1.4"/>
+  </g>
+  <!-- Bridgeton bridge at Heartmere's east mouth -->
+  <g stroke="#4a3527" stroke-width="2" fill="#d8c9a6">
+    <path d="M762,634 L786,630 L790,646 L766,650 Z"/>
+    <path d="M768,646 q8,8 16,-2" fill="none" stroke-width="1.4"/>
+  </g>
+
+  <!-- ===================== THE IRONLINE (RAILWAY) ===================== -->
+  <g>
+    <!-- rail spine: Ironford -> junction, then west spur & east main -->
+    <path d="M430,690 Q446,600 500,520 Q536,470 558,414"
+          fill="none" stroke="#4a3527" stroke-width="2.6"/>
+    <path d="M558,414 Q520,378 468,340"
+          fill="none" stroke="#4a3527" stroke-width="2.6"/>
+    <path d="M558,414 Q640,392 704,364 Q794,376 884,384"
+          fill="none" stroke="#4a3527" stroke-width="2.6"/>
+    <!-- cross-ties -->
+    <g stroke="#4a3527" stroke-width="2" stroke-linecap="round">
+      <path d="M424,684 l12,4 M432,650 l12,3 M440,616 l12,3 M456,580 l11,5 M474,548 l10,6 M494,518 l10,6 M514,486 l9,6 M534,454 l9,6 M550,424 l11,4"/>
+      <path d="M544,404 l6,-11 M520,384 l6,-11 M496,364 l6,-11 M472,344 l6,-11"/>
+      <path d="M580,408 l-3,-12 M612,400 l-3,-12 M644,390 l-3,-12 M676,378 l-3,-12 M704,364 l0,-12 M736,370 l3,-12 M768,376 l3,-12 M800,380 l3,-12 M832,382 l3,-12 M862,383 l3,-12"/>
+    </g>
+    <!-- North River magitech span (rail crosses at ~700,360) -->
+    <circle cx="704" cy="364" r="4.2" fill="#efe6d2" stroke="#4a3527" stroke-width="1.6"/>
+  </g>
+
+  <!-- ===================== ROADS (dotted) ===================== -->
+  <g fill="none" stroke="#6b4f3a" stroke-width="3" stroke-linecap="round" stroke-dasharray="1 9">
+    <!-- Free Road: Kingsreach -> Greenhollow -> Bridgeton -> Eastharbor -->
+    <path d="M726,942 Q812,905 878,872 Q872,762 820,668 Q948,690 1120,652 Q1240,606 1308,570"/>
+    <!-- West Road: Bridgeton -> around Heartmere south -> Ironford -> Westharbor -->
+    <path d="M812,666 Q720,772 604,806 Q510,772 442,712 Q372,796 326,880"/>
+    <!-- Forest Road: Eastharbor -> Rivergate -->
+    <path d="M1306,572 Q1160,566 1024,584"/>
+  </g>
+
+  <!-- ===================== OFFSHORE ISLES ===================== -->
+  <!-- Storm Isles (SE) -->
+  <g stroke="#4a3527" stroke-width="2" stroke-linejoin="round">
+    <path d="M1360,742 q34,-22 66,-6 q22,20 4,42 q-30,26 -62,8 q-24,-24 -8,-44 Z" fill="#e0d4b2"/>
+    <path d="M1452,700 q22,-12 38,4 q10,18 -12,26 q-26,6 -34,-10 q-6,-14 8,-20 Z" fill="#e0d4b2"/>
+    <path d="M1418,830 q26,-14 44,4 q10,18 -12,28 q-28,8 -38,-10 q-6,-14 6,-22 Z" fill="#e0d4b2"/>
+    <path d="M1300,842 q22,-12 38,2 q10,16 -10,24 q-24,8 -32,-8 q-6,-12 4,-18 Z" fill="#e0d4b2"/>
+  </g>
+  <!-- storm cloud/lightning accent over an isle -->
+  <path d="M1470,706 l-6,14 l8,-2 l-6,14" fill="none" stroke="#a33d2f" stroke-width="2.2" stroke-linecap="round"/>
+
+  <!-- Turtle Islands (SE, lower) -->
+  <g stroke="#4a3527" stroke-width="1.8" stroke-linejoin="round">
+    <path d="M1218,868 q20,-14 40,-2 q14,16 -4,28 q-24,12 -40,-4 q-10,-14 4,-22 Z" fill="#dcd0ad"/>
+    <path d="M1276,900 q16,-10 30,0 q10,12 -6,20 q-20,8 -30,-6 q-6,-10 6,-14 Z" fill="#dcd0ad"/>
+    <!-- shell hatch -->
+    <path d="M1238,878 q0,-8 8,-8 q8,0 8,8 M1238,878 q8,-6 16,0 M1246,870 l0,16" fill="none" stroke="#8a7a5f" stroke-width="1"/>
+  </g>
+
+  <!-- Dragon Isle (SW, South Sea) -->
+  <g stroke="#4a3527" stroke-width="2" stroke-linejoin="round">
+    <path d="M150,1004 q40,-26 96,-8 q28,16 6,40 l-118,0 q-16,-18 16,-32 Z" fill="#dcd0ad"/>
+    <path d="M170,1010 L200,960 L232,1010 Z" fill="#8a7361"/>
+    <path d="M200,960 L232,1010 L214,1010 L200,978 Z" fill="#6b564a"/>
+    <path d="M192,978 L200,960 L208,978 L200,970 Z" fill="#a33d2f"/>
+  </g>
+
+  <!-- ===================== SETTLEMENTS ===================== -->
+  <!-- ORC CAMP (neck, central) -->
+  <g stroke="#4a3527" stroke-width="1.8">
+    <path d="M588,458 L600,438 L612,458 Z" fill="#7d8a63"/>
+    <path d="M604,462 L616,444 L628,462 Z" fill="#6f7f52"/>
+    <path d="M600,438 L600,432 M616,444 L616,438" stroke-width="1.4"/>
+  </g>
+
+  <!-- FORTS on the Ironline -->
+  <use href="#fort" transform="translate(465,335)"/>
+  <use href="#fort" transform="translate(886,384)"/>
+
+  <!-- TOWNS (small dots) -->
+  <g stroke="#4a3527" stroke-width="1.6" fill="#efe6d2">
+    <circle cx="365" cy="520" r="5.5"/>  <!-- Ashhaven -->
+    <circle cx="320" cy="890" r="5.5"/>  <!-- Westharbor -->
+    <circle cx="726" cy="396" r="5.5"/>  <!-- Cogwick -->
+    <circle cx="1010" cy="585" r="5.5"/> <!-- Rivergate -->
+    <circle cx="880" cy="872" r="5.5"/>  <!-- Greenhollow -->
+    <circle cx="1382" cy="778" r="5.5"/> <!-- Stormhaven -->
+    <circle cx="1250" cy="888" r="5.5"/> <!-- Shellhaven -->
+    <circle cx="200" cy="998" r="5.5"/>  <!-- Emberport -->
+  </g>
+  <g fill="#4a3527">
+    <circle cx="365" cy="520" r="2.4"/><circle cx="320" cy="890" r="2.4"/>
+    <circle cx="726" cy="396" r="2.4"/><circle cx="1010" cy="585" r="2.4"/>
+    <circle cx="880" cy="872" r="2.4"/><circle cx="1382" cy="778" r="2.4"/>
+    <circle cx="1250" cy="888" r="2.4"/><circle cx="200" cy="998" r="2.4"/>
+  </g>
+
+  <!-- FREE CITY-STATES (large ringed dots) -->
+  <g stroke="#4a3527" stroke-width="2" fill="#efe6d2">
+    <circle cx="720" cy="950" r="9"/>   <!-- Kingsreach -->
+    <circle cx="815" cy="655" r="9"/>   <!-- Bridgeton -->
+    <circle cx="1315" cy="560" r="9"/>  <!-- Eastharbor -->
+  </g>
+  <g fill="#4a3527">
+    <circle cx="720" cy="950" r="4"/><circle cx="815" cy="655" r="4"/><circle cx="1315" cy="560" r="4"/>
+  </g>
+  <!-- little pennants marking the ducal seats -->
+  <g stroke="#4a3527" stroke-width="1.4" fill="#a33d2f">
+    <path d="M720,941 L720,924 L734,928 L720,932" />
+    <path d="M815,646 L815,629 L829,633 L815,637" />
+    <path d="M1315,551 L1315,534 L1329,538 L1315,542" />
+  </g>
+
+  <!-- CAPITAL: Ironford (star) -->
+  <path d="M430,687 L433.2,695.6 L442.4,696.0 L435.2,701.7 L437.6,710.5 L430,705.5 L422.4,710.5 L424.8,701.7 L417.6,696.0 L426.8,695.6 Z"
+        fill="#a33d2f" stroke="#4a3527" stroke-width="1.8"/>
+
+  <!-- ===================== LABELS ===================== -->
+  <!-- water labels -->
+  <g fill="#37545e" font-family="Georgia, 'Times New Roman', serif" font-style="italic">
+    <text x="600" y="60" font-size="34" letter-spacing="8" text-anchor="middle" opacity="0.9">NORTH SEA</text>
+    <text x="620" y="1040" font-size="34" letter-spacing="8" text-anchor="middle" opacity="0.9">SOUTH SEA</text>
+    <text x="90" y="620" font-size="24" letter-spacing="4" opacity="0.75">The Ocean</text>
+    <text x="1500" y="440" font-size="24" letter-spacing="4" text-anchor="middle" opacity="0.75" transform="rotate(90 1500 440)">The Ocean</text>
+  </g>
+  <!-- river labels -->
+  <g fill="#37545e" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="17">
+    <text x="726" y="250" text-anchor="start">North River</text>
+    <text x="726" y="268" text-anchor="start" font-size="13" opacity="0.85">— inflow to Heartmere ↓</text>
+    <text x="905" y="584" text-anchor="middle">East River</text>
+    <text x="905" y="602" text-anchor="middle" font-size="13" opacity="0.85">drains out →</text>
+    <text x="505" y="822" text-anchor="middle">South River</text>
+    <text x="505" y="840" text-anchor="middle" font-size="13" opacity="0.85">drains out ↓</text>
+    <text x="628" y="622" text-anchor="middle" font-size="22" letter-spacing="2" fill="#274650">Heartmere</text>
+  </g>
+
+  <!-- region labels -->
+  <g font-family="Georgia, 'Times New Roman', serif" fill="#4a3527" text-anchor="middle">
+    <!-- Wasteland -->
+    <text x="352" y="300" font-size="21" letter-spacing="3" font-weight="bold">THE WASTELAND</text>
+    <!-- Tundra -->
+    <text x="762" y="330" font-size="21" letter-spacing="3" font-weight="bold">THE TUNDRA</text>
+    <text x="762" y="352" font-size="15" font-style="italic">· Gnomes ·</text>
+    <!-- Forest -->
+    <text x="1120" y="398" font-size="21" letter-spacing="3" font-weight="bold">THE FOREST</text>
+    <text x="1120" y="420" font-size="15" font-style="italic">· Elves ·</text>
+    <!-- Plains -->
+    <text x="892" y="832" font-size="21" letter-spacing="3" font-weight="bold">THE PLAINS</text>
+    <text x="892" y="854" font-size="15" font-style="italic">· Humans ·</text>
+    <!-- White Cliff Mountains -->
+    <text x="332" y="592" font-size="19" letter-spacing="2" font-weight="bold">WHITE CLIFF MTNS</text>
+    <text x="332" y="614" font-size="15" font-style="italic">· Dwarves ·</text>
+    <!-- Volcano -->
+    <text x="228" y="452" font-size="15" font-weight="bold">Volcano</text>
+    <text x="228" y="470" font-size="13" font-style="italic">· Tieflings ·</text>
+  </g>
+
+  <!-- settlement labels -->
+  <g font-family="Georgia, 'Times New Roman', serif" fill="#3a2a1e" font-size="16">
+    <!-- capital -->
+    <text x="448" y="690" font-weight="bold">Ironford</text>
+    <text x="448" y="707" font-size="12" font-style="italic">dwarf capital · bridge</text>
+    <!-- cities -->
+    <text x="720" y="978" text-anchor="middle" font-weight="bold">Kingsreach</text>
+    <text x="720" y="994" text-anchor="middle" font-size="12" font-style="italic">Duke · lead city</text>
+    <text x="830" y="650" font-weight="bold">Bridgeton</text>
+    <text x="830" y="666" font-size="12" font-style="italic">Duke · the Bridge</text>
+    <text x="1332" y="556" font-weight="bold">Eastharbor</text>
+    <text x="1332" y="572" font-size="12" font-style="italic">the Duchess</text>
+    <!-- towns -->
+    <text x="378" y="516" font-size="15">Ashhaven</text>
+    <text x="308" y="880" text-anchor="end" font-size="15">Westharbor</text>
+    <text x="726" y="416" text-anchor="middle" font-size="15">Cogwick</text>
+    <text x="1010" y="568" text-anchor="middle" font-size="15">Rivergate</text>
+    <text x="894" y="868" font-size="15">Greenhollow</text>
+    <text x="600" y="432" text-anchor="middle" font-size="15" font-weight="bold">Orc Camp</text>
+    <!-- forts -->
+    <text x="465" y="312" text-anchor="middle" font-size="14" font-weight="bold">Wastewall</text>
+    <text x="886" y="416" text-anchor="middle" font-size="14" font-weight="bold">Elfward</text>
+  </g>
+
+  <!-- Ironline label -->
+  <text x="726" y="486" font-family="Georgia, 'Times New Roman', serif" fill="#4a3527" font-size="15" font-style="italic" text-anchor="start">the Ironline · dwarven magitech railway</text>
+
+  <!-- road labels -->
+  <g font-family="Georgia, 'Times New Roman', serif" fill="#6b4f3a" font-size="13" font-style="italic">
+    <text x="1120" y="640" text-anchor="middle" transform="rotate(-16 1120 640)">Free Road</text>
+    <text x="560" y="808" text-anchor="middle" transform="rotate(20 560 808)">West Road</text>
+    <text x="1150" y="558" text-anchor="middle">Forest Road</text>
+  </g>
+
+  <!-- offshore labels -->
+  <g font-family="Georgia, 'Times New Roman', serif" fill="#3a2a1e" font-size="15">
+    <text x="1420" y="686" text-anchor="middle" font-weight="bold">Storm Isles</text>
+    <text x="1400" y="782" text-anchor="start" font-size="13" font-style="italic">Stormhaven</text>
+    <text x="1262" y="922" text-anchor="middle" font-weight="bold">Turtle Islands</text>
+    <text x="1262" y="938" text-anchor="middle" font-size="12" font-style="italic">· Tortle · Shellhaven</text>
+    <text x="270" y="990" text-anchor="start" font-weight="bold">Dragon Isle</text>
+    <text x="270" y="1006" text-anchor="start" font-size="12" font-style="italic">Dragons &amp; Dragonborn · Emberport</text>
+  </g>
+
+  <!-- ===================== COMPASS ROSE ===================== -->
+  <g>
+    <circle cx="150" cy="250" r="58" fill="#efe6d2" stroke="#4a3527" stroke-width="2" opacity="0.92"/>
+    <circle cx="150" cy="250" r="46" fill="none" stroke="#8a7a5f" stroke-width="1"/>
+    <!-- diagonal short spikes -->
+    <g fill="#b3a68a" stroke="#4a3527" stroke-width="1">
+      <path d="M150,250 L178,222 L162,238 Z"/><path d="M150,250 L178,278 L162,262 Z"/>
+      <path d="M150,250 L122,278 L138,262 Z"/><path d="M150,250 L122,222 L138,238 Z"/>
+    </g>
+    <!-- cardinal spikes -->
+    <g stroke="#4a3527" stroke-width="1.2">
+      <path d="M150,250 L142,242 L150,196 L158,242 Z" fill="#efe6d2"/>
+      <path d="M150,250 L158,242 L204,250 L158,258 Z" fill="#b3a68a"/>
+      <path d="M150,250 L158,258 L150,304 L142,258 Z" fill="#b3a68a"/>
+      <path d="M150,250 L142,258 L96,250 L142,242 Z" fill="#efe6d2"/>
+    </g>
+    <path d="M150,196 L155,242 L150,250 L145,242 Z" fill="#a33d2f" stroke="#4a3527" stroke-width="1"/>
+    <text x="150" y="186" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#4a3527">N</text>
+    <text x="220" y="256" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="#4a3527">E</text>
+    <text x="150" y="326" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="#4a3527">S</text>
+    <text x="80" y="256" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="#4a3527">W</text>
+  </g>
+
+  <!-- ===================== SCALE BAR ===================== -->
+  <g>
+    <text x="1340" y="998" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="#4a3527" font-style="italic">scale — miles</text>
+    <rect x="1230" y="1008" width="110" height="13" fill="#4a3527" stroke="#4a3527" stroke-width="1"/>
+    <rect x="1340" y="1008" width="110" height="13" fill="#efe6d2" stroke="#4a3527" stroke-width="1"/>
+    <g stroke="#4a3527" stroke-width="1.4">
+      <path d="M1230,1005 L1230,1024 M1340,1005 L1340,1024 M1450,1005 L1450,1024"/>
+    </g>
+    <g font-family="Georgia, serif" font-size="14" fill="#4a3527" text-anchor="middle">
+      <text x="1230" y="1042">0</text><text x="1340" y="1042">100</text><text x="1450" y="1042">200</text>
+    </g>
+  </g>
+
+  <!-- ===================== TITLE CARTOUCHE ===================== -->
+  <g>
+    <rect x="30" y="30" width="410" height="118" rx="10" fill="#efe6d2" stroke="#4a3527" stroke-width="2.4"/>
+    <rect x="38" y="38" width="394" height="102" rx="7" fill="none" stroke="#8a7a5f" stroke-width="1"/>
+    <text x="235" y="90" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="36" font-weight="bold" letter-spacing="2" fill="#4a3527">The Known World</text>
+    <text x="235" y="120" text-anchor="middle" font-family="Georgia, serif" font-size="16" font-style="italic" fill="#6b4f3a">familyrpg · source map v1</text>
+    <path d="M120,132 q115,-10 230,0" fill="none" stroke="#a33d2f" stroke-width="1.6"/>
+  </g>
+
+  <!-- ===================== LEGEND ===================== -->
+  <g>
+    <rect x="1198" y="42" width="378" height="292" rx="10" fill="#efe6d2" stroke="#4a3527" stroke-width="2.4"/>
+    <rect x="1206" y="50" width="362" height="276" rx="7" fill="none" stroke="#8a7a5f" stroke-width="1"/>
+    <text x="1387" y="82" text-anchor="middle" font-family="Georgia, serif" font-size="20" font-weight="bold" letter-spacing="4" fill="#4a3527">LEGEND</text>
+    <g font-family="Georgia, serif" font-size="16" fill="#3a2a1e">
+      <!-- capital -->
+      <path d="M1230,111 L1232.2,116.9 L1238.6,117.2 L1233.6,121.2 L1235.3,127.3 L1230,123.8 L1224.7,127.3 L1226.4,121.2 L1221.4,117.2 L1227.8,116.9 Z" fill="#a33d2f" stroke="#4a3527" stroke-width="1.2"/>
+      <text x="1256" y="124">Capital (Ironford)</text>
+      <!-- city -->
+      <circle cx="1230" cy="152" r="8" fill="#efe6d2" stroke="#4a3527" stroke-width="1.8"/>
+      <circle cx="1230" cy="152" r="3.4" fill="#4a3527"/>
+      <text x="1256" y="157">Free city / ducal seat</text>
+      <!-- town -->
+      <circle cx="1230" cy="184" r="5" fill="#efe6d2" stroke="#4a3527" stroke-width="1.6"/>
+      <circle cx="1230" cy="184" r="2.2" fill="#4a3527"/>
+      <text x="1256" y="189">Town</text>
+      <!-- fort -->
+      <use href="#fort" transform="translate(1230,218) scale(0.85)"/>
+      <text x="1256" y="221">Fort</text>
+      <!-- road -->
+      <path d="M1214,250 L1248,250" fill="none" stroke="#6b4f3a" stroke-width="3" stroke-linecap="round" stroke-dasharray="1 9"/>
+      <text x="1256" y="255">Road (dotted)</text>
+      <!-- railway -->
+      <path d="M1214,282 L1248,282" fill="none" stroke="#4a3527" stroke-width="2.6"/>
+      <path d="M1218,276 l0,12 M1226,276 l0,12 M1234,276 l0,12 M1242,276 l0,12" stroke="#4a3527" stroke-width="2"/>
+      <text x="1256" y="287">The Ironline (railway)</text>
+      <!-- river -->
+      <path d="M1214,312 q8,-7 17,0 q9,7 17,0" fill="none" stroke="#4a6a7a" stroke-width="3.4" stroke-linecap="round"/>
+      <text x="1256" y="317">River (arrow = flow)</text>
+    </g>
+  </g>
+
+  <!-- ===================== NEATLINE ===================== -->
+  <rect x="10" y="10" width="1580" height="1060" rx="6" fill="none" stroke="#4a3527" stroke-width="3"/>
+  <rect x="18" y="18" width="1564" height="1044" rx="4" fill="none" stroke="#4a3527" stroke-width="1.2"/>
+</svg>
