@@ -1881,3 +1881,1000 @@ div_gate_of_the_heavens:
   description: >
     The caster tears a doorway clean across the battlefield and into
     someplace kinder, and anyone willing may step straight through.
+
+# ===== PRIMAL (druid) — pri_ prefix — levels 0-9 =====
+# Nature and the elements: fire, frost, lightning, thunder, acid, and poison
+# blasts alongside entangle/control (restrained, grappled, poisoned, prone)
+# and a handful of secondary heals. Buffs lean on shielded/raging/focused —
+# bark-hard skin, beast fury, and predator instinct rather than divine light.
+
+# --- Cantrips (level 0) ---
+
+pri_bramble_snap:
+  level: 0
+  action: action
+  range: 4
+  resolve: attack
+  damage: 1d8
+  description: >
+    A whip-quick vine springs from the caster's palm and cracks across
+    the target before curling back into ordinary ivy.
+pri_frost_needle:
+  level: 0
+  action: action
+  range: 12
+  resolve: save
+  save_attr: CON
+  damage: 1d8
+  on_save: none
+  description: >
+    A single perfect icicle spears out of clear air, aimed by nothing
+    but the caster's cold, certain instinct.
+pri_tanglefoot:
+  level: 0
+  action: action
+  range: 6
+  resolve: save
+  save_attr: STR
+  effect: {name: restrained, duration: 1}
+  on_save: none
+  description: >
+    The grass underfoot knots itself around an ankle for one long,
+    badly timed heartbeat.
+pri_natures_touch:
+  level: 0
+  action: action
+  range: 1
+  resolve: auto
+  heal: 1d4+CASTMOD
+  description: >
+    A scatter of green sparks closes a scrape the way moss quietly
+    grows back over an old scar.
+
+# --- Level 1 ---
+
+pri_thorn_volley:
+  level: 1
+  action: action
+  range: 12
+  resolve: attack
+  damage: 3d6
+  description: >
+    A dozen hooked thorns ride out on a gust the caster shapes with
+    one hand, finding every gap in a raised guard.
+pri_frostbite_bolt:
+  level: 1
+  action: action
+  range: 18
+  resolve: save
+  save_attr: CON
+  damage: 2d6
+  on_save: half
+  description: >
+    A jagged shard of black ice punches out of the cold and bites
+    deep before it shatters.
+pri_spark_jolt:
+  level: 1
+  action: action
+  range: 18
+  resolve: attack
+  damage: 3d6
+  description: >
+    Static gathers in the caster's fist and snaps loose as a stinging
+    blue thread that finds the target in an eyeblink.
+pri_acid_bite:
+  level: 1
+  action: action
+  range: 12
+  resolve: save
+  save_attr: DEX
+  damage: 2d6
+  on_save: half
+  description: >
+    A gout of stomach-sour green mist rolls off the caster's palm and
+    hisses where it lands.
+pri_entangling_roots:
+  level: 1
+  action: action
+  range: 12
+  resolve: save
+  save_attr: STR
+  effect: {name: restrained, duration: 2}
+  on_save: none
+  description: >
+    Roots surge up through packed dirt and stone alike and lock around
+    the target's legs like they'd been waiting there all along.
+pri_toxic_spores:
+  level: 1
+  action: action
+  range: 12
+  resolve: save
+  save_attr: CON
+  effect: {name: poisoned, duration: 3}
+  on_save: none
+  description: >
+    A puffball plant blooms from nowhere and bursts in a cloud of
+    sickly yellow dust that clings to the lungs.
+pri_barkskin:
+  level: 1
+  action: action
+  range: 1
+  resolve: auto
+  effect: {name: shielded, duration: 10}
+  description: >
+    The target's skin roughens and thickens like old oak bark, turning
+    the edge off whatever hits next.
+pri_mending_bloom:
+  level: 1
+  action: action
+  range: 1
+  resolve: auto
+  heal: 1d8+CASTMOD
+  description: >
+    Small white flowers open along a wound and wilt again the instant
+    it finishes closing.
+pri_gale_step:
+  level: 1
+  action: action
+  range: 1
+  resolve: auto
+  effect: {name: focused, duration: 2}
+  description: >
+    A pocket of quick wind wraps the target's feet, and for a moment
+    every next move feels like it was already rehearsed.
+pri_stinging_swarm:
+  level: 1
+  action: action
+  range: 12
+  resolve: save
+  save_attr: DEX
+  damage: 2d6
+  on_save: half
+  area: {shape: burst, radius: 1}
+  description: >
+    A furious knot of wasps boils out of the caster's sleeve and
+    scatters over everyone standing too close together.
+
+# --- Level 2 ---
+
+pri_flame_lash:
+  level: 2
+  action: action
+  range: 14
+  resolve: attack
+  damage: 5d6
+  description: >
+    A whip of raw fire uncoils from the caster's arm and cracks across
+    the target hard enough to singe the air.
+pri_ice_lance:
+  level: 2
+  action: action
+  range: 18
+  resolve: save
+  save_attr: CON
+  damage: 4d6
+  on_save: half
+  description: >
+    A spear of blue-white ice grows out of nothing and drives itself
+    home before it has finished forming.
+pri_thunderclap_claw:
+  level: 2
+  action: action
+  range: 1
+  resolve: attack
+  damage: 4d6
+  description: >
+    The caster's hand becomes, for one instant, a great cat's claw
+    trailing a crack of real thunder.
+pri_venom_bite:
+  level: 2
+  action: action
+  range: 12
+  resolve: save
+  save_attr: CON
+  damage: 3d8
+  on_save: half
+  effect: {name: poisoned, duration: 2}
+  description: >
+    Unseen fangs close on the target and leave behind a slow green
+    ache that lingers well after the bite itself.
+pri_grasping_vines:
+  level: 2
+  action: action
+  range: 12
+  resolve: save
+  save_attr: STR
+  effect: {name: restrained, duration: 3}
+  on_save: none
+  description: >
+    A whole patch of undergrowth lunges upward at once and wraps the
+    target from ankle to chest.
+pri_toppling_gust:
+  level: 2
+  action: action
+  range: 12
+  resolve: save
+  save_attr: STR
+  effect: {name: prone, duration: 1}
+  on_save: none
+  description: >
+    A short, hard wall of wind slams into the target sideways and
+    puts them flat on their back before they can brace.
+pri_stoneskin_ward:
+  level: 2
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: shielded, duration: 10}
+  description: >
+    Gray flecks of living stone spread across the target's skin like
+    lichen, hardening everything they touch.
+pri_wolfheart:
+  level: 2
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: focused, duration: 3}
+  description: >
+    A pack-hunter's cold clarity drops over the target, and the next
+    several moves come easy and sure.
+pri_verdant_renewal:
+  level: 2
+  action: action
+  range: 6
+  resolve: auto
+  heal: 2d8+CASTMOD
+  description: >
+    A wave of green warmth rolls off the caster's hand and settles
+    into the target like sunlight finding a forest floor.
+pri_scattering_hail:
+  level: 2
+  action: action
+  range: 18
+  resolve: save
+  save_attr: DEX
+  damage: 3d6
+  on_save: half
+  area: {shape: burst, radius: 1}
+  description: >
+    A sudden squall drops a hard, fast round of hailstones over one
+    patch of ground and everyone unlucky enough to be standing on it.
+
+# --- Level 3 ---
+
+pri_lightning_bough:
+  level: 3
+  action: action
+  range: 24
+  resolve: attack
+  damage: 8d6
+  description: >
+    A branch of pure lightning grows out of the storm-dark air and
+    strikes down through the target like a felled tree.
+pri_flame_bramble:
+  level: 3
+  action: action
+  range: 18
+  resolve: save
+  save_attr: DEX
+  damage: 7d6
+  on_save: half
+  description: >
+    A tangle of thornbush erupts underfoot already burning, catching
+    on cloth and skin alike before it burns itself out.
+pri_glacial_spear:
+  level: 3
+  action: action
+  range: 18
+  resolve: attack
+  damage: 7d6
+  description: >
+    A haft of ancient glacier ice punches through the air and through
+    whatever stands in its way.
+pri_acid_maw:
+  level: 3
+  action: action
+  range: 12
+  resolve: save
+  save_attr: CON
+  damage: 6d6
+  on_save: half
+  description: >
+    A ring of unseen teeth made of pure corrosion closes and opens
+    once, and what it touches is left hissing.
+pri_choking_vines:
+  level: 3
+  action: action
+  range: 18
+  resolve: save
+  save_attr: STR
+  effect: {name: restrained, duration: 3}
+  on_save: none
+  description: >
+    A single massive root breaks the surface and coils tight around
+    the target's whole body, patient as a python.
+pri_spore_burst:
+  level: 3
+  action: action
+  range: 18
+  resolve: save
+  save_attr: CON
+  damage: 5d6
+  on_save: half
+  effect: {name: poisoned, duration: 2}
+  area: {shape: burst, radius: 2}
+  description: >
+    A rotted stump the caster points at blooms open in an instant and
+    fills the whole clearing with choking spores.
+pri_thunderhead:
+  level: 3
+  action: action
+  range: 24
+  resolve: save
+  save_attr: DEX
+  damage: 5d6
+  on_save: half
+  area: {shape: burst, radius: 2}
+  description: >
+    A low black cloud gathers overhead in one breath and drops a
+    single, ground-shaking peal of thunder on the spot below it.
+pri_bearheart:
+  level: 3
+  action: action
+  range: 1
+  resolve: auto
+  effect: {name: raging, duration: 5}
+  description: >
+    The target's shoulders broaden and their eyes go flat and steady
+    with a bear's unhurried, unstoppable calm.
+pri_regrowth:
+  level: 3
+  action: action
+  range: 12
+  resolve: auto
+  heal: 3d8+CASTMOD
+  description: >
+    Green light threads out across the distance like a root finding
+    water, and the wound it reaches simply stops being a wound.
+pri_hunters_focus:
+  level: 3
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: focused, duration: 4}
+  description: >
+    The whole world narrows for the target down to one clean, certain
+    line between them and what they're about to do.
+
+# --- Level 4 ---
+
+pri_inferno_bolt:
+  level: 4
+  action: action
+  range: 24
+  resolve: attack
+  damage: 10d6
+  description: >
+    A bolt of white-hot wildfire streaks from the caster's raised
+    hand and leaves a scorch trail hanging in the air behind it.
+pri_deep_frost:
+  level: 4
+  action: action
+  range: 18
+  resolve: save
+  save_attr: CON
+  damage: 9d6
+  on_save: half
+  description: >
+    Cold beyond any winter drops onto the target all at once, frost
+    crawling visibly across skin and armor both.
+pri_stormfang:
+  level: 4
+  action: action
+  range: 18
+  resolve: attack
+  damage: 9d6
+  description: >
+    A wolf built entirely of crackling lightning leaps from the
+    caster's shadow and closes its jaws on the target mid-stride.
+pri_corrosive_lash:
+  level: 4
+  action: action
+  range: 12
+  resolve: save
+  save_attr: CON
+  damage: 8d6
+  on_save: half
+  description: >
+    A rope of living acid uncoils from the caster's hand and lashes
+    once, hard, leaving the air behind it faintly smoking.
+pri_grasping_thicket:
+  level: 4
+  action: action
+  range: 12
+  resolve: save
+  save_attr: STR
+  effect: {name: grappled, duration: 3}
+  on_save: none
+  description: >
+    A whole thicket lurches upright and closes both arms of bramble
+    around the target, holding on with every thorn it has.
+pri_toxic_bloom:
+  level: 4
+  action: action
+  range: 18
+  resolve: save
+  save_attr: CON
+  damage: 6d6
+  on_save: half
+  effect: {name: poisoned, duration: 2}
+  area: {shape: burst, radius: 2}
+  description: >
+    A ring of pale flowers snaps open all at once and breathes out a
+    cloud of pollen that turns the stomach of anyone caught in it.
+pri_scorching_gale:
+  level: 4
+  action: action
+  range: 18
+  resolve: save
+  save_attr: DEX
+  damage: 6d6
+  on_save: half
+  area: {shape: burst, radius: 2}
+  description: >
+    A wind that shouldn't exist in still air roars through one patch
+    of the field, and it is carrying fire.
+pri_ironbark:
+  level: 4
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: shielded, duration: 10}
+  description: >
+    The target's skin goes gray and grooved as an old oak trunk, and
+    blows that should land skid off instead.
+pri_life_bloom:
+  level: 4
+  action: action
+  range: 12
+  resolve: auto
+  heal: 4d8+CASTMOD
+  description: >
+    A whole season's worth of growth happens in the target's wound
+    over the space of one long breath, and then it's simply healed.
+pri_predators_eye:
+  level: 4
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: focused, duration: 5}
+  description: >
+    The target's gaze sharpens to something that has never once lost
+    track of a fleeing thing, and won't start now.
+
+# --- Level 5 ---
+
+pri_wrath_of_thunder:
+  level: 5
+  action: action
+  range: 30
+  resolve: attack
+  damage: 12d6
+  description: >
+    The sky itself seems to lean down and strike once, and the crack
+    of it is heard three valleys over.
+pri_absolute_zero:
+  level: 5
+  action: action
+  range: 24
+  resolve: save
+  save_attr: CON
+  damage: 11d6
+  on_save: half
+  description: >
+    Every scrap of warmth the target carries is pulled out at once
+    and left behind them as a thin coat of frost on the ground.
+pri_wildfire_lance:
+  level: 5
+  action: action
+  range: 24
+  resolve: attack
+  damage: 11d6
+  description: >
+    A javelin of living wildfire hurls itself from the caster's hand,
+    trailing embers that don't cool until it's already struck.
+pri_venom_strike:
+  level: 5
+  action: action
+  range: 18
+  resolve: save
+  save_attr: CON
+  damage: 10d6
+  on_save: half
+  effect: {name: poisoned, duration: 3}
+  description: >
+    A single strike lands with the full weight of every venomous
+    thing the caster has ever walked past and learned from.
+pri_maelstrom:
+  level: 5
+  action: action
+  range: 24
+  resolve: save
+  save_attr: DEX
+  damage: 8d6
+  on_save: half
+  area: {shape: burst, radius: 3}
+  description: >
+    Wind, rain, and lightning spin themselves into a single furious
+    knot over one stretch of ground and let go all at once.
+pri_wildfire_eruption:
+  level: 5
+  action: action
+  range: 24
+  resolve: save
+  save_attr: DEX
+  damage: 8d6
+  on_save: half
+  area: {shape: burst, radius: 3}
+  description: >
+    The ground itself catches, and fire comes up through the cracks
+    in a ring wide enough to swallow a whole skirmish line.
+pri_briar_prison:
+  level: 5
+  action: action
+  range: 18
+  resolve: save
+  save_attr: STR
+  effect: {name: restrained, duration: 4}
+  on_save: none
+  description: >
+    An entire hedge of ancient, iron-hard thorns rises around the
+    target in a single heartbeat and locks shut like a cage.
+pri_avatar_of_the_wild:
+  level: 5
+  action: action
+  range: 1
+  resolve: auto
+  effect: {name: raging, duration: 6}
+  description: >
+    For a while the target is not quite themselves — something older,
+    faster, and considerably less interested in stopping.
+pri_verdant_wave:
+  level: 5
+  action: action
+  range: 18
+  resolve: auto
+  heal: 5d8+CASTMOD
+  description: >
+    A wave of green light rolls out across the distance and every
+    wound it passes over closes on its own.
+pri_stormcallers_eye:
+  level: 5
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: focused, duration: 6}
+  description: >
+    The target sees, for a long moment, exactly the way a hawk sees
+    from the top of a storm — one clear line, nothing else.
+
+# --- Level 6 ---
+
+pri_ravaging_inferno:
+  level: 6
+  action: action
+  range: 24
+  resolve: attack
+  damage: 13d6
+  description: >
+    A column of fire hot enough to bend the air drops from a clear
+    sky and lands exactly where the caster pointed.
+pri_permafrost_lance:
+  level: 6
+  action: action
+  range: 24
+  resolve: save
+  save_attr: CON
+  damage: 12d6
+  on_save: half
+  description: >
+    A spike of ice older than any winter this land has seen forms and
+    drives home in the same breath.
+pri_thunderstrike:
+  level: 6
+  action: action
+  range: 30
+  resolve: attack
+  damage: 12d6
+  description: >
+    Lightning answers the caster's raised hand like it had been
+    waiting for the invitation, and the thunder arrives a beat late.
+pri_corrosive_torrent:
+  level: 6
+  action: action
+  range: 18
+  resolve: save
+  save_attr: DEX
+  damage: 11d6
+  on_save: half
+  description: >
+    A river's worth of living acid pours out of nowhere and across the
+    target before the ground can even drink it in.
+pri_titan_roots:
+  level: 6
+  action: action
+  range: 24
+  resolve: save
+  save_attr: STR
+  effect: {name: restrained, duration: 4}
+  on_save: none
+  area: {shape: burst, radius: 3}
+  description: >
+    The whole field heaves as roots the size of a wagon wheel break
+    the surface and lock around everyone caught standing there.
+pri_hurricane_burst:
+  level: 6
+  action: action
+  range: 24
+  resolve: save
+  save_attr: DEX
+  damage: 9d6
+  on_save: half
+  area: {shape: burst, radius: 3}
+  description: >
+    A hurricane the size of a courtyard spins itself into being and
+    tears through one whole stretch of the battle at once.
+pri_beast_avatar:
+  level: 6
+  action: action
+  range: 1
+  resolve: auto
+  effect: {name: raging, duration: 8}
+  description: >
+    Claws that aren't quite claws lengthen at the target's fingertips,
+    and the fury behind them is older than any grudge.
+pri_bulwark_of_bark:
+  level: 6
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: shielded, duration: -1}
+  description: >
+    A shell of living bark grows fully around the target and stays,
+    thick and patient, until someone finally strips it away.
+pri_natures_bounty:
+  level: 6
+  action: action
+  range: 18
+  resolve: auto
+  heal: 6d8+CASTMOD
+  description: >
+    An entire spring's worth of growing season passes over the target
+    in an instant, and every hurt it touches simply mends.
+pri_apex_focus:
+  level: 6
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: focused, duration: 8}
+  description: >
+    The target becomes, for a good while, the single most dangerous
+    thing paying attention to anything on that field.
+
+# --- Level 7 ---
+
+pri_cataclysmic_flame:
+  level: 7
+  action: action
+  range: 30
+  resolve: attack
+  damage: 14d8
+  description: >
+    Fire that remembers the first fire ever lit drops onto the target
+    and burns with a light that outlasts the smoke.
+pri_glacial_dominion:
+  level: 7
+  action: action
+  range: 24
+  resolve: save
+  save_attr: CON
+  damage: 13d8
+  on_save: half
+  description: >
+    An age of ice arrives all at once and answers to nothing but the
+    caster's will, and it does not ask the target's permission.
+pri_skyfall_thunder:
+  level: 7
+  action: action
+  range: 36
+  resolve: attack
+  damage: 13d8
+  description: >
+    The whole sky seems to drop a fist of pure thunder, and the shock
+    of it rattles teeth two hundred paces off.
+pri_venom_apocalypse:
+  level: 7
+  action: action
+  range: 18
+  resolve: save
+  save_attr: CON
+  damage: 12d8
+  on_save: half
+  effect: {name: poisoned, duration: 4}
+  description: >
+    Every poison the wild world has ever brewed arrives in the target
+    at once, and it is not interested in mercy.
+pri_world_root:
+  level: 7
+  action: action
+  range: 24
+  resolve: save
+  save_attr: STR
+  effect: {name: restrained, duration: 5}
+  on_save: none
+  area: {shape: burst, radius: 3}
+  description: >
+    A root as old as the mountain range surfaces beneath one whole
+    stretch of ground and closes over everyone standing on it.
+pri_firestorm:
+  level: 7
+  action: action
+  range: 30
+  resolve: save
+  save_attr: DEX
+  damage: 10d8
+  on_save: half
+  area: {shape: burst, radius: 3}
+  description: >
+    A storm made entirely of burning embers rolls across one whole
+    stretch of the field, leaving scorched ground in every direction.
+pri_glacial_storm:
+  level: 7
+  action: action
+  range: 30
+  resolve: save
+  save_attr: CON
+  damage: 10d8
+  on_save: half
+  area: {shape: burst, radius: 3}
+  description: >
+    A blizzard old enough to have a name of its own descends on one
+    stretch of ground and buries it under ice in a single instant.
+pri_ancient_bark:
+  level: 7
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: shielded, duration: -1}
+  description: >
+    Bark older than most kingdoms wraps fully around the target and
+    holds there, patient and total, until it's finally peeled away.
+pri_primal_fury:
+  level: 7
+  action: action
+  range: 1
+  resolve: auto
+  effect: {name: raging, duration: 10}
+  description: >
+    Every animal the target has ever been kin to lends them, all at
+    once, its whole share of unstoppable fury.
+pri_eye_of_the_storm:
+  level: 7
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: focused, duration: 10}
+  description: >
+    The chaos of the whole battle goes quiet and slow around the
+    target, and every choice in front of them turns simple.
+
+# --- Level 8 ---
+
+pri_inferno_god:
+  level: 8
+  action: action
+  range: 30
+  resolve: attack
+  damage: 15d8
+  description: >
+    A pillar of fire that belongs to no ordinary flame drops from a
+    cloudless sky and burns exactly where it lands.
+pri_absolute_glacier:
+  level: 8
+  action: action
+  range: 24
+  resolve: save
+  save_attr: CON
+  damage: 14d8
+  on_save: half
+  description: >
+    A glacier's whole weight of cold arrives in a single instant and
+    the target's very breath freezes mid-word.
+pri_thunder_of_ages:
+  level: 8
+  action: action
+  range: 36
+  resolve: attack
+  damage: 14d8
+  description: >
+    Thunder that has been building since before the caster was born
+    finally lets go, and the target is standing exactly where it lands.
+pri_venom_of_the_wild:
+  level: 8
+  action: action
+  range: 18
+  resolve: save
+  save_attr: CON
+  damage: 13d10
+  on_save: half
+  description: >
+    Every predator, plant, and creeping thing that has ever poisoned
+    anything lends the caster its worst all at once.
+pri_maw_of_the_earth:
+  level: 8
+  action: action
+  range: 18
+  resolve: save
+  save_attr: STR
+  effect: {name: grappled, duration: 5}
+  on_save: none
+  description: >
+    The ground itself opens a mouth of root and stone and closes it
+    around the target like the whole world had been waiting to bite.
+pri_wildfire_cataclysm:
+  level: 8
+  action: action
+  range: 30
+  resolve: save
+  save_attr: DEX
+  damage: 11d8
+  on_save: half
+  area: {shape: burst, radius: 4}
+  description: >
+    An entire hillside catches at once, and the fire spreads faster
+    than anyone standing in it can think to run.
+pri_tempest_of_thunder:
+  level: 8
+  action: action
+  range: 30
+  resolve: save
+  save_attr: DEX
+  damage: 11d8
+  on_save: half
+  area: {shape: burst, radius: 3}
+  description: >
+    A storm the size of a small town rolls in over one stretch of
+    ground and unloads everything it has been carrying.
+pri_titans_bark:
+  level: 8
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: shielded, duration: -1}
+  description: >
+    Wood harder than any forged plate wraps the target head to foot,
+    grown whole in a single breath and unwilling to yield.
+pri_avatar_of_ruin:
+  level: 8
+  action: action
+  range: 1
+  resolve: auto
+  effect: {name: raging, duration: -1}
+  description: >
+    Something vast, old, and entirely done with patience settles into
+    the target and doesn't plan on leaving anytime soon.
+pri_primeval_clarity:
+  level: 8
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: focused, duration: -1}
+  description: >
+    The target's mind opens onto something as old as the first storm,
+    and it stays open, calm and total, for the rest of the fight.
+
+# --- Level 9 ---
+
+pri_sunfire_annihilation:
+  level: 9
+  action: action
+  range: 36
+  resolve: attack
+  damage: 20d6
+  description: >
+    For one instant the caster commands a sliver of the actual sun,
+    and it lands precisely where they meant it to.
+pri_absolute_winter:
+  level: 9
+  action: action
+  range: 24
+  resolve: save
+  save_attr: CON
+  damage: 18d6
+  on_save: half
+  description: >
+    An entire ice age arrives, briefly, just for the target, and
+    leaves before anyone else even feels the chill.
+pri_worldstrike_thunder:
+  level: 9
+  action: action
+  range: 48
+  resolve: attack
+  damage: 19d6
+  description: >
+    The sky cracks open along its whole length and every bit of that
+    thunder chooses, somehow, to land on one single point.
+pri_venom_of_the_first_serpent:
+  level: 9
+  action: action
+  range: 18
+  resolve: save
+  save_attr: CON
+  damage: 17d6
+  on_save: half
+  effect: {name: poisoned, duration: 6}
+  description: >
+    A poison older than any living thing that carries it now finds
+    its way, at last, into the target.
+pri_the_great_uprooting:
+  level: 9
+  action: action
+  range: 30
+  resolve: save
+  save_attr: STR
+  effect: {name: restrained, duration: 6}
+  on_save: none
+  area: {shape: burst, radius: 4}
+  description: >
+    Every root for half a mile answers the same call at once, and the
+    whole battlefield becomes something no one can walk out of.
+pri_last_wildfire:
+  level: 9
+  action: action
+  range: 36
+  resolve: save
+  save_attr: DEX
+  damage: 16d6
+  on_save: half
+  area: {shape: burst, radius: 3}
+  description: >
+    The fire that ends a season arrives early and all at once, and it
+    does not much care what stands in the clearing it leaves behind.
+pri_cataclysm_of_storms:
+  level: 9
+  action: action
+  range: 36
+  resolve: save
+  save_attr: DEX
+  damage: 16d6
+  on_save: half
+  area: {shape: burst, radius: 3}
+  description: >
+    Every storm the caster has ever called arrives together, stacked
+    one on the next, and lets go over a single stretch of ground.
+pri_avatar_eternal:
+  level: 9
+  action: action
+  range: 1
+  resolve: auto
+  effect: {name: raging, duration: -1}
+  description: >
+    The line between the caster and every wild thing that ever lived
+    disappears completely, and does not come back on its own.
+pri_wardstone_of_the_wild:
+  level: 9
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: shielded, duration: -1}
+  description: >
+    The whole living world leans in to shelter the target, and
+    nothing short of a long rest convinces it to stand back down.
+pri_gate_of_roots:
+  level: 9
+  action: action
+  range: 60
+  resolve: auto
+  description: >
+    A path of ancient roots tears open clean across the battlefield
+    and into someplace far kinder, wide enough for the whole party.
