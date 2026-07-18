@@ -31,3 +31,5 @@ firbolg: {bonuses: {WIS: 1, STR: 1}, speed: 6,
   description: "Gentle forest-giants who would rather share their bread than swing a fist, and who make you very sorry on the rare day it comes to fists."}
 kenku: {bonuses: {DEX: 1, INT: 1}, speed: 6,
   description: "Feathered folk who speak in borrowed voices and remember every sound they have ever heard; clever hands, sharp eyes, and a plan already half-formed."}
+tiefling: {bonuses: {CHA: 1, INT: 1}, speed: 6,
+  description: "Horned and warm to the touch, with a bloodline that runs back to something that lived deep in the fire; a tiefling shrugs off heat that would blister anyone else and has learned to grin right back at the stares."}
