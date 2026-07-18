@@ -206,3 +206,42 @@ Map furniture:
   (dotted) · +++ railway · ═ underground rail · ~ river.
 - **Sea labels**: North Sea, South Sea, Ocean (E & W).
 - Spelling exact: **Eastharbor**, **Westharbor** (both "-harbor").
+
+---
+
+## v3 REDLINE (applies ON TOP of everything above — these win on conflict)
+
+**Region renames** (region title changes; the "· People ·" subtitle stays):
+- "The Forest" → **Deepwoods** (· Elves ·)
+- "The Plains" → **Great Plains** (· Humans ·)
+- "The Tundra" → **Northland Tundra** (· Gnomes ·)
+
+**Geography / composition fixes:**
+1. **Continent bottom = a POINT (heart's bottom point), not two rounded lobes.**
+   v2's southern coast reads as a "butt" (two bulges with a dip). Redraw the
+   southern coast tapering to a single rounded **point** at the bottom-center,
+   with **Kingsreach** at or just above that point. Keep the two TOP lobes + top
+   cleft — a proper heart.
+2. **Westharbor moves to the COAST** — exactly where the **West River meets the
+   sea at the foot of the mountains** (the river's SW sea-mouth). It is a
+   harbor, so it must be on the water, not inland. The West River runs from
+   Heartmere through the mountains and empties at Westharbor on the SW coast.
+3. **The East Islands (Tortle) must read as clearly-separate OFFSHORE islands**
+   in the SE water — distinct from **Duskhold**, which is on the **mainland** SE
+   coast. In v2 they're jumbled together. Separate them: pull Duskhold onto the
+   mainland (with its road), and set the Tortle **East Islands + Shellhaven** as
+   their own island group out in the water with clear sea between them and the
+   coast. Give the group ONE clean "East Islands · Tortle" label and a Shellhaven
+   town dot on an island.
+4. **Dragon Isle label** — its text is cramped/overlapping the island's mountain
+   in v2. Lay the label cleanly (name + "Dragons & Dragonborn" + Emberport)
+   beside/below the island with no overlap on the art.
+
+**Label anti-collision (the reviewer must verify every one of these):**
+- **Cogwick** and **Gearwatch** overlap near the rail bridge — separate them so
+  both names + the bridge/fort read cleanly.
+- **Eastharbor** — nudge the label a bit right / clear so nothing crosses it.
+- **Deepwoods "· Elves ·"** subtitle has a **tree glyph drawn on top of it** —
+  move the label (or clear the trees behind it) so the text is clean.
+- General: no place-name may be crossed by a tree, road, rail, river, or another
+  label. Legible at full size is the bar.

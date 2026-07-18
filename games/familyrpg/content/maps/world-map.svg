@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1080">
-  <!-- familyrpg — source-of-truth world map. Heart-shaped continent, contiguous territories.
+  <!-- familyrpg — source-of-truth world map (v3). Heart-shaped continent, contiguous territories.
        Parchment/ink cartography, hand-authored, static. Color to be added by a later tool. -->
 
   <defs>
@@ -41,24 +41,26 @@
     <path d="M1540,560 q10,-6 20,0 q10,6 20,0"/>
   </g>
 
-  <!-- ===================== LANDMASS (heart-shaped) ===================== -->
+  <!-- ===================== LANDMASS (heart-shaped, single southern point) ===================== -->
   <path d="M760,332
            C748,300 718,248 658,220 C598,192 500,176 430,186
            C330,196 250,230 195,300 C150,362 148,455 175,545
-           C196,626 208,700 262,786 C330,872 442,930 560,952
-           C650,968 720,968 770,962 C830,968 902,966 992,944
-           C1110,916 1215,872 1282,786 C1336,700 1348,626 1368,545
-           C1394,455 1392,362 1345,300 C1278,208 1162,175 1072,186
-           C1000,194 900,208 840,226 C778,250 772,300 760,332 Z"
+           C182,645 195,735 240,825 C300,900 380,948 500,980
+           C610,1006 712,1014 768,1026
+           C792,1016 858,1000 960,972 C1110,915 1230,828 1300,732
+           C1348,662 1360,600 1368,545 C1394,455 1392,362 1345,300
+           C1278,208 1162,175 1072,186 C1000,194 900,208 840,226
+           C778,250 772,300 760,332 Z"
         fill="none" stroke="#7fa0a3" stroke-width="14" opacity="0.5" stroke-linejoin="round"/>
   <path d="M760,332
            C748,300 718,248 658,220 C598,192 500,176 430,186
            C330,196 250,230 195,300 C150,362 148,455 175,545
-           C196,626 208,700 262,786 C330,872 442,930 560,952
-           C650,968 720,968 770,962 C830,968 902,966 992,944
-           C1110,916 1215,872 1282,786 C1336,700 1348,626 1368,545
-           C1394,455 1392,362 1345,300 C1278,208 1162,175 1072,186
-           C1000,194 900,208 840,226 C778,250 772,300 760,332 Z"
+           C182,645 195,735 240,825 C300,900 380,948 500,980
+           C610,1006 712,1014 768,1026
+           C792,1016 858,1000 960,972 C1110,915 1230,828 1300,732
+           C1348,662 1360,600 1368,545 C1394,455 1392,362 1345,300
+           C1278,208 1162,175 1072,186 C1000,194 900,208 840,226
+           C778,250 772,300 760,332 Z"
         fill="#e8dcc0" stroke="#4a3527" stroke-width="2.6" stroke-linejoin="round"/>
 
   <!-- ===================== TERRITORY TINTS (contiguous) ===================== -->
@@ -66,25 +68,29 @@
   <path d="M560,300 C540,250 500,215 470,200 C380,178 268,210 200,298
            C158,360 152,452 176,540 Q300,470 440,438 Q520,388 560,300 Z"
         fill="#c6b48c" opacity="0.55"/>
-  <!-- Tundra (N-center, between lobes) -->
+  <!-- Northland Tundra (N-center, between lobes) -->
   <path d="M560,305 Q622,252 700,236 Q760,322 836,248 Q890,278 908,360
            L908,470 Q890,505 830,512 L700,515 Q620,512 575,478 Q560,410 558,350 Z"
         fill="#cdd3c9" opacity="0.6"/>
-  <!-- Forest (NE lobe) -->
+  <!-- Deepwoods (NE lobe) -->
   <path d="M908,300 Q960,205 1050,182 Q1160,175 1258,255 Q1340,300 1388,362
            Q1414,452 1400,542 L1360,560 Q1200,556 1050,552 Q955,545 918,485
            L910,400 Q908,340 908,300 Z"
         fill="#7d8a63" opacity="0.4"/>
-  <!-- Plains (human, LARGEST) -->
+  <!-- Great Plains (human, LARGEST) -->
   <path d="M545,555 Q560,512 605,506 Q720,516 830,520 Q910,528 955,548
            Q1060,556 1200,558 L1362,556 L1368,560
-           C1336,700 1282,786 1212,872 C1100,912 990,942 770,960
-           C650,966 590,958 545,948 C520,860 515,760 522,660 Q530,595 545,555 Z"
+           C1315,720 1215,825 1100,900
+           C990,955 875,983 782,996
+           C700,988 620,978 560,972
+           C530,700 528,850 545,555 Z"
         fill="#a9b285" opacity="0.5"/>
   <!-- White Cliff Mountains (dwarf, SW arm) -->
   <path d="M545,555 Q535,530 500,510 Q440,505 340,512 Q260,522 190,542
-           L196,626 L208,700 L262,786 L330,872 L442,928 L560,950
-           C520,860 515,760 522,660 Q540,590 545,555 Z"
+           C200,650 215,735 258,820
+           C325,898 415,946 535,976
+           C555,975 559,973 560,972
+           C528,850 530,700 545,555 Z"
         fill="#cfc7b0" opacity="0.55"/>
   <!-- Volcano / Ashhaven patch (tiefling, small W) -->
   <path d="M250,548 Q300,522 352,550 Q374,588 342,616 Q290,632 256,602 Q238,572 250,548 Z"
@@ -109,15 +115,15 @@
     <use href="#peak" transform="translate(290,755) scale(1.05)"/>
     <use href="#peak" transform="translate(415,672) scale(0.9)"/>
     <use href="#peak" transform="translate(475,748) scale(0.85)"/>
-    <use href="#peak" transform="translate(255,812) scale(1.0)"/>
-    <use href="#peak" transform="translate(345,838) scale(1.05)"/>
-    <use href="#peak" transform="translate(432,816) scale(0.95)"/>
-    <use href="#peak" transform="translate(510,802) scale(0.8)"/>
-    <use href="#peak" transform="translate(285,882) scale(0.9)"/>
-    <use href="#peak" transform="translate(400,888) scale(1.0)"/>
-    <use href="#peak" transform="translate(478,868) scale(0.85)"/>
-    <use href="#peak" transform="translate(522,692) scale(0.82)"/>
-    <use href="#peak" transform="translate(524,748) scale(0.78)"/>
+    <use href="#peak" transform="translate(286,796) scale(0.9)"/>
+    <use href="#peak" transform="translate(360,782) scale(1.0)"/>
+    <use href="#peak" transform="translate(440,800) scale(0.9)"/>
+    <use href="#peak" transform="translate(500,772) scale(0.8)"/>
+    <use href="#peak" transform="translate(330,850) scale(0.9)"/>
+    <use href="#peak" transform="translate(418,858) scale(0.95)"/>
+    <use href="#peak" transform="translate(492,842) scale(0.85)"/>
+    <use href="#peak" transform="translate(522,745) scale(0.78)"/>
+    <use href="#peak" transform="translate(524,700) scale(0.82)"/>
   </g>
 
   <!-- ===================== VOLCANO / ASHHAVEN ===================== -->
@@ -134,19 +140,19 @@
     <path d="M297,616 L297,606 L303,606 L303,616" fill="#4a3527"/>
   </g>
 
-  <!-- ===================== FOREST ===================== -->
+  <!-- ===================== DEEPWOODS (forest) ===================== -->
   <g>
-    <use href="#pine" transform="translate(965,340) scale(1.05)"/>
+    <use href="#pine" transform="translate(1130,470) scale(1.05)"/>
     <use href="#pine" transform="translate(1015,300) scale(1.0)"/>
     <use href="#pine" transform="translate(1000,410) scale(1.1)"/>
-    <use href="#pine" transform="translate(1052,360) scale(1.05)"/>
+    <use href="#pine" transform="translate(1052,362) scale(1.0)"/>
     <use href="#pine" transform="translate(1050,470) scale(1.1)"/>
     <use href="#pine" transform="translate(1100,420) scale(1.0)"/>
     <use href="#pine" transform="translate(1108,510) scale(1.05)"/>
-    <use href="#pine" transform="translate(1160,360) scale(1.0)"/>
+    <use href="#pine" transform="translate(1160,368) scale(1.0)"/>
     <use href="#pine" transform="translate(1165,460) scale(1.1)"/>
     <use href="#pine" transform="translate(1175,540) scale(1.0)"/>
-    <use href="#pine" transform="translate(1225,300) scale(1.0)"/>
+    <use href="#pine" transform="translate(1258,306) scale(1.0)"/>
     <use href="#pine" transform="translate(1230,400) scale(1.1)"/>
     <use href="#pine" transform="translate(1240,500) scale(1.0)"/>
     <use href="#pine" transform="translate(1300,350) scale(1.05)"/>
@@ -158,15 +164,15 @@
 
   <!-- ===================== TUNDRA TEXTURE ===================== -->
   <g stroke="#8a9385" stroke-width="1.3" fill="none" stroke-linecap="round" opacity="0.85">
-    <path d="M600,330 l0,-8 M604,330 l3,-7 M596,330 l-3,-7"/>
-    <path d="M650,290 l0,-8 M654,290 l3,-7 M646,290 l-3,-7"/>
+    <path d="M600,300 l0,-8 M604,300 l3,-7 M596,300 l-3,-7"/>
+    <path d="M650,272 l0,-8 M654,272 l3,-7 M646,272 l-3,-7"/>
     <path d="M840,300 l0,-8 M844,300 l3,-7 M836,300 l-3,-7"/>
     <path d="M870,380 l0,-8 M874,380 l3,-7 M866,380 l-3,-7"/>
     <path d="M600,460 l0,-8 M604,460 l3,-7 M596,460 l-3,-7"/>
     <path d="M800,470 l0,-8 M804,470 l3,-7 M796,470 l-3,-7"/>
   </g>
   <g stroke="#9aa596" stroke-width="1.1" fill="none" opacity="0.7">
-    <path d="M660,258 l14,4 M668,266 l12,-3"/>
+    <path d="M660,250 l14,4 M668,258 l12,-3"/>
     <path d="M870,470 l14,4 M878,478 l12,-3"/>
   </g>
 
@@ -190,17 +196,13 @@
   <g fill="none" stroke="#4a6a7a" stroke-width="4.2" stroke-linecap="round">
     <!-- North River: cleft -> Heartmere -->
     <path d="M760,332 C758,362 762,388 760,408 C756,452 744,478 732,506"/>
-    <!-- West River: Heartmere SW -> through mountains -> W shore -->
+    <!-- West River: Heartmere SW -> through mountains -> empties at Westharbor on the SW coast -->
     <path d="M648,700 C598,700 540,700 490,706 C448,720 408,742 372,770
-             C328,802 280,828 235,848"/>
+             C330,795 288,808 238,818"/>
     <!-- East River: Bridgeton -> reaches E shore -->
     <path d="M842,648 C930,628 1000,602 1035,592 C1130,572 1240,584 1320,610
-             C1362,626 1390,642 1405,650"/>
+             C1352,626 1372,644 1372,652"/>
   </g>
-
-  <!-- ===================== MOUNTAIN PASS (faint, follows West River) ===================== -->
-  <path d="M560,690 Q500,712 460,742 Q410,768 360,788 Q300,816 250,842"
-        fill="none" stroke="#8a7a5f" stroke-width="1.4" stroke-dasharray="4 6" opacity="0.7"/>
 
   <!-- ===================== BRIDGES ===================== -->
   <!-- Ironford bridge on West River -->
@@ -210,8 +212,8 @@
   </g>
   <!-- Bridgeton bridge on East River -->
   <g stroke="#4a3527" stroke-width="2" fill="#d8c9a6">
-    <path d="M846,636 L870,632 L874,648 L850,652 Z"/>
-    <path d="M852,648 q8,8 16,-2" fill="none" stroke-width="1.4"/>
+    <path d="M893,627 L917,623 L921,639 L897,643 Z"/>
+    <path d="M899,639 q8,8 16,-2" fill="none" stroke-width="1.4"/>
   </g>
 
   <!-- ===================== THE IRONLINE ===================== -->
@@ -248,44 +250,45 @@
   <!-- ===================== ROADS (dotted) ===================== -->
   <g fill="none" stroke="#6b4f3a" stroke-width="3" stroke-linecap="round" stroke-dasharray="1 9">
     <!-- Free Road: Kingsreach -> Greenhollow -> Bridgeton -> Eastharbor -->
-    <path d="M770,900 Q840,860 920,808 Q940,790 950,788 Q900,720 838,656
+    <path d="M775,942 Q850,876 920,808 Q940,790 950,788 Q900,720 838,656
              Q1000,700 1160,650 Q1260,618 1322,600"/>
     <!-- West Road: Bridgeton -> Millbrook -> Ironford -> Westharbor -->
-    <path d="M832,656 Q720,748 604,812 Q540,770 486,700 Q430,742 372,772"/>
+    <path d="M832,656 Q720,748 604,812 Q540,770 486,700 Q430,742 372,772 Q306,796 240,816"/>
     <!-- Forest Road: Eastharbor -> Rivergate -> forest -->
     <path d="M1322,600 Q1180,584 1040,592 Q980,608 940,660"/>
     <!-- Duskhold Road: off Free Road -> Duskhold -->
-    <path d="M1090,672 Q1140,760 1180,838"/>
+    <path d="M1078,668 Q1102,762 1120,856"/>
   </g>
 
   <!-- ===================== OFFSHORE ISLES ===================== -->
-  <!-- Dragon Isle (west) -->
+  <!-- Dragon Isle (west, lower-left water) -->
   <g stroke="#4a3527" stroke-width="2" stroke-linejoin="round">
-    <path d="M100,730 q42,-30 92,-8 q26,20 4,44 q-38,30 -84,8 q-30,-24 -12,-44 Z" fill="#dcd0ad"/>
-    <path d="M120,752 L150,700 L182,752 Z" fill="#8a7361"/>
-    <path d="M150,700 L182,752 L164,752 L150,718 Z" fill="#6b564a"/>
-    <path d="M142,718 L150,700 L158,718 L150,710 Z" fill="#a33d2f"/>
+    <path d="M52,872 q42,-30 92,-8 q26,20 4,44 q-38,30 -84,8 q-30,-24 -12,-44 Z" fill="#dcd0ad"/>
+    <path d="M72,894 L102,842 L134,894 Z" fill="#8a7361"/>
+    <path d="M102,842 L134,894 L116,894 L102,860 Z" fill="#6b564a"/>
+    <path d="M94,860 L102,842 L110,860 L102,852 Z" fill="#a33d2f"/>
   </g>
-  <circle cx="160" cy="762" r="4.6" fill="#efe6d2" stroke="#4a3527" stroke-width="1.6"/>
-  <circle cx="160" cy="762" r="2" fill="#4a3527"/>
+  <circle cx="112" cy="904" r="4.6" fill="#efe6d2" stroke="#4a3527" stroke-width="1.6"/>
+  <circle cx="112" cy="904" r="2" fill="#4a3527"/>
 
-  <!-- East Islands (Tortle) -->
+  <!-- East Islands (Tortle) — a clearly offshore SE archipelago in open water -->
   <g stroke="#4a3527" stroke-width="1.8" stroke-linejoin="round">
-    <path d="M1200,780 q24,-16 46,-2 q16,18 -4,32 q-28,14 -46,-4 q-12,-16 4,-26 Z" fill="#dcd0ad"/>
-    <path d="M1268,808 q18,-12 34,0 q12,14 -6,24 q-24,10 -34,-6 q-8,-12 6,-18 Z" fill="#dcd0ad"/>
-    <path d="M1210,846 q16,-10 30,0 q10,12 -6,20 q-20,8 -30,-6 q-6,-10 6,-14 Z" fill="#dcd0ad"/>
-    <path d="M1216,796 q0,-9 9,-9 q9,0 9,9 M1216,796 q9,-7 18,0 M1225,787 l0,18" fill="none" stroke="#8a7a5f" stroke-width="1"/>
+    <path d="M1348,798 q30,-22 62,-4 q22,20 -2,38 q-36,20 -64,-2 q-16,-18 4,-32 Z" fill="#dcd0ad"/>
+    <path d="M1452,832 q22,-14 42,-2 q14,16 -4,28 q-26,12 -42,-4 q-10,-14 4,-22 Z" fill="#dcd0ad"/>
+    <path d="M1336,856 q18,-12 34,0 q12,14 -6,22 q-22,10 -34,-6 q-8,-12 6,-16 Z" fill="#dcd0ad"/>
+    <!-- tortle shell motif on the main island -->
+    <path d="M1372,792 q0,-10 10,-10 q10,0 10,10 M1372,792 q10,-8 20,0 M1382,782 l0,20" fill="none" stroke="#8a7a5f" stroke-width="1"/>
   </g>
-  <circle cx="1284" cy="820" r="4.6" fill="#efe6d2" stroke="#4a3527" stroke-width="1.6"/>
-  <circle cx="1284" cy="820" r="2" fill="#4a3527"/>
+  <circle cx="1398" cy="806" r="4.6" fill="#efe6d2" stroke="#4a3527" stroke-width="1.6"/>
+  <circle cx="1398" cy="806" r="2" fill="#4a3527"/>
 
   <!-- Stormhaven storm-rock (east waters) -->
   <g stroke="#4a3527" stroke-width="1.8" stroke-linejoin="round">
-    <path d="M1448,700 q20,-14 40,-2 q14,16 -4,28 q-24,12 -40,-4 q-10,-14 4,-22 Z" fill="#dcd0ad"/>
+    <path d="M1448,692 q20,-14 40,-2 q14,16 -4,28 q-24,12 -40,-4 q-10,-14 4,-22 Z" fill="#dcd0ad"/>
   </g>
-  <path d="M1470,676 l-6,14 l8,-2 l-6,14" fill="none" stroke="#a33d2f" stroke-width="2.2" stroke-linecap="round"/>
-  <circle cx="1466" cy="712" r="4.4" fill="#efe6d2" stroke="#4a3527" stroke-width="1.6"/>
-  <circle cx="1466" cy="712" r="1.9" fill="#4a3527"/>
+  <path d="M1470,668 l-6,14 l8,-2 l-6,14" fill="none" stroke="#a33d2f" stroke-width="2.2" stroke-linecap="round"/>
+  <circle cx="1466" cy="704" r="4.4" fill="#efe6d2" stroke="#4a3527" stroke-width="1.6"/>
+  <circle cx="1466" cy="704" r="1.9" fill="#4a3527"/>
 
   <!-- ===================== HOSTILE: ORC WARCAMP ===================== -->
   <g stroke="#4a3527" stroke-width="1.7">
@@ -321,29 +324,29 @@
 
   <!-- ===================== TOWNS (small dots) ===================== -->
   <g stroke="#4a3527" stroke-width="1.6" fill="#efe6d2">
-    <circle cx="365" cy="770" r="5.5"/>   <!-- Westharbor -->
+    <circle cx="238" cy="818" r="5.5"/>   <!-- Westharbor (coast, river-mouth) -->
     <circle cx="755" cy="404" r="5.5"/>   <!-- Cogwick -->
     <circle cx="1035" cy="590" r="5.5"/>  <!-- Rivergate -->
     <circle cx="950" cy="800" r="5.5"/>   <!-- Greenhollow -->
     <circle cx="600" cy="820" r="5.5"/>   <!-- Millbrook -->
   </g>
   <g fill="#4a3527">
-    <circle cx="365" cy="770" r="2.4"/><circle cx="755" cy="404" r="2.4"/>
+    <circle cx="238" cy="818" r="2.4"/><circle cx="755" cy="404" r="2.4"/>
     <circle cx="1035" cy="590" r="2.4"/><circle cx="950" cy="800" r="2.4"/>
     <circle cx="600" cy="820" r="2.4"/>
   </g>
 
-  <!-- ===================== DUSKHOLD (cursed ruin) ===================== -->
+  <!-- ===================== DUSKHOLD (cursed ruin, mainland SE coast) ===================== -->
   <g stroke="#4a3527" stroke-width="1.8">
     <!-- broken curtain wall -->
-    <path d="M1160,878 L1160,856 L1166,856 L1166,862 L1172,858 L1172,850 L1180,850 L1180,860 L1188,856 L1188,864 L1196,860 L1196,878 Z" fill="#b3a68a"/>
+    <path d="M1096,878 L1096,856 L1102,856 L1102,862 L1108,858 L1108,850 L1116,850 L1116,860 L1124,856 L1124,864 L1132,860 L1132,878 Z" fill="#b3a68a"/>
     <!-- cracked leaning tower -->
-    <path d="M1200,880 L1204,838 L1218,842 L1214,880 Z" fill="#c9bda3"/>
-    <path d="M1204,850 L1214,854 M1206,864 L1213,867" stroke="#4a3527" stroke-width="1" fill="none"/>
-    <path d="M1204,838 L1204,830 L1210,830 L1210,834 L1216,834 L1216,842" fill="#c9bda3"/>
+    <path d="M1136,880 L1140,838 L1154,842 L1150,880 Z" fill="#c9bda3"/>
+    <path d="M1140,850 L1150,854 M1142,864 L1149,867" stroke="#4a3527" stroke-width="1" fill="none"/>
+    <path d="M1140,838 L1140,830 L1146,830 L1146,834 L1152,834 L1152,842" fill="#c9bda3"/>
     <!-- rubble -->
-    <circle cx="1154" cy="882" r="2.2" fill="#8a7a5f" stroke="none"/>
-    <circle cx="1224" cy="884" r="2.2" fill="#8a7a5f" stroke="none"/>
+    <circle cx="1090" cy="882" r="2.2" fill="#8a7a5f" stroke="none"/>
+    <circle cx="1160" cy="884" r="2.2" fill="#8a7a5f" stroke="none"/>
   </g>
 
   <!-- ===================== FREE CITY-STATES ===================== -->
@@ -358,14 +361,14 @@
     <path d="M835,631 L835,614 L849,618 L835,622"/>
     <path d="M1330,591 L1330,574 L1344,578 L1330,582"/>
   </g>
-  <!-- Kingsreach castle (lead city, southern point) -->
+  <!-- Kingsreach castle (lead city, at the southern point) -->
   <g stroke="#4a3527" stroke-width="1.8" fill="#efe6d2">
-    <path d="M748,930 L748,904 L754,904 L754,910 L762,910 L762,902 L778,902 L778,910 L786,910 L786,904 L792,904 L792,930 Z"/>
-    <rect x="762" y="888" width="16" height="20" fill="#c9bda3"/>
-    <path d="M762,888 L762,880 L767,880 L767,884 L773,884 L773,880 L778,880 L778,888 Z" fill="#c9bda3"/>
+    <path d="M748,974 L748,948 L754,948 L754,954 L762,954 L762,946 L778,946 L778,954 L786,954 L786,948 L792,948 L792,974 Z"/>
+    <rect x="762" y="932" width="16" height="20" fill="#c9bda3"/>
+    <path d="M762,932 L762,924 L767,924 L767,928 L773,928 L773,924 L778,924 L778,932 Z" fill="#c9bda3"/>
   </g>
   <g fill="#a33d2f" stroke="#4a3527" stroke-width="1.1">
-    <path d="M770,888 L770,872 L782,876 L770,880"/>
+    <path d="M770,932 L770,916 L782,920 L770,924"/>
   </g>
   <!-- Ironford capital (ember star, on the mountains at West River) -->
   <path d="M475,662 L478.2,670.6 L487.4,671 L480.2,676.7 L482.6,685.5 L475,680.5 L467.4,685.5 L469.8,676.7 L462.6,671 L471.8,670.6 Z"
@@ -390,16 +393,16 @@
   <!-- ===================== REGION LABELS ===================== -->
   <g font-family="Georgia, 'Times New Roman', serif" fill="#4a3527" text-anchor="middle">
     <text x="352" y="258" font-size="20" letter-spacing="3" font-weight="bold">THE WASTELAND</text>
-    <text x="680" y="345" font-size="20" letter-spacing="3" font-weight="bold">THE TUNDRA</text>
-    <text x="680" y="366" font-size="14" font-style="italic">· Gnomes ·</text>
-    <text x="1150" y="330" font-size="20" letter-spacing="3" font-weight="bold">THE FOREST</text>
-    <text x="1150" y="351" font-size="14" font-style="italic">· Elves ·</text>
-    <text x="1070" y="700" font-size="22" letter-spacing="3" font-weight="bold">THE PLAINS</text>
+    <text x="655" y="342" font-size="16" letter-spacing="2" font-weight="bold">NORTHLAND TUNDRA</text>
+    <text x="655" y="362" font-size="13" font-style="italic">· Gnomes ·</text>
+    <text x="1115" y="322" font-size="20" letter-spacing="3" font-weight="bold">DEEPWOODS</text>
+    <text x="1115" y="343" font-size="14" font-style="italic">· Elves ·</text>
+    <text x="1070" y="700" font-size="22" letter-spacing="3" font-weight="bold">GREAT PLAINS</text>
     <text x="1070" y="722" font-size="15" font-style="italic">· Humans ·</text>
-    <text x="430" y="596" font-size="17" letter-spacing="1" font-weight="bold">WHITE CLIFF MTNS</text>
-    <text x="430" y="615" font-size="13" font-style="italic">· Dwarves ·</text>
-    <text x="300" y="652" font-size="15" font-weight="bold">Ashhaven</text>
-    <text x="300" y="668" font-size="12" font-style="italic">· Tieflings ·</text>
+    <text x="490" y="560" font-size="17" letter-spacing="1" font-weight="bold">WHITE CLIFF MTNS</text>
+    <text x="490" y="579" font-size="13" font-style="italic">· Dwarves ·</text>
+    <text x="186" y="566" font-size="15" font-weight="bold" text-anchor="start">Ashhaven</text>
+    <text x="186" y="582" font-size="12" font-style="italic" text-anchor="start">· Tieflings ·</text>
   </g>
 
   <!-- ===================== SETTLEMENT LABELS ===================== -->
@@ -408,27 +411,27 @@
     <text x="498" y="662" font-weight="bold">Ironford</text>
     <text x="498" y="678" font-size="12" font-style="italic">dwarf capital · bridge</text>
     <!-- free cities -->
-    <text x="770" y="882" text-anchor="middle" font-weight="bold">Kingsreach</text>
-    <text x="770" y="866" text-anchor="middle" font-size="12" font-style="italic">Duke · lead city</text>
-    <text x="852" y="636" font-weight="bold">Bridgeton</text>
-    <text x="852" y="652" font-size="12" font-style="italic">Duke</text>
-    <text x="1348" y="596" font-weight="bold">Eastharbor</text>
-    <text x="1348" y="612" font-size="12" font-style="italic">the Duchess</text>
+    <text x="770" y="906" text-anchor="middle" font-weight="bold">Kingsreach</text>
+    <text x="770" y="890" text-anchor="middle" font-size="12" font-style="italic">Duke · lead city</text>
+    <text x="852" y="606" font-weight="bold">Bridgeton</text>
+    <text x="852" y="622" font-size="12" font-style="italic">Duke</text>
+    <text x="1352" y="590" font-weight="bold">Eastharbor</text>
+    <text x="1352" y="606" font-size="12" font-style="italic">the Duchess</text>
     <!-- towns -->
-    <text x="356" y="790" text-anchor="middle" font-size="15">Westharbor</text>
-    <text x="736" y="398" text-anchor="end" font-size="15">Cogwick</text>
+    <text x="220" y="814" text-anchor="end" font-size="15">Westharbor</text>
+    <text x="712" y="392" text-anchor="end" font-size="15">Cogwick</text>
     <text x="1035" y="575" text-anchor="middle" font-size="15">Rivergate</text>
     <text x="950" y="785" text-anchor="middle" font-size="15">Greenhollow</text>
     <text x="600" y="840" text-anchor="middle" font-size="15">Millbrook</text>
     <text x="600" y="855" text-anchor="middle" font-size="11" font-style="italic">starter village</text>
-    <text x="1180" y="826" text-anchor="middle" font-size="15" font-weight="bold">Duskhold</text>
-    <text x="1180" y="812" text-anchor="middle" font-size="11" font-style="italic">cursed ruin</text>
+    <text x="1085" y="862" text-anchor="end" font-size="15" font-weight="bold">Duskhold</text>
+    <text x="1085" y="876" text-anchor="end" font-size="11" font-style="italic">cursed ruin</text>
     <!-- hostile camp -->
     <text x="330" y="472" text-anchor="middle" font-size="14" font-weight="bold" fill="#7a3226">Orc Warcamp</text>
     <!-- forts / stops -->
     <text x="430" y="482" text-anchor="middle" font-size="13" font-weight="bold">Wastewall</text>
     <text x="405" y="378" text-anchor="middle" font-size="12">Wasteland Outpost</text>
-    <text x="812" y="368" text-anchor="middle" font-size="13" font-weight="bold">Gearwatch</text>
+    <text x="816" y="376" text-anchor="start" font-size="13" font-weight="bold">Gearwatch</text>
     <text x="955" y="402" text-anchor="middle" font-size="13" font-weight="bold">Elfward</text>
     <text x="560" y="746" text-anchor="middle" font-size="13" font-weight="bold">Stonewatch</text>
   </g>
@@ -440,20 +443,19 @@
   <g font-family="Georgia, 'Times New Roman', serif" fill="#6b4f3a" font-size="13" font-style="italic">
     <text x="1120" y="638" text-anchor="middle" transform="rotate(-14 1120 638)">Free Road</text>
     <text x="680" y="742" text-anchor="middle" transform="rotate(24 680 742)">West Road</text>
-    <text x="1130" y="600" text-anchor="middle" transform="rotate(-6 1130 600)"> </text>
     <text x="1010" y="628" text-anchor="middle" transform="rotate(10 1010 628)">Forest Road</text>
-    <text x="1170" y="760" text-anchor="middle" transform="rotate(60 1170 760)">Duskhold Road</text>
+    <text x="1058" y="770" text-anchor="middle" transform="rotate(70 1058 770)">Duskhold Road</text>
   </g>
 
   <!-- ===================== OFFSHORE LABELS ===================== -->
   <g font-family="Georgia, 'Times New Roman', serif" fill="#3a2a1e" font-size="15">
-    <text x="150" y="700" text-anchor="middle" font-weight="bold">Dragon Isle</text>
-    <text x="150" y="716" text-anchor="middle" font-size="11" font-style="italic">Dragons &amp; Dragonborn</text>
-    <text x="150" y="786" text-anchor="middle" font-size="12" font-style="italic">Emberport</text>
-    <text x="1245" y="756" text-anchor="middle" font-weight="bold">East Islands</text>
-    <text x="1245" y="772" text-anchor="middle" font-size="11" font-style="italic">· Tortle ·</text>
-    <text x="1284" y="842" text-anchor="middle" font-size="12" font-style="italic">Shellhaven</text>
-    <text x="1466" y="668" text-anchor="middle" font-size="13" font-weight="bold">Stormhaven</text>
+    <text x="112" y="944" text-anchor="middle" font-weight="bold">Dragon Isle</text>
+    <text x="112" y="960" text-anchor="middle" font-size="11" font-style="italic">Dragons &amp; Dragonborn</text>
+    <text x="112" y="976" text-anchor="middle" font-size="12" font-style="italic">Emberport</text>
+    <text x="1420" y="758" text-anchor="middle" font-weight="bold">East Islands</text>
+    <text x="1420" y="773" text-anchor="middle" font-size="11" font-style="italic">· Tortle ·</text>
+    <text x="1398" y="822" text-anchor="middle" font-size="12" font-style="italic">Shellhaven</text>
+    <text x="1466" y="660" text-anchor="middle" font-size="13" font-weight="bold">Stormhaven</text>
   </g>
 
   <!-- ===================== COMPASS ROSE (small, top-left ocean) ===================== -->
