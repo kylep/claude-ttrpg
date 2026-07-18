@@ -1,1 +1,927 @@
-{}
+# level: 0 = cantrip (no slot), 1+ consumes a spell slot of that level
+# range: squares; resolve: attack (vs AC) | save (target rolls vs 8 + prof + cast mod) | auto (always lands)
+# CASTMOD in dice expressions = caster's cast_attr modifier; on_save none = no damage on a successful save
+# on_save half = a successful save halves the rolled damage (rounded down, minimum 1)
+# effect durations are in combat rounds; -1 means until cleared
+# description is GM-facing narration flavor; the engine ignores it
+#
+# ===== ARCANE (wizard) — arc_ prefix — levels 0-9 =====
+# Blasting, battlefield control, and utility. No healing on this list (that
+# lives on the divine/primal spell lists).
+
+# --- Cantrips (level 0) ---
+
+arc_fire_bolt:
+  level: 0
+  action: action
+  range: 24
+  resolve: attack
+  damage: 1d10
+  description: >
+    A bead of orange fire snaps off the caster's fingertip and pops against
+    whatever it hits, leaving a small scorch mark and a curl of smoke.
+arc_frost_ray:
+  level: 0
+  action: action
+  range: 18
+  resolve: attack
+  damage: 1d8
+  description: >
+    A thin ray of blue-white cold hisses through the air and frosts over
+    anything it touches, biting through cloth in an instant.
+arc_static_snap:
+  level: 0
+  action: action
+  range: 12
+  resolve: save
+  save_attr: DEX
+  damage: 1d8
+  on_save: none
+  description: >
+    The caster's fingers crackle and a stinging thread of lightning leaps out;
+    quick reflexes are the only thing that keeps it from connecting.
+arc_arcane_spark:
+  level: 0
+  action: action
+  range: 18
+  resolve: auto
+  damage: 1d4+1
+  description: >
+    A tiny mote of raw magic streaks out and unerringly finds its mark —
+    small, but it never misses.
+arc_mage_hand:
+  level: 0
+  action: action
+  range: 6
+  resolve: auto
+  description: >
+    A spectral, glowing hand blinks into being at the caster's command,
+    ready to tug a lever, flip a page, or fetch a dropped coin.
+arc_witchlight:
+  level: 0
+  action: action
+  range: 1
+  resolve: auto
+  effect: {name: lit, duration: -1}
+  description: >
+    The caster taps an object and a steady, lantern-bright glow wakes inside
+    it, enough to read by until they choose to snuff it out.
+
+# --- Level 1 ---
+
+arc_magic_missile:
+  level: 1
+  action: action
+  range: 24
+  resolve: auto
+  damage: 3d4+3
+  description: >
+    Three darts of humming violet force leave the caster's hand and bend
+    around cover to strike their target — once cast, they never miss.
+arc_burning_hands:
+  level: 1
+  action: action
+  range: 1
+  resolve: save
+  save_attr: DEX
+  damage: 2d6
+  on_save: half
+  area: {shape: burst, radius: 1}
+  description: >
+    The caster spreads their fingers and a fan of fire roars out from their
+    palms, washing over everyone too close to dodge clear.
+arc_frost_lance:
+  level: 1
+  action: action
+  range: 18
+  resolve: attack
+  damage: 2d8
+  description: >
+    A narrow spear of ice forms in midair and drives itself into the target
+    before shattering into a spray of frost.
+arc_shocking_grasp:
+  level: 1
+  action: action
+  range: 1
+  resolve: attack
+  damage: 2d8
+  description: >
+    The caster's hand crackles with caged lightning; one touch sends the
+    charge slamming through the target's whole body.
+arc_arcane_arrow:
+  level: 1
+  action: action
+  range: 24
+  resolve: attack
+  damage: 3d6
+  description: >
+    A shaft of solid force nocks itself against an invisible bow and looses,
+    punching through armor as easily as canvas.
+arc_tangling_roots:
+  level: 1
+  action: action
+  range: 12
+  resolve: save
+  save_attr: DEX
+  effect: {name: restrained, duration: 3}
+  on_save: none
+  description: >
+    Thin roots burst from the ground and wrap around the target's ankles and
+    wrists; the strong-footed can leap clear before they close.
+arc_slumber:
+  level: 1
+  action: action
+  range: 12
+  resolve: save
+  save_attr: WIS
+  effect: {name: unconscious, duration: 2}
+  on_save: none
+  description: >
+    A pinch of glittering dust drifts toward the target and blooms into a
+    drowsy haze; a weak will folds into sudden, snoring sleep.
+arc_mage_armor:
+  level: 1
+  action: action
+  range: 1
+  resolve: auto
+  effect: {name: shielded, duration: 10}
+  description: >
+    A faint lattice of silver light knits itself around the target like a
+    second skin, turning aside blows that would otherwise land clean.
+arc_detect_magic:
+  level: 1
+  action: action
+  range: 6
+  resolve: auto
+  description: >
+    The caster's eyes go briefly silver as hidden enchantments in the area
+    light up like lanterns only they can see.
+
+# --- Level 2 ---
+
+arc_scorching_ray:
+  level: 2
+  action: action
+  range: 18
+  resolve: attack
+  damage: 4d6
+  description: >
+    Three ropes of fire whip out from the caster's hand in quick succession
+    and converge on a single unlucky target.
+arc_shatter:
+  level: 2
+  action: action
+  range: 12
+  resolve: save
+  save_attr: CON
+  damage: 3d8
+  on_save: half
+  area: {shape: burst, radius: 2}
+  description: >
+    The caster claps once and a ringing peal of thunder bursts outward,
+    rattling teeth and buckling knees across the whole area.
+arc_ice_knife:
+  level: 2
+  action: action
+  range: 18
+  resolve: attack
+  damage: 4d6
+  description: >
+    A dagger of pure ice hurls itself at the target and detonates on
+    impact, driving frozen splinters deep into the wound.
+arc_lightning_lash:
+  level: 2
+  action: action
+  range: 18
+  resolve: attack
+  damage: 3d10
+  description: >
+    A crackling whip of electricity lashes out from the caster's outstretched
+    arm, leaving a smell of ozone and a very bad afternoon.
+arc_acid_arrow:
+  level: 2
+  action: action
+  range: 18
+  resolve: attack
+  damage: 4d6
+  description: >
+    A hissing green bolt splashes across the target on impact, etching
+    through armor plate as easily as morning frost.
+arc_web_snare:
+  level: 2
+  action: action
+  range: 12
+  resolve: save
+  save_attr: DEX
+  effect: {name: restrained, duration: 3}
+  on_save: none
+  description: >
+    Thick strands of sticky, silver webbing burst from the caster's hand and
+    fan out to catch the target mid-stride.
+arc_unseen_dread:
+  level: 2
+  action: action
+  range: 12
+  resolve: save
+  save_attr: WIS
+  effect: {name: frightened, duration: 2}
+  on_save: none
+  description: >
+    For one heartbeat the target sees their own worst fear standing where
+    the caster used to be, and their courage buckles.
+arc_mirror_ward:
+  level: 2
+  action: action
+  range: 1
+  resolve: auto
+  effect: {name: shielded, duration: 10}
+  description: >
+    Three shimmering duplicates of the target flicker into being around
+    them, and only the caster's magic knows which one is real.
+arc_veil_step:
+  level: 2
+  action: action
+  range: 1
+  resolve: auto
+  effect: {name: hidden, duration: 3}
+  description: >
+    The target folds into a pocket of bent light and shadow, vanishing from
+    plain sight for as long as they hold still enough to keep it.
+
+# --- Level 3 ---
+
+arc_fireball:
+  level: 3
+  action: action
+  range: 24
+  resolve: save
+  save_attr: DEX
+  damage: 6d6
+  on_save: half
+  area: {shape: burst, radius: 2}
+  description: >
+    A small bead of fire streaks to the chosen spot and erupts into a
+    roaring, spreading fireball that scorches everyone caught in the blast.
+arc_lightning_bolt:
+  level: 3
+  action: action
+  range: 24
+  resolve: attack
+  damage: 7d6
+  description: >
+    A blinding stroke of lightning rips out from the caster's hand in a
+    dead-straight line, punching clean through the target with a crack of
+    thunder.
+arc_frost_nova:
+  level: 3
+  action: action
+  range: 12
+  resolve: save
+  save_attr: CON
+  damage: 6d6
+  on_save: half
+  effect: {name: prone, duration: 1}
+  area: {shape: burst, radius: 2}
+  description: >
+    A ring of killing frost bursts outward from the target point, freezing
+    the ground underfoot and dropping anyone who cannot brace in time.
+arc_force_lance:
+  level: 3
+  action: action
+  range: 24
+  resolve: attack
+  damage: 8d6
+  description: >
+    A javelin of raw, humming force materializes and hurls itself at the
+    target hard enough to punch through a castle door.
+arc_venom_bolt:
+  level: 3
+  action: action
+  range: 18
+  resolve: attack
+  damage: 7d6
+  effect: {name: poisoned, duration: 2}
+  description: >
+    A bolt of black-green venom splatters across the target on impact,
+    and what doesn't burn on the way in keeps burning after.
+arc_hold_person:
+  level: 3
+  action: action
+  range: 12
+  resolve: save
+  save_attr: WIS
+  effect: {name: restrained, duration: 3}
+  on_save: none
+  description: >
+    The caster's voice drops to a command and the target's muscles lock
+    tight, holding them stock-still no matter how hard they strain.
+arc_dread_visage:
+  level: 3
+  action: action
+  range: 12
+  resolve: save
+  save_attr: WIS
+  effect: {name: frightened, duration: 3}
+  on_save: none
+  description: >
+    The caster's shadow rears up huge and monstrous against the nearest
+    wall, and the target's nerve breaks at the sight of it.
+arc_arcane_focus:
+  level: 3
+  action: action
+  range: 1
+  resolve: auto
+  effect: {name: focused, duration: 1}
+  description: >
+    A single clear thought crystallizes in the target's mind, and for one
+    perfect instant nothing in the world can distract them.
+arc_dispel_magic:
+  level: 3
+  action: action
+  range: 18
+  resolve: auto
+  description: >
+    The caster unravels a knot of magic hanging in the air with a sharp
+    tug of will, and whatever it was holding together comes apart.
+
+# --- Level 4 ---
+
+arc_ice_storm:
+  level: 4
+  action: action
+  range: 24
+  resolve: save
+  save_attr: DEX
+  damage: 7d6
+  on_save: half
+  area: {shape: burst, radius: 2}
+  description: >
+    A sudden storm of fist-sized hail hammers down out of a clear sky,
+    battering everyone caught beneath it.
+arc_binding_vines:
+  level: 4
+  action: action
+  range: 18
+  resolve: save
+  save_attr: STR
+  effect: {name: grappled, duration: 3}
+  on_save: none
+  area: {shape: burst, radius: 2}
+  description: >
+    Thick, thorned vines erupt from the earth all across the target area and
+    coil tight around anyone too slow to get clear.
+arc_greater_frost_lance:
+  level: 4
+  action: action
+  range: 24
+  resolve: attack
+  damage: 9d6
+  description: >
+    A massive spear of blue ice, taller than the caster, hurls itself at the
+    target and detonates in a burst of razor-edged frost.
+arc_thunderclap:
+  level: 4
+  action: action
+  range: 12
+  resolve: save
+  save_attr: CON
+  damage: 7d6
+  on_save: half
+  effect: {name: prone, duration: 1}
+  area: {shape: burst, radius: 1}
+  description: >
+    The caster brings their hands together and the air itself detonates,
+    a wall of pure sound that flattens anyone standing too close.
+arc_lightning_chain:
+  level: 4
+  action: action
+  range: 24
+  resolve: attack
+  damage: 7d8
+  description: >
+    A jagged bolt of lightning leaps from the caster's hand to the target
+    and arcs wildly along the way, gathering charge as it travels.
+arc_paralyzing_ray:
+  level: 4
+  action: action
+  range: 18
+  resolve: attack
+  effect: {name: restrained, duration: 2}
+  description: >
+    A pale ray of numbing light strikes the target square in the chest, and
+    every muscle in their body seizes up mid-motion.
+arc_terror_wave:
+  level: 4
+  action: action
+  range: 12
+  resolve: save
+  save_attr: WIS
+  effect: {name: frightened, duration: 3}
+  on_save: none
+  area: {shape: burst, radius: 3}
+  description: >
+    A pulse of raw dread rolls out from the target point like a cold wind,
+    and everyone it touches suddenly remembers how small they are.
+arc_arcane_ward:
+  level: 4
+  action: action
+  range: 1
+  resolve: auto
+  effect: {name: shielded, duration: 12}
+  description: >
+    A dome of faintly humming light closes over the target, deflecting the
+    force from blows before they ever really land.
+arc_blink_step:
+  level: 4
+  action: action
+  range: 6
+  resolve: auto
+  description: >
+    The caster winks out of existence for a half-second and reappears a
+    short distance away, leaving only a faint pop of displaced air.
+
+# --- Level 5 ---
+
+arc_cone_of_cold:
+  level: 5
+  action: action
+  range: 18
+  resolve: save
+  save_attr: CON
+  damage: 8d8
+  on_save: half
+  area: {shape: burst, radius: 3}
+  description: >
+    A blast of arctic wind roars out from the caster's outstretched hands,
+    coating everything in front of them in a crust of killing frost.
+arc_lightning_storm:
+  level: 5
+  action: action
+  range: 24
+  resolve: attack
+  damage: 10d8
+  description: >
+    A towering column of lightning drops from a clear sky and slams into the
+    target with the force of a falling tower.
+arc_meteor_shard:
+  level: 5
+  action: action
+  range: 30
+  resolve: attack
+  damage: 10d8
+  description: >
+    A fist-sized chunk of white-hot stone screams down out of nowhere and
+    smashes into the target in a shower of sparks.
+arc_bind_construct:
+  level: 5
+  action: action
+  range: 18
+  resolve: save
+  save_attr: STR
+  effect: {name: restrained, duration: 4}
+  on_save: none
+  description: >
+    Bands of solidified force snap shut around the target like a cage built
+    in an instant, and no amount of straining bends the bars.
+arc_mass_fear:
+  level: 5
+  action: action
+  range: 12
+  resolve: save
+  save_attr: WIS
+  effect: {name: frightened, duration: 3}
+  on_save: none
+  area: {shape: burst, radius: 3}
+  description: >
+    The caster's true magical strength shows for just a moment, and
+    everyone nearby feels, all at once, exactly how outmatched they are.
+arc_venom_cloud:
+  level: 5
+  action: action
+  range: 18
+  resolve: save
+  save_attr: CON
+  damage: 7d8
+  on_save: half
+  area: {shape: burst, radius: 2}
+  description: >
+    A roiling cloud of caustic green vapor billows out across the area,
+    burning lungs and eyes alike wherever it drifts.
+arc_greater_shield:
+  level: 5
+  action: action
+  range: 1
+  resolve: auto
+  effect: {name: shielded, duration: 15}
+  description: >
+    A second, sturdier body of light settles over the target's own, taking
+    the worst of every hit meant for them.
+arc_battle_trance:
+  level: 5
+  action: action
+  range: 1
+  resolve: auto
+  effect: {name: focused, duration: 2}
+  description: >
+    The target's mind drops into a clean, quiet place where doubt cannot
+    follow, and their next several moves land exactly where intended.
+arc_teleport_step:
+  level: 5
+  action: action
+  range: 12
+  resolve: auto
+  description: >
+    Reality folds shut behind the caster and open again a short way off,
+    and they simply step through into the new spot.
+
+# --- Level 6 ---
+
+arc_chain_lightning:
+  level: 6
+  action: action
+  range: 24
+  resolve: attack
+  damage: 12d6
+  description: >
+    A furious bolt of lightning howls from the caster's fingertips and forks
+    wildly as it travels, striking with the full fury of a passing storm.
+arc_disintegrate_ray:
+  level: 6
+  action: action
+  range: 18
+  resolve: attack
+  damage: 12d6
+  description: >
+    A thin grey ray unravels whatever it touches down to drifting motes of
+    dust — the magic is fierce, but it stops well short of erasing anyone
+    for good.
+arc_flame_storm:
+  level: 6
+  action: action
+  range: 24
+  resolve: save
+  save_attr: DEX
+  damage: 9d6
+  on_save: half
+  area: {shape: burst, radius: 3}
+  description: >
+    The sky itself seems to catch fire as a churning storm of flame rolls
+    across the battlefield, scorching everything beneath it.
+arc_freezing_sphere:
+  level: 6
+  action: action
+  range: 24
+  resolve: save
+  save_attr: CON
+  damage: 9d6
+  on_save: half
+  area: {shape: burst, radius: 3}
+  description: >
+    A glassy orb of ice sails out and shatters at the target point, flash-
+    freezing the air itself in a widening dome of frost.
+arc_maze_bind:
+  level: 6
+  action: action
+  range: 12
+  resolve: save
+  save_attr: WIS
+  effect: {name: restrained, duration: 4}
+  on_save: none
+  description: >
+    The ground around the target twists into an impossible tangle of
+    illusory walls and dead ends, and they lose whole seconds just finding
+    which way is out.
+arc_overwhelming_dread:
+  level: 6
+  action: action
+  range: 12
+  resolve: save
+  save_attr: WIS
+  effect: {name: frightened, duration: 4}
+  on_save: none
+  area: {shape: burst, radius: 2}
+  description: >
+    A wave of ancient, formless terror rolls out from the caster, and even
+    the bravest hearts in the area falter under it.
+arc_stone_grip:
+  level: 6
+  action: action
+  range: 18
+  resolve: save
+  save_attr: STR
+  effect: {name: grappled, duration: 3}
+  on_save: none
+  description: >
+    A huge hand of living stone rises from the floor and closes around the
+    target, holding them fast no matter how hard they fight it.
+arc_arcane_bastion:
+  level: 6
+  action: action
+  range: 1
+  resolve: auto
+  effect: {name: shielded, duration: 20}
+  description: >
+    A fortress of layered light rises around the target, thick enough that
+    even a lucky blow barely dents it.
+arc_farsight:
+  level: 6
+  action: action
+  range: 1
+  resolve: auto
+  description: >
+    The caster's senses stretch far beyond their own body, letting them
+    watch a distant place as clearly as if they stood in it.
+
+# --- Level 7 ---
+
+arc_prismatic_ray:
+  level: 7
+  action: action
+  range: 24
+  resolve: attack
+  damage: 13d8
+  description: >
+    A shaft of light splits into every color at once and slams into the
+    target, each color burning in a different, terrible way.
+arc_meteor_swarm_lite:
+  level: 7
+  action: action
+  range: 30
+  resolve: save
+  save_attr: DEX
+  damage: 10d8
+  on_save: half
+  area: {shape: burst, radius: 3}
+  description: >
+    A handful of burning stones rain down from a hole torn briefly in the
+    sky, hammering the ground and everyone standing on it.
+arc_thunder_cascade:
+  level: 7
+  action: action
+  range: 24
+  resolve: save
+  save_attr: CON
+  damage: 10d8
+  on_save: half
+  area: {shape: burst, radius: 3}
+  description: >
+    A rolling series of thunderclaps marches outward from the target point,
+    each one louder and harder than the last.
+arc_force_lance_greater:
+  level: 7
+  action: action
+  range: 24
+  resolve: attack
+  damage: 13d8
+  description: >
+    A colossal spear of solid force, wide as a wagon, drives itself through
+    the target with a sound like a mountain cracking.
+arc_binding_prison:
+  level: 7
+  action: action
+  range: 18
+  resolve: save
+  save_attr: STR
+  effect: {name: restrained, duration: 5}
+  on_save: none
+  description: >
+    Six translucent walls of force snap into place around the target all at
+    once, sealing them inside a cage that answers only to the caster.
+arc_dread_aura:
+  level: 7
+  action: action
+  range: 12
+  resolve: save
+  save_attr: WIS
+  effect: {name: frightened, duration: 4}
+  on_save: none
+  area: {shape: burst, radius: 3}
+  description: >
+    The caster's shadow spreads unnaturally across the ground, and everyone
+    it touches feels an old, nameless dread take root.
+arc_venomous_storm:
+  level: 7
+  action: action
+  range: 18
+  resolve: save
+  save_attr: CON
+  damage: 9d8
+  on_save: half
+  effect: {name: poisoned, duration: 3}
+  area: {shape: burst, radius: 2}
+  description: >
+    A driving rain of caustic green droplets pours down across the area,
+    searing skin and lingering long after the storm itself has passed.
+arc_greater_focus:
+  level: 7
+  action: action
+  range: 1
+  resolve: auto
+  effect: {name: focused, duration: 3}
+  description: >
+    The target's thoughts align like arrows nocked and ready, every next
+    action guided by a clarity that does not waver.
+arc_planar_step:
+  level: 7
+  action: action
+  range: 18
+  resolve: auto
+  description: >
+    The caster tears a brief seam between here and elsewhere and steps
+    through it, arriving well beyond where anyone was watching.
+
+# --- Level 8 ---
+
+arc_incinerate:
+  level: 8
+  action: action
+  range: 24
+  resolve: attack
+  damage: 13d10
+  description: >
+    A lance of white-hot fire, brighter than the sun for one instant,
+    punches clean through the target and leaves the air smoking behind it.
+arc_earthquake_burst:
+  level: 8
+  action: action
+  range: 24
+  resolve: save
+  save_attr: DEX
+  damage: 10d10
+  on_save: half
+  effect: {name: prone, duration: 1}
+  area: {shape: burst, radius: 4}
+  description: >
+    The ground heaves upward in a violent ring around the target point,
+    throwing everyone nearby off their feet.
+arc_frost_apocalypse:
+  level: 8
+  action: action
+  range: 24
+  resolve: save
+  save_attr: CON
+  damage: 10d10
+  on_save: half
+  area: {shape: burst, radius: 4}
+  description: >
+    Winter itself seems to answer the caster's call, burying the target
+    area in an instant, bone-deep killing frost.
+arc_void_lance:
+  level: 8
+  action: action
+  range: 24
+  resolve: attack
+  damage: 13d10
+  description: >
+    A spear of absolute darkness, cut from someplace between the stars,
+    passes through the target as though armor were never there.
+arc_void_bind:
+  level: 8
+  action: action
+  range: 18
+  resolve: save
+  save_attr: STR
+  effect: {name: restrained, duration: 5}
+  on_save: none
+  description: >
+    The empty space around the target thickens into something solid,
+    holding them as fast as if they'd been set in stone.
+arc_horrid_presence:
+  level: 8
+  action: action
+  range: 18
+  resolve: save
+  save_attr: WIS
+  effect: {name: frightened, duration: 5}
+  on_save: none
+  area: {shape: burst, radius: 3}
+  description: >
+    For one unbearable moment the caster's true power is fully visible, and
+    everyone nearby understands exactly why that is a bad idea.
+arc_stormcage:
+  level: 8
+  action: action
+  range: 24
+  resolve: save
+  save_attr: DEX
+  damage: 9d10
+  on_save: half
+  area: {shape: burst, radius: 3}
+  description: >
+    A cage of screaming lightning snaps shut around the target area, arcing
+    wall to wall with nowhere left untouched.
+arc_arcane_aegis:
+  level: 8
+  action: action
+  range: 1
+  resolve: auto
+  effect: {name: shielded, duration: -1}
+  description: >
+    A shell of unbroken light seals around the target and simply stays,
+    holding until the caster chooses to let it drop.
+arc_arcane_transit:
+  level: 8
+  action: action
+  range: 24
+  resolve: auto
+  description: >
+    The caster opens a shimmering doorway between two points and steps
+    through it as easily as walking through an open gate.
+
+# --- Level 9 ---
+
+arc_meteor_swarm:
+  level: 9
+  action: action
+  range: 36
+  resolve: save
+  save_attr: DEX
+  damage: 16d8
+  on_save: half
+  area: {shape: burst, radius: 4}
+  description: >
+    A rain of burning stone falls from a sky torn wide open, hammering the
+    target ground with the force of a small avalanche.
+arc_annihilating_beam:
+  level: 9
+  action: action
+  range: 30
+  resolve: attack
+  damage: 16d8
+  description: >
+    A beam of pure, unraveling force lances out from the caster's hand and
+    scours everything along its line down to bare stone.
+arc_absolute_zero:
+  level: 9
+  action: action
+  range: 24
+  resolve: save
+  save_attr: CON
+  damage: 12d8
+  on_save: half
+  area: {shape: burst, radius: 4}
+  description: >
+    Every scrap of warmth in the area vanishes at once, leaving frost
+    creeping across armor, weapons, and skin alike.
+arc_thunder_of_the_ancients:
+  level: 9
+  action: action
+  range: 24
+  resolve: save
+  save_attr: CON
+  damage: 12d8
+  on_save: half
+  area: {shape: burst, radius: 4}
+  description: >
+    The caster speaks a single word older than any living language, and the
+    ground itself rings like a struck bell for miles around.
+arc_worldbind:
+  level: 9
+  action: action
+  range: 18
+  resolve: save
+  save_attr: STR
+  effect: {name: restrained, duration: 6}
+  on_save: none
+  description: >
+    The caster names the target's place in the world and the world itself
+    holds them there, immovable until the magic runs its course.
+arc_terror_incarnate:
+  level: 9
+  action: action
+  range: 18
+  resolve: save
+  save_attr: WIS
+  effect: {name: frightened, duration: 6}
+  on_save: none
+  area: {shape: burst, radius: 4}
+  description: >
+    The caster's shadow rises up to blot out the sky, and every creature
+    under it remembers, all at once, every fear it has ever had.
+arc_starfall_lance:
+  level: 9
+  action: action
+  range: 36
+  resolve: attack
+  damage: 16d8
+  description: >
+    A shard of falling starlight streaks down at the caster's command and
+    drives itself through the target with a flash that lights the whole
+    battlefield.
+arc_archmagic_ward:
+  level: 9
+  action: action
+  range: 1
+  resolve: auto
+  effect: {name: shielded, duration: -1}
+  description: >
+    The full weight of the caster's mastery wraps around the target as an
+    unbroken shell of light, and it does not falter until they say so.
+arc_planar_gate:
+  level: 9
+  action: action
+  range: 60
+  resolve: auto
+  description: >
+    The caster tears open a doorway clear across the battlefield, and
+    anyone bold enough can step straight through to the other side.
