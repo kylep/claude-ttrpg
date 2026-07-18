@@ -1,0 +1,13 @@
+name: Dire Wolf
+description: >
+  A wolf the size of a pony, shoulder-tall and heavy-jawed, usually running
+  point for a pack or bonded to something worse; its bite alone can put a
+  fighter on the ground.
+ac: 14     # armor class attacks must meet or beat
+hp: 22     # hit points per spawned instance
+speed: 10  # grid squares per combat turn
+attributes: {STR: 17, DEX: 15, CON: 15, INT: 3, WIS: 12, CHA: 7}  # DEX drives initiative
+attacks: [{name: bite, attack_mod: 5, damage: "2d6+3", range: 1, kind: melee}]  # range in squares
+xp: 350    # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: "1d8", items: []}  # rolled per instance at encounter end, into the party pool
+difficulty: standard  # GM guidance only

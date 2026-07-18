@@ -1,0 +1,13 @@
+name: Wolf
+description: >
+  A lean gray hunter that never fights alone if it can help it, circling to
+  flank while its packmates hold attention; downed, the rest of the pack
+  usually breaks off rather than press a losing fight.
+ac: 13     # armor class attacks must meet or beat
+hp: 15     # hit points per spawned instance
+speed: 10  # grid squares per combat turn
+attributes: {STR: 15, DEX: 15, CON: 12, INT: 3, WIS: 12, CHA: 6}  # DEX drives initiative
+attacks: [{name: bite, attack_mod: 4, damage: "1d6+3", range: 1, kind: melee}]  # range in squares
+xp: 200    # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: "1d6", items: []}  # rolled per instance at encounter end, into the party pool
+difficulty: standard  # GM guidance only

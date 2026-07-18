@@ -1,0 +1,15 @@
+name: Owlbear
+description: >
+  A feathered, bear-bodied horror with a great hooked beak and a screech
+  that carries through the whole forest; it is not clever, it is not
+  patient, and it does not stop once it has decided to charge.
+ac: 15     # armor class attacks must meet or beat
+hp: 62     # hit points per spawned instance
+speed: 8   # grid squares per combat turn
+attributes: {STR: 20, DEX: 12, CON: 17, INT: 3, WIS: 12, CHA: 7}  # DEX drives initiative
+attacks:  # range in squares; beak and claws in the same turn
+  - {name: beak, attack_mod: 7, damage: "2d8+4", range: 1, kind: melee}
+  - {name: claws, attack_mod: 7, damage: "2d6+4", range: 1, kind: melee}
+xp: 1600   # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: "2d6", items: []}  # rolled per instance at encounter end, into the party pool
+difficulty: tough  # GM guidance only

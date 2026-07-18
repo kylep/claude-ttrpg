@@ -1,0 +1,13 @@
+name: Zombie
+description: >
+  A slow, gray-skinned shambler that shrugs off wounds that would drop a
+  living thing, groaning forward at a shuffle no faster than a walk; the
+  danger is never speed, it is never, ever stopping.
+ac: 11     # armor class attacks must meet or beat
+hp: 22     # hit points per spawned instance
+speed: 4   # grid squares per combat turn
+attributes: {STR: 14, DEX: 6, CON: 16, INT: 3, WIS: 6, CHA: 5}  # DEX drives initiative
+attacks: [{name: rotting grasp, attack_mod: 4, damage: "1d8+2", range: 1, kind: melee}]  # range in squares
+xp: 250    # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: null, items: []}  # rolled per instance at encounter end, into the party pool
+difficulty: standard  # GM guidance only
