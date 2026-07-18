@@ -216,3 +216,143 @@ avatar_of_fury:
     engine only auto-crits on a 20), the rage rider die becomes 3d12, and the
     GM treats their raging damage reduction as full immunity to non-magical
     physical damage for the rest of the encounter.
+# ── Rogue ────────────────────────────────────────────────────────────────
+sneak_attack:
+  description: >
+    Signature, engine-enforced. `engine attack` automatically adds sneak
+    dice to the damage whenever this exact feature id is on the sheet, the
+    attack hits, is NOT at disadvantage, hasn't already triggered this round
+    for this attacker, and either the attacker has advantage or a conscious
+    ally is adjacent to the target. The dice are 1d6 at levels 1-2, 2d6 at
+    levels 3-4, and 3d6 from level 5 onward — the engine's hard cap; it never
+    grows past 3d6, even at level 20 (later spikes at L11/L17/L20 add power
+    through OTHER features, not a bigger everyday sneak die). A critical hit
+    doubles the sneak dice automatically. No GM action needed beyond having
+    the feature id on the sheet before running `engine attack`.
+deft_hands:
+  description: >
+    Signature utility. The rogue's hands move faster than the eye: while
+    carrying thieves_tools, they roll `engine check --adv` on any check to
+    pick a lock, disarm a mechanical trap, or lift something from a pocket
+    unnoticed.
+rogue_expertise:
+  description: >
+    Numeric bump. Note two of the rogue's trained skills on the sheet as
+    their expertise; the rogue rolls `engine check --adv` on every check
+    using those two skills for the rest of their career.
+cunning_action:
+  description: >
+    Identity. The rogue's action economy bends around them: once per turn,
+    on top of their one action, they may take a free extra action to dash
+    (double their remaining movement this turn), disengage (move away — the
+    GM waives any free attack an enemy would otherwise get), or attempt
+    `engine hide`. This does not consume the turn's one action slot; the GM
+    allows it as a standing exception for this feature only.
+quick_step:
+  description: >
+    Numeric bump. The rogue's speed increases by 2 squares at all times, and
+    when they use cunning_action to dash, difficult terrain costs them no
+    extra movement that turn.
+uncanny_dodge:
+  description: >
+    Spike. Sneak attack's dice reach their maximum this level — 3d6, the
+    engine's hard cap — and stay there for the rest of the rogue's career (no
+    further growth from a bigger die; later spikes come from other
+    features). On top of that, once per round, when hit by an attack they
+    can see, the rogue may halve the damage before it lands: the GM applies
+    only half the rolled damage (round down) instead of the full total from
+    that `engine attack`.
+combat_instincts:
+  description: >
+    Numeric bump. The rogue's nerves read a fight half a breath early: the
+    GM rolls their `engine initiative --adv`, and they cannot be surprised
+    while conscious.
+evasion:
+  description: >
+    Identity. When the rogue fails a DEX saving throw against an effect that
+    deals half damage on a success (an area spell or a trap), they take no
+    damage at all instead of half; a successful save already takes none. The
+    GM applies this after `engine save` resolves: on a failed DEX save
+    against a half-on-save effect, treat the outcome as a full success for
+    damage purposes only.
+greater_deft_hands:
+  description: >
+    Numeric bump. Deft_hands now succeeds automatically on any thieves_tools
+    check against an easy DC (10) with no roll needed; harder locks and
+    traps still require an `engine check --adv` roll as before.
+reliable_talent:
+  description: >
+    Numeric bump. The rogue's trained skills rarely truly fail: whenever
+    they roll an `engine check` using one of their chosen skills and the
+    die (before modifiers) would show a 9 or lower, the GM treats it as a
+    10 instead.
+shadow_step:
+  description: >
+    Numeric bump. In dim light or darkness, once per turn the rogue may slip
+    through a hostile-occupied square as part of their movement, ending
+    their move outside its reach; the GM waives the usual block for this one
+    case.
+improved_sneak:
+  description: >
+    Spike, NOT a bigger sneak die. The engine's own sneak_attack only
+    triggers once per round automatically. Once per round, in addition to
+    that automatic trigger, the rogue may land sneak attack a second time
+    this round on a different qualifying hit (advantage or an adjacent
+    conscious ally, not at disadvantage). Because the engine's per-round
+    tracking blocks a second automatic trigger, the GM rolls and adds this
+    second set of sneak dice BY HAND — the same die count the rogue's level
+    grants (capped at 3d6, per sneak_attack), doubled on a crit.
+steady_nerve:
+  description: >
+    Numeric bump. The rogue's composure holds even at death's door: the GM
+    lets them roll each death save twice and keep the better result.
+slippery_mind:
+  description: >
+    Identity. The rogue's wits cannot be untangled: they are immune to the
+    frightened effect, and every INT, WIS, or CHA saving throw they roll
+    gets `engine save --adv`.
+keen_eye:
+  description: >
+    Numeric bump. The rogue rolls `engine check --adv` on Perception and
+    Investigation checks made to notice traps, hidden doors, or an ambush
+    before it springs.
+elusive:
+  description: >
+    Identity. The rogue is maddeningly hard to pin down: while conscious,
+    the GM waives any advantage an attacker would otherwise gain against
+    them from the engine's automatic conditions (attacking a prone target,
+    attacking from hiding, and the like) — that roll resolves as a normal
+    roll instead of at advantage, unless the attacker is invisible or the
+    rogue is grappled or restrained.
+deadly_precision:
+  description: >
+    Numeric bump. The rogue's attacks score a critical hit on a natural 19
+    as well as 20; the GM doubles the damage dice and any sneak dice by hand
+    on a 19, since the engine only auto-crits on a 20.
+stroke_of_luck:
+  description: >
+    Spike, NOT a bigger sneak die. Once per short rest, immediately after
+    rolling a miss on an `engine attack` or failing an `engine check`, the
+    rogue calls on a stroke of luck: the GM treats that single d20 as if it
+    had shown a natural 20 instead, with crit and auto-success rules
+    applying as normal from there.
+greater_evasion:
+  description: >
+    Numeric bump. Evasion now also softens the worst case: on a failed DEX
+    save against an effect that would otherwise deal full damage on a fail
+    (no half-on-save clause), the GM applies only half the rolled damage by
+    hand instead of the full total.
+point_blank_shot:
+  description: >
+    Numeric bump. The rogue's ranged attacks no longer suffer the engine's
+    automatic ranged_in_melee disadvantage when a hostile is adjacent to
+    them.
+perfect_ambush:
+  description: >
+    Capstone, NOT a bigger sneak die. At the start of any combat where the
+    rogue is hidden, hasn't yet acted, or is attacking a target that hasn't
+    noticed them, their first `engine attack` of the encounter is rolled
+    with --adv, guaranteeing sneak attack's trigger condition. The GM also
+    adds one extra sneak die BY HAND to that first hit — the same die count
+    their level grants (capped at 3d6) — since the engine's own scaling caps
+    at 3d6 and won't add more automatically.
