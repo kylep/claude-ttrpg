@@ -534,3 +534,203 @@ perfect_self:
     critical hit on a natural 19 as well as 20; the GM doubles the
     martial-arts die by hand on a 19, since the engine only auto-crits on a
     20.
+# ── Wizard ───────────────────────────────────────────────────────────────
+spellbook:
+  description: >
+    Signature, GM-adjudicated. The wizard's own spellbook holds every arc_
+    spell on their sheet, copied out in careful hand; consulting it for a
+    minute lets them roll an Arcana check about a magic item, ward, or bit
+    of arcane writing with `engine check --adv`. If the book is ever lost
+    or destroyed, a long rest with fresh paper, ink, and access to their
+    known spells recreates it.
+arcane_recovery:
+  description: >
+    Once per short rest, the wizard may spend ten minutes studying their
+    spellbook to recover spent magic: the GM restores spell slots totaling
+    half the wizard's level (round up), no single recovered slot higher
+    than 4th level, distributed across the wizard's slot pool as the
+    player chooses. Update the sheet's slot counts by hand; `engine rest
+    short` does not track this on its own.
+ritual_casting:
+  description: >
+    Identity. Any arc_ spell the wizard knows that has no lasting combat
+    use — detect magic and similar exploration or utility spells, GM's
+    call — may be cast as a ten-minute ritual without spending a slot: run
+    `engine cast --caster <id> --spell <id>` as normal but do not deduct a
+    slot afterward.
+spell_secrets:
+  description: >
+    Numeric bump. The wizard's grasp of theory outruns their spellbook:
+    once per long rest, they may cast one known arc_ spell without
+    expending a slot, as though they had one in reserve — the GM runs
+    `engine cast` as normal but leaves the slot count untouched.
+improved_recovery:
+  description: >
+    Numeric bump. Arcane_recovery's short-rest study now restores slots
+    totaling the wizard's full level (round up) instead of half, still
+    capped at no single slot higher than 4th level.
+arcane_mastery:
+  description: >
+    Numeric bump. Once per long rest, when the wizard casts an arc_ spell
+    that calls for a saving throw, they may force the GM to roll that
+    save twice and keep the lower result for the target.
+potent_spellcasting:
+  description: >
+    Numeric bump. The wizard's cantrips hit harder: add the wizard's INT
+    modifier to the damage of any arc_ cantrip that deals damage, on top
+    of its normal rolled damage.
+spell_mastery:
+  description: >
+    The wizard picks one known 1st-level and one known 2nd-level arc_
+    spell as their mastered spells; from this level on, casting either of
+    those two specific spells costs no slot at all — the GM runs `engine
+    cast` as normal but never deducts a slot for those two spell ids.
+archmage:
+  description: >
+    Capstone. Once per long rest, the wizard may cast any two known arc_
+    spells back to back without spending slots for either — the GM runs
+    both `engine cast` calls and leaves the slot counts untouched. In
+    addition, pick one known spell of 6th level or lower as a signature
+    spell: from this level it always costs one slot lower than its actual
+    level (a 5th-level signature spell spends a 4th-level slot, and so
+    on, never below 1st).
+# ── Cleric ───────────────────────────────────────────────────────────────
+channel_light:
+  description: >
+    Signature, GM-run. Once per short rest, as an action, the cleric
+    channels their patron's light: choose to sear (the GM rolls one
+    `engine attack` against a target within range, treating a hit as
+    1d8 radiant damage, no weapon needed) or to mend (the GM applies
+    `engine heal` for 1d8 + the cleric's WIS modifier to one creature
+    they can touch). The die and number of uses grow at later levels
+    (see greater_channel_light and improved_channel_light).
+turn_undead:
+  description: >
+    As an action, the cleric presents their holy symbol and
+    channel_light's light turns the unliving: the GM has every undead
+    creature within 6 squares that can see or hear the cleric roll a WIS
+    save (`engine save`, DC 8 + proficiency bonus + WIS modifier,
+    computed by hand); on a failure the target must spend its next turn
+    moving away from the cleric rather than acting. This costs one use of
+    channel_light for the day.
+divine_domain:
+  description: >
+    Identity. At creation of this feature the player picks one domain
+    focus, a lasting edge the GM applies by hand: Light (channel_light's
+    sear option ignores half cover), Life (channel_light's mend option
+    heals +2), War (--adv on the first weapon attack roll each
+    encounter), or Knowledge (--adv on one Investigation or Arcana check
+    per short rest). Note the pick on the sheet; it never changes.
+greater_channel_light:
+  description: >
+    Numeric bump. Channel_light's sear die grows to 2d8 and its mend
+    healing to 2d8 + WIS modifier, and the cleric gains a second use of
+    channel_light per short rest.
+divine_strike:
+  description: >
+    Numeric bump. Once per turn, when the cleric hits with a weapon
+    attack, they may add 1d8 radiant damage to the hit by hand, on top of
+    the weapon's normal damage from `engine attack`.
+sacred_ward:
+  description: >
+    Numeric bump. Once per long rest, when the cleric or an ally within 6
+    squares would drop to 0 HP, the cleric may spend a reaction to
+    instead leave that creature at 1 HP — the GM overrides the drop-to-0
+    result for that single hit.
+improved_channel_light:
+  description: >
+    Numeric bump. Channel_light's sear die and mend die both grow to 3d8,
+    and the cleric gains a third use of channel_light per short rest.
+divine_intervention:
+  description: >
+    Capstone. Once per long rest, the cleric calls directly on their
+    patron: the GM narrates a single dramatic, story-appropriate
+    intervention on the party's behalf — a foe's weapon breaking, a door
+    unbarring itself, a sudden calm in a storm — proportionate to the
+    moment, GM's final call on the exact effect. Mechanically, this also
+    restores all of the cleric's spent channel_light uses and one spent
+    spell slot of the player's choice.
+# ── Druid ────────────────────────────────────────────────────────────────
+nature_bond:
+  description: >
+    Signature, GM-adjudicated. The druid speaks with beasts and the
+    living land on friendly terms: ordinary animals default to curious or
+    wary rather than hostile toward them, and the GM grants `engine check
+    --adv` on any Nature or Survival check made about weather, terrain,
+    plants, or animals.
+wild_shape:
+  description: >
+    Signature, GM-run. Twice per short rest, as an action, the druid
+    transforms into a beast form the GM has ready to run as a full stat
+    block — at this level, a small-to-medium beast no bigger than a wolf
+    or large cat (the GM sets AC/HP/attacks/speed from a comparable
+    bestiary entry, or improvises one in that range). The druid's own HP
+    total is set aside and unused while transformed; the beast form has
+    its own HP pool (use its stat block's HP) and the druid reverts to
+    their normal HP total, unchanged, when the form ends. The druid
+    cannot cast spells while transformed, keeps their own INT/WIS/CHA and
+    any features not tied to a body, and may end the transformation early
+    as a free action. A transformation also ends automatically if the
+    beast form drops to 0 HP; the druid takes no damage from that, but
+    the wild shape use is spent.
+verdant_step:
+  description: >
+    Identity. The druid moves through undergrowth like it isn't there:
+    difficult terrain made of plants, vines, or thicket costs them no
+    extra movement, and the GM grants `engine check --adv` on any Stealth
+    check made while in natural surroundings with cover to use.
+greater_wild_shape:
+  description: >
+    Spike. Wild_shape's available forms now include any beast up to the
+    size of a bear or big cat, with proportionally larger AC/HP/attacks
+    (the GM picks or improvises a stat block in that range) — and can
+    also take to the water as anything up to a large fish or crocodile.
+primal_strike:
+  description: >
+    Numeric bump. Whenever the druid hits with an attack while in wild
+    shape or with a nature-flavored weapon like a quarterstaff, they may
+    add 1d6 of the damage type suited to the moment (cold, fire,
+    lightning, poison, or the beast's natural type — GM's call) to the
+    hit by hand.
+thousandfold_shape:
+  description: >
+    Numeric bump. Wild_shape may now be used three times per short rest,
+    and while transformed the druid may take actions that require hands
+    or speech that the beast form would normally lack — biting a scroll
+    open, croaking out a single word — whenever it's plausible for the GM
+    to allow it, since the druid's own mind still drives the body.
+mastery_of_forms:
+  description: >
+    Spike. Wild_shape's available forms now include large beasts on the
+    scale of a great cat, boar, or big raptor, and flying forms such as
+    hawks or owls become available for the first time (see the targeting
+    model's aloft/flying rules) — the GM sets the stat block accordingly.
+primeval_awareness:
+  description: >
+    Numeric bump. Once per long rest, as an action, the druid reaches out
+    through the land itself: the GM tells them, in general terms, what
+    kinds of dangerous creatures (undead, aberrations, monstrous beasts)
+    exist within roughly a day's travel of their current location, though
+    not their exact number or position.
+elder_wild_shape:
+  description: >
+    Spike. Wild_shape's available forms now include the largest beasts
+    the GM is willing to run — bears, big cats at their biggest, or
+    similarly imposing animals — and the druid may spend two uses of
+    wild_shape at once to take on an especially powerful or magical beast
+    form the GM designates for a one-off encounter.
+apex_wild_shape:
+  description: >
+    Spike. Wild_shape now costs no uses at all to enter a form the druid
+    has already taken at least once before today — only a brand-new form
+    for the day still spends a use — and while transformed the druid's
+    beast form gains +2 to its attack rolls and damage, layered on top of
+    the stat block's own numbers.
+archdruid:
+  description: >
+    Capstone. Wild_shape becomes effectively unlimited — the GM stops
+    tracking uses per short rest, though a form still requires an action
+    to enter — and the druid may remain transformed indefinitely with no
+    time limit. Once per long rest, while in any beast form, the druid
+    may also cast one known pri_ spell without reverting to their own
+    body first, an exception to wild_shape's usual no-casting rule.
