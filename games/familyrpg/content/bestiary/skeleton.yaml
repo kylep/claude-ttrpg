@@ -1,0 +1,13 @@
+name: Skeleton
+description: >
+  A cobweb-hung skeleton clutching a rusted blade, moving with a stiff,
+  clattering gait and no fear at all; it fights until it is in pieces, not a
+  moment sooner.
+ac: 13     # armor class attacks must meet or beat
+hp: 16     # hit points per spawned instance
+speed: 6   # grid squares per combat turn
+attributes: {STR: 12, DEX: 14, CON: 12, INT: 6, WIS: 8, CHA: 5}  # DEX drives initiative
+attacks: [{name: rusted shortsword, attack_mod: 4, damage: "1d6+2", range: 1, kind: melee}]  # range in squares
+xp: 200    # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: null, items: []}  # rolled per instance at encounter end, into the party pool
+difficulty: standard  # GM guidance only

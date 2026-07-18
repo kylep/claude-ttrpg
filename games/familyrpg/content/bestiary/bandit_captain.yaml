@@ -1,0 +1,15 @@
+name: Bandit Captain
+description: >
+  The one who actually runs the crew — better armed, better trained, and
+  smart enough to hang back and direct the fight until the moment calls for
+  a personal, and very sharp, intervention.
+ac: 16     # armor class attacks must meet or beat
+hp: 65     # hit points per spawned instance
+speed: 6   # grid squares per combat turn
+attributes: {STR: 16, DEX: 14, CON: 14, INT: 11, WIS: 11, CHA: 14}  # DEX drives initiative
+attacks:  # range in squares; scimitar and offhand dagger
+  - {name: scimitar, attack_mod: 7, damage: "2d6+4", range: 1, kind: melee}
+  - {name: parrying dagger, attack_mod: 6, damage: "1d4+3", range: 1, kind: melee}
+xp: 1300   # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: "4d6", items: []}  # rolled per instance at encounter end, into the party pool
+difficulty: tough  # GM guidance only

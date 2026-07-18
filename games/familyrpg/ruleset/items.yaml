@@ -1,0 +1,78 @@
+# weapons — damage: dice rolled on hit; finesse: use DEX instead of STR if higher;
+# range: squares (1 = melee); kind: ranged marks bows/slings for the targeting model; price: gp
+# description is GM-facing narration flavor; the engine ignores it
+club: {type: weapon, damage: "1d4", finesse: false, range: 1, price: 1,
+  description: "A shaped length of hard wood, heavier at one end; the first weapon anyone ever picked up, and still an honest answer to a fight."}
+dagger: {type: weapon, damage: "1d4", finesse: true, range: 1, price: 2,
+  description: "A hand-span of sharpened steel that hides in a boot or sleeve; quick wrists turn it into a deadly close-quarters dance."}
+handaxe: {type: weapon, damage: "1d6", finesse: false, range: 1, price: 5,
+  description: "A short, single-bladed axe made for splitting kindling or skulls alike; an efficient weapon in the thick of melee."}
+quarterstaff: {type: weapon, damage: "1d6", finesse: false, range: 1, price: 2,
+  description: "A shoulder-height pole of seasoned oak, plain and forgiving; a shepherd's tool that a trained hand turns into a whirl of bruising strikes."}
+spear: {type: weapon, damage: "1d6", finesse: false, range: 1, price: 1,
+  description: "A leaf-shaped head on a long ash haft; it keeps enemies at bay and rewards a steady hand in a tight press."}
+shortsword: {type: weapon, damage: "1d6", finesse: true, range: 1, price: 10,
+  description: "A short, sharp thrusting blade favored in tight quarters; rewards a quick wrist over a strong arm."}
+longsword: {type: weapon, damage: "1d8", finesse: false, range: 1, price: 15,
+  description: "A straight, double-edged blade the length of an arm, balanced for both cut and thrust — the standard sidearm of anyone who soldiers for pay."}
+greatsword: {type: weapon, damage: "2d6", finesse: false, range: 1, price: 50,
+  description: "A huge two-handed blade you swing with the whole body; it ends arguments in a single sweep, if it lands."}
+greataxe: {type: weapon, damage: "1d12", finesse: false, range: 1, price: 30,
+  description: "A great bearded axe head on a long haft, built for one enormous, committed blow after another."}
+warhammer: {type: weapon, damage: "1d8", finesse: false, range: 1, price: 15,
+  description: "A heavy hammer head on a steel haft; it answers armor with blunt arithmetic rather than a keen edge."}
+mace: {type: weapon, damage: "1d6", finesse: false, range: 1, price: 5,
+  description: "A flanged iron head on a stout haft; it ignores fine technique and simply caves in whatever it meets."}
+shortbow: {type: weapon, damage: "1d6", finesse: true, range: 16, kind: ranged, price: 25,
+  description: "A hunter's recurve of horn and yew, short enough to draw in scrub or a tunnel mouth; needs a clear shot down the range."}
+longbow: {type: weapon, damage: "1d8", finesse: true, range: 24, kind: ranged, price: 50,
+  description: "A tall war-bow of layered yew that sends an arrow the length of a field; deadly at distance, clumsy in a scrum."}
+sling: {type: weapon, damage: "1d4", finesse: true, range: 12, kind: ranged, price: 1,
+  description: "A leather cradle and two cords that whips a stone across a courtyard; cheap, quiet, and always reloadable from the ground."}
+# armor — AC = ac_base (+ DEX modifier if add_dex); unarmored is 10 + DEX
+# stealth_dis: engine rolls the wearer's `engine hide` at disadvantage
+# _with_shield note: a wooden_shield or steel_shield (see gear) adds +2 AC, applied by the GM by hand
+padded: {type: armor, ac_base: 11, add_dex: true, stealth_dis: true, price: 5,
+  description: "A quilted coat stuffed with wool and rag; cheap and warm, but it rustles and bunches, so sneaking in it is a losing game. With a shield: 13 + DEX by hand."}
+leather: {type: armor, ac_base: 11, add_dex: true, price: 10,
+  description: "Boiled hide panels stitched over a jerkin — light enough to tumble in, tough enough to turn a glancing blade. With a shield: 13 + DEX by hand."}
+studded_leather: {type: armor, ac_base: 12, add_dex: true, price: 45,
+  description: "Supple leather riveted with hardened studs across the vital lines; the scout's favorite, quiet and quick. With a shield: 14 + DEX by hand."}
+hide: {type: armor, ac_base: 12, add_dex: true, price: 10,
+  description: "Thick pelts and cured leather lashed into rough plates; the armor of hunters and hill-folk who make it themselves. With a shield: 14 + DEX by hand."}
+chain_shirt: {type: armor, ac_base: 13, add_dex: true, price: 50,
+  description: "A shirt of fine riveted rings worn under a coat; flexible enough to move well, though a heavy build blunts how much your quickness helps (GM may cap the DEX bonus at +2). With a shield: 15 + DEX by hand."}
+scale_mail: {type: armor, ac_base: 14, add_dex: true, stealth_dis: true, price: 50,
+  description: "Overlapping metal scales sewn to a leather backing; solid protection that clinks and clatters with every careful step. With a shield: 16 + DEX by hand."}
+chain_mail: {type: armor, ac_base: 16, add_dex: false, stealth_dis: true, price: 75,
+  description: "A knee-length shirt of riveted rings over padded cloth; heavy, loud, and very hard to cut. With a shield: 18 by hand."}
+plate: {type: armor, ac_base: 18, add_dex: false, stealth_dis: true, price: 1500,
+  description: "A full harness of fitted steel plates, the finest armor gold can buy; a walking fortress that no one ever accused of being subtle. With a shield: 20 by hand."}
+# gear
+wooden_shield: {type: gear, price: 8,
+  description: "A round board of banded wood strapped to the forearm. It is NOT worn armor: the GM adds +2 to the bearer's AC by hand while it is carried and a hand is free."}
+steel_shield: {type: gear, price: 20,
+  description: "A steel-faced shield, heavier and more durable than a wooden one but the same protection. The GM adds +2 to the bearer's AC by hand while it is carried and a hand is free."}
+torch: {type: gear, price: 1, grants_effect: {name: lit},
+  description: "A pitch-soaked brand that burns for about an hour, shedding honest light and a lot of smoke; while it is equipped its bearer is lit — seen plainly even in the dark."}
+rope: {type: gear, price: 2,
+  description: "Fifty feet of hemp line, tarred against rot; holds a climber's weight if the knot does."}
+thieves_tools: {type: gear, price: 25,
+  description: "A leather roll of picks, tension bars, and a tiny mirror — everything a lock believes is a key."}
+healers_kit: {type: gear, price: 5,
+  description: "A satchel of bandages, salve, splints, and a needle; ten uses to stabilize a dying friend without a roll, or to grant --adv on a Medicine check."}
+rations: {type: gear, price: 1,
+  description: "A day's trail food — hardtack, dried meat, and a wedge of wax-sealed cheese; dull, filling, and always slightly stale."}
+boots_of_leaping: {type: gear, price: 120,
+  description: "Springy enchanted boots that lend a running start; once per scene the wearer clears a wide gap or a tall fence in a single bound (GM grants --adv on the Athletics jump)."}
+# consumables — a consumable must define at least one of heal / damage / grants_effect
+healing_potion: {type: consumable, heal: "2d4+2", price: 50,
+  description: "A stoppered vial of red liquid that tastes of copper and cloves; wounds begin closing before the bottle is empty. GM applies via `engine heal`."}
+greater_healing_potion: {type: consumable, heal: "4d4+4", price: 150,
+  description: "A larger flask of the same red draught, brewed twice as strong; enough to haul a friend back from the edge in one long swallow. GM applies via `engine heal`."}
+antitoxin: {type: consumable, grants_effect: {name: focused}, price: 40,
+  description: "A bitter herbal tincture that clears the head and steadies the gut; drinking it sharpens the next effort to a fine point (grants the focused effect)."}
+# a fun low-magic reward weapon
+glowing_blade: {type: weapon, damage: "1d8", finesse: false, range: 1, bonus: {attack: 1, damage: 1},
+  price: 250,
+  description: "A longsword whose fuller glows a steady moonlit blue in the dark; light in the hand and quietly, reliably better than plain steel."}

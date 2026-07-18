@@ -1,0 +1,33 @@
+# bonuses: added to attributes after the standard array is assigned (total <= +2 so no race is a must-pick)
+# speed: movement in grid squares per combat turn
+# description is GM-facing narration flavor; the engine ignores it
+human: {bonuses: {CON: 1, WIS: 1}, speed: 6,
+  description: "Restless folk found in every valley and on every road — humans are middling at any one thing and stubborn enough to make up the difference."}
+elf: {bonuses: {DEX: 2}, speed: 6,
+  description: "Tall, quiet, and long-lived, elves step through wood and rooftop alike as if the ground were whispering where to land."}
+dwarf: {bonuses: {CON: 2}, speed: 5,
+  description: "Short, broad, and built like the hills they mine; a dwarf outlasts trouble instead of dodging it."}
+halfling: {bonuses: {DEX: 1, CHA: 1}, speed: 5,
+  description: "Small folk with quick fingers and quicker grins, fond of a warm hearth and improbably hard to catch off guard."}
+gnome: {bonuses: {INT: 2}, speed: 5,
+  description: "Bright-eyed tinkers who ask 'but how does it work?' about everything, then take it apart to be sure."}
+half_orc: {bonuses: {STR: 2}, speed: 6,
+  description: "Big-shouldered and easy to underestimate right up until the moment they lift the fallen gate off your legs."}
+half_elf: {bonuses: {CHA: 1, DEX: 1}, speed: 6,
+  description: "At home in two worlds and fully of neither, half-elves make friends fast and read a room faster."}
+dragonborn: {bonuses: {STR: 1, CHA: 1}, speed: 6,
+  description: "Scaled and proud, descended from the great wyrms; when a dragonborn draws breath to speak, the room leans in."}
+tortle: {bonuses: {STR: 1, WIS: 1}, speed: 5,
+  description: "Patient turtle-folk who carry their own thick shell — a natural armor that turns blades better than most bought mail — and never seem to be in a hurry."}
+tabaxi: {bonuses: {DEX: 2}, speed: 7,
+  description: "Curious cat-folk who move in a blur of whiskers and questions; sitting still is the only trick they never learned."}
+aarakocra: {bonuses: {DEX: 1, WIS: 1}, speed: 6,
+  description: "Feathered bird-folk of the high crags who can loose their grip on the ground for short, gliding hops — never far, never long, but far enough to matter."}
+goliath: {bonuses: {STR: 2}, speed: 6,
+  description: "Grey-skinned mountain-born giants of few words, who reckon a hard climb and a hard fight as much the same thing."}
+lizardfolk: {bonuses: {CON: 1, WIS: 1}, speed: 6,
+  description: "Cold-blooded marsh-dwellers who feel little and forget less; a lizardfolk weighs every choice like a hunter weighing a leap."}
+firbolg: {bonuses: {WIS: 1, STR: 1}, speed: 6,
+  description: "Gentle forest-giants who would rather share their bread than swing a fist, and who make you very sorry on the rare day it comes to fists."}
+kenku: {bonuses: {DEX: 1, INT: 1}, speed: 6,
+  description: "Feathered folk who speak in borrowed voices and remember every sound they have ever heard; clever hands, sharp eyes, and a plan already half-formed."}

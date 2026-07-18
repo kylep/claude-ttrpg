@@ -1,0 +1,15 @@
+name: Ogre
+description: >
+  A lumbering giant twice the height of a person, dim-witted and easily
+  led but devastating in a straight fight; it swings its club in wide,
+  telegraphed arcs that punish anyone caught standing still.
+ac: 15     # armor class attacks must meet or beat
+hp: 60     # hit points per spawned instance
+speed: 8   # grid squares per combat turn
+attributes: {STR: 19, DEX: 8, CON: 17, INT: 5, WIS: 7, CHA: 6}  # DEX drives initiative
+attacks:  # range in squares; two heavy swings per turn
+  - {name: club swing, attack_mod: 7, damage: "2d8+4", range: 1, kind: melee}
+  - {name: club swing, attack_mod: 7, damage: "2d8+4", range: 1, kind: melee}
+xp: 1500   # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: "3d6", items: []}  # rolled per instance at encounter end, into the party pool
+difficulty: tough  # GM guidance only

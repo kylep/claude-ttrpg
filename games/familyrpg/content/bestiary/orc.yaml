@@ -1,0 +1,13 @@
+name: Orc
+description: >
+  A thick-muscled raider with tusked jaws and a notched greataxe, charging
+  in loud and committed rather than clever; it hits hard, keeps coming, and
+  respects nothing but a bigger hit back.
+ac: 14     # armor class attacks must meet or beat
+hp: 20     # hit points per spawned instance
+speed: 8   # grid squares per combat turn
+attributes: {STR: 16, DEX: 12, CON: 16, INT: 7, WIS: 9, CHA: 9}  # DEX drives initiative
+attacks: [{name: greataxe, attack_mod: 5, damage: "1d12+3", range: 1, kind: melee}]  # range in squares
+xp: 350    # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: "1d8", items: []}  # rolled per instance at encounter end, into the party pool
+difficulty: standard  # GM guidance only

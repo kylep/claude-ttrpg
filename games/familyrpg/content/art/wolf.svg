@@ -1,0 +1,192 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 280">
+  <!-- Wolf — a lean gray hunter mid-stalk on a moonlit rise, a packmate watching from the ridge -->
+  <defs>
+    <clipPath id="frame">
+      <rect x="13" y="13" width="394" height="254" rx="8"/>
+    </clipPath>
+  </defs>
+
+  <!-- parchment ground -->
+  <rect x="0" y="0" width="420" height="280" fill="#e8dcc0"/>
+
+  <g clip-path="url(#frame)">
+    <!-- dusk sky -->
+    <rect x="13" y="13" width="394" height="254" fill="#d8c9a6"/>
+    <rect x="13" y="122" width="394" height="78" fill="#e0d2b0"/>
+
+    <!-- moon and halo -->
+    <circle cx="322" cy="66" r="40" fill="#e6dabe" opacity="0.28"/>
+    <circle cx="322" cy="66" r="27" fill="#efe6d2"/>
+    <circle cx="312" cy="58" r="4" fill="#e2d6ba" opacity="0.7"/>
+    <circle cx="331" cy="74" r="3" fill="#e2d6ba" opacity="0.7"/>
+    <circle cx="326" cy="54" r="2.4" fill="#e2d6ba" opacity="0.7"/>
+
+    <!-- distant hills -->
+    <path d="M13,172 Q90,156 160,164 Q230,172 300,160 Q360,152 407,162 L407,205 L13,205 Z"
+          fill="#b3a68a"/>
+    <path d="M13,188 Q80,180 150,186 Q220,192 300,182 Q360,176 407,186 L407,210 L13,210 Z"
+          fill="#8a7a5f"/>
+
+    <!-- distant pines on the ridge (kept clear of the wolf's head) -->
+    <g fill="#4a3527">
+      <path d="M40,172 L44,159 L39,161 L46,148 L42,150 L47,137 L52,150 L48,148 L55,161 L50,159 L54,172 Z"/>
+      <path d="M62,174 L66,162 L61,164 L68,152 L64,154 L69,142 L74,154 L70,152 L77,164 L72,162 L76,174 Z"/>
+    </g>
+
+    <!-- packmate: a second wolf watching from the far ridge, ember eyes -->
+    <g>
+      <path d="M366,186
+               L362,169 L365,171 L368,162 L371,171 L374,164 L376,172
+               Q382,171 386,175 L390,169 L392,177 Q396,180 397,186
+               L392,186 L392,180 L388,186 L384,186 L385,179
+               Q378,182 372,180 L372,186 L367,186 L369,178 Z"
+            fill="#241c14"/>
+      <circle cx="366" cy="170" r="1.2" fill="#a33d2f"/>
+      <circle cx="371" cy="170" r="1.2" fill="#a33d2f"/>
+    </g>
+
+    <!-- ground / the rise the wolf stands on -->
+    <path d="M13,200 Q120,190 210,196 Q300,202 407,194 L407,267 L13,267 Z" fill="#6b5c46"/>
+    <path d="M13,216 Q120,208 220,214 Q310,219 407,210 L407,267 L13,267 Z" fill="#4a3527"/>
+    <path d="M13,238 Q140,230 260,236 Q340,240 407,234 L407,267 L13,267 Z" fill="#241c14"/>
+
+    <!-- ============ the wolf ============ -->
+    <!-- cast shadow -->
+    <ellipse cx="196" cy="216" rx="96" ry="8" fill="#241c14" opacity="0.36"/>
+
+    <!-- ===== FAR (offside) legs first — darker, so they recede ===== -->
+    <!-- far hind leg: extended back in a push-off, clear hock bend -->
+    <path d="M258,150 L266,175 L278,197 L284,209
+             L290,209 L290,205 L284,196 L276,174 L268,150 Z"
+          fill="#63594780" stroke="#4a3527" stroke-width="1.4" stroke-linejoin="round"/>
+    <ellipse cx="287" cy="210" rx="6" ry="3.2" fill="#5a4d3a"/>
+    <!-- far front leg: lifted and reaching, bent at the elbow -->
+    <path d="M156,150 L150,176 L140,194 L133,203
+             L138,205 L147,196 L156,178 L163,152 Z"
+          fill="#63594780" stroke="#4a3527" stroke-width="1.4" stroke-linejoin="round"/>
+    <ellipse cx="135" cy="204" rx="5.6" ry="3" fill="#5a4d3a"/>
+
+    <!-- ===== bushy tail — attached at the rump, trailing low ===== -->
+    <path d="M268,150 Q292,156 304,174 Q312,188 305,200
+             Q300,187 289,174 Q279,162 266,159 Z"
+          fill="#7a705a" stroke="#4a3527" stroke-width="1.9" stroke-linejoin="round"/>
+    <path d="M285,168 Q296,178 301,190" fill="none" stroke="#4a3527" stroke-width="0.9"/>
+
+    <!-- ===== main body silhouette: deep chest, tucked waist, muscled haunch ===== -->
+    <path d="M74,150
+             L90,141 L101,139
+             Q107,130 113,126
+             L120,120
+             Q129,120 136,127
+             L146,132
+             Q152,133 159,127
+             Q169,116 180,119
+             Q206,122 231,124
+             Q249,123 259,118
+             Q272,124 276,141
+             Q279,159 273,177
+             L266,182
+             Q245,185 219,181
+             Q191,185 166,187
+             Q153,187 151,176
+             L147,166
+             Q141,158 133,156
+             L112,157
+             Q92,157 84,154 Z"
+          fill="#98917b" stroke="#4a3527" stroke-width="2.2" stroke-linejoin="round"/>
+
+    <!-- countershading along the spine and croup (kept high, soft wavy lower edge) -->
+    <path d="M120,127 Q129,121 136,128 L146,133 Q152,134 159,128
+             Q169,117 180,120 Q206,123 231,125 Q249,124 259,119
+             Q272,125 276,141 Q252,136 224,137 Q198,138 178,142
+             Q162,146 150,147 L140,140 Q130,132 122,132 Z"
+          fill="#7d7460"/>
+
+    <!-- muscled haunch shading: a soft crescent hugging the rump -->
+    <path d="M256,124 Q274,130 277,152 Q279,170 270,182
+             Q273,164 267,148 Q261,134 250,128 Z" fill="#877d67"/>
+
+    <!-- lighter underside: a low, soft belly highlight tucked between the legs -->
+    <path d="M152,177 Q178,182 206,180 Q224,179 231,174
+             Q224,183 200,185 Q173,186 154,182 Z"
+          fill="#a9a186"/>
+    <!-- pale throat / chest fleck -->
+    <path d="M112,157 Q126,159 136,164 Q126,167 116,166 Z" fill="#b4ad96"/>
+
+    <!-- ===== NEAR legs on top — brighter, bent joints, real paws ===== -->
+    <!-- near front leg: planted, reaching forward, elbow bend -->
+    <path d="M170,150 L164,176 L156,200 L155,209
+             L166,209 L166,201 L169,178 L177,153 Z"
+          fill="#98917b" stroke="#4a3527" stroke-width="1.8" stroke-linejoin="round"/>
+    <ellipse cx="158" cy="210" rx="7" ry="3.6" fill="#877d67" stroke="#4a3527" stroke-width="1.4"/>
+    <!-- near hind leg: planted, prominent backward hock, cannon under the body -->
+    <path d="M244,150
+             L246,174 L242,178
+             Q250,186 260,190
+             L258,205 L256,210
+             L267,210 L268,203 L266,190
+             L272,166 L268,150 Z"
+          fill="#98917b" stroke="#4a3527" stroke-width="1.8" stroke-linejoin="round"/>
+    <ellipse cx="261" cy="211" rx="7" ry="3.6" fill="#877d67" stroke="#4a3527" stroke-width="1.4"/>
+
+    <!-- toe lines on the near paws -->
+    <g stroke="#4a3527" stroke-width="0.8" stroke-linecap="round">
+      <path d="M156,210 L156,207"/>
+      <path d="M159,210 L159,207"/>
+      <path d="M162,210 L162,207"/>
+      <path d="M259,211 L259,208"/>
+      <path d="M262,211 L262,208"/>
+      <path d="M265,211 L265,208"/>
+    </g>
+
+    <!-- shoulder & haunch definition strokes -->
+    <g stroke="#4a3527" stroke-width="0.9" fill="none" stroke-linecap="round">
+      <path d="M172,132 Q168,148 170,158"/>
+      <path d="M250,132 Q246,150 248,164"/>
+    </g>
+
+    <!-- ===== head: a clear skull with muzzle, brow and jaw ===== -->
+    <!-- ears set on the skull, dark, distinct from the ridgeline -->
+    <path d="M113,126 L116,102 L127,122 Z" fill="#877d67" stroke="#4a3527" stroke-width="1.8" stroke-linejoin="round"/>
+    <path d="M127,122 L133,104 L143,124 Z" fill="#7d7460" stroke="#4a3527" stroke-width="1.8" stroke-linejoin="round"/>
+    <path d="M116,120 L118,108 L123,120 Z" fill="#3a2b1f"/>
+    <path d="M131,120 L134,110 L139,121 Z" fill="#241c14"/>
+
+    <!-- brow / cheek shading to build the skull mass -->
+    <path d="M100,140 Q108,131 118,128 Q128,127 134,133
+             L133,146 Q120,142 108,146 L100,148 Z" fill="#877d67"/>
+
+    <!-- muzzle top plane -->
+    <path d="M74,150 L90,141 L101,139 L100,147 L86,152 Z" fill="#877d67"/>
+
+    <!-- nose -->
+    <path d="M74,150 Q78,147 82,149 Q83,153 79,155 Q74,155 74,150 Z" fill="#241c14"/>
+    <!-- mouth line + a hint of jaw -->
+    <path d="M80,155 Q95,159 111,156" fill="none" stroke="#241c14" stroke-width="1.3" stroke-linecap="round"/>
+    <path d="M112,157 Q118,152 124,150" fill="none" stroke="#4a3527" stroke-width="0.9" stroke-linecap="round"/>
+
+    <!-- alert amber eye -->
+    <ellipse cx="107" cy="138" rx="4.4" ry="3" fill="#efe6d2"/>
+    <circle cx="108" cy="138" r="2.6" fill="#a33d2f"/>
+    <circle cx="108.6" cy="137.4" r="1" fill="#241c14"/>
+    <path d="M101,134 Q107,132 113,134" fill="none" stroke="#4a3527" stroke-width="1.1" stroke-linecap="round"/>
+
+    <!-- ruff / neck fur strokes -->
+    <g stroke="#4a3527" stroke-width="0.9" fill="none" stroke-linecap="round">
+      <path d="M138,134 L148,144"/>
+      <path d="M146,132 L156,142"/>
+      <path d="M132,142 L142,151"/>
+    </g>
+
+    <!-- foreground grass tufts -->
+    <path d="M40,244 c1,-8 3,-11 4,-4 c1,-8 3,-8 4,-1 c1,-6 3,-5 3,1 l-11,5 z" fill="#4a3527"/>
+    <path d="M330,248 c1,-8 3,-11 4,-4 c1,-8 3,-8 4,-1 c1,-6 3,-5 3,1 l-11,5 z" fill="#3a2b1f"/>
+    <path d="M372,242 c1,-7 3,-10 4,-3 c1,-7 3,-7 4,-1 l-8,5 z" fill="#4a3527"/>
+  </g>
+
+  <!-- parchment mat + frame -->
+  <path fill-rule="evenodd" fill="#e8dcc0"
+        d="M0,0 H420 V280 H0 Z M21,13 H399 A8,8 0 0 1 407,21 V259 A8,8 0 0 1 399,267 H21 A8,8 0 0 1 13,259 V21 A8,8 0 0 1 21,13 Z"/>
+  <rect x="13" y="13" width="394" height="254" rx="8" fill="none"
+        stroke="#4a3527" stroke-width="2.5"/>
+</svg>

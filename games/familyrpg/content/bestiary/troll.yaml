@@ -1,0 +1,15 @@
+name: Troll
+description: >
+  A gaunt, rubbery-skinned horror with long raking claws and wounds that
+  seem to knit shut between blows; it is not fast, but it does not tire,
+  and it does not stay down as long as it should.
+ac: 16     # armor class attacks must meet or beat
+hp: 84     # hit points per spawned instance
+speed: 8   # grid squares per combat turn
+attributes: {STR: 18, DEX: 13, CON: 20, INT: 6, WIS: 9, CHA: 7}  # DEX drives initiative
+attacks:  # range in squares; two raking claw strikes per turn
+  - {name: claw, attack_mod: 7, damage: "2d6+4", range: 1, kind: melee}
+  - {name: claw, attack_mod: 7, damage: "2d6+4", range: 1, kind: melee}
+xp: 2200   # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: "3d6", items: []}  # rolled per instance at encounter end, into the party pool
+difficulty: tough  # GM guidance only

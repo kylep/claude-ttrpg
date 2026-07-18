@@ -1,0 +1,16 @@
+name: Harpy
+description: >
+  A vulture-winged raider with a human torso and a hooked, greedy grin,
+  circling overhead on ragged wings; it needles at range with a shrieking
+  cry before diving in to grab and rake.
+ac: 12     # armor class attacks must meet or beat
+hp: 20     # hit points per spawned instance
+speed: 4   # grid squares per combat turn (wings let it fight aloft)
+attributes: {STR: 12, DEX: 14, CON: 10, INT: 7, WIS: 10, CHA: 13}  # DEX drives initiative
+attacks:  # range in squares
+  - {name: claws, attack_mod: 4, damage: "1d4+2", range: 1, kind: melee}
+  - {name: luring screech, attack_mod: 4, damage: "1d6+1", range: 12, kind: ranged}
+xp: 300    # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: "1d6", items: []}  # rolled per instance at encounter end, into the party pool
+flying: true  # enables aloft/reach targeting rules
+difficulty: standard  # GM guidance only

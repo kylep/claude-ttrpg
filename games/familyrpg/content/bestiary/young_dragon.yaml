@@ -1,0 +1,18 @@
+name: Young Dragon
+description: >
+  A rising terror still short of its full size but already big enough to
+  darken a clearing with its wings and level a barn with one breath; it
+  circles for altitude, softens a target with fire, then closes to finish
+  the job with tooth and claw.
+ac: 18     # armor class attacks must meet or beat
+hp: 160    # hit points per spawned instance
+speed: 8   # grid squares per combat turn (wings let it fight aloft)
+attributes: {STR: 21, DEX: 12, CON: 19, INT: 14, WIS: 13, CHA: 16}  # DEX drives initiative
+attacks:  # range in squares; bite and claw up close, breath from range
+  - {name: bite, attack_mod: 9, damage: "2d10+5", range: 1, kind: melee}
+  - {name: claw, attack_mod: 9, damage: "2d6+5", range: 1, kind: melee}
+  - {name: fire breath, attack_mod: 9, damage: "4d6", range: 10, kind: ranged}
+xp: 6000   # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: "6d6", items: []}  # rolled per instance at encounter end, into the party pool
+flying: true  # enables aloft/reach targeting rules
+difficulty: boss  # GM guidance only

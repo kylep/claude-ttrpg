@@ -1,0 +1,30 @@
+name: wizard
+description: "The bookish one who trades a strong arm for a stronger mind — every monster, every lock, every dark room has a spell for it, if you studied the right page."
+hit_die: 6        # d6: starting HP, per-level HP gain, and short-rest healing
+cast_attr: INT    # attribute behind spell attack rolls, save DCs, and CASTMOD
+skill_choices: 2  # skills chosen from the list below at creation
+attr_priority: [INT, DEX, CON, WIS, CHA, STR]  # standard array fills these high-to-low
+skills: [arcana, investigation, nature, perception]  # from the 10-skill vocabulary
+starting_gear: [dagger]  # item ids from ruleset/items.yaml
+starting_gold: 20
+levels:  # keys 1..20; features (feature ids), spells learned, spell slots {level: count, cumulative}
+  1:  {features: [spellbook], spells: [arc_fire_bolt, arc_mage_hand, arc_magic_missile, arc_mage_armor], slots: {1: 2}}
+  2:  {features: [arcane_recovery], spells: [arc_burning_hands, arc_detect_magic], slots: {1: 3}}
+  3:  {features: [ritual_casting], spells: [arc_acid_arrow, arc_scorching_ray], slots: {1: 4, 2: 2}}
+  4:  {features: [], spells: [arc_frost_ray, arc_shocking_grasp, arc_frost_lance], slots: {1: 4, 2: 3}}
+  5:  {features: [], spells: [arc_fireball, arc_lightning_bolt], slots: {1: 4, 2: 3, 3: 2}}
+  6:  {features: [spell_secrets], spells: [arc_mirror_ward, arc_web_snare], slots: {1: 4, 2: 3, 3: 3}}
+  7:  {features: [], spells: [arc_ice_storm, arc_lightning_chain], slots: {1: 4, 2: 3, 3: 3, 4: 1}}
+  8:  {features: [], spells: [arc_slumber, arc_tangling_roots], slots: {1: 4, 2: 3, 3: 3, 4: 2}}
+  9:  {features: [improved_recovery], spells: [arc_cone_of_cold, arc_lightning_storm], slots: {1: 4, 2: 3, 3: 3, 4: 3, 5: 1}}
+  10: {features: [], spells: [arc_witchlight, arc_ice_knife, arc_shatter], slots: {1: 4, 2: 3, 3: 3, 4: 3, 5: 2}}
+  11: {features: [], spells: [arc_chain_lightning, arc_disintegrate_ray], slots: {1: 4, 2: 3, 3: 3, 4: 3, 5: 2, 6: 1}}
+  12: {features: [], spells: [arc_dispel_magic, arc_hold_person], slots: {1: 4, 2: 3, 3: 3, 4: 3, 5: 2, 6: 1}}
+  13: {features: [arcane_mastery], spells: [arc_meteor_swarm_lite, arc_prismatic_ray], slots: {1: 4, 2: 3, 3: 3, 4: 3, 5: 2, 6: 1, 7: 1}}
+  14: {features: [], spells: [arc_frost_nova, arc_blink_step], slots: {1: 4, 2: 3, 3: 3, 4: 3, 5: 2, 6: 1, 7: 1}}
+  15: {features: [potent_spellcasting], spells: [arc_incinerate, arc_stormcage], slots: {1: 4, 2: 3, 3: 3, 4: 3, 5: 2, 6: 1, 7: 1, 8: 1}}
+  16: {features: [], spells: [arc_paralyzing_ray, arc_teleport_step], slots: {1: 4, 2: 3, 3: 3, 4: 3, 5: 2, 6: 1, 7: 1, 8: 1}}
+  17: {features: [], spells: [arc_meteor_swarm, arc_thunder_of_the_ancients], slots: {1: 4, 2: 3, 3: 3, 4: 3, 5: 2, 6: 1, 7: 1, 8: 1, 9: 1}}
+  18: {features: [spell_mastery], spells: [arc_arcane_ward, arc_greater_shield], slots: {1: 4, 2: 3, 3: 3, 4: 3, 5: 3, 6: 1, 7: 1, 8: 1, 9: 1}}
+  19: {features: [], spells: [arc_freezing_sphere, arc_planar_step], slots: {1: 4, 2: 3, 3: 3, 4: 3, 5: 3, 6: 2, 7: 1, 8: 1, 9: 1}}
+  20: {features: [archmage], spells: [arc_arcane_aegis, arc_absolute_zero], slots: {1: 4, 2: 3, 3: 3, 4: 3, 5: 3, 6: 2, 7: 2, 8: 1, 9: 1}}

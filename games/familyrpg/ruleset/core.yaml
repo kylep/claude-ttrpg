@@ -1,0 +1,5 @@
+resolution: d20_vs_dc  # core mechanic: d20 + modifier vs difficulty class
+crit_on: 20            # natural roll that auto-hits and doubles damage dice
+fumble_on: 1           # natural roll that always misses
+standard_array: [15, 14, 13, 12, 10, 8]  # attribute scores assigned at character creation
+dcs: {easy: 10, medium: 13, hard: 16}    # suggested difficulty classes for GM rulings

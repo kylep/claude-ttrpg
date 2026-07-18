@@ -1,0 +1,30 @@
+name: fighter
+description: "The hero who is simply best at fighting — armor, a good blade, and the drill to swing it again and again when everyone else is tired."
+hit_die: 10       # d10: starting HP, per-level HP gain, and short-rest healing
+cast_attr: null   # non-caster
+skill_choices: 2  # skills chosen from the list below at creation
+attr_priority: [STR, CON, DEX, WIS, INT, CHA]  # standard array fills these high-to-low
+skills: [athletics, acrobatics, perception, survival]  # from the 10-skill vocabulary
+starting_gear: [chain_mail, longsword]  # item ids from ruleset/items.yaml
+starting_gold: 10
+levels:  # keys 1..20; features (feature ids), spells learned, spell slots {level: count}
+  1:  {features: [second_wind], spells: [], slots: {}}
+  2:  {features: [combat_style], spells: [], slots: {}}
+  3:  {features: [battle_focus], spells: [], slots: {}}
+  4:  {features: [deep_reserves], spells: [], slots: {}}
+  5:  {features: [extra_attack], spells: [], slots: {}}
+  6:  {features: [sharper_focus], spells: [], slots: {}}
+  7:  {features: [battle_tested], spells: [], slots: {}}
+  8:  {features: [extra_wind], spells: [], slots: {}}
+  9:  {features: [indomitable], spells: [], slots: {}}
+  10: {features: [keen_focus], spells: [], slots: {}}
+  11: {features: [improved_extra_attack], spells: [], slots: {}}
+  12: {features: [relentless_focus], spells: [], slots: {}}
+  13: {features: [hardened_resolve], spells: [], slots: {}}
+  14: {features: [mighty_focus], spells: [], slots: {}}
+  15: {features: [unyielding], spells: [], slots: {}}
+  16: {features: [sure_strike], spells: [], slots: {}}
+  17: {features: [master_at_arms], spells: [], slots: {}}
+  18: {features: [third_wind], spells: [], slots: {}}
+  19: {features: [tireless], spells: [], slots: {}}
+  20: {features: [champion], spells: [], slots: {}}

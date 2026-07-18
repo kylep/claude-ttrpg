@@ -1,0 +1,30 @@
+name: rogue
+description: "The hero who wins the fight before anyone knows it started — quick hands, quicker feet, and an eye for the one gap in any guard."
+hit_die: 8        # d8: starting HP, per-level HP gain, and short-rest healing
+cast_attr: null   # non-caster
+skill_choices: 4  # rogues are skill-monkeys: 4 skills chosen from the list below at creation
+attr_priority: [DEX, INT, WIS, CON, CHA, STR]  # standard array fills these high-to-low
+skills: [stealth, acrobatics, perception, investigation, persuasion, arcana]  # from the 10-skill vocabulary
+starting_gear: [leather, shortsword, shortbow, thieves_tools]  # item ids from ruleset/items.yaml
+starting_gold: 15
+levels:  # keys 1..20; features (feature ids), spells learned, spell slots {level: count}
+  1:  {features: [sneak_attack, deft_hands], spells: [], slots: {}}
+  2:  {features: [rogue_expertise], spells: [], slots: {}}
+  3:  {features: [cunning_action], spells: [], slots: {}}
+  4:  {features: [quick_step], spells: [], slots: {}}
+  5:  {features: [uncanny_dodge], spells: [], slots: {}}
+  6:  {features: [combat_instincts], spells: [], slots: {}}
+  7:  {features: [evasion], spells: [], slots: {}}
+  8:  {features: [greater_deft_hands], spells: [], slots: {}}
+  9:  {features: [reliable_talent], spells: [], slots: {}}
+  10: {features: [shadow_step], spells: [], slots: {}}
+  11: {features: [improved_sneak], spells: [], slots: {}}
+  12: {features: [steady_nerve], spells: [], slots: {}}
+  13: {features: [slippery_mind], spells: [], slots: {}}
+  14: {features: [keen_eye], spells: [], slots: {}}
+  15: {features: [elusive], spells: [], slots: {}}
+  16: {features: [deadly_precision], spells: [], slots: {}}
+  17: {features: [stroke_of_luck], spells: [], slots: {}}
+  18: {features: [greater_evasion], spells: [], slots: {}}
+  19: {features: [point_blank_shot], spells: [], slots: {}}
+  20: {features: [perfect_ambush], spells: [], slots: {}}

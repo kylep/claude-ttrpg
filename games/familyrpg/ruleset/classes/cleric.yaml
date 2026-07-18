@@ -1,0 +1,30 @@
+name: cleric
+description: "The one who keeps the party standing — armor on, prayer on their lips, a light that heals friends and burns whatever's threatening them."
+hit_die: 8        # d8: starting HP, per-level HP gain, and short-rest healing
+cast_attr: WIS    # attribute behind spell attack rolls, save DCs, and CASTMOD
+skill_choices: 2  # skills chosen from the list below at creation
+attr_priority: [WIS, CON, STR, CHA, DEX, INT]  # standard array fills these high-to-low
+skills: [medicine, persuasion, perception, survival]  # from the 10-skill vocabulary
+starting_gear: [chain_shirt, mace]  # item ids from ruleset/items.yaml
+starting_gold: 15
+levels:  # keys 1..20; features (feature ids), spells learned, spell slots {level: count, cumulative}
+  1:  {features: [channel_light], spells: [div_sacred_flame, div_guidance, div_cure_wounds, div_bless], slots: {1: 2}}
+  2:  {features: [turn_undead], spells: [div_healing_word, div_shield_of_faith], slots: {1: 3}}
+  3:  {features: [divine_domain], spells: [div_aid, div_spiritual_mace], slots: {1: 4, 2: 2}}
+  4:  {features: [], spells: [div_mending_touch, div_radiant_lance, div_bane_ward], slots: {1: 4, 2: 3}}
+  5:  {features: [], spells: [div_flame_strike, div_beacon_of_hope], slots: {1: 4, 2: 3, 3: 2}}
+  6:  {features: [greater_channel_light], spells: [div_healing_light, div_holy_smite], slots: {1: 4, 2: 3, 3: 3}}
+  7:  {features: [], spells: [div_death_ward, div_greater_healing], slots: {1: 4, 2: 3, 3: 3, 4: 1}}
+  8:  {features: [], spells: [div_command_fall, div_detect_undead], slots: {1: 4, 2: 3, 3: 3, 4: 2}}
+  9:  {features: [divine_strike], spells: [div_mass_cure_wounds, div_flame_strike_greater], slots: {1: 4, 2: 3, 3: 3, 4: 3, 5: 1}}
+  10: {features: [], spells: [div_wardlight, div_prayer_of_mending, div_warding_bond], slots: {1: 4, 2: 3, 3: 3, 4: 3, 5: 2}}
+  11: {features: [], spells: [div_heal, div_banishment], slots: {1: 4, 2: 3, 3: 3, 4: 3, 5: 2, 6: 1}}
+  12: {features: [], spells: [div_dispel_evil, div_sanctuary], slots: {1: 4, 2: 3, 3: 3, 4: 3, 5: 2, 6: 1}}
+  13: {features: [sacred_ward], spells: [div_resurrection_lesser, div_greater_heal], slots: {1: 4, 2: 3, 3: 3, 4: 3, 5: 2, 6: 1, 7: 1}}
+  14: {features: [], spells: [div_mass_healing_word, div_banish_undead], slots: {1: 4, 2: 3, 3: 3, 4: 3, 5: 2, 6: 1, 7: 1}}
+  15: {features: [improved_channel_light], spells: [div_supreme_healing, div_holy_cataclysm], slots: {1: 4, 2: 3, 3: 3, 4: 3, 5: 2, 6: 1, 7: 1, 8: 1}}
+  16: {features: [], spells: [div_smiting_bolt, div_healing_surge], slots: {1: 4, 2: 3, 3: 3, 4: 3, 5: 2, 6: 1, 7: 1, 8: 1}}
+  17: {features: [], spells: [div_mass_true_healing, div_true_resurrection], slots: {1: 4, 2: 3, 3: 3, 4: 3, 5: 2, 6: 1, 7: 1, 8: 1, 9: 1}}
+  18: {features: [], spells: [div_bastion_of_faith, div_holy_lance], slots: {1: 4, 2: 3, 3: 3, 4: 3, 5: 3, 6: 1, 7: 1, 8: 1, 9: 1}}
+  19: {features: [], spells: [div_mass_heal_lesser, div_sunburst], slots: {1: 4, 2: 3, 3: 3, 4: 3, 5: 3, 6: 2, 7: 1, 8: 1, 9: 1}}
+  20: {features: [divine_intervention], spells: [div_unbreakable_faith, div_wrath_of_the_heavens_absolute], slots: {1: 4, 2: 3, 3: 3, 4: 3, 5: 3, 6: 2, 7: 2, 8: 1, 9: 1}}

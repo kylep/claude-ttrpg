@@ -1,0 +1,13 @@
+name: Giant Spider
+description: >
+  A dog-sized spider with a mottled brown carapace, dropping from web-strung
+  rafters on a single silk line; it likes to strike from above and skitter
+  back up before anyone can grab it.
+ac: 13     # armor class attacks must meet or beat
+hp: 11     # hit points per spawned instance
+speed: 8   # grid squares per combat turn
+attributes: {STR: 10, DEX: 16, CON: 12, INT: 4, WIS: 11, CHA: 4}  # DEX drives initiative
+attacks: [{name: venomous bite, attack_mod: 4, damage: "1d6+2", range: 1, kind: melee}]  # range in squares
+xp: 175    # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: "1d6", items: []}  # rolled per instance at encounter end, into the party pool
+difficulty: easy  # GM guidance only

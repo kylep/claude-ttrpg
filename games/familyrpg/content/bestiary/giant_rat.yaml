@@ -1,0 +1,13 @@
+name: Giant Rat
+description: >
+  A cat-sized rat with patchy fur and yellow teeth, bold in a pack and quick
+  to bolt alone; it darts in for a nip and scrambles back into the dark
+  before a return swing lands.
+ac: 12     # armor class attacks must meet or beat
+hp: 5      # hit points per spawned instance
+speed: 6   # grid squares per combat turn
+attributes: {STR: 7, DEX: 15, CON: 10, INT: 2, WIS: 10, CHA: 4}  # DEX drives initiative
+attacks: [{name: nip, attack_mod: 3, damage: "1d4+1", range: 1, kind: melee}]  # range in squares
+xp: 50     # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: "1d4", items: []}  # rolled per instance at encounter end, into the party pool
+difficulty: easy  # GM guidance only

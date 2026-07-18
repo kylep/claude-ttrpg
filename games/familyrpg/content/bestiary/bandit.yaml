@@ -1,0 +1,13 @@
+name: Bandit
+description: >
+  A road-worn opportunist in mismatched leather, more interested in your
+  coin purse than a fair fight; it presses hard while the numbers favor it
+  and looks for the treeline the moment they stop.
+ac: 13     # armor class attacks must meet or beat
+hp: 15     # hit points per spawned instance
+speed: 6   # grid squares per combat turn
+attributes: {STR: 12, DEX: 13, CON: 12, INT: 10, WIS: 10, CHA: 10}  # DEX drives initiative
+attacks: [{name: shortsword, attack_mod: 4, damage: "1d6+2", range: 1, kind: melee}]  # range in squares
+xp: 200    # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: "2d6", items: []}  # rolled per instance at encounter end, into the party pool
+difficulty: standard  # GM guidance only

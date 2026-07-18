@@ -1,0 +1,30 @@
+name: barbarian
+description: "The hero who fights with the wild's own fury in their chest — the angrier the fight gets, the harder they are to put down."
+hit_die: 12       # d12: starting HP, per-level HP gain, and short-rest healing
+cast_attr: null   # non-caster
+skill_choices: 2  # skills chosen from the list below at creation
+attr_priority: [STR, CON, DEX, WIS, CHA, INT]  # standard array fills these high-to-low
+skills: [athletics, survival, perception, nature]  # from the 10-skill vocabulary
+starting_gear: [hide, greataxe]  # item ids from ruleset/items.yaml
+starting_gold: 10
+levels:  # keys 1..20; features (feature ids), spells learned, spell slots {level: count}
+  1:  {features: [rage, unarmored_defense], spells: [], slots: {}}
+  2:  {features: [wild_sprint], spells: [], slots: {}}
+  3:  {features: [reckless_assault], spells: [], slots: {}}
+  4:  {features: [rugged_recovery], spells: [], slots: {}}
+  5:  {features: [extra_attack, surging_fury], spells: [], slots: {}}
+  6:  {features: [feral_resilience], spells: [], slots: {}}
+  7:  {features: [danger_sense], spells: [], slots: {}}
+  8:  {features: [hardened_hide], spells: [], slots: {}}
+  9:  {features: [brutal_strike], spells: [], slots: {}}
+  10: {features: [tireless_fury], spells: [], slots: {}}
+  11: {features: [relentless_rage], spells: [], slots: {}}
+  12: {features: [unbroken_will], spells: [], slots: {}}
+  13: {features: [call_of_the_wild], spells: [], slots: {}}
+  14: {features: [deeper_fury], spells: [], slots: {}}
+  15: {features: [persistent_rage], spells: [], slots: {}}
+  16: {features: [iron_constitution], spells: [], slots: {}}
+  17: {features: [might_of_the_wilds], spells: [], slots: {}}
+  18: {features: [unstoppable], spells: [], slots: {}}
+  19: {features: [endless_fury], spells: [], slots: {}}
+  20: {features: [avatar_of_fury], spells: [], slots: {}}

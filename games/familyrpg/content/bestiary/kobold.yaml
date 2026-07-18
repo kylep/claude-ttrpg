@@ -1,0 +1,13 @@
+name: Kobold
+description: >
+  A knee-high reptilian scavenger with a rasping voice and a sharpened
+  spear, always fighting from a rigged trap or a numbers advantage; alone
+  it is nervous, in a den it is a genuine hazard.
+ac: 12     # armor class attacks must meet or beat
+hp: 6      # hit points per spawned instance
+speed: 6   # grid squares per combat turn
+attributes: {STR: 8, DEX: 15, CON: 9, INT: 9, WIS: 8, CHA: 7}  # DEX drives initiative
+attacks: [{name: spear jab, attack_mod: 3, damage: "1d6+1", range: 1, kind: melee}]  # range in squares
+xp: 100    # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: "1d4", items: []}  # rolled per instance at encounter end, into the party pool
+difficulty: easy  # GM guidance only

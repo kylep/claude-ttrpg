@@ -1,0 +1,174 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 280">
+  <defs>
+    <clipPath id="frame">
+      <rect x="7" y="7" width="406" height="266" rx="12"/>
+    </clipPath>
+  </defs>
+
+  <!-- parchment ground + aged blotches in the margins -->
+  <rect x="0" y="0" width="420" height="280" fill="#e8dcc0"/>
+  <path d="M30 8 Q66 4 96 9 Q64 12 30 8 Z" fill="#d8c9a6"/>
+  <path d="M322 272 Q356 268 392 273 Q354 277 322 272 Z" fill="#d8c9a6"/>
+
+  <g clip-path="url(#frame)">
+    <!-- dim attic wall -->
+    <rect x="7" y="7" width="406" height="266" fill="#bcb08f"/>
+
+    <!-- soft light pool behind the subject (layered, no gradients) -->
+    <ellipse cx="210" cy="150" rx="130" ry="108" fill="#efe6d2" opacity="0.07"/>
+    <ellipse cx="210" cy="150" rx="96" ry="82" fill="#efe6d2" opacity="0.08"/>
+    <ellipse cx="210" cy="152" rx="62" ry="56" fill="#efe6d2" opacity="0.10"/>
+
+    <!-- attic gloom pooling in the top corners -->
+    <path d="M7 7 L150 7 L74 34 L7 92 Z" fill="#4a3527" opacity="0.55"/>
+    <path d="M413 7 L270 7 L346 34 L413 92 Z" fill="#4a3527" opacity="0.55"/>
+    <path d="M7 7 L96 7 L40 30 L7 60 Z" fill="#241c14" opacity="0.6"/>
+    <path d="M413 7 L324 7 L380 30 L413 60 Z" fill="#241c14" opacity="0.6"/>
+
+    <!-- board floor, receding into shadow -->
+    <path d="M7 250 L413 250 L413 273 L7 273 Z" fill="#8a7a5f"/>
+    <path d="M7 250 L413 250 L413 258 L7 258 Z" fill="#7a6b50"/>
+    <path d="M7 265 L413 265 L413 273 L7 273 Z" fill="#4a3527"/>
+    <path d="M70 250 L66 273 M150 250 L148 273 M232 250 L233 273 M312 250 L316 273 M372 250 L378 273"
+          stroke="#5c4e39" stroke-width="1" fill="none"/>
+
+    <!-- pooled shadow the spider casts on the boards -->
+    <ellipse cx="210" cy="255" rx="86" ry="9" fill="#241c14" opacity="0.30"/>
+    <ellipse cx="210" cy="255" rx="52" ry="6" fill="#241c14" opacity="0.28"/>
+
+    <!-- ============ the ceiling rafter ============ -->
+    <path d="M7 24 L413 22 L413 44 L7 42 Z" fill="#6b5c46" stroke="#241c14" stroke-width="1.8"/>
+    <path d="M7 25 L413 23 L413 31 L7 30 Z" fill="#7d6d52"/>
+    <path d="M40 27 L60 40 M120 26 L146 41 M210 25 L232 41 M300 25 L322 40 M366 24 L388 40"
+          stroke="#4a3527" stroke-width="0.9" fill="none"/>
+    <path d="M7 42 L44 42 L40 66 L20 64 L7 60 Z" fill="#3a2b1f"/>
+    <path d="M413 40 L378 41 L382 64 L402 62 L413 58 Z" fill="#3a2b1f"/>
+
+    <!-- ============ the orb web (faint, behind) ============ -->
+    <g stroke="#efe6d2" fill="none" stroke-linejoin="round">
+      <!-- radial spokes -->
+      <g opacity="0.22" stroke-width="0.8">
+        <path d="M210 80 L210 14"/>
+        <path d="M210 80 L256 33"/>
+        <path d="M210 80 L276 80"/>
+        <path d="M210 80 L256 127"/>
+        <path d="M210 80 L164 127"/>
+        <path d="M210 80 L144 80"/>
+        <path d="M210 80 L164 33"/>
+      </g>
+      <!-- polygon rings -->
+      <g opacity="0.32" stroke-width="0.9">
+        <path d="M210 62 L223 67 L228 80 L223 93 L210 98 L197 93 L192 80 L197 67 Z"/>
+        <path d="M210 48 L232 57 L242 80 L232 103 L210 112 L188 103 L178 80 L188 57 Z"/>
+        <path d="M210 34 L242 47 L256 80 L242 113 L210 126 L178 113 L164 80 L178 47 Z"/>
+        <path d="M210 22 L251 39 L268 80 L251 121 L169 121 L152 80 L169 39 Z"/>
+      </g>
+      <!-- a couple of loose torn strands -->
+      <g opacity="0.18" stroke-width="0.7">
+        <path d="M14 12 Q60 40 96 30"/>
+        <path d="M406 12 Q360 40 322 30"/>
+        <path d="M152 80 Q120 100 96 96"/>
+      </g>
+    </g>
+
+    <!-- the single silk dragline the spider hangs from -->
+    <path d="M210 80 L210 111" stroke="#efe6d2" stroke-width="1.2" opacity="0.72" fill="none"/>
+    <path d="M210 80 L210 111" stroke="#3a2b1f" stroke-width="0.5" opacity="0.4" fill="none"/>
+
+    <!-- a small wrapped bundle in the larder, dangling -->
+    <path d="M132 96 L132 124" stroke="#efe6d2" stroke-width="0.8" opacity="0.5" fill="none"/>
+    <ellipse cx="132" cy="132" rx="8" ry="11" fill="#cdbfa0" stroke="#8a7a5f" stroke-width="1"/>
+    <path d="M126 126 L138 130 M125 132 L139 135 M127 138 L137 140" stroke="#efe6d2" stroke-width="0.7" opacity="0.6" fill="none"/>
+
+    <!-- ============ the giant spider ============ -->
+    <!-- legs (drawn first so bases tuck under the body) -->
+    <g stroke="#2e2117" stroke-linecap="round" stroke-linejoin="round" fill="none">
+      <!-- left femurs -->
+      <g stroke-width="5">
+        <path d="M194 168 L150 138"/>
+        <path d="M192 174 L138 158"/>
+        <path d="M192 180 L140 182"/>
+        <path d="M196 186 L154 206"/>
+      </g>
+      <!-- left tibiae -->
+      <g stroke-width="3.2">
+        <path d="M150 138 L112 196"/>
+        <path d="M138 158 L100 214"/>
+        <path d="M140 182 L104 232"/>
+        <path d="M154 206 L128 244"/>
+      </g>
+      <!-- right femurs -->
+      <g stroke-width="5">
+        <path d="M226 168 L270 138"/>
+        <path d="M228 174 L282 158"/>
+        <path d="M228 180 L280 182"/>
+        <path d="M224 186 L266 206"/>
+      </g>
+      <!-- right tibiae -->
+      <g stroke-width="3.2">
+        <path d="M270 138 L308 196"/>
+        <path d="M282 158 L320 214"/>
+        <path d="M280 182 L316 232"/>
+        <path d="M266 206 L292 244"/>
+      </g>
+    </g>
+    <!-- knee joints -->
+    <g fill="#4a3527">
+      <circle cx="150" cy="138" r="2"/><circle cx="138" cy="158" r="2"/>
+      <circle cx="140" cy="182" r="2"/><circle cx="154" cy="206" r="2"/>
+      <circle cx="270" cy="138" r="2"/><circle cx="282" cy="158" r="2"/>
+      <circle cx="280" cy="182" r="2"/><circle cx="266" cy="206" r="2"/>
+    </g>
+
+    <!-- abdomen -->
+    <ellipse cx="210" cy="138" rx="31" ry="28" fill="#5a4632" stroke="#241c14" stroke-width="2.3"/>
+    <!-- mottled carapace patches -->
+    <path d="M198 118 Q210 110 224 118 Q220 128 210 128 Q200 128 198 118 Z" fill="#6f5f47"/>
+    <ellipse cx="192" cy="140" rx="7" ry="9" fill="#4a3527"/>
+    <ellipse cx="228" cy="140" rx="7" ry="9" fill="#4a3527"/>
+    <ellipse cx="210" cy="156" rx="10" ry="6" fill="#4a3527"/>
+    <!-- pale folk-art dorsal markings -->
+    <path d="M210 116 L214 128 L210 150 L206 128 Z" fill="#c9bda3"/>
+    <circle cx="200" cy="126" r="2.6" fill="#c9bda3"/>
+    <circle cx="220" cy="126" r="2.6" fill="#c9bda3"/>
+    <circle cx="196" cy="150" r="2.2" fill="#a89a7a"/>
+    <circle cx="224" cy="150" r="2.2" fill="#a89a7a"/>
+    <circle cx="210" cy="132" r="1.6" fill="#e8dcc0"/>
+
+    <!-- cephalothorax -->
+    <ellipse cx="210" cy="174" rx="18" ry="15" fill="#4a3527" stroke="#241c14" stroke-width="2.3"/>
+    <path d="M198 166 Q210 160 222 166 Q216 172 210 172 Q204 172 198 166 Z" fill="#5c4a35"/>
+
+    <!-- pedipalps -->
+    <path d="M203 187 L199 197" stroke="#2e2117" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M217 187 L221 197" stroke="#2e2117" stroke-width="2.4" stroke-linecap="round"/>
+
+    <!-- fangs -->
+    <path d="M205 186 Q203 193 206 197" stroke="#241c14" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M215 186 Q217 193 214 197" stroke="#241c14" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+    <!-- eight eyes: two big characterful mains + a small cluster -->
+    <g>
+      <circle cx="204" cy="178" r="3.4" fill="#efe6d2" stroke="#241c14" stroke-width="0.7"/>
+      <circle cx="216" cy="178" r="3.4" fill="#efe6d2" stroke="#241c14" stroke-width="0.7"/>
+      <circle cx="204.6" cy="178.6" r="1.6" fill="#241c14"/>
+      <circle cx="216.6" cy="178.6" r="1.6" fill="#241c14"/>
+      <circle cx="203.4" cy="177" r="0.7" fill="#ffffff" opacity="0.85"/>
+      <circle cx="215.4" cy="177" r="0.7" fill="#ffffff" opacity="0.85"/>
+      <!-- small upper eyes -->
+      <circle cx="200" cy="171" r="1.5" fill="#e8dcc0" stroke="#241c14" stroke-width="0.5"/>
+      <circle cx="210" cy="169.5" r="1.5" fill="#e8dcc0" stroke="#241c14" stroke-width="0.5"/>
+      <circle cx="220" cy="171" r="1.5" fill="#e8dcc0" stroke="#241c14" stroke-width="0.5"/>
+      <circle cx="195" cy="174" r="1.3" fill="#e8dcc0" stroke="#241c14" stroke-width="0.5"/>
+      <circle cx="225" cy="174" r="1.3" fill="#e8dcc0" stroke="#241c14" stroke-width="0.5"/>
+      <circle cx="210" cy="176" r="1.3" fill="#e8dcc0" stroke="#241c14" stroke-width="0.5"/>
+    </g>
+
+    <!-- soft vignette edges -->
+    <rect x="7" y="7" width="406" height="266" rx="12" fill="none" stroke="#241c14" stroke-width="10" opacity="0.12"/>
+  </g>
+
+  <!-- frame -->
+  <rect x="7" y="7" width="406" height="266" rx="12" fill="none" stroke="#4a3527" stroke-width="2.5"/>
+  <rect x="10.5" y="10.5" width="399" height="259" rx="9" fill="none" stroke="#8a7a5f" stroke-width="1"/>
+</svg>
