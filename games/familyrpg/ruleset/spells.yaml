@@ -925,3 +925,959 @@ arc_planar_gate:
   description: >
     The caster tears open a doorway clear across the battlefield, and
     anyone bold enough can step straight through to the other side.
+
+# ===== DIVINE (cleric) — div_ prefix — levels 0-9 =====
+# Healing, protection, radiant light, and a steady hand against the undead.
+# This is the list where healing lives: heal: fields use resolve: auto and
+# scale roughly (spell level)d8+CASTMOD. Buffs lean on blessed/shielded/focused.
+
+# --- Cantrips (level 0) ---
+
+div_sacred_flame:
+  level: 0
+  action: action
+  range: 12
+  resolve: save
+  save_attr: DEX
+  damage: 1d8
+  on_save: none
+  description: >
+    A column of warm, silent light drops straight down onto the target;
+    only a quick sidestep keeps it from landing square on the shoulders.
+div_guiding_light:
+  level: 0
+  action: action
+  range: 18
+  resolve: attack
+  damage: 1d10
+  description: >
+    A thin ray of gold light streaks from the caster's raised hand and
+    finds its mark with the calm certainty of a struck bell.
+div_mending_touch:
+  level: 0
+  action: action
+  range: 1
+  resolve: auto
+  heal: 1d4+CASTMOD
+  description: >
+    The caster's palm glows soft and warm against a scrape or bruise,
+    closing it up before the wince even finishes.
+div_guidance:
+  level: 0
+  action: action
+  range: 1
+  resolve: auto
+  effect: {name: focused, duration: 1}
+  description: >
+    A friendly whisper of certainty settles over the target's next
+    move, steadying a hand that was about to shake.
+div_wardlight:
+  level: 0
+  action: action
+  range: 1
+  resolve: auto
+  effect: {name: lit, duration: -1}
+  description: >
+    The caster blesses a torch, lantern, or upturned palm, and it burns
+    with a clean, steady light that no draft seems able to touch.
+
+# --- Level 1 ---
+
+div_cure_wounds:
+  level: 1
+  action: action
+  range: 1
+  resolve: auto
+  heal: 1d8+CASTMOD
+  description: >
+    The caster lays a hand on the wound and prays; the torn skin knits
+    itself shut in a slow wave of warmth.
+div_healing_word:
+  level: 1
+  action: action
+  range: 12
+  resolve: auto
+  heal: 1d6+CASTMOD
+  description: >
+    A single steadying word crosses the distance between caster and
+    target, and the worst of the pain simply lets go.
+div_bless:
+  level: 1
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: blessed, duration: 10}
+  description: >
+    A quiet certainty settles over the target, the kind that makes a
+    swung blade or a spoken prayer land exactly where it's aimed.
+div_shield_of_faith:
+  level: 1
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: shielded, duration: 10}
+  description: >
+    A faint golden shimmer wraps around the target like a second coat,
+    turning the edge off blows that would otherwise land clean.
+div_radiant_lance:
+  level: 1
+  action: action
+  range: 18
+  resolve: attack
+  damage: 3d6
+  description: >
+    A narrow spear of hard white light forms overhead and drives down
+    into the target with the weight of a falling star.
+div_sacred_toll:
+  level: 1
+  action: action
+  range: 12
+  resolve: save
+  save_attr: WIS
+  damage: 2d6
+  on_save: half
+  description: >
+    A single deep bell-note rolls out from the caster, and anything
+    that has no business walking the world feels it in its bones.
+div_command_fall:
+  level: 1
+  action: action
+  range: 6
+  resolve: save
+  save_attr: WIS
+  effect: {name: prone, duration: 1}
+  on_save: none
+  description: >
+    The caster speaks one plain word — "Fall!" — and a weak-willed
+    target's knees simply stop arguing.
+div_bane_ward:
+  level: 1
+  action: action
+  range: 12
+  resolve: save
+  save_attr: WIS
+  effect: {name: frightened, duration: 2}
+  on_save: none
+  description: >
+    The caster names the target's misdeeds aloud, and the weight of
+    being truly seen sends them stumbling back a step.
+div_detect_undead:
+  level: 1
+  action: action
+  range: 12
+  resolve: auto
+  description: >
+    The caster's eyes go briefly silver, and anything wearing a body it
+    has no right to wear stands out like a cold spot in a warm room.
+div_purify_food_and_drink:
+  level: 1
+  action: action
+  range: 1
+  resolve: auto
+  description: >
+    A blessing passes over a meal or waterskin, and whatever spoilage
+    or taint was hiding in it quietly stops being a problem.
+
+# --- Level 2 ---
+
+div_healing_light:
+  level: 2
+  action: action
+  range: 1
+  resolve: auto
+  heal: 2d8+CASTMOD
+  description: >
+    Warm golden light pours from the caster's hands into the wound,
+    and color comes back into the target's face all at once.
+div_prayer_of_mending:
+  level: 2
+  action: action
+  range: 18
+  resolve: auto
+  heal: 2d6+CASTMOD
+  description: >
+    A short, sure prayer travels across the battlefield and arrives as
+    a wave of relief, easing pain the caster never even touched.
+div_spiritual_mace:
+  level: 2
+  action: action
+  range: 18
+  resolve: attack
+  damage: 4d6
+  description: >
+    A glowing mace of pure light springs into being at the caster's
+    command and swings itself squarely into the target.
+div_holy_smite:
+  level: 2
+  action: action
+  range: 18
+  resolve: save
+  save_attr: DEX
+  damage: 4d6
+  on_save: half
+  description: >
+    A crack of white light splits the air around the target, scorching
+    anyone too slow to duck out from under it.
+div_ring_of_radiance:
+  level: 2
+  action: action
+  range: 12
+  resolve: save
+  save_attr: CON
+  damage: 3d6
+  on_save: half
+  area: {shape: burst, radius: 1}
+  description: >
+    A ring of searing gold light blooms outward from the target point,
+    catching everyone too close to step clear in time.
+div_aid:
+  level: 2
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: blessed, duration: 10}
+  description: >
+    Strength the target didn't know they had left rises up at the
+    caster's word, steadying both nerve and hand.
+div_warding_bond:
+  level: 2
+  action: action
+  range: 1
+  resolve: auto
+  effect: {name: shielded, duration: 12}
+  description: >
+    A thread of shared light links the caster to the target, and the
+    caster's own steadiness bleeds over to blunt every incoming blow.
+div_zeal:
+  level: 2
+  action: action
+  range: 1
+  resolve: auto
+  effect: {name: focused, duration: 2}
+  description: >
+    A bright, righteous certainty fills the target's chest, and for a
+    few moments doubt simply has nowhere left to stand.
+div_hold_undead:
+  level: 2
+  action: action
+  range: 18
+  resolve: save
+  save_attr: WIS
+  effect: {name: restrained, duration: 3}
+  on_save: none
+  description: >
+    The caster speaks a binding word older than the grave, and a weak
+    unliving thing freezes mid-stride as if pinned there.
+div_augury:
+  level: 2
+  action: action
+  range: 1
+  resolve: auto
+  description: >
+    The caster casts a handful of blessed stones and reads, in how
+    they fall, whether the road ahead looks fair or foul.
+
+# --- Level 3 ---
+
+div_mass_healing_word:
+  level: 3
+  action: action
+  range: 18
+  resolve: auto
+  heal: 3d6+CASTMOD
+  area: {shape: burst, radius: 3}
+  description: >
+    A single word of comfort rolls outward across the battlefield, and
+    every ally within earshot feels their wounds ease at once.
+div_revitalize:
+  level: 3
+  action: action
+  range: 1
+  resolve: auto
+  heal: 3d8+CASTMOD
+  description: >
+    The caster presses both hands to the wound and pours real strength
+    into it, closing torn muscle as fast as it can be seen to close.
+div_flame_strike:
+  level: 3
+  action: action
+  range: 18
+  resolve: save
+  save_attr: DEX
+  damage: 5d6
+  on_save: half
+  area: {shape: burst, radius: 2}
+  description: >
+    A pillar of holy fire drops out of a clear sky onto the target
+    point, and everyone standing in it wishes very much they weren't.
+div_smite_radiance:
+  level: 3
+  action: action
+  range: 18
+  resolve: attack
+  damage: 7d6
+  description: >
+    A javelin of solid white light forms overhead and hurls itself down
+    at the target with a crack like a snapped church bell.
+div_sacred_judgment:
+  level: 3
+  action: action
+  range: 18
+  resolve: save
+  save_attr: WIS
+  damage: 6d6
+  on_save: half
+  description: >
+    The caster names the target's guilt aloud and the truth of it lands
+    like a physical blow, buckling knees that word alone shouldn't.
+div_beacon_of_hope:
+  level: 3
+  action: action
+  range: 12
+  resolve: auto
+  effect: {name: blessed, duration: 10}
+  description: >
+    A steady point of gold light kindles over the target's shoulder,
+    and it burns brighter every time they refuse to give up.
+div_sanctuary:
+  level: 3
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: shielded, duration: 15}
+  description: >
+    A calm, unbroken hush wraps around the target, and blows meant for
+    them keep landing just a half-inch off true.
+div_clarity_of_mind:
+  level: 3
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: focused, duration: 3}
+  description: >
+    The noise and panic of the fight fall away from the target's mind
+    for a few precious moments, leaving only clean, clear intent.
+div_dispel_evil:
+  level: 3
+  action: action
+  range: 12
+  resolve: save
+  save_attr: WIS
+  effect: {name: frightened, duration: 3}
+  on_save: none
+  description: >
+    The caster's voice rings out with an authority that predates the
+    target's kind, and something old and wrong recoils from it.
+div_remove_curse:
+  level: 3
+  action: action
+  range: 1
+  resolve: auto
+  description: >
+    The caster traces a slow, sure sign over the target, and whatever
+    lingering ill-luck was clinging to them quietly lets go.
+
+# --- Level 4 ---
+
+div_greater_healing:
+  level: 4
+  action: action
+  range: 1
+  resolve: auto
+  heal: 4d8+CASTMOD
+  description: >
+    A flood of warm light pours through the target from the caster's
+    hands, mending wounds fast enough to see the skin close over.
+div_mass_cure_light:
+  level: 4
+  action: action
+  range: 18
+  resolve: auto
+  heal: 4d6+CASTMOD
+  area: {shape: burst, radius: 3}
+  description: >
+    A wide dome of soft gold light rolls out from the caster and settles
+    over every ally beneath it, closing wounds all down the line.
+div_wrath_of_light:
+  level: 4
+  action: action
+  range: 18
+  resolve: save
+  save_attr: DEX
+  damage: 7d6
+  on_save: half
+  area: {shape: burst, radius: 2}
+  description: >
+    A furious burst of white radiance detonates over the target point,
+    scouring everyone caught beneath it before they can dive clear.
+div_smiting_bolt:
+  level: 4
+  action: action
+  range: 24
+  resolve: attack
+  damage: 9d6
+  description: >
+    A bolt of pure judgment streaks down from overhead and slams into
+    the target hard enough to crack the ground beneath their feet.
+div_judgment_ray:
+  level: 4
+  action: action
+  range: 18
+  resolve: save
+  save_attr: WIS
+  damage: 8d6
+  on_save: half
+  description: >
+    A beam of unforgiving light fixes on the target, and the full
+    weight of it lands whether or not they manage to flinch away.
+div_divine_favor:
+  level: 4
+  action: action
+  range: 12
+  resolve: auto
+  effect: {name: blessed, duration: 12}
+  description: >
+    The target feels a sudden warmth at their back, as if a much
+    larger, much steadier hand had just settled onto their shoulder.
+div_bastion_of_faith:
+  level: 4
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: shielded, duration: 15}
+  description: >
+    A wall of pale gold light rises around the target like a second
+    skin, shrugging off strikes that should have landed solidly.
+div_focused_prayer:
+  level: 4
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: focused, duration: 3}
+  description: >
+    A quiet prayer settles the target's breathing, and for a handful of
+    heartbeats their next move is the only thing that exists.
+div_banish_undead:
+  level: 4
+  action: action
+  range: 18
+  resolve: save
+  save_attr: WIS
+  effect: {name: frightened, duration: 3}
+  on_save: none
+  description: >
+    The caster's light burns painfully bright to unliving eyes, and a
+    weak-willed undead thing bolts from it like a moth from a fire.
+div_death_ward:
+  level: 4
+  action: action
+  range: 1
+  resolve: auto
+  description: >
+    A cool, protective hush settles over the target, a promise from the
+    caster that death will have to wait its turn today.
+
+# --- Level 5 ---
+
+div_healing_surge:
+  level: 5
+  action: action
+  range: 1
+  resolve: auto
+  heal: 5d8+CASTMOD
+  description: >
+    A rush of blinding, joyful light pours out of the caster's hands
+    and floods the wound shut almost faster than the eye can follow.
+div_mass_cure_wounds:
+  level: 5
+  action: action
+  range: 18
+  resolve: auto
+  heal: 5d6+CASTMOD
+  area: {shape: burst, radius: 4}
+  description: >
+    A wave of golden light rolls out across the whole battlefield, and
+    every ally it passes over stands a little straighter for it.
+div_flame_strike_greater:
+  level: 5
+  action: action
+  range: 24
+  resolve: save
+  save_attr: DEX
+  damage: 9d6
+  on_save: half
+  area: {shape: burst, radius: 3}
+  description: >
+    A towering pillar of holy fire crashes down on the target point,
+    wide enough that only real speed carries anyone clear of it.
+div_holy_lance:
+  level: 5
+  action: action
+  range: 24
+  resolve: attack
+  damage: 11d6
+  description: >
+    A colossal spear of solid light forms high overhead and drives
+    itself through the target with the force of a falling tower.
+div_wrath_of_the_heavens:
+  level: 5
+  action: action
+  range: 18
+  resolve: save
+  save_attr: CON
+  damage: 10d6
+  on_save: half
+  description: >
+    The sky over the target cracks open for one blinding instant, and
+    the full weight of it comes down whether they brace or not.
+div_greater_bless:
+  level: 5
+  action: action
+  range: 12
+  resolve: auto
+  effect: {name: blessed, duration: 15}
+  description: >
+    A steady, radiant confidence pours into the target, the kind that
+    makes even a desperate swing land true.
+div_aegis_of_light:
+  level: 5
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: shielded, duration: 15}
+  description: >
+    A gleaming shell of light closes fully around the target, and it
+    takes the worst of every hit meant to land on them instead.
+div_insight_of_the_faithful:
+  level: 5
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: focused, duration: 3}
+  description: >
+    The target's mind goes clean and quiet, the way it does for someone
+    who has just remembered, all at once, exactly what to do.
+div_dismiss_undead:
+  level: 5
+  action: action
+  range: 18
+  resolve: save
+  save_attr: WIS
+  effect: {name: restrained, duration: 4}
+  on_save: none
+  description: >
+    A ring of searing light closes around the target like a cage, and
+    a weak unliving thing finds it cannot move a single step.
+div_commune:
+  level: 5
+  action: action
+  range: 1
+  resolve: auto
+  description: >
+    The caster falls briefly still and asks a single question of
+    something far greater than themselves, and gets a plain answer back.
+
+# --- Level 6 ---
+
+div_heal:
+  level: 6
+  action: action
+  range: 6
+  resolve: auto
+  heal: 6d8+CASTMOD
+  description: >
+    The caster speaks a single word of true healing across the gap
+    between them and the target, and grievous hurt simply closes over.
+div_mass_heal_lesser:
+  level: 6
+  action: action
+  range: 18
+  resolve: auto
+  heal: 6d6+CASTMOD
+  area: {shape: burst, radius: 4}
+  description: >
+    A rolling wave of pure gold light washes over the whole battlefield,
+    and every ally caught in it feels their strength come flooding back.
+div_sunburst_lesser:
+  level: 6
+  action: action
+  range: 24
+  resolve: save
+  save_attr: CON
+  damage: 9d6
+  on_save: half
+  area: {shape: burst, radius: 3}
+  description: >
+    A small sun kindles at the target point and burns for one savage
+    instant, scorching everyone who couldn't get out from under it.
+div_radiant_strike:
+  level: 6
+  action: action
+  range: 24
+  resolve: attack
+  damage: 13d6
+  description: >
+    A blinding lance of consecrated light streaks down and punches
+    through the target with the certainty of a verdict already reached.
+div_final_verdict:
+  level: 6
+  action: action
+  range: 18
+  resolve: save
+  save_attr: WIS
+  damage: 12d6
+  on_save: half
+  description: >
+    The caster speaks the target's judgment aloud, and the truth of it
+    lands with real, physical weight whether they flinch or not.
+div_blessing_of_champions:
+  level: 6
+  action: action
+  range: 12
+  resolve: auto
+  effect: {name: blessed, duration: 20}
+  description: >
+    A crown of quiet gold light settles over the target, the mark of
+    someone who has been chosen to carry the fight a while longer.
+div_greater_sanctuary:
+  level: 6
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: shielded, duration: 20}
+  description: >
+    A dome of unbroken calm closes fully around the target, and for a
+    long while nothing manages to land against them cleanly.
+div_perfect_focus:
+  level: 6
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: focused, duration: 4}
+  description: >
+    Every distraction in the world falls silent at once for the target,
+    leaving only the fight and their own steady, certain hands.
+div_banishment:
+  level: 6
+  action: action
+  range: 18
+  resolve: save
+  save_attr: WIS
+  effect: {name: frightened, duration: 4}
+  on_save: none
+  area: {shape: burst, radius: 2}
+  description: >
+    A wave of pure, unbearable light rolls out from the target point,
+    and anything that belongs in the dark scatters from it screaming.
+div_true_seeing:
+  level: 6
+  action: action
+  range: 1
+  resolve: auto
+  description: >
+    The target's eyes go briefly gold, and every trick of shadow or
+    disguise in the area drops away as if a curtain had been pulled back.
+
+# --- Level 7 ---
+
+div_greater_heal:
+  level: 7
+  action: action
+  range: 6
+  resolve: auto
+  heal: 7d8+CASTMOD
+  description: >
+    A column of pure white light pours down onto the target from
+    nowhere in particular, and even mortal wounds simply close up.
+div_mass_heal:
+  level: 7
+  action: action
+  range: 24
+  resolve: auto
+  heal: 7d6+CASTMOD
+  area: {shape: burst, radius: 4}
+  description: >
+    The caster throws both arms wide and light pours out across the
+    whole field, mending every ally it touches all at once.
+div_sunburst:
+  level: 7
+  action: action
+  range: 24
+  resolve: save
+  save_attr: CON
+  damage: 10d8
+  on_save: half
+  area: {shape: burst, radius: 3}
+  description: >
+    A true sun blooms for one blinding heartbeat over the target point,
+    scorching the whole area in a wash of unbearable light.
+div_seraphs_lance:
+  level: 7
+  action: action
+  range: 24
+  resolve: attack
+  damage: 14d8
+  description: >
+    A vast spear of white fire, wings of light trailing behind it,
+    drives itself through the target with a sound like a struck gong.
+div_divine_reckoning:
+  level: 7
+  action: action
+  range: 18
+  resolve: save
+  save_attr: WIS
+  damage: 13d8
+  on_save: half
+  description: >
+    The full truth of the target's wrongdoing lands on them all at
+    once, a weight no amount of bracing quite manages to soften.
+div_hallowed_blessing:
+  level: 7
+  action: action
+  range: 12
+  resolve: auto
+  effect: {name: blessed, duration: 20}
+  description: >
+    A ring of gold light crowns the target, and for a long while every
+    blow they strike or turn they weather lands exactly as intended.
+div_sacred_bulwark:
+  level: 7
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: shielded, duration: 20}
+  description: >
+    A wall of consecrated light rises fully around the target, thick
+    enough that only the luckiest, hardest blow finds a way through.
+div_transcendent_focus:
+  level: 7
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: focused, duration: 4}
+  description: >
+    The target's mind lifts briefly above the noise of the fight
+    entirely, and every choice that follows lands clean and certain.
+div_holy_word_banish:
+  level: 7
+  action: action
+  range: 18
+  resolve: save
+  save_attr: WIS
+  effect: {name: frightened, duration: 5}
+  on_save: none
+  area: {shape: burst, radius: 3}
+  description: >
+    The caster speaks a single word too bright and too true for the
+    dark to bear, and anything unliving in earshot flees it outright.
+div_resurrection_lesser:
+  level: 7
+  action: action
+  range: 1
+  resolve: auto
+  description: >
+    The caster kneels beside the fallen and calls their name with the
+    full weight of their faith, and against every odds, they answer.
+
+# --- Level 8 ---
+
+div_supreme_healing:
+  level: 8
+  action: action
+  range: 6
+  resolve: auto
+  heal: 8d8+CASTMOD
+  description: >
+    A near-blinding flood of light pours into the target, and wounds
+    that should have been the end of them close as if they'd never happened.
+div_mass_supreme_healing:
+  level: 8
+  action: action
+  range: 24
+  resolve: auto
+  heal: 8d6+CASTMOD
+  area: {shape: burst, radius: 5}
+  description: >
+    The caster's voice carries across the entire battlefield in a single
+    unbroken note, and every ally who hears it stands whole again.
+div_holy_cataclysm:
+  level: 8
+  action: action
+  range: 24
+  resolve: save
+  save_attr: DEX
+  damage: 11d8
+  on_save: half
+  area: {shape: burst, radius: 4}
+  description: >
+    The sky over the target point tears open into pure white fire, and
+    the whole area beneath it is scoured clean in an instant.
+div_lance_of_the_divine:
+  level: 8
+  action: action
+  range: 24
+  resolve: attack
+  damage: 15d8
+  description: >
+    A spear of absolute, unarguable light forms high above the field
+    and drives down through the target as though nothing stood there.
+div_final_judgment:
+  level: 8
+  action: action
+  range: 18
+  resolve: save
+  save_attr: WIS
+  damage: 14d8
+  on_save: half
+  description: >
+    The caster passes a single, complete verdict on the target, and the
+    truth of it lands whole no matter how they try to brace against it.
+div_aura_of_the_blessed:
+  level: 8
+  action: action
+  range: 12
+  resolve: auto
+  effect: {name: blessed, duration: -1}
+  description: >
+    A steady halo of gold light takes up permanent residence around the
+    target, and it does not fade until the caster wills it gone.
+div_unbreakable_faith:
+  level: 8
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: shielded, duration: -1}
+  description: >
+    A fortress of pure conviction closes around the target and simply
+    stays there, holding fast for as long as the caster's will does.
+div_saints_focus:
+  level: 8
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: focused, duration: 5}
+  description: >
+    For a long, uncanny stretch the target's every action carries the
+    same calm certainty as someone who has already seen how it ends.
+div_banish_the_wicked:
+  level: 8
+  action: action
+  range: 18
+  resolve: save
+  save_attr: WIS
+  effect: {name: frightened, duration: 5}
+  on_save: none
+  area: {shape: burst, radius: 3}
+  description: >
+    A wave of light too pure for wrongdoing to stand near rolls out
+    from the caster, and anything guilty of enough scatters before it.
+div_gate_of_light:
+  level: 8
+  action: action
+  range: 24
+  resolve: auto
+  description: >
+    A doorway of soft gold light opens between two points at the
+    caster's word, and anyone faithful enough may simply walk through.
+
+# --- Level 9 ---
+
+div_true_resurrection:
+  level: 9
+  action: action
+  range: 1
+  resolve: auto
+  heal: 9d8+CASTMOD
+  description: >
+    The caster lays both hands on the fallen and calls on the full
+    weight of their faith, and the wound that should have ended them
+    simply isn't there anymore.
+div_mass_true_healing:
+  level: 9
+  action: action
+  range: 24
+  resolve: auto
+  heal: 9d6+CASTMOD
+  area: {shape: burst, radius: 5}
+  description: >
+    A tide of pure white light rises across the entire battlefield, and
+    every ally caught in it is made whole in the same blinding instant.
+div_wrath_of_the_heavens_absolute:
+  level: 9
+  action: action
+  range: 30
+  resolve: save
+  save_attr: DEX
+  damage: 12d8
+  on_save: half
+  area: {shape: burst, radius: 4}
+  description: >
+    The heavens themselves seem to lean down over the target point, and
+    what comes down next scours the whole area to bare, scorched ground.
+div_lance_of_creation:
+  level: 9
+  action: action
+  range: 36
+  resolve: attack
+  damage: 18d6
+  description: >
+    A spear built from the same light that first split the dark forms
+    high overhead and drives itself clean through the target.
+div_final_reckoning:
+  level: 9
+  action: action
+  range: 24
+  resolve: save
+  save_attr: WIS
+  damage: 16d8
+  on_save: half
+  description: >
+    Every truth the target has ever run from catches up with them at
+    once, and the weight of it lands whole no matter how they brace.
+div_blessing_eternal:
+  level: 9
+  action: action
+  range: 18
+  resolve: auto
+  effect: {name: blessed, duration: -1}
+  description: >
+    A light older than any single prayer settles permanently over the
+    target, and it does not lift again until the caster lets it.
+div_aegis_absolute:
+  level: 9
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: shielded, duration: -1}
+  description: >
+    An unbroken shell of pure conviction wraps fully around the target
+    and holds there, indefinite, answering to no one but the caster.
+div_divine_clarity:
+  level: 9
+  action: action
+  range: 6
+  resolve: auto
+  effect: {name: focused, duration: 6}
+  description: >
+    The target's mind opens onto something vast and perfectly calm, and
+    for a long while every single thing they attempt lands true.
+div_banishment_absolute:
+  level: 9
+  action: action
+  range: 24
+  resolve: save
+  save_attr: WIS
+  effect: {name: frightened, duration: 6}
+  on_save: none
+  area: {shape: burst, radius: 4}
+  description: >
+    A light bright enough to be seen from the next valley over rolls
+    across the field, and nothing that belongs to the dark can stand near it.
+div_gate_of_the_heavens:
+  level: 9
+  action: action
+  range: 60
+  resolve: auto
+  description: >
+    The caster tears a doorway clean across the battlefield and into
+    someplace kinder, and anyone willing may step straight through.
