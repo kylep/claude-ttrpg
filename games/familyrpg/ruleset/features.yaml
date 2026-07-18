@@ -29,7 +29,7 @@ deep_reserves:
     and the fighter has a second use of it per short rest.
 extra_attack:
   description: >
-    Spike. Whenever the fighter takes the attack action, they attack twice:
+    Spike. Whenever the character takes the attack action, they attack twice:
     the GM runs two separate `engine attack` rolls.
 sharper_focus:
   description: >
