@@ -459,7 +459,7 @@ arc_lightning_storm:
   action: action
   range: 24
   resolve: attack
-  damage: 10d8
+  damage: 9d8
   description: >
     A towering column of lightning drops from a clear sky and slams into the
     target with the force of a falling tower.
@@ -468,7 +468,7 @@ arc_meteor_shard:
   action: action
   range: 30
   resolve: attack
-  damage: 10d8
+  damage: 9d8
   description: >
     A fist-sized chunk of white-hot stone screams down out of nowhere and
     smashes into the target in a shower of sparks.
@@ -541,7 +541,7 @@ arc_chain_lightning:
   action: action
   range: 24
   resolve: attack
-  damage: 12d6
+  damage: 13d6
   description: >
     A furious bolt of lightning howls from the caster's fingertips and forks
     wildly as it travels, striking with the full fury of a passing storm.
@@ -550,7 +550,7 @@ arc_disintegrate_ray:
   action: action
   range: 18
   resolve: attack
-  damage: 12d6
+  damage: 13d6
   description: >
     A thin grey ray unravels whatever it touches down to drifting motes of
     dust — the magic is fierce, but it stops well short of erasing anyone
@@ -737,7 +737,7 @@ arc_incinerate:
   action: action
   range: 24
   resolve: attack
-  damage: 13d10
+  damage: 12d10
   description: >
     A lance of white-hot fire, brighter than the sun for one instant,
     punches clean through the target and leaves the air smoking behind it.
@@ -771,7 +771,7 @@ arc_void_lance:
   action: action
   range: 24
   resolve: attack
-  damage: 13d10
+  damage: 12d10
   description: >
     A spear of absolute darkness, cut from someplace between the stars,
     passes through the target as though armor were never there.
@@ -836,7 +836,7 @@ arc_meteor_swarm:
   range: 36
   resolve: save
   save_attr: DEX
-  damage: 16d8
+  damage: 12d8
   on_save: half
   area: {shape: burst, radius: 4}
   description: >
@@ -1325,7 +1325,7 @@ div_judgment_ray:
   range: 18
   resolve: save
   save_attr: WIS
-  damage: 8d6
+  damage: 9d6
   on_save: half
   description: >
     A beam of unforgiving light fixes on the target, and the full
@@ -1425,7 +1425,7 @@ div_wrath_of_the_heavens:
   range: 18
   resolve: save
   save_attr: CON
-  damage: 10d6
+  damage: 11d6
   on_save: half
   description: >
     The sky over the target cracks open for one blinding instant, and
@@ -1696,7 +1696,7 @@ div_mass_supreme_healing:
   range: 24
   resolve: auto
   heal: 8d6+CASTMOD
-  area: {shape: burst, radius: 5}
+  area: {shape: burst, radius: 4}
   description: >
     The caster's voice carries across the entire battlefield in a single
     unbroken note, and every ally who hears it stands whole again.
@@ -1798,7 +1798,7 @@ div_mass_true_healing:
   range: 24
   resolve: auto
   heal: 9d6+CASTMOD
-  area: {shape: burst, radius: 5}
+  area: {shape: burst, radius: 4}
   description: >
     A tide of pure white light rises across the entire battlefield, and
     every ally caught in it is made whole in the same blinding instant.
@@ -1819,7 +1819,7 @@ div_lance_of_creation:
   action: action
   range: 36
   resolve: attack
-  damage: 18d6
+  damage: 20d6
   description: >
     A spear built from the same light that first split the dark forms
     high overhead and drives itself clean through the target.
@@ -2705,8 +2705,9 @@ pri_venom_of_the_wild:
   range: 18
   resolve: save
   save_attr: CON
-  damage: 13d10
+  damage: 13d8
   on_save: half
+  effect: {name: poisoned, duration: 5}
   description: >
     Every predator, plant, and creeping thing that has ever poisoned
     anything lends the caster its worst all at once.
