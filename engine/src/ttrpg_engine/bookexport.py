@@ -133,10 +133,9 @@ def _roster_card(name, img_rel, body_html):
     return f'<div class="card"><h3>{esc(name)}</h3>{img}{body_html}</div>'
 
 
-def build_races(src):
+def _races_body(src):
     g, content_dir = src["g"], src["content_dir"]
     lore = chargen._load_race_lore(g)
-    cover = _content_image(content_dir, "art/covers/races.png")
     cards = []
     for name, race in sorted(g["races"].items()):
         entry = lore.get(name, {}) if isinstance(lore, dict) else {}
@@ -151,38 +150,48 @@ def build_races(src):
             f"<span class='tag'>Speed {esc(str(race['speed']))}</span></p>"
         )
         cards.append(_roster_card(name.title(), img, body))
-    body = f"<div class='roster'>{''.join(cards)}</div>"
-    html = _document("Races", src["world_name"] or g["meta"]["name"].title(), cover, body)
-    return render_pdf(html, content_dir)
+    return f"<div class='roster'>{''.join(cards)}</div>"
 
 
-def build_bestiary(src):
+def build_races(src):
+    body = _races_body(src)
+    cover = _content_image(src["content_dir"], "art/covers/races.png")
+    html = _document("Races", src["world_name"] or src["g"]["meta"]["name"].title(), cover, body)
+    return render_pdf(html, src["content_dir"])
+
+
+def _bestiary_body(src, lens="gm"):
     g, content_dir = src["g"], src["content_dir"]
-    cover = _content_image(content_dir, "art/covers/bestiary.png")
+    full = lens == "gm"
     cards = []
     for mid, mon in sorted(game_mod.bestiary(g).items()):
         img = _content_image(content_dir, mon.get("image"))
-        attacks = "; ".join(
-            f"{a['name']} (+{a['attack_mod']}, {a['damage']}, range {a['range']})"
-            for a in mon.get("attacks", [])
-        ) or "—"
-        notes = f"<p><strong>Notes:</strong> {esc(mon['notes'].strip())}</p>" if mon.get("notes") else ""
-        body = (
-            f"<p>{esc(mon.get('description', ''))}</p>"
-            f"<p><span class='tag'>AC {esc(str(mon['ac']))}</span><span class='tag'>HP {esc(str(mon['hp']))}</span>"
-            f"<span class='tag'>Speed {esc(str(mon['speed']))}</span><span class='tag'>XP {esc(str(mon['xp']))}</span>"
-            f"<span class='tag'>{esc(mon.get('difficulty', '?'))}</span></p>"
-            f"<p><strong>Attacks:</strong> {esc(attacks)}</p>{notes}"
-        )
+        body = f"<p>{esc(mon.get('description', ''))}</p>"
+        if full:
+            attacks = "; ".join(
+                f"{a['name']} (+{a['attack_mod']}, {a['damage']}, range {a['range']})"
+                for a in mon.get("attacks", [])
+            ) or "—"
+            notes = f"<p><strong>Notes:</strong> {esc(mon['notes'].strip())}</p>" if mon.get("notes") else ""
+            body += (
+                f"<p><span class='tag'>AC {esc(str(mon['ac']))}</span><span class='tag'>HP {esc(str(mon['hp']))}</span>"
+                f"<span class='tag'>Speed {esc(str(mon['speed']))}</span><span class='tag'>XP {esc(str(mon['xp']))}</span>"
+                f"<span class='tag'>{esc(mon.get('difficulty', '?'))}</span></p>"
+                f"<p><strong>Attacks:</strong> {esc(attacks)}</p>{notes}"
+            )
         cards.append(_roster_card(mon.get("name", mid.title()), img, body))
-    body = f"<div class='roster'>{''.join(cards)}</div>"
-    html = _document("Bestiary", src["world_name"] or g["meta"]["name"].title(), cover, body)
-    return render_pdf(html, content_dir)
+    return f"<div class='roster'>{''.join(cards)}</div>"
 
 
-def build_classes(src):
-    g, content_dir = src["g"], src["content_dir"]
-    cover = _content_image(content_dir, "art/covers/classes.png")
+def build_bestiary(src):
+    body = _bestiary_body(src, "gm")
+    cover = _content_image(src["content_dir"], "art/covers/bestiary.png")
+    html = _document("Bestiary", src["world_name"] or src["g"]["meta"]["name"].title(), cover, body)
+    return render_pdf(html, src["content_dir"])
+
+
+def _classes_body(src):
+    g = src["g"]
     cards = []
     for name, cls in sorted(g["classes"].items()):
         gear = ", ".join(_title_case(i) for i in cls.get("starting_gear", [])) or "—"
@@ -196,9 +205,14 @@ def build_classes(src):
             f"<p><strong>Skills:</strong> choose {cls.get('skill_choices', 0)} from {esc(skills)}.</p>"
             f"</div>"
         )
-    body = "".join(cards)
-    html = _document("Classes", src["world_name"] or g["meta"]["name"].title(), cover, body)
-    return render_pdf(html, content_dir)
+    return "".join(cards)
+
+
+def build_classes(src):
+    body = _classes_body(src)
+    cover = _content_image(src["content_dir"], "art/covers/classes.png")
+    html = _document("Classes", src["world_name"] or src["g"]["meta"]["name"].title(), cover, body)
+    return render_pdf(html, src["content_dir"])
 
 
 def _world_lore_html(content_dir):
@@ -220,16 +234,21 @@ def _world_svg_html(content_dir):
     return f"<div style='max-width:120mm;margin:0 auto 1rem'>{svg_path.read_text()}</div>"
 
 
-def _world_html(src):
-    g, content_dir = src["g"], src["content_dir"]
-    cover = _content_image(content_dir, "art/covers/world.png")
+def _world_body(src):
+    content_dir = src["content_dir"]
     svg = _world_svg_html(content_dir)
     lore = _world_lore_html(content_dir)
     body = f"{svg}{lore}"
     painted = _content_image(content_dir, "maps/WorldMapPainted.png")
     if painted:
         body += f"<div class='fullbleed'><img src='{esc(painted)}' alt='World map'></div>"
-    return _document("The World", src["world_name"] or g["meta"]["name"].title(), cover, body)
+    return body
+
+
+def _world_html(src):
+    cover = _content_image(src["content_dir"], "art/covers/world.png")
+    return _document("The World", src["world_name"] or src["g"]["meta"]["name"].title(),
+                     cover, _world_body(src))
 
 
 def build_world(src):
@@ -242,3 +261,40 @@ SECTIONS = {
     "races": (build_races, "races.pdf"),
     "bestiary": (build_bestiary, "bestiary.pdf"),
 }
+
+GLOSSARY_TITLES = {
+    "world": "The World",
+    "classes": "Classes",
+    "races": "Races",
+    "bestiary": "Bestiary",
+}
+
+_GLOSSARY_BODIES = {
+    "world": lambda src, lens: _world_body(src),
+    "classes": lambda src, lens: _classes_body(src),
+    "races": lambda src, lens: _races_body(src),
+    "bestiary": lambda src, lens: _bestiary_body(src, lens),
+}
+
+
+def glossary_manifest(src):
+    """The four glossary sections with titles and fail-open cover paths."""
+    content_dir = src["content_dir"]
+    return [
+        {"id": sid, "title": title,
+         "cover": _content_image(content_dir, f"art/covers/{sid}.png")}
+        for sid, title in GLOSSARY_TITLES.items()
+    ]
+
+
+def glossary_section(src, name, lens="player"):
+    """One section's rendered content for the web glossary. Raises KeyError on
+    an unknown section name (the caller maps that to a 404)."""
+    if name not in _GLOSSARY_BODIES:
+        raise KeyError(name)
+    return {
+        "id": name,
+        "title": GLOSSARY_TITLES[name],
+        "cover": _content_image(src["content_dir"], f"art/covers/{name}.png"),
+        "body_html": _GLOSSARY_BODIES[name](src, lens),
+    }

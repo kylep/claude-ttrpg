@@ -141,21 +141,25 @@ def _pc_card(root: Path, ref: str) -> dict:
     }
 
 
-def _monster_image(g: dict, entry: dict) -> str | None:
-    """Resolve a bestiary entry's portrait path, failing open: returns the
-    declared (content-relative) image path ONLY when it is a non-empty string
-    AND the file actually exists under the game's content dir; otherwise None.
-    A missing field, missing content dir, or missing file all degrade to None
-    rather than raising — no monster is required to have art. The viewer serves
-    the resolved path under its guarded `/art/` route."""
+def _content_art_path(g: dict, rel) -> str | None:
+    """Return the content-relative art path `rel` iff it is a non-empty string
+    AND the file exists under the game's content dir; otherwise None (fail open).
+    A missing value, missing content dir, or missing file all degrade to None
+    rather than raising — art is always optional. The viewer serves the resolved
+    path under its guarded `/art/` route."""
     content = g.get("content_dir")
-    img = entry.get("image") if isinstance(entry, dict) else None
-    if not (content is not None and isinstance(img, str) and img):
+    if not (content is not None and isinstance(rel, str) and rel):
         return None
     try:
-        return img if (Path(content) / img).exists() else None
+        return rel if (Path(content) / rel).exists() else None
     except OSError:
         return None
+
+
+def _monster_image(g: dict, entry: dict) -> str | None:
+    """A bestiary entry's portrait path, failing open — no monster is required
+    to have art. See _content_art_path."""
+    return _content_art_path(g, entry.get("image") if isinstance(entry, dict) else None)
 
 
 def _monster_instance_card(g: dict, enc: dict, ref: str, lens: str) -> dict:
@@ -244,7 +248,8 @@ def _location_card(root: Path, g: dict, region: dict, ref: str, lens: str) -> di
                 for a, b in [e["between"]] if ref in (a, b)
                 for other in [b if a == ref else a]
             ],
-            "art_svg": _art_svg(root, ref)}
+            "art_svg": _art_svg(root, ref),
+            "banner": _content_art_path(g, node.get("banner"))}
     if lens == "gm":
         npcs_path = root / "canon" / "npcs.yaml"
         npcs = worldfs.read_yaml(npcs_path) if npcs_path.exists() else {}

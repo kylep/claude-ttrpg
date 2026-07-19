@@ -116,3 +116,38 @@ def test_cli_export_book_rejects_unknown_section(tmp_path):
         app, ["export", "book", "bogus", "--game", "games/familyrpg", "--out", str(tmp_path)]
     )
     assert res.exit_code != 0
+
+
+def test_bestiary_body_lens_hides_stats_for_player():
+    src = _familyrpg_src()
+    gm = bookexport._bestiary_body(src, "gm")
+    player = bookexport._bestiary_body(src, "player")
+    assert "AC " in gm and "HP " in gm and "Attacks:" in gm
+    assert "AC " not in player and "HP " not in player and "Attacks:" not in player
+    # creatures still listed for players (names present)
+    assert "Adult Dragon" in player
+
+
+def test_glossary_manifest_four_sections():
+    m = bookexport.glossary_manifest(_familyrpg_src())
+    assert [s["id"] for s in m] == ["world", "classes", "races", "bestiary"]
+    assert [s["title"] for s in m] == ["The World", "Classes", "Races", "Bestiary"]
+    # familyrpg has cover art committed → resolves (not None)
+    assert all(s["cover"] for s in m)
+
+
+def test_glossary_section_returns_body_and_raises_unknown():
+    src = _familyrpg_src()
+    sec = bookexport.glossary_section(src, "races", "player")
+    assert sec["id"] == "races" and sec["title"] == "Races"
+    assert "<div class='roster'>" in sec["body_html"]
+    import pytest
+    with pytest.raises(KeyError):
+        bookexport.glossary_section(src, "bogus", "player")
+
+
+def test_builds_still_emit_pdfs_after_refactor():
+    src = _familyrpg_src()
+    for b in (bookexport.build_world, bookexport.build_classes,
+              bookexport.build_races, bookexport.build_bestiary):
+        assert b(src).startswith(b"%PDF")

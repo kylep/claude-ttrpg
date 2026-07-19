@@ -445,10 +445,14 @@ function buildSheet(card) {
   head.appendChild(who);
   sh.appendChild(head);
 
-  if (card.kind === "monster" && card.image) {
+  // a monster portrait or a location cover banner — both served by the /art/ route
+  const bannerSrc = (card.kind === "monster" && card.image) ? card.image
+                  : (card.kind === "location" && card.banner) ? card.banner
+                  : null;
+  if (bannerSrc) {
     const art = el("div", "artwork");
     const img = document.createElement("img");
-    img.src = "/" + card.image;          // content-relative, served by the /art/ route
+    img.src = "/" + bannerSrc;           // content-relative
     img.alt = card.name;
     img.loading = "lazy";
     art.appendChild(img);

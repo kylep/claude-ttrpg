@@ -158,3 +158,16 @@ def test_story_reveal_location(wroot):
     assert entry["type"] == "location" and entry["ref"] == "town"
     res = runner.invoke(app, ["story", "reveal", "--location", "atlantis"])
     assert res.exit_code == 1
+
+
+def test_location_card_banner_fail_open(wroot):
+    # a location that declares a `banner` carries it on its card, fail-open to
+    # None when the image file doesn't exist under the game content dir.
+    make_pc()
+    g = _g()
+    region_path = wroot / "canon" / "maps" / "region.yaml"
+    region = worldfs.read_yaml(region_path)
+    region["nodes"]["town"]["banner"] = "art/banners/town.png"   # no such file in the fixture
+    worldfs.write_yaml(region_path, region)
+    card = viewer_data.entity_card(wroot, g, "town", "player")
+    assert "banner" in card and card["banner"] is None

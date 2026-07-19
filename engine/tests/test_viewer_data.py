@@ -238,3 +238,26 @@ def test_monster_instance_card_carries_image_key(wroot):
     cid = next(iter(enc["monsters"]))
     card = viewer_data.entity_card(wroot, _game(wroot), cid, "gm")
     assert card["kind"] == "monster" and "image" in card and card["image"] is None
+
+
+class TestContentArtPath:
+    """The shared fail-open art resolver behind monster portraits and location
+    banners: a path resolves only when it is a non-empty string AND the file
+    exists under the game content dir; everything else degrades to None."""
+
+    def test_resolves_when_file_exists(self, tmp_path):
+        g = {"content_dir": tmp_path / "content"}
+        f = tmp_path / "content" / "art" / "banners" / "millbrook.png"
+        f.parent.mkdir(parents=True, exist_ok=True)
+        f.write_bytes(b"png")
+        assert viewer_data._content_art_path(g, "art/banners/millbrook.png") == "art/banners/millbrook.png"
+
+    def test_none_when_file_missing(self, tmp_path):
+        assert viewer_data._content_art_path({"content_dir": tmp_path / "content"},
+                                             "art/banners/millbrook.png") is None
+
+    def test_none_when_not_a_string(self, tmp_path):
+        assert viewer_data._content_art_path({"content_dir": tmp_path / "content"}, None) is None
+
+    def test_none_when_no_content_dir(self):
+        assert viewer_data._content_art_path({}, "art/banners/millbrook.png") is None
