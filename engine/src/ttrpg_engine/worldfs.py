@@ -196,6 +196,22 @@ def state(root: Path, rel: str) -> Path:
     return root / "state" / f"{rel}.yaml"
 
 
+def manual_dice(root: Path) -> bool:
+    """Whether the world is in manual-dice mode: a standing table preference
+    (stored in state/session.yaml) where single-d20 player actions ask the
+    operator to roll a physical die instead of using the RNG. Absent = off."""
+    return bool(read_yaml(state(root, "session")).get("manual_dice", False))
+
+
+def set_manual_dice(root: Path, on: bool) -> bool:
+    """Persist the manual-dice toggle into state/session.yaml; returns the
+    stored value."""
+    sess = read_yaml(state(root, "session"))
+    sess["manual_dice"] = bool(on)
+    write_yaml(state(root, "session"), sess)
+    return sess["manual_dice"]
+
+
 def pc_location(sheet: dict, party: dict) -> str:
     """A PC's current location: the sheet's own `location` if set, else the
     party anchor. Old-world sheets (pre-party-split) lack the key entirely."""

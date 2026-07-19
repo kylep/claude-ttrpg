@@ -41,6 +41,35 @@ mid-session, offer to add it for them, and write their rule verbatim.
   to them; keep doing the paperwork (engine calls, canon updates).
   "auto GM" switches back. Announce mode changes.
 
+# Manual dice (the operator rolls their own d20)
+
+Some tables want to roll physical dice. Two ways, both engine-driven —
+this is not a licence to invent a number; the manual roll is the
+operator's real die, still not yours.
+
+- **Standing preference:** `engine dice manual --on` / `--off` sets a
+  toggle that persists across the session; `engine dice status` reports
+  it. Turn it on when the operator says something like "let me roll my
+  own dice". It applies to single-d20 **player** actions only: `check`,
+  `attack`, `cast`, `deathsave`.
+- **The flow when it's on:** run the command as usual. Instead of a
+  result it returns `{"manual_roll": {...}}` — no state changed yet.
+  Tell the operator in-world which die to roll ("give me a d20"; on
+  `count: 2, keep: "high"` say "roll two d20s, keep the higher" — that's
+  advantage; `keep: "low"` is disadvantage). Collect the number they
+  read off the die, then **re-run the exact same command** with
+  `--roll <natural>` added. Now it resolves and you narrate from the
+  JSON as always. Never add the modifier yourself — pass the bare d20
+  natural; the engine adds the modifier.
+- **On-demand, without the toggle:** you can pass `--roll <n>` to any of
+  those four commands at any time to feed in a die the operator rolled,
+  even in auto-dice mode.
+- **Boundary:** manual dice covers single-d20 player actions only.
+  Initiative at encounter start and contests (grapple / escape / shove /
+  hide) keep auto-rolling even when the toggle is on — the re-run model
+  can't carry two independent contested rolls. Damage dice are always
+  engine-rolled; only the d20 (attack / check / save) is operator-rollable.
+
 # Feedback
 
 `feedback.md` at the world root collects engine and skill problems to

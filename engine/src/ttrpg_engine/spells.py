@@ -108,7 +108,6 @@ def cast(root: Path, g: dict, caster: str, spell_name: str, target: str | None,
     if enc and target != caster and caster in enc["positions"] and target in enc["positions"]:
         combat.check_reach(enc, tuple(enc["positions"][caster]), tuple(enc["positions"][target]),
                            spell["range"], a_label=caster, b_label=target)
-    _spend_slot(root, sheet, level)
     result = {"caster": caster, "spell": spell_name, "target": target,
               "slot_level": level or None, "damage": 0, "healed": 0}
     lands, half = True, False
@@ -142,6 +141,10 @@ def cast(root: Path, g: dict, caster: str, spell_name: str, target: str | None,
     elif spell["resolve"] == "save":
         save_entry, lands, half = _resolve_save(sheet, castmod, t_data, spell, roll_fn)
         result["save"] = save_entry
+    # Spend the slot only after the d20 has resolved. In manual-dice mode the
+    # roll_fn raises before this point, so an un-supplied roll never burns a
+    # slot; supplying --roll on the re-run spends it exactly once.
+    _spend_slot(root, sheet, level)
     _reveal_caster(root, enc, caster, sheet, result)
     timeline.append_event(root, type_="cast", actors=[caster, target],
                           summary=f"{caster} casts {spell_name} at {target}")

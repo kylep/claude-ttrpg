@@ -7,7 +7,7 @@ from pathlib import Path
 import typer
 
 from ttrpg_engine import bookexport, chargen, checks, combat, dice, export as export_mod, game as game_mod, inventory, level as level_mod, quests as quests_mod, region_map, render, rest as rest_mod, serve as serve_mod, spells, story_log, timeline, travel as travel_mod, worldfs
-from ttrpg_engine.errors import EngineError
+from ttrpg_engine.errors import EngineError, ManualRoll
 
 app = typer.Typer(add_completion=False, no_args_is_help=True)
 rng = random.Random()
@@ -86,6 +86,43 @@ def d20_roll(modifier: int, adv: bool, dis: bool) -> tuple[int, int]:
         b = rng.randint(1, 20)
         nat = max(a, b) if adv else min(a, b)
     return nat, nat + modifier
+
+
+def _manual_aware_roll(root: Path, roll_opt: int | None, label: str):
+    """Build the single-d20 roll_fn for a player action, honoring manual dice.
+
+    Precedence: an explicit `--roll` natural always wins (the operator supplies
+    their physical result — they apply advantage/disadvantage themselves by
+    choosing which die to report); otherwise, if the world is in manual-dice
+    mode, raise ManualRoll to tell the operator which die to roll; otherwise
+    fall back to the RNG (`d20_roll`).
+
+    Scope: this covers ONLY single-d20 player actions (check/attack/cast/
+    deathsave). Multi-die internal rolls — initiative at encounter start, and
+    contests (grapple/escape/shove/hide) — keep auto-rolling even in manual
+    mode, because the supply-one-result re-run model cannot carry two
+    independent contested rolls across a re-invocation."""
+    if roll_opt is not None and not (1 <= roll_opt <= 20):
+        fail("bad_roll", f"--roll must be a d20 natural (1..20), got {roll_opt}")
+
+    def roll_fn(modifier: int, adv: bool, dis: bool) -> tuple[int, int]:
+        if roll_opt is not None:
+            return roll_opt, roll_opt + modifier
+        if worldfs.manual_dice(root):
+            raise ManualRoll(die="d20", count=2 if adv != dis else 1,
+                             keep="high" if adv else "low" if dis else "one",
+                             modifier=modifier, label=label)
+        return d20_roll(modifier, adv, dis)
+
+    return roll_fn
+
+
+def _emit_manual_roll(mr: ManualRoll) -> None:
+    """Emit the 'roll this die yourself' instruction (exit 0, not an error)."""
+    emit({"manual_roll": {
+        "die": mr.die, "count": mr.count, "keep": mr.keep,
+        "modifier": mr.modifier, "label": mr.label,
+        "hint": "roll 1d20 (or 2 keep highest) and re-run this command with --roll <natural>"}})
 
 
 def _is_pc(root: Path, actor: str | None) -> bool:
@@ -203,6 +240,7 @@ def check(
     skill: str | None = typer.Option(None),
     adv: bool = typer.Option(False, "--adv"),
     dis: bool = typer.Option(False, "--dis"),
+    roll: int | None = typer.Option(None, "--roll", help="Manual dice: use this d20 natural (1..20) instead of the RNG."),
     requires_item: str | None = typer.Option(
         None, "--requires-item",
         help="Gate the check on the actor carrying this item id (e.g. thieves_tools)."),
@@ -212,16 +250,42 @@ def check(
         sheet = guard(worldfs.read_yaml, worldfs.state(root, f"party/{actor}"))
         if not any(l["item"] == requires_item for l in sheet.get("inventory", [])):
             fail("needs_item", f"{actor} needs {requires_item} to attempt this")
-    result = guard(checks.run, root, actor, attr.upper(), dc,
-                   skill=skill, adv=adv, dis=dis, roll_fn=d20_roll)
+    label = f"{skill.replace('_', ' ').title()} check" if skill else f"{attr.upper()} check"
+    roll_fn = _manual_aware_roll(root, roll, label)
+    try:
+        result = guard(checks.run, root, actor, attr.upper(), dc,
+                       skill=skill, adv=adv, dis=dis, roll_fn=roll_fn)
+    except ManualRoll as mr:
+        return _emit_manual_roll(mr)
     _post_check_roll(root, result)
     emit(result)
 
 
 world_app = typer.Typer()
 state_app = typer.Typer()
+dice_app = typer.Typer()
 app.add_typer(world_app, name="world")
 app.add_typer(state_app, name="state")
+app.add_typer(dice_app, name="dice")
+
+
+@dice_app.command("manual")
+def dice_manual(on: bool = typer.Option(False, "--on", help="Turn manual dice on."),
+                off: bool = typer.Option(False, "--off", help="Turn manual dice off.")):
+    """Set the standing manual-dice preference for this world (persists across
+    the session). When on, single-d20 player actions tell the operator which
+    die to roll instead of using the RNG."""
+    if on == off:
+        fail("bad_toggle", "pass exactly one of --on or --off")
+    root = require_root()
+    emit({"manual_dice": guard(worldfs.set_manual_dice, root, on)})
+
+
+@dice_app.command("status")
+def dice_status():
+    """Report whether manual dice is currently on for this world."""
+    root = require_root()
+    emit({"manual_dice": guard(worldfs.manual_dice, root)})
 
 
 @world_app.command("init")
@@ -527,10 +591,16 @@ def attack(
     attack_name: str | None = typer.Option(None, "--attack"),
     adv: bool = typer.Option(False, "--adv"),
     dis: bool = typer.Option(False, "--dis"),
+    roll: int | None = typer.Option(None, "--roll", help="Manual dice: use this d20 natural (1..20) instead of the RNG."),
 ):
     root = require_root()
-    result = guard(combat.attack, root, attacker, target, attack_name=attack_name,
-                   adv=adv, dis=dis, roll_fn=d20_roll, rng=rng)
+    label = f"Attack: {_actor_display(root, attacker)} vs {_actor_display(root, target)}"
+    roll_fn = _manual_aware_roll(root, roll, label)
+    try:
+        result = guard(combat.attack, root, attacker, target, attack_name=attack_name,
+                       adv=adv, dis=dis, roll_fn=roll_fn, rng=rng)
+    except ManualRoll as mr:
+        return _emit_manual_roll(mr)
     _post_attack_roll(root, result)
     emit(result)
 
@@ -560,8 +630,14 @@ def effect_remove(target: str = typer.Option(...), name: str = typer.Option(...)
 
 
 @app.command()
-def deathsave(actor: str = typer.Option(...)):
-    emit(guard(combat.death_save, require_root(), actor, roll_fn=d20_roll))
+def deathsave(actor: str = typer.Option(...),
+              roll: int | None = typer.Option(None, "--roll", help="Manual dice: use this d20 natural (1..20) instead of the RNG.")):
+    root = require_root()
+    roll_fn = _manual_aware_roll(root, roll, "Death save")
+    try:
+        emit(guard(combat.death_save, root, actor, roll_fn=roll_fn))
+    except ManualRoll as mr:
+        _emit_manual_roll(mr)
 
 
 @app.command()
@@ -574,10 +650,20 @@ def revive(actor: str = typer.Option(...),
 @app.command()
 def cast(caster: str = typer.Option(...), spell: str = typer.Option(...),
          target: str | None = typer.Option(None),
-         at: str | None = typer.Option(None, "--at", help="X,Y cell for area spells")):
+         at: str | None = typer.Option(None, "--at", help="X,Y cell for area spells"),
+         roll: int | None = typer.Option(None, "--roll", help="Manual dice: use this d20 natural (1..20) instead of the RNG.")):
     root, g = require_root_and_game()
     cell = guard(parse_xy, at, "--at") if at is not None else None
-    result = guard(spells.cast, root, g, caster, spell, target, roll_fn=d20_roll, rng=rng, at=cell)
+    # Area spells roll one independent save per target; the supply-one-result
+    # manual model can't carry those across a re-run, so they stay auto-rolled
+    # even in manual mode (matches the initiative/contest boundary). Manual
+    # dice applies to the single-target caster/save d20 only.
+    is_area = bool(g.get("spells", {}).get(spell, {}).get("area"))
+    roll_fn = d20_roll if is_area else _manual_aware_roll(root, roll, spell.replace("_", " "))
+    try:
+        result = guard(spells.cast, root, g, caster, spell, target, roll_fn=roll_fn, rng=rng, at=cell)
+    except ManualRoll as mr:
+        return _emit_manual_roll(mr)
     _post_cast_roll(root, result)
     emit(result)
 

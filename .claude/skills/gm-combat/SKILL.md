@@ -104,6 +104,17 @@ description: Use when combat starts in a claude-ttrpg session - runs the encount
    `docs/dev/2026-07-15-death-and-revival.md`.
 5. Combat ends when one side is dead, surrendered, or fled:
    `engine encounter end` — report xp and loot from its JSON.
+
+Manual dice: if the table rolls its own d20 (`engine dice manual --on`,
+or a one-off `--roll`), `attack`, `cast`, and `deathsave` behave the same
+except that when the toggle is on and no `--roll` is given they return
+`{"manual_roll": {...}}` instead of resolving. No HP, slot, or death-save
+state changes on that call — ask the operator for the die it names (a
+d20, or two-keep-highest for advantage / keep-lowest for disadvantage),
+then re-run the identical command with `--roll <natural>` and narrate the
+result. Initiative and contests (grapple/escape/shove/hide) stay
+auto-rolled even in manual mode; damage is always engine-rolled — only the
+d20 is operator-supplied. Full rules in the gm agent's "Manual dice".
 6. Never move a token, change HP, or decide a hit outside the engine.
 7. Narrate for the room, not the spreadsheet. Players may be reading the
    player web lens, which hides monster HP behind words
