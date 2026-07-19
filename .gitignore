@@ -7,3 +7,4 @@ exports/
 .env
 .imagegen-ledger.json
 exports.sh
+tmp/
