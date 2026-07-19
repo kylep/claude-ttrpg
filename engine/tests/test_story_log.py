@@ -187,3 +187,17 @@ def test_cli_check_posts_player_visible_roll(wroot):
     assert r["label"] == "Perception"
     assert r["expr"].startswith("d20") and r["target_kind"] == "DC"
     assert r["outcome"] in ("success", "fail")
+
+def test_cli_story_reveal_shop(wroot):
+    # the minigame fixture's `mayor` NPC (holds an inventory to sell from)
+    res = runner.invoke(app, ["story", "reveal", "--shop", "mayor"])
+    assert res.exit_code == 0, res.stdout
+    posted = json.loads(res.stdout)
+    assert posted["type"] == "shop" and posted["ref"] == "shop:mayor"
+    entries, _ = story_log.read(wroot, lens="player")
+    shop = [e for e in entries if e["type"] == "shop"][-1]
+    assert shop["ref"] == "shop:mayor" and "wares" in shop["name"]
+    # unknown merchant is rejected
+    bad = runner.invoke(app, ["story", "reveal", "--shop", "nobody"])
+    assert bad.exit_code == 1
+    assert json.loads(bad.stdout)["error"]["code"] == "not_found"

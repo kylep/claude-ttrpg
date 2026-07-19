@@ -57,6 +57,26 @@ doran_cobb:
   disposition: neutral
   gold: 20
   inventory: [{item: healing_potion, qty: 1}]
+  # stock is what he SELLS (the viewer's shop card reads this; prices come from
+  # ruleset/items.yaml). inventory above is what he physically holds / escrows.
+  stock:
+    - {item: dagger, qty: 3}
+    - {item: club, qty: 2}
+    - {item: handaxe, qty: 2}
+    - {item: spear, qty: 2}
+    - {item: sling, qty: 2}
+    - {item: shortbow, qty: 1}
+    - {item: padded, qty: 2}
+    - {item: leather, qty: 2}
+    - {item: hide, qty: 1}
+    - {item: wooden_shield, qty: 2}
+    - {item: torch, qty: 10}
+    - {item: rope, qty: 3}
+    - {item: rations, qty: 20}
+    - {item: healers_kit, qty: 2}
+    - {item: thieves_tools, qty: 1}
+    - {item: healing_potion, qty: 2}
+    - {item: antitoxin, qty: 1}
   description: >
     A trim, sharp-eyed shopkeeper in a neat vest, forever counting coins and
     tapping his foot. He's polite enough, but you can tell he'd rather be

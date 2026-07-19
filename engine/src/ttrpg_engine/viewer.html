@@ -175,6 +175,21 @@
   .ent { border-bottom: 1px dotted var(--gold); cursor: pointer; }
   .ent:hover { color: var(--gold); }
 
+  /* shop / merchant wares */
+  .disc.shop { background: transparent; font-size: 1.3rem; }
+  .wares-btn { font-family: var(--mono); font-size: .74rem; color: var(--gold);
+               background: transparent; border: 1px solid var(--gold);
+               border-radius: 4px; padding: .3rem .6rem; cursor: pointer;
+               margin: .2rem 0 .4rem; }
+  .wares-btn:hover { background: rgba(198, 160, 74, .12); }
+  .wares { display: flex; flex-direction: column; gap: .1rem; }
+  .ware { padding: .32rem 0; border-bottom: 1px solid var(--edge); }
+  .ware:last-child { border-bottom: none; }
+  .ware-top { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; }
+  .ware-name { color: var(--parchment); text-transform: capitalize; }
+  .ware-price { font-family: var(--mono); color: var(--gold); white-space: nowrap; }
+  .ware-desc { font-size: .74rem; margin-top: .1rem; }
+
   /* ---- the entity sheet overlay ------------------------------------------ */
   #overlay { position: fixed; inset: 0; background: rgba(12, 9, 7, .74);
              display: grid; place-items: center; z-index: 10; padding: 1.2rem; }
@@ -432,7 +447,8 @@ async function fetchEntity(ref) {
 function disc(kind, name) {
   const d = el("span", "disc " + kind);
   d.textContent = kind === "quest" ? "❧" : kind === "npc" ? "☺"
-    : kind === "location" ? "⌖" : kind === "spell" ? "✦" : (name || "?").slice(0, 1);
+    : kind === "location" ? "⌖" : kind === "spell" ? "✦"
+    : kind === "shop" ? "🛒" : (name || "?").slice(0, 1);
   return d;
 }
 
@@ -462,6 +478,8 @@ function chipLine(card) {
   if (card.kind === "spell")
     return [card.level === 0 ? "cantrip" : "level " + card.level, card.resolve]
       .filter(Boolean).join(" · ");
+  if (card.kind === "shop")
+    return [(card.items || []).length + " for sale", card.location].filter(Boolean).join(" · ");
   return "";
 }
 
@@ -678,7 +696,28 @@ function buildSheet(card) {
     if (card.location) box.appendChild(kvRow("location", card.location));
     if (card.disposition) box.appendChild(kvRow("disposition", card.disposition));
     if (box.children.length) sh.appendChild(sheetSection("Standing", box));
+    if (card.role === "merchant") {
+      const b = el("button", "wares-btn", "🛒 View wares");
+      b.addEventListener("click", () => openEntity("shop:" + card.id));
+      sh.appendChild(b);
+    }
     if (card.wants) sh.appendChild(sheetSection("Wants (GM)", el("p", "desc muted", card.wants)));
+  }
+  if (card.kind === "shop") {
+    if (card.gold != null)
+      sh.appendChild(sheetSection("Purse (GM)", el("p", "desc muted", card.gold + " gp to buy with")));
+    const list = el("div", "wares");
+    for (const it of (card.items || [])) {
+      const rowEl = el("div", "ware");
+      const top = el("div", "ware-top");
+      top.appendChild(el("span", "ware-name", it.name + (it.qty > 1 ? " ×" + it.qty : "")));
+      top.appendChild(el("span", "ware-price", it.price != null ? it.price + " gp" : "—"));
+      rowEl.appendChild(top);
+      if (it.description) rowEl.appendChild(el("div", "ware-desc muted", it.description));
+      list.appendChild(rowEl);
+    }
+    sh.appendChild(sheetSection("For sale", (card.items || []).length ? list
+      : el("p", "desc muted", "Nothing for sale right now.")));
   }
   if (card.kind === "quest") {
     const box = el("div");
@@ -903,7 +942,7 @@ function renderEntry(e) {
     beat.appendChild(line);
     return beat;
   }
-  if (["character", "npc", "monster", "quest", "location"].includes(e.type) && e.ref) {
+  if (["character", "npc", "monster", "quest", "location", "shop"].includes(e.type) && e.ref) {
     const beat = el("div", "beat new entity");
     const kind = e.type === "character" ? "pc" : e.type;
     beat.appendChild(entityChip(e.ref, e.name, kind, e.type === "quest" ? e.event : null));

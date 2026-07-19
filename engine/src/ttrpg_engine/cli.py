@@ -415,17 +415,25 @@ def story_action(pc: str = typer.Option(...), text: str = typer.Option(..., help
 def story_reveal(npc: str = typer.Option(None, help="id from canon/npcs.yaml"),
                  monster: str = typer.Option(None, help="bestiary type id"),
                  pc: str = typer.Option(None, help="pc id"),
-                 location: str = typer.Option(None, help="region node id")):
+                 location: str = typer.Option(None, help="region node id"),
+                 shop: str = typer.Option(None, help="merchant npc id — drops their wares card")):
     """Drop an entity card into the feed when someone or somewhere is
-    introduced at the table."""
+    introduced at the table. --shop shows a merchant's goods and prices when
+    the party asks to see what's for sale."""
     root = require_root()
-    if sum(x is not None for x in (npc, monster, pc, location)) != 1:
-        fail("bad_reveal", "pass exactly one of --npc / --monster / --pc / --location")
+    if sum(x is not None for x in (npc, monster, pc, location, shop)) != 1:
+        fail("bad_reveal", "pass exactly one of --npc / --monster / --pc / --location / --shop")
     if npc:
         npcs = guard(worldfs.read_yaml, root / "canon" / "npcs.yaml")
         if npc not in npcs:
             fail("not_found", f"no NPC {npc!r} in canon/npcs.yaml")
         emit(guard(story_log.post, root, "npc", ref=npc, name=npcs[npc].get("name", npc)))
+    elif shop:
+        npcs = guard(worldfs.read_yaml, root / "canon" / "npcs.yaml")
+        if shop not in npcs:
+            fail("not_found", f"no NPC {shop!r} in canon/npcs.yaml")
+        emit(guard(story_log.post, root, "shop", ref=f"shop:{shop}",
+                   name=f"{npcs[shop].get('name', shop)} — wares"))
     elif monster:
         g = guard(worldfs.load_game_for, root)
         entry = guard(game_mod.bestiary_entry, g, monster)

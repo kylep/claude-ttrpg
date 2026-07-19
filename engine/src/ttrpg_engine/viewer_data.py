@@ -256,6 +256,45 @@ def _npc_card(npc: dict, ref: str, lens: str) -> dict:
     return card
 
 
+def _shop_card(root: Path, g: dict, npc_id: str, lens: str) -> dict:
+    """A merchant's wares as a card. Stock is the NPC's `stock` list (falling
+    back to whatever they physically hold in `inventory`); each line is joined
+    to the pinned game's items for its list price, type, and description, so
+    price stays single-sourced in ruleset/items.yaml and never drifts. Prices
+    are public, so one card serves both lenses — only the merchant's own purse
+    (what they can pay when buying from the party) is GM-only."""
+    npcs_path = root / "canon" / "npcs.yaml"
+    npcs = worldfs.read_yaml(npcs_path) if npcs_path.exists() else {}
+    npc = npcs.get(npc_id)
+    if npc is None:
+        raise EngineError("not_found", f"no NPC {npc_id!r} in canon/npcs.yaml")
+    items = g.get("items", {})
+    raw = npc.get("stock") or npc.get("inventory") or []
+    goods = []
+    for line in raw:
+        iid = line if isinstance(line, str) else line.get("item")
+        if not iid:
+            continue
+        idef = items.get(iid) or {}
+        goods.append({
+            "item": iid,
+            "name": iid.replace("_", " ").title(),
+            "qty": 1 if isinstance(line, str) else line.get("qty", 1),
+            "price": idef.get("price"),
+            "type": idef.get("type"),
+            "description": " ".join(str(idef.get("description", "")).split()) or None,
+            "known": bool(idef),   # false = stock line with no matching item def
+        })
+    card = {"kind": "shop", "id": f"shop:{npc_id}", "merchant_id": npc_id,
+            "name": f"{npc.get('name', npc_id)} — wares",
+            "merchant": npc.get("name", npc_id),
+            "location": npc.get("location"),
+            "items": goods}
+    if lens == "gm":
+        card["gold"] = npc.get("gold")   # the merchant's purse (GM-only)
+    return card
+
+
 def _quest_card(quest: dict, lens: str) -> dict:
     card = {"kind": "quest", "id": quest["id"], "name": quest["title"],
             "status": quest["status"], "description": quest.get("description"),
@@ -313,6 +352,8 @@ def entity_card(root: Path, g: dict, ref: str, lens: str) -> dict:
     lens = "gm" if lens == "gm" else "player"
     if ref.startswith("spell:"):
         return _spell_card(g, ref.removeprefix("spell:"))
+    if ref.startswith("shop:"):
+        return _shop_card(root, g, ref.removeprefix("shop:"), lens)
     if ref.startswith("pc-"):
         if worldfs.state(root, f"party/{ref}").exists():
             return _pc_card(root, ref, g)

@@ -23,6 +23,15 @@ pedlar_okko:
   location: old-road
   role: merchant
   disposition: neutral
+  # what Okko sells — the viewer's shop card reads this; prices come from
+  # ruleset/items.yaml. A road-peddler's pack.
+  stock:
+    - {item: torch, qty: 6}
+    - {item: rope, qty: 2}
+    - {item: dagger, qty: 2}
+    - {item: shortbow, qty: 1}
+    - {item: thieves_tools, qty: 1}
+    - {item: healing_potion, qty: 1}
   wants: >
     Okko wants safe passage and steady trade along the Old Road. He buys
     and sells at the list prices in ruleset/items.yaml, and will share

@@ -291,3 +291,43 @@ class TestContentArtPath:
 
     def test_none_when_no_content_dir(self):
         assert viewer_data._content_art_path({}, "art/banners/millbrook.png") is None
+
+
+def test_shop_card_lists_stock_with_prices(wroot):
+    """A merchant NPC's `stock` becomes a shop card whose prices are joined
+    from the pinned game's items (single-sourced), player-safe."""
+    g = _game(wroot)
+    items = g["items"]
+    a, b = sorted(items)[:2]
+    npcs = worldfs.read_yaml(wroot / "canon" / "npcs.yaml")
+    npcs["shopkeep"] = {"name": "Shopkeep", "role": "merchant", "location": "town",
+                        "gold": 40, "stock": [{"item": a, "qty": 3}, b]}
+    worldfs.write_yaml(wroot / "canon" / "npcs.yaml", npcs)
+
+    card = viewer_data.entity_card(wroot, g, "shop:shopkeep", "player")
+    assert card["kind"] == "shop" and card["id"] == "shop:shopkeep"
+    assert [w["item"] for w in card["items"]] == [a, b]
+    assert card["items"][0]["qty"] == 3 and card["items"][1]["qty"] == 1
+    assert card["items"][0]["price"] == items[a].get("price")
+    assert "gold" not in card                       # merchant purse is GM-only
+
+    gm = viewer_data.entity_card(wroot, g, "shop:shopkeep", "gm")
+    assert gm["gold"] == 40                          # ...and the GM sees it
+
+
+def test_shop_card_falls_back_to_inventory_and_flags_unknown(wroot):
+    g = _game(wroot)
+    npcs = worldfs.read_yaml(wroot / "canon" / "npcs.yaml")
+    npcs["shopkeep"] = {"name": "Shopkeep", "role": "merchant",
+                        "inventory": [{"item": "not_a_real_item", "qty": 1}]}
+    worldfs.write_yaml(wroot / "canon" / "npcs.yaml", npcs)
+    card = viewer_data.entity_card(wroot, g, "shop:shopkeep", "player")
+    assert card["items"][0]["item"] == "not_a_real_item"
+    assert card["items"][0]["known"] is False and card["items"][0]["price"] is None
+
+
+def test_shop_card_unknown_merchant_raises(wroot):
+    from ttrpg_engine.errors import EngineError
+    import pytest
+    with pytest.raises(EngineError):
+        viewer_data.entity_card(wroot, _game(wroot), "shop:nobody", "player")
