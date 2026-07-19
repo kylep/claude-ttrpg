@@ -177,3 +177,24 @@ def build_bestiary(src):
     body = f"<div class='roster'>{''.join(cards)}</div>"
     html = _document("Bestiary", src["world_name"] or g["meta"]["name"].title(), cover, body)
     return render_pdf(html, content_dir)
+
+
+def build_classes(src):
+    g, content_dir = src["g"], src["content_dir"]
+    cover = _content_image(content_dir, "art/covers/classes.png")
+    cards = []
+    for name, cls in sorted(g["classes"].items()):
+        gear = ", ".join(_title_case(i) for i in cls.get("starting_gear", [])) or "—"
+        skills = ", ".join(_title_case(s) for s in cls.get("skills", []))
+        cards.append(
+            f"<div class='card'><h3>{esc(name.title())}</h3>"
+            f"<p class='lead'>{esc(cls.get('description', '').strip())}</p>"
+            f"<p><span class='tag'>Hit die d{cls['hit_die']}</span>"
+            f"<span class='tag'>Start gold {cls.get('starting_gold', 0)} gp</span></p>"
+            f"<p><strong>Starting gear:</strong> {esc(gear)}.</p>"
+            f"<p><strong>Skills:</strong> choose {cls.get('skill_choices', 0)} from {esc(skills)}.</p>"
+            f"</div>"
+        )
+    body = "".join(cards)
+    html = _document("Classes", src["world_name"] or g["meta"]["name"].title(), cover, body)
+    return render_pdf(html, content_dir)

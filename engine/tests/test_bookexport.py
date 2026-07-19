@@ -59,3 +59,9 @@ def test_roster_card_omits_missing_image():
     card = bookexport._roster_card("Orc", None, "<p>hi</p>")
     assert "<img" not in card
     assert "Orc" in card
+
+
+def test_build_classes_pdf():
+    pdf = bookexport.build_classes(_familyrpg_src())
+    assert pdf.startswith(b"%PDF")
+    assert len(pdf) > 5000
