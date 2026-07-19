@@ -12,6 +12,18 @@ xp: 125    # party pool sized for 4 PCs; split evenly at `engine encounter end`
 loot: {gold: null, items: []}  # rolled per instance at encounter end, into the party pool
 flying: true  # enables aloft/reach targeting rules
 difficulty: easy  # GM guidance only
+appearance: >
+  Giant bats are common cave-bats grown to the size of a large dog, with a
+  leathery wingspan wider than a person is tall. The membrane wings are
+  stretched over long finger-bones and fold tight against a furred, mouse-
+  brown body when at rest. The face is a snub-snouted, wrinkled grimace
+  dominated by huge translucent ears and small, weak eyes; they hunt by
+  sound as much as sight, filling the dark with clicks and shrieks pitched
+  at the edge of hearing. Needle teeth line the little mouth. They are true
+  flyers, at home wheeling through cavern-black on silent wings, and they
+  roost in shrieking colonies overhead, dropping into a flapping,
+  disorienting swarm when disturbed.
+image: art/bestiary/giant_bat.png
 habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
   - Duskhold
   - Stonewatch Mine-Tunnels

@@ -11,6 +11,18 @@ attacks: [{name: longsword, attack_mod: 5, damage: "1d8+3", range: 1, kind: mele
 xp: 350    # party pool sized for 4 PCs; split evenly at `engine encounter end`
 loot: {gold: "1d8", items: []}  # rolled per instance at encounter end, into the party pool
 difficulty: standard  # GM guidance only
+appearance: >
+  Hobgoblins are the disciplined big cousins of the goblins — human-sized,
+  hard-muscled, and organized where their little kin are chaos. Their skin
+  runs in shades of orange-tan to dull red, and their faces are broad and
+  blunt with a flat nose, small dark eyes, and a jaw of strong yellow teeth.
+  Where goblins wear scraps, hobgoblins wear matched, well-kept war-gear:
+  banded armor, a good shield, a straight blade, all marked with the colors
+  of their legion. They drill, they hold ranks, and they take a grim
+  professional pride in it. Wingless and earthbound, they fight in ordered
+  lines rather than howling mobs, and a hobgoblin warband is a real little
+  army with real little discipline.
+image: art/bestiary/hobgoblin.png
 habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
   - the Wasteland
   - the frontier borderlands

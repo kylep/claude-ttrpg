@@ -1,0 +1,30 @@
+name: Frost Giant
+description: >
+  A raider the size of a cottage, blue-skinned and ice-bearded, who comes down
+  out of the high Northland when the hunting is lean; it swings a greataxe like
+  a scythe and hurls stones the size of a person from clear across the field.
+ac: 15     # armor class attacks must meet or beat
+hp: 138    # hit points per spawned instance
+speed: 8   # grid squares per combat turn
+attributes: {STR: 23, DEX: 9, CON: 21, INT: 9, WIS: 10, CHA: 12}  # DEX drives initiative
+attacks:  # range in squares; a long-hafted axe with reach, and thrown boulders from range
+  - {name: greataxe, attack_mod: 9, damage: "3d12+6", range: 2, kind: melee}   # reach 2
+  - {name: hurled boulder, attack_mod: 6, damage: "4d10+6", range: 12, kind: ranged}
+xp: 5000   # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: "5d8", items: []}  # rolled per instance at encounter end, into the party pool
+difficulty: boss  # GM guidance only — a low-boss the northern gnomes genuinely fear
+appearance: >
+  Frost giants stand three or four times the height of a person, heavy-boned and
+  slab-muscled, with skin in shades of pale glacier-blue and long hair and beards
+  that hang stiff with frost and ice-beads. Their eyes are a hard wolf-yellow,
+  set under heavy brows. They dress in the pelts and hides of northern beasts,
+  belted with iron and hung with trophies — tusks, claws, a chain of frozen
+  links — and go bare-armed in cold that would kill anyone else. Broad, weathered
+  faces show old scars and a raider's flat appraisal. They carry outsized axes
+  and mauls of dark iron, and where they walk the ground crunches and rimes over.
+  Earthbound and unbothered by it, they simply step over what smaller folk climb.
+image: art/bestiary/frost_giant.png
+habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
+  - the high Northland Tundra
+  - the ice-caves above Cogwick
+  - the frozen passes into the White Cliff Mountains

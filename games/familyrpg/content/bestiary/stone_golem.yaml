@@ -1,0 +1,29 @@
+name: Stone Golem
+description: >
+  A guardian carved from a single block of stone and set moving by old dwarven
+  craft; it feels nothing, fears nothing, and stops for nothing short of being
+  broken apart, following the last order it was given until the end of time.
+ac: 17     # armor class attacks must meet or beat
+hp: 130    # hit points per spawned instance
+speed: 6   # grid squares per combat turn (slow, relentless, unhurried)
+attributes: {STR: 22, DEX: 9, CON: 20, INT: 3, WIS: 11, CHA: 1}  # DEX drives initiative
+attacks:  # range in squares; one crushing slam that lands like a falling pillar
+  - {name: slam, attack_mod: 10, damage: "3d8+6", range: 1, kind: melee}
+xp: 5000   # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: null, items: []}  # a construct carries no coin; rolled empty at encounter end
+difficulty: tough  # GM guidance only — a stone wall that hits back
+appearance: >
+  A stone golem is a great humanoid statue given ponderous life, standing head
+  and shoulders above a person and hewn from a single mass of granite or dark
+  basalt. Its form is blocky and idealized — broad shoulders, slab hands, a
+  featureless or sternly carved face — with the chisel-marks and old dwarven
+  runes of its making still visible across its surface, sometimes traced with a
+  faint inner glow along the seams. It has no eyes that see as ours do, no breath,
+  no voice; grit sifts from its joints as it moves. Earthbound and enormously
+  heavy, it steps with a slow, floor-shaking certainty, and between orders it will
+  simply stand, motionless for years, until something crosses the line it guards.
+image: art/bestiary/stone_golem.png
+habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
+  - the vaults of Ironford
+  - the Ironford Deep-Tunnels
+  - a sealed dwarven tomb off the Ironline

@@ -11,6 +11,18 @@ attacks: [{name: spear jab, attack_mod: 3, damage: "1d6+1", range: 1, kind: mele
 xp: 100    # party pool sized for 4 PCs; split evenly at `engine encounter end`
 loot: {gold: "1d4", items: []}  # rolled per instance at encounter end, into the party pool
 difficulty: easy  # GM guidance only
+appearance: >
+  Kobolds are small, scaly, dog-snouted reptile-folk, shorter even than
+  goblins and far less brave one-on-one. Their hides are dry and pebbled in
+  rusty red, brown, or slate, with a whip-thin tail, little clawed hands,
+  and a narrow head crowned by a pair of tiny nubby horns and a mouth of
+  needle teeth. Beady red eyes glint in the dark, where they see well. They
+  make up for their weakness with sheer numbers and low cunning, riddling
+  their tunnels with pit-traps, deadfalls, and tripwires and swarming
+  intruders from every crack at once. Wingless and earthbound, they are
+  miners and trap-makers at heart, quick to flee a fair fight and quicker to
+  lead you onto a rigged one.
+image: art/bestiary/kobold.png
 habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
   - Stonewatch Mine-Tunnels
   - White Cliff foothills

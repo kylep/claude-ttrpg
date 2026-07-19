@@ -1,0 +1,32 @@
+name: Manticore
+description: >
+  A lion-bodied menace with leathery wings and a spiked tail it fires like a
+  crossbow; it strafes from above, loosing volleys of bone-hard spikes, and
+  only closes to bite once its target is bristling with them.
+ac: 14     # armor class attacks must meet or beat
+hp: 68     # hit points per spawned instance
+speed: 8   # grid squares per combat turn (flies; prefers to attack on the wing)
+attributes: {STR: 17, DEX: 16, CON: 17, INT: 7, WIS: 12, CHA: 8}  # DEX drives initiative
+attacks:  # range in squares; a long-range tail volley is its whole game plan
+  - {name: bite, attack_mod: 5, damage: "1d8+3", range: 1, kind: melee}
+  - {name: claw, attack_mod: 5, damage: "1d6+3", range: 1, kind: melee}
+  - {name: tail spike, attack_mod: 5, damage: "1d8+3", range: 12, kind: ranged}  # fired from the wing
+xp: 1800   # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: "2d6", items: []}  # rolled per instance at encounter end, into the party pool
+flying: true  # enables aloft/reach targeting rules
+difficulty: tough  # GM guidance only
+appearance: >
+  A manticore has the heavy, tawny body of a great lion, a pair of broad
+  bat-like wings folded along its back, and a strange, almost human face set with
+  a mouth of three rows of shark-like teeth. It is a strong flyer and does most
+  of its hunting from the air. Its coat is a dusty red-brown, its mane darker and
+  shaggy, and its most dangerous feature trails behind it: a long, whip-thin tail
+  ending in a knot of rigid spikes, which it can flick loose in a volley like
+  arrows before growing them back. The eyes are a cold amber and unsettlingly
+  aware. For all its lion-bulk it moves lightly, and it circles high and patient
+  before it stoops.
+image: art/bestiary/manticore.png
+habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
+  - the White Cliff crags
+  - the broken hills of the Wasteland
+  - the ruined outskirts of Duskhold

@@ -1,0 +1,30 @@
+name: Wight
+description: >
+  A fallen captain or lord risen as a cold, cunning undead — not a mindless
+  shambler but a thinking thing that remembers war; it wields the blade it was
+  buried with, and its touch drains the living warmth straight out of you.
+ac: 14     # armor class attacks must meet or beat
+hp: 45     # hit points per spawned instance
+speed: 6   # grid squares per combat turn
+attributes: {STR: 15, DEX: 14, CON: 16, INT: 10, WIS: 13, CHA: 15}  # DEX drives initiative
+attacks:  # range in squares; a barrow-blade and a chilling life-draining grip
+  - {name: barrow blade, attack_mod: 4, damage: "1d8+2", range: 1, kind: melee}
+  - {name: life drain, attack_mod: 4, damage: "1d6+2", range: 1, kind: melee}  # saps living warmth
+xp: 700    # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: "2d6", items: []}  # grave-goods and old coin; rolled per instance at encounter end
+difficulty: standard  # GM guidance only — a leader-type; nastier commanding lesser undead
+appearance: >
+  A wight is a corpse that kept its will — the preserved, leathery body of a
+  once-proud warrior, skin gone brown and taut over the bone but the frame still
+  whole and upright, unlike the shambling dead. It stands and moves like the
+  soldier it was, deliberate and balanced. It wears the arms and armor it was
+  entombed in: a mail shirt gone dull, a dented helm, a cloak rotted to cobweb,
+  a device of a house no one remembers still faintly worked on the breast. The
+  eyes are the tell — points of pale, hungry light burning in the shadowed
+  sockets, fixed and intelligent. Earthbound and unhurried, it carries the cold,
+  dry air of the barrow with it, and it fights with a grim, remembered skill.
+image: art/bestiary/wight.png
+habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
+  - the deep barrows of the Barrow-downs
+  - a lord's tomb beneath Duskhold
+  - an old battlefield-cairn on the plains

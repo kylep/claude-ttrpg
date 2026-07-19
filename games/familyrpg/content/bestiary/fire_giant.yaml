@@ -1,0 +1,30 @@
+name: Fire Giant
+description: >
+  A smith and warrior out of the burning mountain, black-skinned and orange-eyed,
+  who forges weapons in lava and swings a sword taller than a person; disciplined
+  where other giants are wild, it fights in ordered, hammering ranks.
+ac: 18     # armor class attacks must meet or beat
+hp: 162    # hit points per spawned instance
+speed: 6   # grid squares per combat turn
+attributes: {STR: 25, DEX: 9, CON: 23, INT: 10, WIS: 14, CHA: 13}  # DEX drives initiative
+attacks:  # range in squares; a reaching greatsword and hurled molten rock
+  - {name: greatsword, attack_mod: 11, damage: "6d6+7", range: 2, kind: melee}   # reach 2
+  - {name: molten rock, attack_mod: 11, damage: "4d10+7", range: 12, kind: ranged}
+xp: 7500   # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: "6d8", items: []}  # fine forged gear; rolled per instance at encounter end
+difficulty: boss  # GM guidance only — a disciplined boss out of the volcano country
+appearance: >
+  Fire giants are shorter and far broader than their frost-kin, built like
+  walking forges — coal-black or dusky charcoal skin, thick corded muscle, and
+  fiery orange-red hair and beards that seem to smolder at the ends. Their eyes
+  glow a banked orange. They wear soot-blackened plate and leather aprons scarred
+  by sparks, and carry weapons of their own making: massive swords and hammers of
+  dark, well-worked iron. Broad blunt faces are set in a craftsman's hard focus,
+  and heat rolls off them in a visible shimmer, smelling of hot metal and ash.
+  Earthbound and heavy-footed, they move at a deliberate, unstoppable pace, more
+  siege engine than beast, and they favor order and formation over fury.
+image: art/bestiary/fire_giant.png
+habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
+  - the forge-caves under Ashhaven
+  - the black slopes of the volcano
+  - lava-halls deep in the mountain's root

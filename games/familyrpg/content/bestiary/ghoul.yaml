@@ -1,0 +1,30 @@
+name: Ghoul
+description: >
+  A ravenous, once-human corpse that hunts the dark for living flesh; it fights
+  in a frenzy of raking claws, and its bite carries a numbing chill that can
+  freeze a victim mid-step long enough for the pack to swarm.
+ac: 12     # armor class attacks must meet or beat
+hp: 22     # hit points per spawned instance
+speed: 6   # grid squares per combat turn
+attributes: {STR: 13, DEX: 15, CON: 10, INT: 7, WIS: 10, CHA: 6}  # DEX drives initiative
+attacks:  # range in squares; raking claws and a paralyzing bite
+  - {name: claws, attack_mod: 4, damage: "2d4+2", range: 1, kind: melee}
+  - {name: bite, attack_mod: 2, damage: "2d6+2", range: 1, kind: melee}  # chilling — GM may call for a save vs. brief paralysis
+xp: 200    # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: null, items: []}  # rolled per instance at encounter end, into the party pool
+difficulty: standard  # GM guidance only
+appearance: >
+  Ghouls are the risen dead gone feral — gaunt, hunched, roughly person-shaped
+  figures with skin drawn tight and grey-green over sharp bone, hanging in loose
+  folds at the joints. The fingers have lengthened into blackened claws and the
+  jaw juts with a mouth of jagged, overlong teeth stained from feeding. Tufts of
+  brittle hair cling to a scabbed scalp, and the eyes are sunken and milk-pale,
+  lit with a mindless, starving hunger. They still wear the rags of whatever they
+  died in — a farmer's smock, a traveler's cloak — filthy and rotted. Earthbound
+  and quick in short bursts, they scuttle low to the ground on all fours as often
+  as not, sniffing for the warm smell of the living.
+image: art/bestiary/ghoul.png
+habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
+  - the Barrow-downs
+  - the crypts of Duskhold
+  - the Kingsreach Sewers

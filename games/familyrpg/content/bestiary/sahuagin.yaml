@@ -1,0 +1,30 @@
+name: Sahuagin
+description: >
+  A finned, shark-toothed raider out of the deep water that comes ashore by
+  night to plunder coast and ship; sahuagin hunt in war-bands, striking from the
+  surf with barbed spears and a bite that smells blood from a long way off.
+ac: 12     # armor class attacks must meet or beat
+hp: 22     # hit points per spawned instance
+speed: 6   # grid squares per combat turn (far faster in the water than out of it)
+attributes: {STR: 13, DEX: 11, CON: 12, INT: 12, WIS: 13, CHA: 9}  # DEX drives initiative
+attacks:  # range in squares; a coral spear and a savage bite
+  - {name: coral spear, attack_mod: 3, damage: "1d6+1", range: 1, kind: melee}
+  - {name: bite, attack_mod: 3, damage: "1d4+1", range: 1, kind: melee}
+xp: 100    # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: "1d6", items: []}  # rolled per instance at encounter end, into the party pool
+difficulty: standard  # GM guidance only
+appearance: >
+  Sahuagin are upright fish-people the height of a person, built lean and
+  powerful, their skin a slick green-black on top fading to pale grey below, like
+  a shark's countershading. Webbed hands and feet end in claws, a finned crest
+  runs down the back of the skull, and more fins ridge the forearms and spine.
+  The head is broad and flat with round black eyes and a wide mouth crowded with
+  rows of triangular teeth. They wear harnesses of netting, shell, and coral hung
+  with bone hooks and barbed spears. Powerful swimmers, they move on land in a
+  hunched, rolling gait, dripping and impatient to be back in the water, and the
+  sea-smell of them carries well ahead of the raid.
+image: art/bestiary/sahuagin.png
+habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
+  - the deep water off the East Islands
+  - the reefs below Stormhaven
+  - the drowned caves along the south coast

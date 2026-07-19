@@ -11,6 +11,18 @@ attacks: [{name: venomous bite, attack_mod: 4, damage: "1d6+2", range: 1, kind: 
 xp: 175    # party pool sized for 4 PCs; split evenly at `engine encounter end`
 loot: {gold: "1d6", items: []}  # rolled per instance at encounter end, into the party pool
 difficulty: easy  # GM guidance only
+appearance: >
+  Giant spiders are hunting spiders grown to the size of a pony, and they
+  lose none of the horror of the small kind in the scaling-up. Eight long,
+  jointed legs carry a bulbous body sheened in coarse black or mottled-brown
+  bristles, and a cluster of glossy dark eyes sits above a pair of dripping,
+  hooked fangs. They spin cables of silk strong enough to hold a person and
+  string them across cave mouths and forest trails, then wait, motionless,
+  for the tug that means dinner. Earthbound but able to scuttle up any wall
+  or ceiling with unnerving speed, they drop without warning, and the venom
+  in those fangs can leave a grown fighter stiff and helpless while the
+  spider takes its time.
+image: art/bestiary/giant_spider.png
 habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
   - the Deepwoods deep-trails
   - Duskhold

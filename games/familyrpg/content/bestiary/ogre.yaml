@@ -13,6 +13,18 @@ attacks:  # range in squares; two heavy swings per turn
 xp: 1500   # party pool sized for 4 PCs; split evenly at `engine encounter end`
 loot: {gold: "3d6", items: []}  # rolled per instance at encounter end, into the party pool
 difficulty: tough  # GM guidance only
+appearance: >
+  Ogres are hulking brutes half again the height of a tall man and three
+  times the bulk, with slabs of dull muscle over a heavy, stooped frame.
+  Their skin is a rubbery greyish-tan or dirty yellow, warty and thick,
+  stretched over a big lumpen head with a jutting brow, tiny mean eyes, and
+  a wide mouth of blunt, crooked teeth. Greasy hair hangs in ropes. They
+  dress in ill-cured hides and the scavenged leavings of past meals, knotted
+  on with rope, and swing whatever huge club, log, or lump of iron comes to
+  hand. Earthbound and slow of both foot and wit, an ogre makes up for it
+  with reach and raw strength — one clumsy blow is enough to end most fights
+  it starts.
+image: art/bestiary/ogre.png
 habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
   - the White Cliff foothills
   - lonely West Road bridges

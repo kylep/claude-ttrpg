@@ -1,0 +1,29 @@
+name: Stirge
+description: >
+  A fat, mosquito-like pest the size of a cat that darts in on buzzing wings,
+  jabs its needle-snout into whatever's warm, and drinks; one is a nuisance, a
+  swarm of them off the marsh can bleed a traveler pale.
+ac: 14     # armor class attacks must meet or beat (small and fast on the wing)
+hp: 5      # hit points per spawned instance
+speed: 10  # grid squares per combat turn (flits about entirely on the wing)
+attributes: {STR: 4, DEX: 16, CON: 11, INT: 2, WIS: 8, CHA: 6}  # DEX drives initiative
+attacks:  # range in squares; a needle-proboscis that latches on and drains blood
+  - {name: blood drain, attack_mod: 5, damage: "1d4+3", range: 1, kind: melee}  # latches on; keeps draining until pulled off
+xp: 25     # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: null, items: []}  # rolled per instance at encounter end, into the party pool
+flying: true  # enables aloft/reach targeting rules
+difficulty: easy  # GM guidance only — a real threat only in numbers
+appearance: >
+  A stirge is a bloated flying pest about the size of a housecat, somewhere
+  between a mosquito and a bat. Its round, sac-like body is a dull red-brown that
+  swells and darkens as it feeds, carried on four spindly clawed legs it uses to
+  cling to its victim. Two pairs of veined, buzzing wings blur when it flies, and
+  the whole front of it tapers into a long, rigid needle-proboscis nearly as long
+  as its body. Small, dim eyes cluster above the snout. It flits and hovers in
+  quick, erratic darts, and its droning wingbeat is the warning you get before it
+  lands. Alone it is almost comic; rising in a cloud off the reeds, far less so.
+image: art/bestiary/stirge.png
+habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
+  - the Reeking Marsh
+  - the reed-banks of Heartmere
+  - damp caves near the Deepwoods

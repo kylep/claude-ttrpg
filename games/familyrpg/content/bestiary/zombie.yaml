@@ -11,6 +11,18 @@ attacks: [{name: rotting grasp, attack_mod: 4, damage: "1d8+2", range: 1, kind: 
 xp: 250    # party pool sized for 4 PCs; split evenly at `engine encounter end`
 loot: {gold: null, items: []}  # rolled per instance at encounter end, into the party pool
 difficulty: standard  # GM guidance only
+appearance: >
+  A zombie is a corpse hauled back to a shambling half-life, rotting but
+  refusing to lie down — a slack, grey-skinned body, bloated or wasted
+  depending on how long it lay, weeping and peeling and hung with the grave.
+  Its joints are stiff and its movements a slow, lurching stagger, arms
+  half-raised and reaching, head lolling. Dull, filmed-over eyes stare from
+  a sunken face with no expression at all, and its mouth hangs open on a
+  low, endless moan. It still wears the ruined clothes it died in, stained
+  and hanging in tatters. Earthbound, mindless, and witless, it feels
+  nothing and stops for nothing, wading through blows on sheer dead momentum
+  until it is finally hacked apart.
+image: art/bestiary/zombie.png
 habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
   - Duskhold
   - the Barrow-downs

@@ -1,0 +1,30 @@
+name: Winter Wolf
+description: >
+  A great white wolf the size of a pony, clever as a person and cold to the
+  bone; it hunts the tundra in disciplined packs and can breathe a blast of
+  killing frost, which it uses to scatter prey before the pack closes in.
+ac: 13     # armor class attacks must meet or beat
+hp: 75     # hit points per spawned instance
+speed: 10  # grid squares per combat turn (fast; runs prey down across open snow)
+attributes: {STR: 18, DEX: 13, CON: 14, INT: 7, WIS: 12, CHA: 8}  # DEX drives initiative
+attacks:  # range in squares; a heavy bite and a cone of frost breathed from range
+  - {name: bite, attack_mod: 6, damage: "2d6+4", range: 1, kind: melee}
+  - {name: frost breath, attack_mod: 5, damage: "3d8", range: 6, kind: ranged}
+xp: 1800   # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: null, items: []}  # rolled per instance at encounter end, into the party pool
+difficulty: tough  # GM guidance only
+appearance: >
+  Winter wolves are far larger than common wolves — shoulder-high to a grown
+  person — with dense, frost-white coats that all but vanish against snow and
+  breath that plumes and crystallizes in the air. Their eyes are a startling pale
+  blue, sharp with a wit closer to a person's than a beast's, and their broad
+  paws spread to carry them over drifts. Muscle rolls under the thick fur; the
+  jaws are heavy and the fangs long. They run in tight, coordinated packs and
+  clearly plan their hunts, cutting off escape and driving quarry toward the
+  waiting line. Earthbound but tireless over snow, they leave a faint rime of
+  frost where they pad, and the air around them bites with unnatural cold.
+image: art/bestiary/winter_wolf.png
+habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
+  - the open Northland Tundra
+  - the frozen woods above Cogwick
+  - the high snowfields of the White Cliff Mountains

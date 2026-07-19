@@ -13,6 +13,18 @@ attacks:  # range in squares; two raking claw strikes per turn
 xp: 2200   # party pool sized for 4 PCs; split evenly at `engine encounter end`
 loot: {gold: "3d6", items: []}  # rolled per instance at encounter end, into the party pool
 difficulty: tough  # GM guidance only
+appearance: >
+  A troll is a lanky, loose-limbed giant, taller than an ogre but gaunt
+  where the ogre is bulky, all long bones and sagging rubbery hide. Its skin
+  is a sickly moss-green or grey, hanging in warty folds, and its arms reach
+  nearly to the ground, ending in hooked black claws. A long drooping nose
+  and a wide mouth of snaggled teeth sit under small, dull, deep-set eyes.
+  Lank weeds of hair trail from its scalp. What makes it a nightmare is not
+  its look but its flesh: wounds close and knit shut between one blow and
+  the next, so it shrugs off damage that would drop anything else.
+  Earthbound and shambling, it never seems to tire and never stays down as
+  long as it should.
+image: art/bestiary/troll.png
 habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
   - the Reeking Marsh
   - Ironford Deep-Tunnels

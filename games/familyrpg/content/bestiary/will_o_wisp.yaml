@@ -1,0 +1,31 @@
+name: Will-o'-Wisp
+description: >
+  A drifting light in the marsh dark that looks, for all the world, like a
+  lantern held by someone who could lead you to safety; it is not. It lures
+  travelers off the path into the bog, then closes to shock them with a jolt
+  of cold lightning.
+ac: 19     # armor class attacks must meet or beat (tiny, glowing, nearly impossible to pin down)
+hp: 22     # hit points per spawned instance
+speed: 10  # grid squares per combat turn (floats and darts on the air)
+attributes: {STR: 1, DEX: 20, CON: 10, INT: 13, WIS: 14, CHA: 11}  # DEX drives initiative
+attacks:  # range in squares; a single touch of stored lightning
+  - {name: shock, attack_mod: 4, damage: "2d8", range: 1, kind: melee}  # a jolt of cold electricity
+xp: 450    # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: null, items: []}  # a spirit-light carries nothing; rolled empty at encounter end
+flying: true  # enables aloft/reach targeting rules
+difficulty: standard  # GM guidance only — dangerous for how it lures, not how hard it hits
+appearance: >
+  A will-o'-wisp has no body to speak of — it is a soft, floating orb of pale
+  light, roughly the size of a lantern flame, hovering a few feet off the ground
+  and drifting on no wind. Its glow is usually a cool blue-white or a sickly
+  green-yellow, and it can dim to almost nothing or flare brighter to draw a
+  wanderer's eye, mimicking the honest lamp of a distant cottage. There is
+  nothing to grab and nothing to look in the eye; it simply bobs and weaves,
+  reflecting faintly off the black water beneath it. It flies, silent and
+  patient, and its whole menace is in how gentle and helpful it looks from far
+  off, right up until the marsh has closed over your boots.
+image: art/bestiary/will_o_wisp.png
+habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
+  - the deep Reeking Marsh
+  - the fog-banks over Heartmere
+  - the drowned graves of the Barrow-downs

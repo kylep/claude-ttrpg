@@ -14,6 +14,18 @@ xp: 300    # party pool sized for 4 PCs; split evenly at `engine encounter end`
 loot: {gold: "1d6", items: []}  # rolled per instance at encounter end, into the party pool
 flying: true  # enables aloft/reach targeting rules
 difficulty: standard  # GM guidance only
+appearance: >
+  Harpies have the body of a great carrion bird and the face and torso of a
+  gaunt woman, joined into something that unsettles the eye. Broad, ragged
+  wings spring from the shoulders in place of arms, ending in clawed hands,
+  and the lower body is all bird: scaled legs, cruel talons, and a fan of
+  dirty brown and grey feathers streaked with filth. The upper half is pale
+  and hard-featured, with lank hair and a hungry, spiteful stare. They are
+  true flyers, roosting on high sea-cliffs and crags, and their real weapon
+  is their voice — a strange, carrying song that lures the unwary to walk
+  right off a ledge toward them. Up close the song ends and the talons come
+  out.
+image: art/bestiary/harpy.png
 habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
   - the sea-cliffs near Stormhaven
   - the White Cliff crags

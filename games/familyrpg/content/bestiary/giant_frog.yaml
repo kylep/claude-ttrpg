@@ -1,0 +1,29 @@
+name: Giant Frog
+description: >
+  A frog grown to the size of a big dog, all mouth and appetite; it sits still
+  as a stone in the shallows, then lunges with a long sticky tongue to drag prey
+  into a gulping bite big enough to swallow a halfling whole.
+ac: 11     # armor class attacks must meet or beat
+hp: 18     # hit points per spawned instance
+speed: 6   # grid squares per combat turn (leaps on land, swims in the shallows)
+attributes: {STR: 12, DEX: 13, CON: 11, INT: 2, WIS: 10, CHA: 3}  # DEX drives initiative
+attacks:  # range in squares; a lunging bite (small prey may be swallowed on a solid hit)
+  - {name: bite, attack_mod: 3, damage: "1d6+1", range: 1, kind: melee}  # may swallow a Small target whole — GM's call
+xp: 50     # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: null, items: []}  # rolled per instance at encounter end, into the party pool
+difficulty: easy  # GM guidance only
+appearance: >
+  A giant frog is exactly what it sounds like — a common pond-frog swollen to the
+  bulk of a large hound, low and squat with a body far too wide for its stubby
+  limbs. Its warty, glistening skin is mottled swamp-green and mud-brown for
+  cover among the reeds, paling to a soft cream throat that balloons when it
+  calls. The head is mostly mouth: a wide, hinge-jawed grin above which two big
+  golden eyes sit high and bulging, swiveling to watch every direction at once.
+  Long webbed hind feet fold under it, ready to launch it in a sudden leap, and a
+  sticky, whip-fast tongue flicks out to snatch anything within reach. Earthbound
+  but an easy swimmer, it lurks half-sunk and still until the moment to strike.
+image: art/bestiary/giant_frog.png
+habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
+  - the Reeking Marsh shallows
+  - the reed-beds of Heartmere
+  - flooded ditches along the Free Road

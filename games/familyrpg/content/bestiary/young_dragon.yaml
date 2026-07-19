@@ -16,6 +16,19 @@ xp: 6000   # party pool sized for 4 PCs; split evenly at `engine encounter end`
 loot: {gold: "6d6", items: []}  # rolled per instance at encounter end, into the party pool
 flying: true  # enables aloft/reach targeting rules
 difficulty: boss  # GM guidance only
+appearance: >
+  A young dragon is a dragon in its dangerous adolescence — already the size
+  of a cart-horse and growing fast, past the vulnerable hatchling stage but
+  not yet grown into the mountainous bulk of its elders. Its scales are
+  bright and glossy, freshly hardened, in the vivid color of its kind — new-
+  flame red, gleaming bronze, deep green — over a lean, muscular frame built
+  for speed. The wings are large for its body and fully flight-capable,
+  snapping open with a crack, and the head is all sharp angles: budding
+  horns, a mouth of clean white fangs, and slit-pupiled eyes lit with
+  reckless, testing arrogance. It flies hard and hunts boldly, still
+  learning its own strength, and it carries the hot reek of smoke wherever
+  it lands.
+image: art/bestiary/young_dragon.png
 habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
   - Dragon Isle
   - a White Cliff peak-lair

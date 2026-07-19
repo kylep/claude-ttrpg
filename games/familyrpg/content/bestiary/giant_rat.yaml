@@ -11,6 +11,17 @@ attacks: [{name: nip, attack_mod: 3, damage: "1d4+1", range: 1, kind: melee}]  #
 xp: 50     # party pool sized for 4 PCs; split evenly at `engine encounter end`
 loot: {gold: "1d4", items: []}  # rolled per instance at encounter end, into the party pool
 difficulty: easy  # GM guidance only
+appearance: >
+  Giant rats are sewer- and cellar-rats swollen to the size of a small dog,
+  and every bit as bold and filthy as the ordinary kind. Their coats are a
+  greasy grey-brown, patchy and scabbed, over a lean humped body, and a long
+  scaly tail drags behind. The head narrows to a twitching, whiskered snout
+  and a pair of chisel-like front teeth stained yellow, always gnawing.
+  Small black eyes glitter with a low animal cunning. They move in
+  scurrying, chittering packs, swarming up out of drains and gaps in the
+  floor, and where there is one there are always more. Earthbound and quick
+  in cramped dark, they are less a single threat than a rising, biting tide.
+image: art/bestiary/giant_rat.png
 habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
   - Kingsreach Sewers
   - Millbrook Mill-Cellars

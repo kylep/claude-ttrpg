@@ -1,0 +1,31 @@
+name: Animated Armor
+description: >
+  A suit of empty armor stood up and set walking by an old enchantment; there
+  is no one inside, no one to reason with, and no one to tire — just steel that
+  swings its own gauntlets at anything that crosses the threshold it guards.
+ac: 18     # armor class attacks must meet or beat
+hp: 33     # hit points per spawned instance
+speed: 6   # grid squares per combat turn
+attributes: {STR: 14, DEX: 11, CON: 13, INT: 1, WIS: 3, CHA: 1}  # DEX drives initiative
+attacks:  # range in squares; two heavy gauntlet strikes per turn
+  - {name: gauntlet, attack_mod: 4, damage: "1d6+2", range: 1, kind: melee}
+  - {name: gauntlet, attack_mod: 4, damage: "1d6+2", range: 1, kind: melee}
+xp: 200    # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: null, items: []}  # the armor itself may be salvage; the GM decides at encounter end
+difficulty: standard  # GM guidance only
+appearance: >
+  Animated armor is exactly what it sounds like — a full suit of plate harness,
+  helm to sabatons, standing and moving with no body inside it. Through the
+  eye-slit of the visor and the gaps at the joints there is only darkness, or
+  sometimes a faint, cold glimmer of the magic that drives it. The steel is
+  usually old: dented, tarnished, streaked with rust and green verdigris, still
+  bearing the faded crest or livery of whatever house first forged it. It moves
+  with a hollow, clanking gait, each step ringing metal-on-stone, and gestures
+  with a stiff, puppet-like precision. Earthbound and mindless, it does one thing
+  — guard its post — and it will keep doing it against all comers, long after
+  everyone who set it there is dust.
+image: art/bestiary/animated_armor.png
+habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
+  - the halls of Duskhold Castle
+  - a sealed vault under Ironford
+  - an abandoned manor off the West Road

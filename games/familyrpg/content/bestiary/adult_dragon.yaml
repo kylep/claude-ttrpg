@@ -1,0 +1,33 @@
+name: Adult Dragon
+description: >
+  A dragon in its long prime — past the reckless hunger of youth and into
+  centuries of cold confidence; it has a lair, a hoard, and a territory, and
+  it defends all three with fire, wing, and a cruel, unhurried cunning.
+ac: 19     # armor class attacks must meet or beat
+hp: 262    # hit points per spawned instance
+speed: 8   # grid squares per combat turn (fights aloft on broad wings)
+attributes: {STR: 23, DEX: 10, CON: 21, INT: 16, WIS: 15, CHA: 19}  # DEX drives initiative
+attacks:  # range in squares; reach with neck and tail, breath from range
+  - {name: bite, attack_mod: 12, damage: "2d10+7", range: 2, kind: melee}   # reach 2
+  - {name: claw, attack_mod: 12, damage: "2d6+7", range: 1, kind: melee}
+  - {name: tail sweep, attack_mod: 12, damage: "2d8+7", range: 3, kind: melee}  # reach 3
+  - {name: fire breath, attack_mod: 12, damage: "6d6", range: 15, kind: ranged}
+xp: 13000  # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: "8d8", items: []}  # a hoard worth the risk; rolled per instance at encounter end
+flying: true  # enables aloft/reach targeting rules
+difficulty: boss  # GM guidance only — a step above the young dragon
+appearance: >
+  Adult dragons are enormous, easily the size of a farmhouse, with broad
+  wedge-shaped heads, ranked horns, and jaws lined with teeth as long as
+  daggers. Their scales have hardened past the bright sheen of youth into a
+  dense, overlapping armor, dulled and battle-notched, running in colors set by
+  kind — ember red, bronze, deep forest green. The wings are vast and leathery,
+  ribbed like a bat's, and fully flight-capable; a beat of them flattens the
+  grass and throws up dust. A long muscular tail counterbalances the neck, and
+  the eyes are slit-pupiled and knowing, the gaze of something that has been
+  hunted before and won. They carry the smell of hot metal and old smoke.
+image: art/bestiary/adult_dragon.png
+habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
+  - the higher reaches of Dragon Isle
+  - a hollowed White Cliff peak-lair
+  - a burned-out hold on the Wasteland's edge

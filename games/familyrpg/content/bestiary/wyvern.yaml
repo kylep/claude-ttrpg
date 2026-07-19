@@ -1,0 +1,32 @@
+name: Wyvern
+description: >
+  A dragon's smaller, dumber cousin — all wings, claws, and a whipping tail
+  tipped with a venomous stinger; it can't breathe fire and it can't reason,
+  but it hunts from the air and that stinger drops things far bigger than it.
+ac: 14     # armor class attacks must meet or beat
+hp: 110    # hit points per spawned instance
+speed: 8   # grid squares per combat turn (a true flyer; strikes and climbs away)
+attributes: {STR: 19, DEX: 10, CON: 16, INT: 5, WIS: 12, CHA: 6}  # DEX drives initiative
+attacks:  # range in squares; bite and claws up close, the stinger carries venom
+  - {name: bite, attack_mod: 7, damage: "2d6+4", range: 1, kind: melee}
+  - {name: claws, attack_mod: 7, damage: "2d8+4", range: 1, kind: melee}
+  - {name: stinger, attack_mod: 7, damage: "2d6+4", range: 1, kind: melee}  # venomous — GM may add a poison save
+xp: 2300   # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: "2d6", items: []}  # rolled per instance at encounter end, into the party pool
+flying: true  # enables aloft/reach targeting rules
+difficulty: tough  # GM guidance only
+appearance: >
+  A wyvern looks like a dragon that never finished — a long reptilian body on two
+  powerful hind legs, with the forelimbs fused into a pair of broad, ribbed wings
+  rather than a separate set of arms. It is a true flyer and spends most of its
+  life on the wing. The hide is pebbled and dull, in muddy greys, browns, and
+  swamp-greens, ridged along the spine, and the wedge head has a mouth of small
+  hooked teeth and cold, stupid eyes. Its defining feature is the tail: long,
+  muscular, and lashing, tipped with a curved bone stinger that beads with venom.
+  It carries the rank smell of a predator's roost and never strays far from the
+  crags where it nests.
+image: art/bestiary/wyvern.png
+habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
+  - the White Cliff crags
+  - the lower ridges of Dragon Isle
+  - the sea-cliffs near Stormhaven

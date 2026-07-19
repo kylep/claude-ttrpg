@@ -13,6 +13,18 @@ attacks:  # range in squares; scimitar and offhand dagger
 xp: 1300   # party pool sized for 4 PCs; split evenly at `engine encounter end`
 loot: {gold: "4d6", items: []}  # rolled per instance at encounter end, into the party pool
 difficulty: tough  # GM guidance only
+appearance: >
+  A bandit captain is the sharpest and best-armed of a road-crew, the one
+  the others actually fear. Where the rank and file make do with rags, the
+  captain wears a decent breastplate or a mail shirt taken off someone who
+  no longer needed it, a good cloak, and boots that fit. The gear is clean
+  and cared for: a fine scimitar, a parrying dagger, a trophy or two from
+  past scores. Human and of any coloring, they carry themselves with a
+  cocky, watchful ease, quick of eye and quicker of tongue, used to being
+  obeyed. Wingless and earthbound, they lead from a half-step back,
+  directing the fight and stepping in personally only when there is glory or
+  a throat worth the trouble.
+image: art/bestiary/bandit_captain.png
 habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
   - a West Road hideout
   - the hills near Duskhold

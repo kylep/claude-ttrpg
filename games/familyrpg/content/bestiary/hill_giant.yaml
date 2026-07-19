@@ -1,0 +1,30 @@
+name: Hill Giant
+description: >
+  A dim, hungry mountain of a creature that wanders down from the foothills
+  looking for something big to eat; it is not clever and not organized, but a
+  thrown boulder from a hill giant will flatten a cart, and it keeps coming.
+ac: 13     # armor class attacks must meet or beat
+hp: 105    # hit points per spawned instance
+speed: 8   # grid squares per combat turn
+attributes: {STR: 21, DEX: 8, CON: 19, INT: 5, WIS: 9, CHA: 6}  # DEX drives initiative
+attacks:  # range in squares; a reaching club and a hurled rock
+  - {name: greatclub, attack_mod: 8, damage: "3d8+5", range: 2, kind: melee}   # reach 2
+  - {name: thrown rock, attack_mod: 8, damage: "3d10+5", range: 8, kind: ranged}
+xp: 3900   # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: "3d8", items: []}  # rolled per instance at encounter end, into the party pool
+difficulty: tough  # GM guidance only
+appearance: >
+  Hill giants are the biggest and simplest of the giant-kin, two or three times
+  a person's height and shaped like a barrel with limbs — heavy bellies, sloped
+  shoulders, and huge slack-jawed faces with small, dull eyes. Their skin is a
+  weathered tan or ruddy brown, crusted with dirt, and they wear whatever hides
+  and scavenged cloth they can knot together, often with cookpots and stolen
+  gear dangling off a rope belt. Lank hair hangs over a low brow. They smell of
+  sweat and rot and carry uprooted trees or knotted clubs the size of a door.
+  Earthbound and lumbering, they move in a heavy sway, and everything about them
+  says slow, strong, and always, always hungry.
+image: art/bestiary/hill_giant.png
+habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
+  - the White Cliff foothills
+  - the lonely hills near Duskhold
+  - the Wasteland's rocky margins

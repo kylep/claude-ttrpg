@@ -11,6 +11,18 @@ attacks: [{name: rusty blade, attack_mod: 4, damage: "1d6+2", range: 1, kind: me
 xp: 200    # party pool sized for 4 PCs; split evenly at `engine encounter end`
 loot: {gold: "1d6", items: []}  # rolled per instance at encounter end, into the party pool
 difficulty: easy  # GM guidance only
+appearance: >
+  Goblins are wiry, knee-high raiders with skin in shades of mud-green to
+  sickly grey, all sharp angles and quick, twitchy movement. A goblin has a
+  head too big for its bony body, batlike ears, a broad flat nose, and wide
+  yellow or red eyes over a wide mouth full of little pointed teeth. Their
+  arms are long and their hands quick — good for grabbing and scavenging.
+  They dress in whatever they can steal or scrape together: hard leather
+  scraps, a dented pot for a helm, a scavenged blade kept wickedly sharp.
+  Wingless and earthbound, they are cowards one at a time and a real problem
+  in a pack, forever squabbling, cackling, and bolting the instant a fight
+  stops being easy.
+image: art/bestiary/goblin.png
 habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
   - the Free Road hedgerows
   - Great Plains outskirts (near Millbrook)

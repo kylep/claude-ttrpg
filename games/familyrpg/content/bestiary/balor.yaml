@@ -1,0 +1,33 @@
+name: Balor
+description: >
+  A towering demon of fire and shadow, a warlord of the deep places that even
+  the orcs of the Wasteland will not go near; it fights wrapped in its own flame,
+  driving lesser things ahead of it, and it enjoys every moment of the ruin it
+  brings.
+ac: 19     # armor class attacks must meet or beat
+hp: 262    # hit points per spawned instance
+speed: 8   # grid squares per combat turn (great membranous wings; fights aloft)
+attributes: {STR: 26, DEX: 15, CON: 22, INT: 20, WIS: 16, CHA: 22}  # DEX drives initiative
+attacks:  # range in squares; a burning blade up close, a long fire-whip, flame hurled from afar
+  - {name: flaming greatsword, attack_mod: 14, damage: "3d8+8", range: 1, kind: melee}
+  - {name: fire whip, attack_mod: 14, damage: "2d6+8", range: 6, kind: melee}   # long reach, drags victims in
+  - {name: hurl flame, attack_mod: 14, damage: "4d6", range: 12, kind: ranged}
+xp: 22000  # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: "8d10", items: []}  # rolled per instance at encounter end, into the party pool
+flying: true  # enables aloft/reach targeting rules
+difficulty: boss  # GM guidance only — an apex demon; shunned even by the orcs
+appearance: >
+  A balor is a giant of the lower dark, half again the height of an ogre and
+  broad as a doorway, its skin a deep charcoal red cracked through with lines of
+  molten light, as if a coal had been given arms and a will. Two curved horns
+  sweep back from a brutal, glowering face, and great ribbed wings — leathery and
+  full flight-capable — rise smoking from its shoulders. It is forever wreathed
+  in low flame that does not seem to burn it, and it carries a huge blade in one
+  fist and a long lash of living fire in the other. Everything about it is built
+  to loom: heavy hooves, a thick tail, and eyes like furnace-slits fixed on you
+  with unhurried, gleeful cruelty.
+image: art/bestiary/balor.png
+habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
+  - a burning rift deep in the Wasteland
+  - the ruined under-halls of Duskhold
+  - a scorched circle the orcs mark and avoid

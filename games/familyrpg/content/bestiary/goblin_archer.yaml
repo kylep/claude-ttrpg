@@ -11,6 +11,18 @@ attacks: [{name: short bow, attack_mod: 4, damage: "1d6+2", range: 16, kind: ran
 xp: 200    # party pool sized for 4 PCs; split evenly at `engine encounter end`
 loot: {gold: "1d6", items: []}  # rolled per instance at encounter end, into the party pool
 difficulty: easy  # GM guidance only
+appearance: >
+  Goblin archers are the same wiry, knee-high, mud-green raiders as their
+  sword-swinging kin, only these ones hang back at the treeline with a bow.
+  They are all sharp angles — bony limbs, a big head with batlike ears and a
+  broad flat nose, and yellow eyes over a mouthful of little pointed teeth.
+  Their gear is scavenged and lashed together: a short bow of bent green
+  wood, a quiver of crooked, uneven arrows, a jerkin of hard leather scraps.
+  Wingless and earthbound, they are cowards up close but nasty from a
+  distance, perching in branches and on rooftops to loose volleys, and the
+  moment a fight turns against the pack they are the first to bolt for
+  cover, shrieking the alarm.
+image: art/bestiary/goblin_archer.png
 habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
   - the Free Road hedgerows
   - the Deepwoods edge

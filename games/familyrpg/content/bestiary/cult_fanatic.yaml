@@ -1,0 +1,30 @@
+name: Cult Fanatic
+description: >
+  The true believer who leads a cult's dirty work — part preacher, part petty
+  sorcerer, wholly convinced; it hangs back chanting, flings bolts of dark
+  energy, and whips its hooded followers into throwing themselves at you.
+ac: 13     # armor class attacks must meet or beat
+hp: 33     # hit points per spawned instance
+speed: 6   # grid squares per combat turn
+attributes: {STR: 11, DEX: 14, CON: 12, INT: 10, WIS: 13, CHA: 14}  # DEX drives initiative
+attacks:  # range in squares; a ritual dagger up close, dark magic from range
+  - {name: ritual dagger, attack_mod: 4, damage: "1d4+2", range: 1, kind: melee}
+  - {name: shadow bolt, attack_mod: 4, damage: "3d6", range: 8, kind: ranged}  # channeled dark energy
+xp: 450    # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: "2d6", items: []}  # rolled per instance at encounter end, into the party pool
+difficulty: standard  # GM guidance only — deadlier with a mob of cultists around it
+appearance: >
+  A cult fanatic looks, at a glance, like anyone — because it was, until belief
+  hollowed it out. They dress in dark hooded robes over ordinary clothes, marked
+  with a painted or stitched sigil at the breast, and wear a scattering of grim
+  charms: bone beads, a symbol on a cord, ink stained into the skin of the hands.
+  The face beneath the hood is gaunt with fasting and lit with a bright, fixed
+  fervor, eyes a little too wide. They carry a ritual dagger and a well-thumbed
+  book of prayers, and when they work their small magics a faint shadow seems to
+  gather at their fingertips. Wingless and unremarkable in a crowd, they are
+  dangerous precisely because they blend in until the hoods go up.
+image: art/bestiary/cult_fanatic.png
+habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
+  - hidden shrines beneath Duskhold
+  - a cellar-chapel in a Great Plains town
+  - the Barrow-downs on the dark of the moon

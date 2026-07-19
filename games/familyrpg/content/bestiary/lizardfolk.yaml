@@ -1,0 +1,31 @@
+name: Lizardfolk
+description: >
+  A cold-eyed reptilian hunter of the wetlands, neither cruel nor kind but
+  simply practical; lizardfolk defend their marsh fiercely with barbed spears
+  and snapping jaws, and they think of soft-skinned outsiders mostly as trespass.
+ac: 13     # armor class attacks must meet or beat
+hp: 22     # hit points per spawned instance
+speed: 6   # grid squares per combat turn (as at home in water as on land)
+attributes: {STR: 15, DEX: 10, CON: 13, INT: 7, WIS: 12, CHA: 7}  # DEX drives initiative
+attacks:  # range in squares; a barbed spear and a reflexive bite
+  - {name: barbed spear, attack_mod: 4, damage: "1d6+2", range: 1, kind: melee}
+  - {name: bite, attack_mod: 4, damage: "1d6+2", range: 1, kind: melee}
+xp: 200    # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: "1d6", items: []}  # rolled per instance at encounter end, into the party pool
+difficulty: standard  # GM guidance only
+appearance: >
+  Lizardfolk are tall, lean reptilian people, a head above most humans, covered
+  head to tail in fine scales that range from swamp-green to mud-brown to muted
+  grey, often barred or mottled for cover among the reeds. A muscular tail trails
+  behind for balance, and a low ridge of blunt spines runs from skull to spine.
+  The head is broad and blunt-snouted with a mouth of small sharp teeth, and the
+  eyes are slit-pupiled, flat, and unreadable. They wear little — hide harnesses,
+  bone and shell ornaments, woven-reed belts hung with tools and trophies — and
+  favor spears tipped with sharpened bone. Earthbound but powerful swimmers, they
+  move with a still, watchful economy, going motionless for long stretches before
+  striking.
+image: art/bestiary/lizardfolk.png
+habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
+  - the heart of the Reeking Marsh
+  - the reed-shallows of Heartmere
+  - the flooded lowlands south of the Deepwoods

@@ -11,6 +11,18 @@ attacks: [{name: rusted shortsword, attack_mod: 4, damage: "1d6+2", range: 1, ki
 xp: 200    # party pool sized for 4 PCs; split evenly at `engine encounter end`
 loot: {gold: null, items: []}  # rolled per instance at encounter end, into the party pool
 difficulty: standard  # GM guidance only
+appearance: >
+  A skeleton is the bare bones of the dead pulled upright and set marching
+  by dark magic — no flesh, no organs, just a clattering frame of yellowed,
+  age-browned bone held together by nothing anyone can see. Cobwebs and
+  grave-dust cling to it, and scraps of the rotted clothing or rusted armor
+  it was buried in still hang off the ribs and hips. It has no eyes, yet the
+  empty sockets seem to track you, sometimes lit by a faint cold spark. It
+  moves in a stiff, jerking, tireless gait and makes no sound but the dry
+  rattle of bone on bone. Earthbound and mindless, it feels no fear and no
+  pain, and it swings its rusted blade with the same blank patience whether
+  it is whole or falling to pieces.
+image: art/bestiary/skeleton.png
 habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
   - Duskhold
   - the Barrow-downs

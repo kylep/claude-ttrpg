@@ -11,6 +11,18 @@ attacks: [{name: corrosive touch, attack_mod: 5, damage: "2d6+1", range: 1, kind
 xp: 300    # party pool sized for 4 PCs; split evenly at `engine encounter end`
 loot: {gold: null, items: []}  # rolled per instance at encounter end, into the party pool
 difficulty: standard  # GM guidance only
+appearance: >
+  A gray ooze is a creeping slick of living slime that looks, until it
+  moves, like nothing more than wet stone or a puddle of dirty water. It is
+  a low, spreading mass of translucent grey jelly, wet and glistening, that
+  oozes along floor and wall in eerie silence, flattening to slide under
+  doors and pooling into cracks. It has no face, no eyes, no shape it holds
+  for long — just a questing, formless bulk that rears up to lash out when
+  prey comes close. Its touch is corrosive, eating at metal and flesh alike
+  and leaving armor pitted and smoking. Earthbound and slow, it hunts by
+  ambush, waiting motionless in the muck of sewer and cave until something
+  warm blunders within reach.
+image: art/bestiary/gray_ooze.png
 habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
   - Kingsreach Sewers
   - Ironford Deep-Tunnels

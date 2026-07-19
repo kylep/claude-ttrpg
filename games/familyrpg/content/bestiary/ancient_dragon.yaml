@@ -1,0 +1,35 @@
+name: Ancient Dragon
+description: >
+  The oldest and largest thing that flies — a mountain of scale and muscle
+  that has watched whole kingdoms rise and fall; it does not hunt so much as
+  decide, and when an ancient wyrm decides you are prey the sky itself seems
+  to tilt toward its jaws.
+ac: 21     # armor class attacks must meet or beat
+hp: 460    # hit points per spawned instance
+speed: 10  # grid squares per combat turn (vast wings; fights aloft with ease)
+attributes: {STR: 27, DEX: 10, CON: 25, INT: 18, WIS: 17, CHA: 23}  # DEX drives initiative
+attacks:  # range in squares; long neck and tail give real reach, breath from far off
+  - {name: bite, attack_mod: 15, damage: "2d10+9", range: 2, kind: melee}   # reach 2
+  - {name: claw, attack_mod: 15, damage: "2d6+9", range: 1, kind: melee}
+  - {name: tail sweep, attack_mod: 15, damage: "2d8+9", range: 3, kind: melee}  # reach 3
+  - {name: fire breath, attack_mod: 15, damage: "12d6", range: 18, kind: ranged}
+xp: 40000  # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: "12d10", items: []}  # a true hoard; rolled per instance at encounter end
+flying: true  # enables aloft/reach targeting rules
+difficulty: boss  # GM guidance only — the capstone threat of the whole world
+appearance: >
+  Ancient dragons are the largest living things in the world, long-necked and
+  deep-chested, their bodies armored in scales the size of shields that have
+  darkened and thickened over centuries into something closer to plate than
+  hide. A single foreclaw could close around a wagon. Great ribbed wings fold
+  down their flanks like furled sails and, spread, blot out the sun; these are
+  full flying creatures, at home miles up. The long tail ends in a bony fan or
+  spade, and a crown of swept-back horns frames eyes that glow like banked coals
+  and hold an unsettling, patient intelligence. Coloring runs by kind — smoldering
+  red, storm-grey, verdigris green — always weathered, scarred, and dusted with
+  the grit of a lair no one has entered and left.
+image: art/bestiary/ancient_dragon.png
+habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
+  - the sealed heart of Dragon Isle
+  - a vault deep beneath the White Cliff Mountains
+  - the oldest dark below Duskhold

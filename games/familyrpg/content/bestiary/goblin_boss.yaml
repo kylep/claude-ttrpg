@@ -11,6 +11,18 @@ attacks: [{name: notched scimitar, attack_mod: 5, damage: "1d6+3", range: 1, kin
 xp: 300    # party pool sized for 4 PCs; split evenly at `engine encounter end`
 loot: {gold: "2d6", items: []}  # rolled per instance at encounter end, into the party pool
 difficulty: standard  # GM guidance only
+appearance: >
+  A goblin boss is the biggest, meanest, and luckiest goblin of a warband —
+  the one that clawed its way to the top and holds it by being nastier than
+  the rest. It is still small by any other measure, but broader and better-
+  fed than its underlings, with mud-green skin, a jutting jaw, and cunning
+  yellow eyes. Where the rank and file wear scraps, the boss struts in a
+  patchwork of stolen finery: a too-big helm, a mail shirt cinched with
+  rope, a cloak that was someone's good curtain, and a wickedly notched
+  blade. Wingless and earthbound, it drives its pack from behind with cuffs
+  and shrieked orders, brave as long as the numbers hold and gone the
+  instant they don't.
+image: art/bestiary/goblin_boss.png
 habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
   - Wasteland raider-camps
   - the Deepwoods edge

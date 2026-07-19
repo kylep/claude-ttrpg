@@ -1,0 +1,31 @@
+name: Lich
+description: >
+  A sorcerer who traded death for something worse and kept right on studying;
+  a lich is centuries of magic bound into a dry, deathless frame, and it fights
+  the way it thinks — patiently, from a distance, and always three moves ahead.
+ac: 17     # armor class attacks must meet or beat
+hp: 180    # hit points per spawned instance
+speed: 6   # grid squares per combat turn
+attributes: {STR: 11, DEX: 16, CON: 16, INT: 21, WIS: 15, CHA: 16}  # DEX drives initiative
+attacks:  # range in squares; a caster — fights mostly at range, touch as a last resort
+  - {name: paralyzing touch, attack_mod: 12, damage: "3d6", range: 1, kind: melee}  # chilling grip
+  - {name: shadow bolt, attack_mod: 12, damage: "4d8", range: 12, kind: ranged}     # necrotic spell
+  - {name: ice lance, attack_mod: 12, damage: "3d10", range: 15, kind: ranged}      # frost spell
+xp: 18000  # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: "6d10", items: []}  # spellbooks, reagents, and worse; rolled at encounter end
+difficulty: boss  # GM guidance only — a spellcaster boss; kill it and it may not stay dead
+appearance: >
+  A lich is a sorcerer who has let death happen but refused to leave — a gaunt,
+  robed figure of dried skin drawn tight over bone, or in the oldest cases a bare
+  skeleton hung with the tatters of once-fine vestments. Points of cold light
+  burn in the empty sockets, and a faint chill and the smell of old dust travel
+  with it. Its robes are dark and heavy, embroidered with faded sigils and clasped
+  with tarnished silver, and its long fingers are ringed with dulled gemstones
+  that still hold a low glow. It moves without hurry and without breath. It does
+  not fly; it walks, or simply waits, wreathed in a thin haze of grave-cold air,
+  the whole of it radiating patience and quiet, bottomless menace.
+image: art/bestiary/lich.png
+habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
+  - the deepest crypt beneath Duskhold
+  - a hidden vault below the Barrow-downs
+  - a sealed tower no map still marks

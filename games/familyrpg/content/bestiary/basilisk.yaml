@@ -1,0 +1,29 @@
+name: Basilisk
+description: >
+  A squat, heavy lizard whose gaze can turn flesh to stone; it is slow and
+  ill-tempered, lairing among the statues that used to be other creatures, and
+  the real danger is meeting its eyes, not its teeth.
+ac: 15     # armor class attacks must meet or beat
+hp: 52     # hit points per spawned instance
+speed: 4   # grid squares per combat turn (slow and low to the ground)
+attributes: {STR: 16, DEX: 8, CON: 17, INT: 2, WIS: 8, CHA: 7}  # DEX drives initiative
+attacks:  # range in squares; a heavy bite — its petrifying gaze is a GM-run hazard, not an attack roll
+  - {name: bite, attack_mod: 5, damage: "2d6+3", range: 1, kind: melee}  # meeting its eyes: GM may call for a save vs. slow petrification
+xp: 1400   # party pool sized for 4 PCs; split evenly at `engine encounter end`
+loot: {gold: null, items: []}  # rolled per instance at encounter end, into the party pool
+difficulty: tough  # GM guidance only — the gaze makes it deadlier than its stats suggest
+appearance: >
+  A basilisk is a thickset eight-legged reptile about the size of a large hog,
+  low-slung and heavy, plated in coarse dark scales that shade from bruise-brown
+  to a dull greenish-black. A ridge of blunt spines runs down its back and a
+  short, stubby tail drags behind. The broad wedge head is mostly jaw, set with
+  peg-like teeth, and above it sit the eyes — pale, filmy, and faintly luminous,
+  the source of all the trouble, said to leach the color and life out of whatever
+  holds their stare too long. It is earthbound and ponderous, waddling on splayed
+  legs, and its lair is easy to spot: a scatter of grey, weathered statues frozen
+  mid-flight, all of them things that once had the bad luck to look up.
+image: art/bestiary/basilisk.png
+habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
+  - deep caves in the White Cliff Mountains
+  - the Barrow-downs' old stone rings
+  - forgotten cellars beneath Duskhold

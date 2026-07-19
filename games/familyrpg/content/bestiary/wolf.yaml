@@ -11,6 +11,18 @@ attacks: [{name: bite, attack_mod: 4, damage: "1d6+3", range: 1, kind: melee}]  
 xp: 200    # party pool sized for 4 PCs; split evenly at `engine encounter end`
 loot: {gold: "1d6", items: []}  # rolled per instance at encounter end, into the party pool
 difficulty: standard  # GM guidance only
+appearance: >
+  Wolves are lean, grey-coated pack-hunters about waist-high to a person,
+  built for endurance rather than bulk — deep-chested, long-legged, and
+  light on their feet. Their fur is a weathered mix of grey, tan, black, and
+  cream that blends into brush and snow alike, thickening to a ruff at the
+  neck. The head is narrow and alert, with pricked ears, a long muzzle, and
+  pale gold or amber eyes that miss nothing. They hunt in coordinated packs,
+  reading one another with ears, tail, and glance, and wear down bigger prey
+  by patience and teamwork. Earthbound but tireless over any distance, they
+  trot in an easy loping gait and raise the whole pack with a rising,
+  carrying howl.
+image: art/bestiary/wolf.png
 habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
   - the Deepwoods
   - the Northland Tundra
