@@ -40,6 +40,12 @@
     border-radius: 2px; letter-spacing: .08em;
   }
   header .lens.gm { background: var(--blood); color: var(--parchment); }
+  header #gloss-btn {
+    margin-left: auto; font-family: var(--mono); font-size: .72rem;
+    color: var(--gold); background: transparent; border: 1px solid var(--gold);
+    border-radius: 4px; padding: .2rem .7rem; cursor: pointer; letter-spacing: .04em;
+  }
+  header #gloss-btn:hover { background: var(--gold); color: var(--ink); }
 
   .table { display: grid; grid-template-columns: minmax(0, 7fr) minmax(320px, 4fr);
            gap: 1.4rem; padding: 1.2rem; max-width: 1500px; margin: 0 auto;
@@ -161,6 +167,44 @@
   #overlay { position: fixed; inset: 0; background: rgba(12, 9, 7, .74);
              display: grid; place-items: center; z-index: 10; padding: 1.2rem; }
   #overlay[hidden] { display: none; }
+
+  /* ---- the glossary overlay ---------------------------------------------- */
+  #gloss { position: fixed; inset: 0; background: rgba(12, 9, 7, .96); z-index: 5;
+    display: grid; grid-template-columns: 210px minmax(0, 1fr); overflow: hidden; }
+  #gloss[hidden] { display: none; }
+  .gl-side { border-right: 1px solid var(--edge); padding: 1rem .6rem; overflow-y: auto;
+    display: flex; flex-direction: column; gap: .3rem; background: var(--surface); }
+  .gl-side .gl-title { font-family: var(--mono); font-size: .7rem; color: var(--muted);
+    letter-spacing: .12em; margin: 0 .5rem .6rem; }
+  .gl-side button { text-align: left; background: transparent; border: 0; cursor: pointer;
+    color: var(--parchment); font-family: var(--serif); font-size: 1rem;
+    padding: .45rem .6rem; border-radius: 5px; }
+  .gl-side button:hover { background: var(--edge); }
+  .gl-side button.active { background: var(--edge); color: var(--gold); }
+  .gl-side .gl-close { margin-top: auto; color: var(--muted); font-family: var(--mono);
+    font-size: .72rem; }
+  .glossary { overflow-y: auto; padding: 0 0 3rem; }
+  .glossary .gl-banner { width: 100%; max-height: 320px; object-fit: cover; display: block; }
+  .glossary .gl-head { padding: 1.2rem 2rem .2rem; }
+  .glossary h1 { font-family: var(--serif); font-size: 2rem; color: var(--gold); margin: 0; }
+  .glossary .gl-body { padding: 1rem 2rem; max-width: 860px; }
+  .glossary h3 { font-family: var(--serif); color: var(--ember); margin: 0 0 .3rem; }
+  .glossary .card { border: 1px solid var(--edge); border-radius: 8px; background: var(--surface);
+    padding: 1rem 1.2rem; margin: 1rem 0; overflow: hidden; }
+  .glossary .roster img.portrait { float: left; width: 120px; height: 120px; object-fit: cover;
+    border-radius: 6px; border: 1px solid var(--edge); margin: 0 1rem .5rem 0; }
+  .glossary .tag { display: inline-block; background: var(--edge); color: var(--parchment);
+    border-radius: 4px; padding: .1rem .55rem; font-size: .78rem; font-family: var(--mono);
+    margin: 0 .3rem .3rem 0; }
+  .glossary .lead { margin: .4rem 0; }
+  .glossary .fullbleed { text-align: center; margin: 1.4rem 0; }
+  .glossary .fullbleed img { max-width: 100%; border-radius: 8px; }
+  .glossary svg { max-width: 100%; height: auto; }
+  @media (max-width: 720px) {
+    #gloss { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); }
+    .gl-side { flex-direction: row; flex-wrap: wrap; border-right: 0; border-bottom: 1px solid var(--edge); }
+    .gl-side .gl-title { width: 100%; }
+  }
   .sheet { background: var(--surface); border: 1px solid var(--gold); border-radius: 8px;
            max-width: 34rem; width: 100%; max-height: 86vh; overflow-y: auto;
            padding: 1.35rem 1.5rem; position: relative; }
@@ -282,6 +326,7 @@
   <span class="where" id="where"></span>
   <span class="pulse" id="pulse" title="live — updates automatically"></span>
   <span class="lens" id="lens"></span>
+  <button id="gloss-btn" type="button">Glossary</button>
 </header>
 
 <div class="table">
@@ -305,6 +350,7 @@
 </div>
 
 <div id="overlay" hidden role="dialog" aria-modal="true"></div>
+<div id="gloss" hidden role="dialog" aria-modal="true" aria-label="Glossary"></div>
 
 <script>
 const GM = location.pathname.replace(/\/+$/, "") === "/gm";
@@ -554,6 +600,51 @@ async function openEntity(ref) {
 function closeOverlay() { overlay.hidden = true; overlay.replaceChildren(); }
 overlay.addEventListener("click", e => { if (e.target === overlay) closeOverlay(); });
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeOverlay(); });
+
+/* ---- the glossary overlay ------------------------------------------------ */
+
+const glossEl = document.getElementById("gloss");
+
+async function loadGlossSection(id, sideButtons) {
+  sideButtons.forEach(b => b.classList.toggle("active", b.dataset.id === id));
+  const r = await fetch("/api/glossary/" + encodeURIComponent(id) + "?lens=" + LENS);
+  const content = glossEl.querySelector(".glossary");
+  content.replaceChildren();
+  if (!r.ok) { content.append(el("p", "gl-body", "Could not load this section.")); return; }
+  const sec = await r.json();
+  if (sec.cover) {
+    const img = el("img", "gl-banner"); img.src = sec.cover; img.alt = ""; content.append(img);
+  }
+  const head = el("div", "gl-head"); head.append(el("h1", null, sec.title)); content.append(head);
+  const bodyWrap = el("div", "gl-body");
+  bodyWrap.innerHTML = sec.body_html;   // server-escaped content (see spec: trust model)
+  content.append(bodyWrap);
+  content.scrollTop = 0;
+}
+
+async function openGlossary() {
+  const r = await fetch("/api/glossary");
+  const manifest = r.ok ? await r.json() : [];
+  const side = el("nav", "gl-side");
+  side.append(el("div", "gl-title", "GLOSSARY"));
+  const buttons = manifest.map(sec => {
+    const b = el("button", null, sec.title); b.dataset.id = sec.id;
+    b.addEventListener("click", () => loadGlossSection(sec.id, buttons));
+    side.append(b); return b;
+  });
+  const close = el("button", "gl-close", "✕ Close"); close.addEventListener("click", closeGlossary);
+  side.append(close);
+  const content = el("div", "glossary");
+  glossEl.replaceChildren(side, content);
+  glossEl.hidden = false;
+  if (manifest.length) loadGlossSection(manifest[0].id, buttons);
+}
+
+function closeGlossary() { glossEl.hidden = true; glossEl.replaceChildren(); }
+
+document.getElementById("gloss-btn").addEventListener("click", openGlossary);
+glossEl.addEventListener("click", e => { if (e.target === glossEl) closeGlossary(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !glossEl.hidden) closeGlossary(); });
 
 /* ---- linking names in prose to their cards ------------------------------ */
 
