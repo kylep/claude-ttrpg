@@ -17,18 +17,19 @@ import sys
 def _ensure_native_lib_path() -> None:
     if sys.platform != "darwin" or os.environ.get("DYLD_FALLBACK_LIBRARY_PATH"):
         return
-    candidates: list[str] = []
-    import subprocess
+    # Common Homebrew lib dirs first — avoids spawning `brew` on every import.
+    candidates = ["/opt/homebrew/lib", "/usr/local/lib"]
+    if not any(os.path.isdir(p) for p in candidates):
+        import subprocess
 
-    try:
-        prefix = subprocess.run(
-            ["brew", "--prefix"], capture_output=True, text=True, timeout=5
-        ).stdout.strip()
-        if prefix:
-            candidates.append(os.path.join(prefix, "lib"))
-    except (OSError, subprocess.SubprocessError):
-        pass
-    candidates += ["/opt/homebrew/lib", "/usr/local/lib"]
+        try:
+            prefix = subprocess.run(
+                ["brew", "--prefix"], capture_output=True, text=True, timeout=5
+            ).stdout.strip()
+            if prefix:
+                candidates.insert(0, os.path.join(prefix, "lib"))
+        except (OSError, subprocess.SubprocessError):
+            pass
     existing = [p for p in dict.fromkeys(candidates) if os.path.isdir(p)]
     if existing:
         os.environ["DYLD_FALLBACK_LIBRARY_PATH"] = ":".join(existing)

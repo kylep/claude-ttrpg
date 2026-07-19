@@ -28,7 +28,7 @@ def _font_face_css() -> str:
 
 _PALETTE = {
     "ink": "#22201c", "rule": "#9c8560", "frame": "#cdbfa0",
-    "accent": "#6b4f2a", "paper": "#fdfbf5", "band": "#efe4cc",
+    "accent": "#6b4f2a", "band": "#efe4cc",
     "cover_bg": "#1a1613", "cover_ink": "#f4ecd8", "cover_title": "#e8b04b",
 }
 
@@ -82,6 +82,7 @@ th, td {{ border: 1px solid {_PALETTE['frame']}; padding: 0.35rem 0.6rem;
 th {{ background: {_PALETTE['band']}; }}
 .fullbleed {{ page-break-before: always; text-align: center; }}
 .fullbleed img {{ max-width: 100%; max-height: 250mm; }}
+/* No float here: WeasyPrint 69 crashes paginating 2+ floated ::first-letter cards. */
 p.lead::first-letter {{ font-family: 'Cinzel', Georgia, serif; font-size: 1.6em;
   padding: 0 0.03em 0 0; color: {_PALETTE['accent']}; }}
 """
@@ -147,7 +148,7 @@ def build_races(src):
         body = (
             f"<p>{desc}</p>{appear}"
             f"<p><span class='tag'>Ability bonuses: {esc(bonuses)}</span>"
-            f"<span class='tag'>Speed {race['speed']}</span></p>"
+            f"<span class='tag'>Speed {esc(str(race['speed']))}</span></p>"
         )
         cards.append(_roster_card(name.title(), img, body))
     body = f"<div class='roster'>{''.join(cards)}</div>"
@@ -168,8 +169,8 @@ def build_bestiary(src):
         notes = f"<p><strong>Notes:</strong> {esc(mon['notes'].strip())}</p>" if mon.get("notes") else ""
         body = (
             f"<p>{esc(mon.get('description', ''))}</p>"
-            f"<p><span class='tag'>AC {mon['ac']}</span><span class='tag'>HP {mon['hp']}</span>"
-            f"<span class='tag'>Speed {mon['speed']}</span><span class='tag'>XP {mon['xp']}</span>"
+            f"<p><span class='tag'>AC {esc(str(mon['ac']))}</span><span class='tag'>HP {esc(str(mon['hp']))}</span>"
+            f"<span class='tag'>Speed {esc(str(mon['speed']))}</span><span class='tag'>XP {esc(str(mon['xp']))}</span>"
             f"<span class='tag'>{esc(mon.get('difficulty', '?'))}</span></p>"
             f"<p><strong>Attacks:</strong> {esc(attacks)}</p>{notes}"
         )
@@ -189,8 +190,8 @@ def build_classes(src):
         cards.append(
             f"<div class='card'><h3>{esc(name.title())}</h3>"
             f"<p class='lead'>{esc(cls.get('description', '').strip())}</p>"
-            f"<p><span class='tag'>Hit die d{cls['hit_die']}</span>"
-            f"<span class='tag'>Start gold {cls.get('starting_gold', 0)} gp</span></p>"
+            f"<p><span class='tag'>Hit die d{esc(str(cls['hit_die']))}</span>"
+            f"<span class='tag'>Start gold {esc(str(cls.get('starting_gold', 0)))} gp</span></p>"
             f"<p><strong>Starting gear:</strong> {esc(gear)}.</p>"
             f"<p><strong>Skills:</strong> choose {cls.get('skill_choices', 0)} from {esc(skills)}.</p>"
             f"</div>"

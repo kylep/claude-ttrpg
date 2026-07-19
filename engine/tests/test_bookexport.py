@@ -61,6 +61,19 @@ def test_roster_card_omits_missing_image():
     assert "Orc" in card
 
 
+def test_roster_card_escapes_name():
+    card = bookexport._roster_card("<script>x</script>", None, "<p>ok</p>")
+    assert "<script>" not in card
+    assert "&lt;script&gt;" in card
+
+
+def test_document_and_cover_escape_title_and_subtitle():
+    html = bookexport._document("<b>T</b>", "<i>S</i>", None, "<p>body</p>")
+    assert "<b>T</b>" not in html
+    assert "&lt;b&gt;T&lt;/b&gt;" in html
+    assert "&lt;i&gt;S&lt;/i&gt;" in html
+
+
 def test_build_classes_pdf():
     pdf = bookexport.build_classes(_familyrpg_src())
     assert pdf.startswith(b"%PDF")
