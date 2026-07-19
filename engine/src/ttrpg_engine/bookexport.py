@@ -71,8 +71,9 @@ h3 {{ color: {_PALETTE['accent']}; margin: 0 0 0.25rem; }}
   break-inside: avoid; }}
 .roster {{ display: block; }}
 .roster .card {{ overflow: hidden; }}
-.roster img.portrait {{ float: left; width: 42mm; height: 42mm;
-  object-fit: cover; border: 1px solid {_PALETTE['frame']}; border-radius: 4px;
+.roster img.portrait {{ float: left; width: 38mm; height: 52mm;
+  object-fit: cover; object-position: center top;
+  border: 1px solid {_PALETTE['frame']}; border-radius: 4px;
   margin: 0 1rem 0.5rem 0; }}
 .tag {{ display: inline-block; background: {_PALETTE['band']}; border-radius: 3px;
   padding: 0.05rem 0.5rem; font-size: 0.82em; margin: 0 0.25rem 0.25rem 0; }}
