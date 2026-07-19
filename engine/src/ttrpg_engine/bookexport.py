@@ -57,9 +57,9 @@ h3 {{ color: {_PALETTE['accent']}; margin: 0 0 0.25rem; }}
   background: {_PALETTE['cover_bg']}; color: {_PALETTE['cover_ink']};
   display: flex; flex-direction: column; justify-content: flex-end; }}
 .cover img.banner {{ position: absolute; top: 0; left: 0; width: 210mm;
-  height: 297mm; object-fit: cover; }}
-.cover .plate {{ position: relative; margin: 0 0 40mm; padding: 10mm 16mm;
-  background: linear-gradient(transparent, rgba(0,0,0,0.72) 30%); }}
+  height: 297mm; object-fit: cover; object-position: center top; }}
+.cover .plate {{ position: relative; margin: 0; padding: 24mm 16mm 30mm;
+  background: linear-gradient(transparent, rgba(0,0,0,0.80) 60%); }}
 .cover h1 {{ font-size: 46pt; font-weight: 700; letter-spacing: 0.04em;
   color: {_PALETTE['cover_title']}; margin: 0;
   text-shadow: 0 2px 8px rgba(0,0,0,0.8); }}
@@ -242,6 +242,10 @@ def _world_body(src):
     painted = _content_image(content_dir, "maps/WorldMapPainted.png")
     if painted:
         body += f"<div class='fullbleed'><img src='{esc(painted)}' alt='World map'></div>"
+    town = _content_image(content_dir, "art/banners/millbrook.png")
+    if town:
+        body += (f"<div class='fullbleed'><h3>Millbrook — the starting town</h3>"
+                 f"<img src='{esc(town)}' alt='Millbrook'></div>")
     return body
 
 
