@@ -3,7 +3,7 @@ import re
 from pathlib import Path
 
 from ttrpg_engine import game as game_mod
-from ttrpg_engine import region_map, render, worldfs
+from ttrpg_engine import quests, region_map, render, worldfs
 from ttrpg_engine.combat import effect_names
 from ttrpg_engine.errors import EngineError
 from ttrpg_engine.markdown_render import render_markdown, sanitize_html
@@ -100,13 +100,18 @@ def _token_status(roster: list[dict]) -> dict:
     return out
 
 
-def _quests(root: Path) -> list[dict]:
-    # raw file reads only — quests.list_quests expires overdue quests on
-    # disk as a side effect, and the viewer must never write anything
+def _quests(root: Path, lens: str, at_location: str | None) -> list[dict]:
+    # raw file reads only — quests.list_quests/visible_quests expire overdue
+    # quests on disk as a side effect, and the viewer must never write anything.
+    # We apply the same player-lens visibility rule (reveal-on-arrival) as
+    # quests.visible_quests, but against the raw reads.
     qdir = root / "state" / "quests"
     if not qdir.is_dir():
         return []
-    return [worldfs.read_yaml(p) for p in sorted(qdir.glob("*.yaml"))]
+    out = [worldfs.read_yaml(p) for p in sorted(qdir.glob("*.yaml"))]
+    if lens != "gm":
+        out = [q for q in out if quests.is_visible(q, at_location)]
+    return out
 
 
 def _timeline_tail(root: Path) -> list[dict]:
@@ -342,7 +347,7 @@ def state_snapshot(root: Path, g: dict, lens: str) -> dict:
         "stash": party["stash"],
         "party": [worldfs.read_yaml(worldfs.state(root, f"party/{pid}"))
                   for pid in party["members"]],
-        "quests": _quests(root),
+        "quests": _quests(root, lens, str(party["location"])),
         "encounter": None,
         "map_svg": None,
     }

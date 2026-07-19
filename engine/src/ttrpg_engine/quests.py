@@ -339,7 +339,7 @@ def list_quests(root: Path, status: str | None = None) -> list[dict]:
     return [_summary(q) for q in quests]
 
 
-def _is_visible(quest: dict, at_location: str | None) -> bool:
+def is_visible(quest: dict, at_location: str | None) -> bool:
     """Player-lens visibility for a single quest at the party's current location.
     An `offered` quest pinned to a `location` (its board) is only visible when the
     party is standing there; an offered quest with no location is visible
@@ -358,5 +358,5 @@ def visible_quests(root: Path, *, lens: str = "gm", at_location: str | None = No
     list_quests' deadline-expiry side effect. This is the API the viewer calls."""
     quests = [check_expiry(root, load_quest(root, qid)) for qid in list_quest_ids(root)]
     if lens != "gm":
-        quests = [q for q in quests if _is_visible(q, at_location)]
+        quests = [q for q in quests if is_visible(q, at_location)]
     return [_summary(q) for q in quests]
