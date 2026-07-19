@@ -1,0 +1,130 @@
+# Town node map for MILLBROOK — the starter village (game.yaml start_location).
+#
+# This is a WALK-SCALE sub-map: the party moves freely on foot between these
+# spots, so edges carry no `hours` (unlike the world region.yaml, which advances
+# the travel clock). The engine renders the world region map, not town sub-maps
+# yet — for now this is GM reference and the source of the town's layout.
+#
+# `start` is where the party begins the campaign. `banner` is the town's cover
+# art, shown at session open and on first arrival (see content/adventure.md).
+# Nodes list who's there (npc ids from content/npcs.yaml) and any key feature.
+# The town sits AT region node `millbrook`; the gate is the way out to the world.
+
+start: travellers_tavern
+banner: art/banners/millbrook.png
+region_node: millbrook   # this town is the 'millbrook' node on the world map
+
+nodes:
+  travellers_tavern:
+    name: The Travellers Tavern
+    kind: inn
+    npcs: [bess_tandy]
+    description: >
+      Low-beamed, smoky, and the only place in Millbrook with real news. Where
+      the party begins — Bess Tandy pours the drinks and the gossip both.
+
+  gate:
+    name: The Town Gate
+    kind: gate
+    exit_to: millbrook   # step through here onto the world map (the Free Road)
+    description: >
+      The single gate in Millbrook's tired old wall, standing open more often
+      than not. Beyond it the Free Road runs east to Kingsreach and west to the
+      Stonewatch pass, and the farm fields spread all around.
+
+  watchtower:
+    name: The Watchtower
+    kind: tower
+    npcs: [watchman_toft]
+    description: >
+      A shabby wooden tower beside the gate with one aging guard, Watchman Toft,
+      who watches the clouds more than the road but knows every old story in town.
+
+  town_green:
+    name: The Town Green
+    kind: common
+    feature: the well and the notice board
+    npcs: [headwoman_aldith]
+    description: >
+      The heart of the village: a common green with the well where the gossip
+      really flows and the much-nailed notice board where Headwoman Aldith posts
+      the jobs.
+
+  trading_post:
+    name: The Trading Post
+    kind: shop
+    npcs: [doran_cobb]
+    description: >
+      Millbrook's one shop, kept by shrewd-but-fair Doran Cobb. Frontier-modest
+      stock (see content/adventure.md); anything fancier is "on order from
+      Kingsreach."
+
+  cottages:
+    name: The Cottages
+    kind: houses
+    description: >
+      The townsfolk's homes, huddled in twos and threes with chickens underfoot
+      and washing on the lines.
+
+  shrine:
+    name: The Open Shrine
+    kind: shrine
+    npcs: [mother_wenna]
+    description: >
+      An open-air shrine to all the gods at once — frontier practicality, thank
+      whoever did you the favor. Old Mother Wenna tends it and the graveyard both.
+
+  graveyard:
+    name: The Graveyard
+    kind: graveyard
+    description: >
+      A small, crowded cemetery against the wall where the same dozen family
+      names repeat. Quiet — for now.
+
+  mill_road:
+    name: Mill Road
+    kind: street
+    feature: the toppled bronze statue blocks wagons here
+    description: >
+      The dirt main street from the gate down to the mill. The great fallen
+      bronze hero lies across it, and while folk can squeeze past on foot, no
+      wagon can — which is Doran Cobb's whole problem.
+
+  old_mill:
+    name: The Old Mill
+    kind: mill
+    npcs: [mabon_miller, jory]
+    feature: a trapdoor drops to the Cellars below
+    description: >
+      The working heart of the village, its wheel turning in the brook. A
+      trapdoor in the floor drops into the storage tunnels where the trouble is.
+
+  cellars:
+    name: The Cellars
+    kind: dungeon
+    hidden: true   # reached through the mill trapdoor; the thread-1 starter dungeon
+    description: >
+      The old storage and root tunnels beneath the mill, now overrun — rats
+      first, then kobolds who dug up from the mines below, and worse in the dark.
+
+  dobbins_farm:
+    name: Dobbin's Farm
+    kind: farm
+    outside_wall: true
+    npcs: [farmer_dobbin]
+    description: >
+      Farmer Dobbin's holding in the north fields just outside the wall, and the
+      gap in the fence where his prize pig Truffles got out.
+
+edges:
+  - {between: [gate, travellers_tavern]}
+  - {between: [gate, watchtower]}
+  - {between: [gate, dobbins_farm]}        # out through the gate to the fields
+  - {between: [travellers_tavern, town_green]}
+  - {between: [town_green, trading_post]}
+  - {between: [town_green, cottages]}
+  - {between: [town_green, shrine]}
+  - {between: [shrine, graveyard]}
+  - {between: [town_green, mill_road]}
+  - {between: [mill_road, old_mill]}
+  - {between: [old_mill, cellars]}         # down the trapdoor

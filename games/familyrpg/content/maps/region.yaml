@@ -9,14 +9,14 @@
 #   Travel model (first pass, tunable): foot ~1h per mile (a day's march ~24mi);
 #   the Ironline rail ~5x faster; sea passage ~2.5x faster.
 nodes:
-  millbrook: {name: Millbrook, coords: [6.4, 9.0], terrain: farmland,
-    description: "A cozy mill-village where the West Road leaves the Great Plains for the dwarf-mountains — a quiet, friendly place for green adventurers to begin."}
+  millbrook: {name: Millbrook, coords: [6.4, 9.0], terrain: farmland, banner: art/banners/millbrook.png,
+    description: "A cozy mill-village where the West Road leaves the Great Plains for the dwarf-mountains — a quiet, friendly place for green adventurers to begin. Town sub-map: content/maps/millbrook.yaml."}
   kingsreach: {name: Kingsreach, coords: [8.0, 9.9], terrain: coast,
     description: "Walled castle-city on the southern shore, seat of a Duke and the lead voice among the free human cities; the trade roads all answer to Kingsreach."}
   greenhollow: {name: Greenhollow, coords: [10.1, 8.7], terrain: farmland,
     description: "A small farming village on the Free Road between Kingsreach and Bridgeton, where the Duskhold Road branches off south into worse country."}
   bridgeton: {name: Bridgeton, coords: [9.0, 7.2], terrain: river-crossing,
-    description: "A free human city and Duke's seat guarding the great bridge where the East River leaves Heartmere; every road east or west runs through it."}
+    description: "A free human city and Duke's seat guarding the great bridge where the East River leaves Heartmere; every road east or west runs through it. The river itself is no shortcut — its current runs fast and deadly, so folk cross by the bridge, never by boat."}
   rivergate: {name: Rivergate, coords: [11.2, 7.0], terrain: river,
     description: "A river and logging town on the East River at the eaves of the Deepwoods, where the Forest Road turns north into elf-country."}
   eastharbor: {name: Eastharbor, coords: [14.3, 7.2], terrain: coast,
@@ -26,7 +26,7 @@ nodes:
   ironford: {name: Ironford, coords: [5.0, 7.8], terrain: mountains,
     description: "Capital of the dwarves, built where the West River meets the mountains over the great bridge they keep; southern terminus of the Ironline rail."}
   stonewatch: {name: Stonewatch, coords: [5.7, 8.3], terrain: mountain-pass,
-    description: "A dwarven checkpoint watching the mouth of the mountain pass, where the West Road climbs from the plains toward Ironford."}
+    description: "A dwarven checkpoint watching the mouth of the mountain pass, where the West Road climbs from the plains toward Ironford. These days the gate is shut to outsiders: only dwarves and gnomes pass freely, and everyone else needs a soulbound Friend of the Dwarves token. Going around by water is no help — the river runs fast, cold, and deadly."}
   westharbor: {name: Westharbor, coords: [2.3, 9.0], terrain: coast,
     description: "A dwarf-led but mixed-race port where the West River spills into the western sea at the foot of the mountains; ships sail from here to Dragon Isle."}
   ashhaven: {name: Ashhaven, coords: [3.0, 6.6], terrain: volcano,

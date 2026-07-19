@@ -1,0 +1,101 @@
+# NPCs of the starter village, Millbrook. Keyed by id; the engine reads these
+# (as canon/npcs.yaml in a world) for entity cards and quest givers. Givers that
+# escrow a reward carry `gold` / `inventory` holdings the reward is drawn from at
+# `engine quest offer` time. `location` is the region-map node they live at.
+
+bess_tandy:
+  name: Bess Tandy
+  location: millbrook
+  role: rumor-monger
+  disposition: friendly
+  wants: >
+    Bess keeps the Travellers Tavern and knows everyone's business before they
+    do. She wants a full common-room and a fresh story to tell it, and she
+    happily steers newcomers to the notice board — repeating, with relish,
+    what young Jory swears he saw down in the mill cellars. She is the party's
+    first friendly face and the softest of the three nudges toward the cellars.
+
+mabon_miller:
+  name: Mabon the Miller
+  location: millbrook
+  role: quest-giver
+  disposition: friendly
+  wants: >
+    Mabon runs the Old Mill and is losing sleep over it. Something has moved
+    into the storage tunnels under his floor — gnawing in the dark, spoiling
+    grain, and scaring his hand off the job. He wants it gone, backs the town's
+    reward for clearing the cellars, and will lift the trapdoor for anyone brave
+    enough to climb down.
+
+jory:
+  name: Jory
+  location: millbrook
+  role: witness
+  disposition: friendly
+  wants: >
+    Jory is Mabon's teenage mill-hand and the one who actually saw them: rats,
+    "and something bigger, with too many legs," in the cellar tunnels. He wants
+    to be believed and, secretly, to look brave in front of the village — but
+    not enough to go back down there alone. He can describe the layout below.
+
+doran_cobb:
+  name: Doran Cobb
+  location: millbrook
+  role: merchant
+  disposition: neutral
+  gold: 20
+  inventory: [{item: healing_potion, qty: 1}]
+  wants: >
+    Doran keeps the Trading Post and is furious the fallen statue has his supply
+    wagons stuck outside the gate. He wants the mill road cleared and his goods
+    moving again, and will pay to make it happen. He buys and sells at the list
+    prices in ruleset/items.yaml; his predefined stock is in content/adventure.md.
+
+watchman_toft:
+  name: Watchman Toft
+  location: millbrook
+  role: guard
+  disposition: friendly
+  wants: >
+    Toft is the one aging guard in Millbrook's shabby watchtower, and he watches
+    the clouds more than the gate. He wants a quiet shift and someone to listen
+    to his stories — and he has the best one in town: he remembers whose statue
+    that is, an old hero who saw off a goblin raid back in his grandfather's day.
+
+headwoman_aldith:
+  name: Headwoman Aldith
+  location: millbrook
+  role: quest-giver
+  disposition: friendly
+  gold: 50
+  inventory: [{item: healing_potion, qty: 2}]
+  wants: >
+    Aldith is Millbrook's plain-spoken elected elder. She wants her village safe
+    and its one road open, keeps the notice board by the well, and speaks for
+    Millbrook to outsiders. She holds the town purse the cellars reward is paid
+    from, and posts the board's jobs.
+
+mother_wenna:
+  name: Mother Wenna
+  location: millbrook
+  role: guide
+  disposition: friendly
+  wants: >
+    Wenna is the old hedge-priest who tends the open-air shrine and the little
+    graveyard. Kind and a touch eerie, she wants the dead to rest — and lately
+    they don't quite. She has seen strange lights out on the old grave-hill and
+    frets that a shepherd who went that way hasn't come home. The first thread of
+    a deeper shadow, offered to anyone who'll listen.
+
+farmer_dobbin:
+  name: Farmer Dobbin
+  location: millbrook
+  role: quest-giver
+  disposition: friendly
+  gold: 15
+  inventory: [{item: healing_potion, qty: 1}]
+  wants: >
+    Dobbin works the north field and is beside himself: his prize pig Truffles
+    broke her fence and wandered off. He raised her from a piglet, swears she is
+    far cleverer than a pig has any business being, and wants her home ALIVE. He
+    will pay what he can spare plus a healing draught a cleric once left with him.

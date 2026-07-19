@@ -76,3 +76,6 @@ antitoxin: {type: consumable, grants_effect: {name: focused}, price: 40,
 glowing_blade: {type: weapon, damage: "1d8", finesse: false, range: 1, bonus: {attack: 1, damage: 1},
   price: 250,
   description: "A longsword whose fuller glows a steady moonlit blue in the dark; light in the hand and quietly, reliably better than plain steel."}
+# a soulbound campaign keepsake — the pass-token for the dwarf lands (see content/adventure.md)
+friend_of_the_dwarves: {type: gear, price: 0,
+  description: "A worn iron token stamped with the Ironford anvil, bound by dwarven craft to a single bearer. It glows a faint, warm blue only in the hand of the one it belongs to. To the guards at Stonewatch it is proof its holder is a Friend of the Dwarves, free to pass the gate; to anyone else it is a dead lump of cold iron."}
