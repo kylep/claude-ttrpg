@@ -1,0 +1,180 @@
+# World-lore for each playable race, in the campaign world "The Known World".
+#
+# The MECHANICS (attribute bonuses, speed) live in `ruleset/races.yaml`; this is
+# the CONTENT/world-lore file, keyed by the same race ids so it sits "with the
+# race" without polluting the reusable ruleset. The engine does not read this
+# file — it's for the GM and for building out the world.
+#
+# Fields per race:
+#   appearance      — general physical look (kid-legible, family-heroic).
+#   location        — where they live in this world: a homeland/capital, a
+#                     diaspora spread through friendlier peoples with no hold of
+#                     their own, or small towns not yet on the major map (we'll
+#                     add region-map nodes for those as the world fills in).
+#   history         — STUB for now; historical lore gets written here later.
+#   notable_figures — STUB "None" for now; as world lore fills in, list living
+#                     notables who are public/common knowledge.
+
+human:
+  appearance: >
+    Ordinary folk of every shade and build, from wiry farmhands to broad
+    smiths to sharp-eyed merchants — no single look, which is rather the point.
+  location: >
+    Homeland: the Great Plains. The most numerous and widespread people,
+    holding the three free city-states (Kingsreach, Bridgeton, Eastharbor) and
+    the farm villages between them.
+  history: "Stub — historical lore TBD."
+  notable_figures: "None"
+
+elf:
+  appearance: >
+    Tall and slender, fair-featured and sharp-eared, moving with an unhurried
+    grace; their eyes miss very little.
+  location: >
+    Homeland: the Deepwoods (east). Elf-towns sit deep beneath the old canopy;
+    the frontier fort of Elfward marks their quiet border with the dwarves.
+  history: "Stub — historical lore TBD."
+  notable_figures: "None"
+
+dwarf:
+  appearance: >
+    Short and broad, thick-limbed and strong, built like the stone they mine;
+    proud of their braided beards whatever their gender.
+  location: >
+    Homeland: the White Cliff Mountains, capital Ironford; also the mixed-race
+    port of Westharbor (under dwarf leadership) and the Ironline's frontier
+    forts. A mountain people, sure of their holds.
+  history: "Stub — historical lore TBD."
+  notable_figures: "None"
+
+halfling:
+  appearance: >
+    Small and soft-footed, round-faced and quick-fingered, rarely taller than a
+    human child but far harder to catch off guard.
+  location: >
+    Diaspora — no hold of their own. Halflings live comfortably among the plains
+    humans, snug in and around the farm villages and the free cities.
+  history: "Stub — historical lore TBD."
+  notable_figures: "None"
+
+gnome:
+  appearance: >
+    Small and bright-eyed, with clever hands and the permanent air of someone
+    who has just taken something apart to see how it works.
+  location: >
+    Homeland: the Northland Tundra, town of Cogwick; the dwarves' magitech
+    partners on the Ironline. A scatter of tinker-hamlets dot the tundra
+    (good candidates for future map nodes).
+  history: "Stub — historical lore TBD."
+  notable_figures: "None"
+
+half_orc:
+  appearance: >
+    Big-shouldered and green-grey of skin, with jutting tusks and an easy
+    strength that people tend to underestimate right up until they shouldn't.
+  location: >
+    Sparse and scattered — no town of their own. Found here and there among the
+    humans and dwarves. (The pure-orc Warcamp out in the Wasteland is a menace,
+    NOT a half-orc home.)
+  history: "Stub — historical lore TBD."
+  notable_figures: "None"
+
+half_elf:
+  appearance: >
+    Caught pleasantly between two looks — a shade too tall and fine for a
+    human, a shade too round-eared for an elf — and wholly at home being both.
+  location: >
+    Diaspora — no homeland. Equally at ease in the human cities and along the
+    Deepwoods' edge (river towns like Rivergate). Natural go-betweens.
+  history: "Stub — historical lore TBD."
+  notable_figures: "None"
+
+dragonborn:
+  appearance: >
+    Scaled and proud, standing tall on strong legs, with a draconic head and
+    a hide in the color of the wyrm-line they descend from.
+  location: >
+    Homeland: Dragon Isle (west), the fishing town of Emberport, in service to
+    the dragons who dwell there. Rarely seen on the mainland.
+  history: "Stub — historical lore TBD."
+  notable_figures: "None"
+
+tortle:
+  appearance: >
+    Turtle-folk who carry a thick natural shell on their broad backs;
+    slow-moving and calm, with beaked faces and patient, kindly eyes.
+  location: >
+    Homeland: the East Islands, village of Shellhaven; unhurried island-folk.
+    A few tortle families keep quiet coastal spots that may earn map nodes later.
+  history: "Stub — historical lore TBD."
+  notable_figures: "None"
+
+tabaxi:
+  appearance: >
+    Sleek cat-folk in spotted or striped fur, all whiskers and a flicking tail;
+    quick, restless, and endlessly, cheerfully curious.
+  location: >
+    No fixed hold — wandering cat-folk found in trade towns and on the open
+    roads. They may gather in a small town or two off the major map (future nodes).
+  history: "Stub — historical lore TBD."
+  notable_figures: "None"
+
+aarakocra:
+  appearance: >
+    Feathered bird-folk with beaks and bright plumage, light on hollow bones;
+    built for high crags and short, darting glides.
+  location: >
+    Cliff-dwellers of the high, windy places — likely the majority at the
+    storm-lashed rock port of Stormhaven, with eyries in the crags (future nodes).
+  history: "Stub — historical lore TBD."
+  notable_figures: "None"
+
+goliath:
+  appearance: >
+    Grey-skinned giants a full head taller than any human, stone-hard and
+    marked with pale, lichen-like patterns earned on the high peaks.
+  location: >
+    Highland-folk of the tallest White Cliffs, above the dwarf holds; their
+    scattered mountain camps could become map nodes as the world climbs higher.
+  history: "Stub — historical lore TBD."
+  notable_figures: "None"
+
+lizardfolk:
+  appearance: >
+    Cold-blooded reptile-folk with scaled hides, clawed hands, and unblinking
+    eyes; lean, patient, and famously hard to read.
+  location: >
+    Marsh- and water-folk. No wetland is drawn on the map yet — a swamp home
+    (and a village node) can be added wherever it best fits later.
+  history: "Stub — historical lore TBD."
+  notable_figures: "None"
+
+firbolg:
+  appearance: >
+    Gentle forest-giants, tall and shaggy, with broad kind faces and cow-like
+    ears, oddly soft-footed and quiet for their size.
+  location: >
+    Reclusive giants of the deep Deepwoods, keeping apart even from the elves;
+    a hidden grove-hamlet could become a map node in time.
+  history: "Stub — historical lore TBD."
+  notable_figures: "None"
+
+kenku:
+  appearance: >
+    Feathered crow-folk, dark of plumage and sharp of eye, who speak in
+    borrowed voices and perfectly mimicked sounds rather than words of their own.
+  location: >
+    Diaspora — no homeland. Kenku turn up wherever there is news to overhear:
+    the free cities and, above all, the busy docks of Eastharbor.
+  history: "Stub — historical lore TBD."
+  notable_figures: "None"
+
+tiefling:
+  appearance: >
+    Horned and warm-skinned in deep reds and violets, with a lashing tail and
+    eyes that catch the light — visibly touched by the deep fire of their line.
+  location: >
+    Homeland: Ashhaven, the walled town built right into the Volcano (west) —
+    the tieflings' one and only stronghold, and proudly so.
+  history: "Stub — historical lore TBD."
+  notable_figures: "None"
