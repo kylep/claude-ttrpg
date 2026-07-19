@@ -637,7 +637,12 @@ async function openGlossary() {
   const content = el("div", "glossary");
   glossEl.replaceChildren(side, content);
   glossEl.hidden = false;
-  if (manifest.length) loadGlossSection(manifest[0].id, buttons);
+  close.focus();
+  if (manifest.length) {
+    loadGlossSection(manifest[0].id, buttons);
+  } else {
+    content.append(el("p", "gl-body", "Could not load the glossary."));
+  }
 }
 
 function closeGlossary() { glossEl.hidden = true; glossEl.replaceChildren(); }
