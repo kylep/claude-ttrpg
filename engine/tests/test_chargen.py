@@ -193,3 +193,49 @@ def test_char_options_races_carry_image_key(wroot):
     from ttrpg_engine import game
     opts = chargen.options(game.load(FIXTURE_GAME))
     assert opts["races"] and all("image" in r for r in opts["races"].values())
+
+
+POINT_BUY = "STR=15,DEX=14,CON=13,INT=12,WIS=10,CHA=8"  # costs exactly 27
+
+
+def test_create_point_buy_valid(wroot):
+    res = runner.invoke(app, ["char", "create", "--name", "Pointy", "--class", "fighter",
+                              "--race", "dwarf", "--point-buy", POINT_BUY,
+                              "--skills", "athletics,perception"])
+    assert res.exit_code == 0, res.stdout
+    sheet = worldfs.read_yaml(wroot / "state" / "party" / "pc-pointy.yaml")
+    assert sheet["attributes"]["STR"] == 15
+    assert sheet["attributes"]["CON"] == 15          # 13 + dwarf +2
+
+
+def test_create_point_buy_over_budget_rejected(wroot):
+    over = "STR=15,DEX=15,CON=15,INT=15,WIS=15,CHA=15"   # 54 points, over 27
+    res = runner.invoke(app, ["char", "create", "--name", "Rich", "--class", "fighter",
+                              "--race", "dwarf", "--point-buy", over,
+                              "--skills", "athletics,perception"])
+    assert res.exit_code == 1
+    assert json.loads(res.stdout)["error"]["code"] == "bad_pointbuy"
+
+
+def test_create_point_buy_out_of_range_rejected(wroot):
+    bad = "STR=16,DEX=14,CON=13,INT=12,WIS=10,CHA=8"     # 16 > 15
+    res = runner.invoke(app, ["char", "create", "--name", "Huge", "--class", "fighter",
+                              "--race", "dwarf", "--point-buy", bad,
+                              "--skills", "athletics,perception"])
+    assert res.exit_code == 1
+    assert json.loads(res.stdout)["error"]["code"] == "bad_pointbuy"
+
+
+def test_create_rejects_both_assign_and_point_buy(wroot):
+    res = runner.invoke(app, ["char", "create", "--name", "Both", "--class", "fighter",
+                              "--race", "dwarf", "--assign", ASSIGN,
+                              "--point-buy", POINT_BUY, "--skills", "athletics,perception"])
+    assert res.exit_code == 1
+    assert json.loads(res.stdout)["error"]["code"] == "bad_assign"
+
+
+def test_create_rejects_neither_assign_nor_point_buy(wroot):
+    res = runner.invoke(app, ["char", "create", "--name", "Neither", "--class", "fighter",
+                              "--race", "dwarf", "--skills", "athletics,perception"])
+    assert res.exit_code == 1
+    assert json.loads(res.stdout)["error"]["code"] == "bad_assign"

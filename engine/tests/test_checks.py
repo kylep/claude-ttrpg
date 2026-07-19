@@ -56,3 +56,19 @@ def test_check_forwards_adv_dis_flags(wroot):
     assert seen == {"adv": True, "dis": False}
     checks.run(wroot, pc, "STR", 10, skill=None, adv=False, dis=True, roll_fn=spy)
     assert seen == {"adv": False, "dis": True}
+
+
+def test_check_requires_item_present_runs(wroot):
+    pc = make_pc()  # dwarf fighter, carries longsword + chain_mail
+    res = runner.invoke(app, ["--seed", "1", "check", "--actor", pc, "--attr", "DEX",
+                              "--dc", "5", "--requires-item", "longsword"])
+    assert res.exit_code == 0, res.stdout
+    assert "error" not in json.loads(res.stdout)
+
+
+def test_check_requires_missing_item_blocked(wroot):
+    pc = make_pc()  # does not carry thieves_tools
+    res = runner.invoke(app, ["check", "--actor", pc, "--attr", "DEX", "--dc", "5",
+                              "--requires-item", "thieves_tools"])
+    assert res.exit_code == 1
+    assert json.loads(res.stdout)["error"]["code"] == "needs_item"

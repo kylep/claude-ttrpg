@@ -121,8 +121,15 @@ def check(
     skill: str | None = typer.Option(None),
     adv: bool = typer.Option(False, "--adv"),
     dis: bool = typer.Option(False, "--dis"),
+    requires_item: str | None = typer.Option(
+        None, "--requires-item",
+        help="Gate the check on the actor carrying this item id (e.g. thieves_tools)."),
 ):
     root = require_root()
+    if requires_item is not None:
+        sheet = guard(worldfs.read_yaml, worldfs.state(root, f"party/{actor}"))
+        if not any(l["item"] == requires_item for l in sheet.get("inventory", [])):
+            fail("needs_item", f"{actor} needs {requires_item} to attempt this")
     emit(guard(checks.run, root, actor, attr.upper(), dc,
                skill=skill, adv=adv, dis=dis, roll_fn=d20_roll))
 
@@ -326,14 +333,19 @@ def char_create(
     name: str = typer.Option(...),
     cls: str = typer.Option(..., "--class"),
     race: str = typer.Option(...),
-    assign: str = typer.Option(..., help="e.g. DEX=15,WIS=14,INT=13,CON=12,STR=10,CHA=8"),
+    assign: str | None = typer.Option(None, help="standard array, e.g. DEX=15,WIS=14,INT=13,CON=12,STR=10,CHA=8"),
+    point_buy: str | None = typer.Option(None, "--point-buy",
+                                         help="tune 8..15 per attribute on a 27-point budget, e.g. STR=15,DEX=14,CON=13,INT=12,WIS=10,CHA=8"),
     skills: str = typer.Option(..., help="comma-separated"),
     played_by: str = typer.Option(None, "--played-by",
                                   help="who runs this PC at the table (a player's name, or GM)"),
 ):
+    if (assign is None) == (point_buy is None):
+        fail("bad_assign", "pass exactly one of --assign or --point-buy")
     root, g = require_root_and_game()
     sheet = guard(chargen.create, root, g, name=name, cls_name=cls, race_name=race,
-                  assign=guard(parse_kv_ints, assign),
+                  assign=guard(parse_kv_ints, assign) if assign is not None else None,
+                  point_buy=guard(parse_kv_ints, point_buy) if point_buy is not None else None,
                   skills=[s.strip() for s in skills.split(",")],
                   played_by=played_by)
     emit({"sheet": sheet})
@@ -567,6 +579,15 @@ def item_dispel(actor: str = typer.Option(...), item: str = typer.Option(...)):
 
 
 @app.command()
+def buy(actor: str = typer.Option(...), item: str = typer.Option(...),
+        qty: int = typer.Option(1),
+        party: bool = typer.Option(False, "--party", help="spend from the party pool instead of the actor's purse")):
+    """Buy an item for a PC: spend gold and add it in one atomic step."""
+    root, g = require_root_and_game()
+    emit(guard(inventory.buy, root, g, actor, item, qty, party=party))
+
+
+@app.command()
 def equip(actor: str = typer.Option(...), item: str = typer.Option(...),
           force: bool = typer.Option(False, "--force")):
     root, g = require_root_and_game()
@@ -641,6 +662,8 @@ def quest_offer(
     deadline_hour: int = typer.Option(9, "--deadline-hour"),
     spawn: bool = typer.Option(False, "--spawn", help="world only: reward materializes on completion"),
     escrow_from: str | None = typer.Option(None, "--escrow-from", help="npc:ID or pc:ID (world giver only)"),
+    location: str | None = typer.Option(None, "--location",
+                                        help="region node whose board holds this quest; omit for global/always-visible"),
 ):
     root, g = require_root_and_game()
     giver_type, giver_id = guard(quests_mod.parse_ref, giver)
@@ -653,7 +676,7 @@ def quest_offer(
     emit(guard(quests_mod.offer, root, g, title=title, description=desc,
                giver_type=giver_type, giver_id=giver_id, gold=gold, items=split_csv(items),
                xp=xp, deadline=deadline_spec, spawn=spawn,
-               escrow_from_type=escrow_type, escrow_from_id=escrow_id))
+               escrow_from_type=escrow_type, escrow_from_id=escrow_id, location=location))
 
 
 @quest_app.command("accept")
@@ -675,11 +698,23 @@ def quest_cancel(quest_id: str):
 
 
 @quest_app.command("list")
-def quest_list(status: str | None = typer.Option(None, "--status")):
+def quest_list(status: str | None = typer.Option(None, "--status"),
+               at: str | None = typer.Option(None, "--at", help="party's region node — hides boards elsewhere"),
+               lens: str = typer.Option("gm", "--lens", help="gm sees all; player gets reveal-on-arrival")):
     """List quests. Side effect: any offered/accepted quest whose deadline
-    has passed is transitioned to expired (escrow refunded) before listing."""
+    has passed is transitioned to expired (escrow refunded) before listing.
+    With `--lens player` (or `--at`) an offered quest pinned to a board is
+    hidden unless the party is at that location."""
     root = require_root()
-    emit({"quests": guard(quests_mod.list_quests, root, status)})
+    if lens not in ("gm", "player"):
+        fail("bad_lens", f"--lens must be gm or player, got {lens!r}")
+    if at is not None or lens != "gm":
+        quests = guard(quests_mod.visible_quests, root, lens=lens, at_location=at)
+        if status:
+            quests = [q for q in quests if q["status"] == status]
+    else:
+        quests = guard(quests_mod.list_quests, root, status)
+    emit({"quests": quests})
 
 
 export_app = typer.Typer()

@@ -38,7 +38,11 @@ to change it:
    `skills` (+ how many to pick), `starting_gear`, and any `level1_spells`.
 3. **Attributes** — offer `recommended_array` for that class as the default
    ("STR 15, CON 14, … — use it, or assign the standard array yourself?"). If
-   the class has no `recommended_array` (null), ask for the assignment.
+   the class has no `recommended_array` (null), ask for the assignment. A player
+   who wants to tune stats can instead point-buy: set each attribute 8..15 on a
+   27-point budget (8=0, 9=1, 10=2, 11=3, 12=4, 13=5, 14=7, 15=9), passed to
+   `char create` as `--point-buy "STR=15,DEX=14,…"` in place of `--assign`. The
+   standard array is a valid 27-point buy, so this stays balanced.
 4. **Skills** — offer `recommended_skills` as the default; the operator may
    swap for any others on the class list. Must be exactly `skill_choices`.
 5. **Name.**
@@ -60,9 +64,10 @@ engine char create --name "<name>" --class <class> --race <race> \
   --played-by "<player's name | GM>"
 ```
 
-`--assign` must be the full standard array across all six attributes and
-`--skills` exactly the class's `skill_choices` from its list, or the engine
-rejects it (`bad_assign` / `bad_skills`). `--played-by` records who runs the
+`--assign` must be the full standard array across all six attributes (or use
+`--point-buy` instead — same six attributes, 8..15 each on a 27-point budget)
+and `--skills` exactly the class's `skill_choices` from its list, or the engine
+rejects it (`bad_assign` / `bad_pointbuy` / `bad_skills`). `--played-by` records who runs the
 character; each creation also drops the character's card into the live
 viewer's story feed automatically.
 

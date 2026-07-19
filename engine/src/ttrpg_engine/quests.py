@@ -177,7 +177,8 @@ def offer(root: Path, g: dict, *, title: str, description: str,
           giver_type: str, giver_id: str | None,
           gold: int = 0, items: list[str] | None = None, xp: int = 0,
           deadline: dict | None = None, spawn: bool = False,
-          escrow_from_type: str | None = None, escrow_from_id: str | None = None) -> dict:
+          escrow_from_type: str | None = None, escrow_from_id: str | None = None,
+          location: str | None = None) -> dict:
     """Create and persist a new 'offered' quest. Funding rules: world quests
     either --spawn rewards from nothing (items validated against the game) or
     escrow them from a holder; NPC/PC quests always escrow from the giver and
@@ -227,6 +228,7 @@ def offer(root: Path, g: dict, *, title: str, description: str,
     quest = {
         "id": quest_id, "title": title, "description": description,
         "giver": {"type": giver_type, "id": giver_id},
+        "location": location,
         "status": "offered",
         "created": {"date": clk["date"], "hour": clk["hour"]},
         "deadline": deadline,
@@ -323,7 +325,8 @@ def cancel(root: Path, quest_id: str) -> dict:
 
 def _summary(quest: dict) -> dict:
     return {"id": quest["id"], "title": quest["title"], "status": quest["status"],
-            "giver": quest["giver"], "deadline": quest["deadline"],
+            "giver": quest["giver"], "location": quest.get("location"),
+            "deadline": quest["deadline"],
             "accepted_by": quest["accepted_by"], "reward": quest["reward"]}
 
 
@@ -333,4 +336,27 @@ def list_quests(root: Path, status: str | None = None) -> list[dict]:
     quests = [check_expiry(root, load_quest(root, qid)) for qid in list_quest_ids(root)]
     if status:
         quests = [q for q in quests if q["status"] == status]
+    return [_summary(q) for q in quests]
+
+
+def _is_visible(quest: dict, at_location: str | None) -> bool:
+    """Player-lens visibility for a single quest at the party's current location.
+    An `offered` quest pinned to a `location` (its board) is only visible when the
+    party is standing there; an offered quest with no location is visible
+    everywhere; any quest the party has already engaged (accepted and onward) is
+    always visible."""
+    if quest["status"] != "offered":
+        return True
+    loc = quest.get("location")
+    return loc is None or loc == at_location
+
+
+def visible_quests(root: Path, *, lens: str = "gm", at_location: str | None = None) -> list[dict]:
+    """The quests a given lens should see from a given party location. The GM lens
+    sees everything; the player lens hides an offered quest whose board sits at a
+    location the party is not currently at (the reveal-on-arrival rule). Shares
+    list_quests' deadline-expiry side effect. This is the API the viewer calls."""
+    quests = [check_expiry(root, load_quest(root, qid)) for qid in list_quest_ids(root)]
+    if lens != "gm":
+        quests = [q for q in quests if _is_visible(q, at_location)]
     return [_summary(q) for q in quests]

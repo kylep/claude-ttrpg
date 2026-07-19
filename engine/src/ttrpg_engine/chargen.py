@@ -12,6 +12,29 @@ def slugify(name: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
 
 
+# Point-buy: each attribute is bought 8..15 before racial bonuses, spending from
+# a 27-point budget. Balance-neutral to the standard array, which costs exactly 27.
+_POINT_BUY_COST = {8: 0, 9: 1, 10: 2, 11: 3, 12: 4, 13: 5, 14: 7, 15: 9}
+_POINT_BUY_BUDGET = 27
+
+
+def _pointbuy_scores(spec: dict[str, int]) -> dict[str, int]:
+    """Validate a point-buy spread: every attribute set to a 8..15 score whose
+    total cost is within the budget. Raises bad_pointbuy on any violation."""
+    if sorted(spec) != sorted(ATTRS):
+        raise EngineError("bad_pointbuy", f"point-buy must cover exactly {ATTRS}")
+    total = 0
+    for attr, score in spec.items():
+        if score not in _POINT_BUY_COST:
+            raise EngineError("bad_pointbuy",
+                              f"{attr}={score} out of range (each score must be 8..15)")
+        total += _POINT_BUY_COST[score]
+    if total > _POINT_BUY_BUDGET:
+        raise EngineError("bad_pointbuy",
+                          f"point-buy costs {total} points, over the {_POINT_BUY_BUDGET}-point budget")
+    return dict(spec)
+
+
 def _flavor(text) -> str:
     """Normalize a ruleset description (often a folded YAML scalar) to a clean
     one-liner; missing descriptions become an empty string."""
@@ -120,26 +143,34 @@ def set_control(root: Path, pc_id: str, played_by: str) -> dict:
 
 
 def create(root: Path, g: dict, *, name: str, cls_name: str, race_name: str,
-           assign: dict[str, int], skills: list[str],
-           played_by: str | None = None) -> dict:
+           assign: dict[str, int] | None = None, skills: list[str],
+           played_by: str | None = None,
+           point_buy: dict[str, int] | None = None) -> dict:
     """Validate the choices, then build, persist, and return a level-1 PC sheet;
     also appends the PC to the party file, logs a timeline event, and drops the
-    character's card into the story log. `assign` must cover every attribute
-    using exactly the ruleset's standard array. `played_by` records who runs
-    the character at the table (a player's name, or "GM")."""
+    character's card into the story log. Starting scores come from exactly one of
+    `assign` (the ruleset's standard array, every attribute covered) or
+    `point_buy` (8..15 per attribute within the 27-point budget). `played_by`
+    records who runs the character at the table (a player's name, or "GM")."""
     if cls_name not in g["classes"]:
         raise EngineError("unknown_class", f"no class {cls_name}")
     if race_name not in g["races"]:
         raise EngineError("unknown_race", f"no race {race_name}")
     cls, race = g["classes"][cls_name], g["races"][race_name]
-    if sorted(assign) != sorted(ATTRS):
-        raise EngineError("bad_assign", f"assign must cover exactly {ATTRS}")
-    if sorted(assign.values()) != sorted(g["core"]["standard_array"]):
-        raise EngineError("bad_assign", f"values must be the standard array {g['core']['standard_array']}")
+    if (assign is None) == (point_buy is None):
+        raise EngineError("bad_assign", "pass exactly one of assign or point_buy")
+    if point_buy is not None:
+        base = _pointbuy_scores(point_buy)
+    else:
+        if sorted(assign) != sorted(ATTRS):
+            raise EngineError("bad_assign", f"assign must cover exactly {ATTRS}")
+        if sorted(assign.values()) != sorted(g["core"]["standard_array"]):
+            raise EngineError("bad_assign", f"values must be the standard array {g['core']['standard_array']}")
+        base = assign
     if (len(skills) != cls["skill_choices"] or len(set(skills)) != len(skills)
             or not set(skills) <= set(cls["skills"])):
         raise EngineError("bad_skills", f"pick exactly {cls['skill_choices']} of {cls['skills']}")
-    attrs = {a: assign[a] + race.get("bonuses", {}).get(a, 0) for a in ATTRS}
+    attrs = {a: base[a] + race.get("bonuses", {}).get(a, 0) for a in ATTRS}
     prof = g["progression"]["proficiency"][1]
     level1 = cls["levels"][1]
     slug = slugify(name)

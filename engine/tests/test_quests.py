@@ -401,3 +401,43 @@ def test_world_spawn_quest_cancel_no_refund(wroot):
 
     # No holdings should be created
     assert not (wroot / "state" / "npcs.yaml").exists()
+
+
+from ttrpg_engine import quests as quests_mod  # noqa: E402
+
+
+def _seed_location_quests(wroot):
+    """A cave-board quest, a global quest, and a cave quest the party accepts."""
+    pc = make_pc()
+    _offer(title="Cave Job", desc="x", giver="world", spawn=True, gold=1, location="cave")
+    _offer(title="Town Gossip", desc="x", giver="world", spawn=True, gold=1)
+    res = _offer(title="Accepted Cave", desc="x", giver="world", spawn=True, gold=1,
+                 location="cave")
+    aid = json.loads(res.stdout)["id"]
+    runner.invoke(app, ["quest", "accept", aid, "--pcs", pc])
+    return pc
+
+
+def test_visible_quests_offered_gated_by_location(wroot):
+    _seed_location_quests(wroot)
+    at_town = {q["id"] for q in quests_mod.visible_quests(wroot, lens="player", at_location="town")}
+    assert "cave-job" not in at_town          # offered board sits at cave, party is elsewhere
+    assert "town-gossip" in at_town           # offered + no location: visible everywhere
+    assert "accepted-cave" in at_town         # accepted always visible
+
+    at_cave = {q["id"] for q in quests_mod.visible_quests(wroot, lens="player", at_location="cave")}
+    assert "cave-job" in at_cave              # party is standing at the board now
+
+
+def test_visible_quests_gm_sees_all(wroot):
+    _seed_location_quests(wroot)
+    gm = {q["id"] for q in quests_mod.visible_quests(wroot, lens="gm", at_location="town")}
+    assert {"cave-job", "town-gossip", "accepted-cave"} <= gm
+
+
+def test_quest_list_lens_and_at_filter(wroot):
+    _offer(title="Cave Job", desc="x", giver="world", spawn=True, gold=1, location="cave")
+    ids = lambda r: {q["id"] for q in json.loads(r.stdout)["quests"]}
+    assert "cave-job" not in ids(runner.invoke(app, ["quest", "list", "--lens", "player", "--at", "town"]))
+    assert "cave-job" in ids(runner.invoke(app, ["quest", "list", "--lens", "player", "--at", "cave"]))
+    assert "cave-job" in ids(runner.invoke(app, ["quest", "list"]))  # default gm lists all

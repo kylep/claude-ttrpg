@@ -64,6 +64,33 @@ def adjust_gold(root: Path, target: str, amount: int, reason: str = "") -> dict:
     return {"target": target, "gold": data["gold"]}
 
 
+def buy(root: Path, g: dict, actor: str, item: str, qty: int, *, party: bool = False) -> dict:
+    """Purchase `qty` of `item` for `actor`, coupling gold-spend and item-add in
+    one atomic step: gold is validated up front (from the party pool with
+    `--party`, else the actor's purse) and nothing mutates unless the buyer can
+    afford the full total. Fails no_gold if funds are short. The item always
+    lands in the actor's inventory."""
+    if qty < 1:
+        raise EngineError("bad_qty", f"qty must be >= 1, got {qty}")
+    if item not in g["items"]:
+        raise EngineError("unknown_item", f"no item {item} in this game")
+    price = g["items"][item].get("price")
+    if price is None:
+        raise EngineError("no_price", f"{item} has no price and cannot be bought")
+    total = price * qty
+    target = "party" if party else actor
+    if party:
+        purse = worldfs.read_yaml(worldfs.state(root, "party"))
+    else:
+        purse = _sheet(root, actor)          # also validates the actor exists
+    if purse["gold"] < total:
+        raise EngineError("no_gold", f"{target} has only {purse['gold']} gp, needs {total} for {qty}x {item}")
+    gold_after = adjust_gold(root, target, -total, f"buy {qty}x {item}")["gold"]
+    add_item(root, g, actor, item, qty)
+    return {"actor": actor, "item": item, "qty": qty, "price": price,
+            "spent": total, "gold_source": target, "gold": gold_after}
+
+
 def _find_line(sheet: dict, item: str) -> dict | None:
     return next((l for l in sheet["inventory"] if l["item"] == item), None)
 

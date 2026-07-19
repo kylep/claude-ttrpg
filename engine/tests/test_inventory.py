@@ -83,3 +83,38 @@ def test_gold_add_negative_amount_rejected(wroot):
     res = runner.invoke(app, ["gold", "add", "--amount", "-5", "--actor", pc])
     assert res.exit_code == 1
     assert json.loads(res.stdout)["error"]["code"] == "bad_amount"
+
+
+def test_buy_decrements_gold_and_adds_item(wroot):
+    pc = make_pc()  # fighter, gold 10
+    res = runner.invoke(app, ["buy", "--actor", pc, "--item", "dagger", "--qty", "2"])
+    assert res.exit_code == 0, res.stdout
+    data = json.loads(res.stdout)
+    assert data["spent"] == 4 and data["gold"] == 6 and data["gold_source"] == pc
+    sheet = worldfs.read_yaml(wroot / "state" / "party" / f"{pc}.yaml")
+    assert sheet["gold"] == 6
+    assert {"item": "dagger", "qty": 2} in sheet["inventory"]
+
+
+def test_buy_insufficient_gold_rejected_and_atomic(wroot):
+    pc = make_pc()
+    res = runner.invoke(app, ["buy", "--actor", pc, "--item", "longsword", "--qty", "5"])  # 75 > 10
+    assert res.exit_code == 1
+    assert json.loads(res.stdout)["error"]["code"] == "no_gold"
+    sheet = worldfs.read_yaml(wroot / "state" / "party" / f"{pc}.yaml")
+    assert sheet["gold"] == 10  # untouched
+    longsword = next(l for l in sheet["inventory"] if l["item"] == "longsword")
+    assert longsword["qty"] == 1  # nothing added
+
+
+def test_buy_party_spends_pool_item_goes_to_actor(wroot):
+    pc = make_pc()
+    runner.invoke(app, ["gold", "add", "--amount", "50", "--party"])
+    res = runner.invoke(app, ["buy", "--actor", pc, "--item", "dagger", "--party"])
+    assert res.exit_code == 0, res.stdout
+    data = json.loads(res.stdout)
+    assert data["gold_source"] == "party" and data["gold"] == 48
+    assert worldfs.read_yaml(wroot / "state" / "party.yaml")["gold"] == 48
+    sheet = worldfs.read_yaml(wroot / "state" / "party" / f"{pc}.yaml")
+    assert {"item": "dagger", "qty": 1} in sheet["inventory"]  # item lands with the actor
+    assert sheet["gold"] == 10  # actor purse untouched
