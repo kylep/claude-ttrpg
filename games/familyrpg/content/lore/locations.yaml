@@ -1,0 +1,65 @@
+# Coined MINOR locations referenced in world content (e.g. bestiary habitats)
+# that are NOT yet travel nodes in content/maps/region.yaml. Tracked here so we
+# promote them to real nodes / points of interest as the world is built out.
+# `near` = the parent region.yaml node id, or a (territory) note if it has no node yet.
+# `is_node: false` until promoted. The engine does not read this file.
+
+kingsreach_sewers:
+  name: Kingsreach Sewers
+  near: kingsreach
+  kind: sewer
+  is_node: false
+  note: Damp under-city tunnels beneath the free city — vermin, oozes, and worse.
+millbrook_cellars:
+  name: Millbrook Mill-Cellars
+  near: millbrook
+  kind: cellar
+  is_node: false
+  note: The old grain-cellars and root-tunnels under the starter village; a first-adventure
+    haunt for rats.
+stonewatch_tunnels:
+  name: Stonewatch Mine-Tunnels
+  near: stonewatch
+  kind: mine
+  is_node: false
+  note: Abandoned dwarf-cut galleries off the mountain pass; kobolds and bats nest
+    here.
+ironford_deeps:
+  name: Ironford Deep-Tunnels
+  near: ironford
+  kind: deep-cave
+  is_node: false
+  note: The deepest dwarf-delvings under the capital, where oozes and trolls lurk.
+deepwoods_deeptrails:
+  name: the Deepwoods deep-trails
+  near: (Deepwoods territory)
+  kind: forest
+  is_node: false
+  note: The tangled inner woods off the marked paths; spiders, owlbears, dire wolves.
+barrow_downs:
+  name: the Barrow-downs
+  near: duskhold
+  kind: graveyard
+  is_node: false
+  note: Old grassed-over burial mounds on the plains near Duskhold; the restless dead
+    walk here.
+free_road_hedges:
+  name: the Free Road hedgerows
+  near: (Free Road)
+  kind: roadside
+  is_node: false
+  note: Tall hedges and ditches along the trade road — classic goblin/bandit ambush
+    country.
+whitecliff_crags:
+  name: the White Cliff crags
+  near: (White Cliff Mtns territory)
+  kind: cliffs
+  is_node: false
+  note: High wind-scoured ledges above the dwarf holds; harpies and worse roost here.
+reeking_marsh:
+  name: the Reeking Marsh
+  near: (unplaced wetland — future map region)
+  kind: swamp
+  is_node: false
+  note: A drawn-later wetland (also the intended lizardfolk homeland); trolls and
+    boggy things.

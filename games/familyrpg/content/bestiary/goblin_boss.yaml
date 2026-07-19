@@ -11,3 +11,7 @@ attacks: [{name: notched scimitar, attack_mod: 5, damage: "1d6+3", range: 1, kin
 xp: 300    # party pool sized for 4 PCs; split evenly at `engine encounter end`
 loot: {gold: "2d6", items: []}  # rolled per instance at encounter end, into the party pool
 difficulty: standard  # GM guidance only
+habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
+  - Wasteland raider-camps
+  - the Deepwoods edge
+  - Free Road ambushes

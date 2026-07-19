@@ -12,3 +12,7 @@ xp: 125    # party pool sized for 4 PCs; split evenly at `engine encounter end`
 loot: {gold: null, items: []}  # rolled per instance at encounter end, into the party pool
 flying: true  # enables aloft/reach targeting rules
 difficulty: easy  # GM guidance only
+habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
+  - Duskhold
+  - Stonewatch Mine-Tunnels
+  - Ironford Deep-Tunnels

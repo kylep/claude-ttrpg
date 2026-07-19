@@ -13,3 +13,6 @@ attacks:  # range in squares; beak and claws in the same turn
 xp: 1600   # party pool sized for 4 PCs; split evenly at `engine encounter end`
 loot: {gold: "2d6", items: []}  # rolled per instance at encounter end, into the party pool
 difficulty: tough  # GM guidance only
+habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
+  - the deep Deepwoods
+  - remote forest groves

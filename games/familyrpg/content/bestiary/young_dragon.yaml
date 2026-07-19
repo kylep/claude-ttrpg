@@ -16,3 +16,7 @@ xp: 6000   # party pool sized for 4 PCs; split evenly at `engine encounter end`
 loot: {gold: "6d6", items: []}  # rolled per instance at encounter end, into the party pool
 flying: true  # enables aloft/reach targeting rules
 difficulty: boss  # GM guidance only
+habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
+  - Dragon Isle
+  - a White Cliff peak-lair
+  - the deep places beneath Duskhold

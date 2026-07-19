@@ -11,3 +11,7 @@ attacks: [{name: corrosive touch, attack_mod: 5, damage: "2d6+1", range: 1, kind
 xp: 300    # party pool sized for 4 PCs; split evenly at `engine encounter end`
 loot: {gold: null, items: []}  # rolled per instance at encounter end, into the party pool
 difficulty: standard  # GM guidance only
+habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
+  - Kingsreach Sewers
+  - Ironford Deep-Tunnels
+  - Duskhold

@@ -11,3 +11,7 @@ attacks: [{name: rotting grasp, attack_mod: 4, damage: "1d8+2", range: 1, kind: 
 xp: 250    # party pool sized for 4 PCs; split evenly at `engine encounter end`
 loot: {gold: null, items: []}  # rolled per instance at encounter end, into the party pool
 difficulty: standard  # GM guidance only
+habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
+  - Duskhold
+  - the Barrow-downs
+  - the Wasteland fringe

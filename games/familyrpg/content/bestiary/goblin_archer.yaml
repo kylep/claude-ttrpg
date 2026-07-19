@@ -11,3 +11,7 @@ attacks: [{name: short bow, attack_mod: 4, damage: "1d6+2", range: 16, kind: ran
 xp: 200    # party pool sized for 4 PCs; split evenly at `engine encounter end`
 loot: {gold: "1d6", items: []}  # rolled per instance at encounter end, into the party pool
 difficulty: easy  # GM guidance only
+habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
+  - the Free Road hedgerows
+  - the Deepwoods edge
+  - Wasteland raider-trails

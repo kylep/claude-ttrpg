@@ -14,3 +14,7 @@ xp: 300    # party pool sized for 4 PCs; split evenly at `engine encounter end`
 loot: {gold: "1d6", items: []}  # rolled per instance at encounter end, into the party pool
 flying: true  # enables aloft/reach targeting rules
 difficulty: standard  # GM guidance only
+habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
+  - the sea-cliffs near Stormhaven
+  - the White Cliff crags
+  - the Storm Isles
