@@ -6,6 +6,7 @@ from pathlib import Path
 
 from weasyprint import HTML
 
+from ttrpg_engine import chargen, game as game_mod
 from ttrpg_engine.markdown_render import esc
 
 _FONT_DIR = Path(__file__).parent / "assets" / "fonts"
@@ -81,8 +82,8 @@ th, td {{ border: 1px solid {_PALETTE['frame']}; padding: 0.35rem 0.6rem;
 th {{ background: {_PALETTE['band']}; }}
 .fullbleed {{ page-break-before: always; text-align: center; }}
 .fullbleed img {{ max-width: 100%; max-height: 250mm; }}
-p.lead::first-letter {{ font-family: 'Cinzel', Georgia, serif; font-size: 3.2em;
-  line-height: 0.8; float: left; padding: 0.05em 0.08em 0 0; color: {_PALETTE['accent']}; }}
+p.lead::first-letter {{ font-family: 'Cinzel', Georgia, serif; font-size: 1.6em;
+  padding: 0 0.03em 0 0; color: {_PALETTE['accent']}; }}
 """
 
 
@@ -120,3 +121,59 @@ def render_pdf(html, content_dir):
 
 def page_count(html, content_dir):
     return len(HTML(string=html, base_url=str(content_dir)).render().pages)
+
+
+def _title_case(tag):
+    return tag.replace("_", " ").title()
+
+
+def _roster_card(name, img_rel, body_html):
+    img = f'<img class="portrait" src="{esc(img_rel)}" alt="">' if img_rel else ""
+    return f'<div class="card"><h3>{esc(name)}</h3>{img}{body_html}</div>'
+
+
+def build_races(src):
+    g, content_dir = src["g"], src["content_dir"]
+    lore = chargen._load_race_lore(g)
+    cover = _content_image(content_dir, "art/covers/races.png")
+    cards = []
+    for name, race in sorted(g["races"].items()):
+        entry = lore.get(name, {}) if isinstance(lore, dict) else {}
+        img = _content_image(content_dir, entry.get("image"))
+        appearance = entry.get("appearance", "").strip()
+        bonuses = ", ".join(f"{k} +{v}" for k, v in race.get("bonuses", {}).items()) or "—"
+        desc = esc(race.get("description", ""))
+        appear = f"<p class='lead'>{esc(appearance)}</p>" if appearance else ""
+        body = (
+            f"<p>{desc}</p>{appear}"
+            f"<p><span class='tag'>Ability bonuses: {esc(bonuses)}</span>"
+            f"<span class='tag'>Speed {race['speed']}</span></p>"
+        )
+        cards.append(_roster_card(name.title(), img, body))
+    body = f"<div class='roster'>{''.join(cards)}</div>"
+    html = _document("Races", src["world_name"] or g["meta"]["name"].title(), cover, body)
+    return render_pdf(html, content_dir)
+
+
+def build_bestiary(src):
+    g, content_dir = src["g"], src["content_dir"]
+    cover = _content_image(content_dir, "art/covers/bestiary.png")
+    cards = []
+    for mid, mon in sorted(game_mod.bestiary(g).items()):
+        img = _content_image(content_dir, mon.get("image"))
+        attacks = "; ".join(
+            f"{a['name']} (+{a['attack_mod']}, {a['damage']}, range {a['range']})"
+            for a in mon.get("attacks", [])
+        ) or "—"
+        notes = f"<p><strong>Notes:</strong> {esc(mon['notes'].strip())}</p>" if mon.get("notes") else ""
+        body = (
+            f"<p>{esc(mon.get('description', ''))}</p>"
+            f"<p><span class='tag'>AC {mon['ac']}</span><span class='tag'>HP {mon['hp']}</span>"
+            f"<span class='tag'>Speed {mon['speed']}</span><span class='tag'>XP {mon['xp']}</span>"
+            f"<span class='tag'>{esc(mon.get('difficulty', '?'))}</span></p>"
+            f"<p><strong>Attacks:</strong> {esc(attacks)}</p>{notes}"
+        )
+        cards.append(_roster_card(mon.get("name", mid.title()), img, body))
+    body = f"<div class='roster'>{''.join(cards)}</div>"
+    html = _document("Bestiary", src["world_name"] or g["meta"]["name"].title(), cover, body)
+    return render_pdf(html, content_dir)

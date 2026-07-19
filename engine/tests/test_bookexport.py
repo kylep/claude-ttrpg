@@ -34,3 +34,28 @@ def test_cover_page_renders_with_missing_cover():
     pdf = bookexport.render_pdf(html, FAMILYRPG / "content")
     assert pdf.startswith(b"%PDF")
     assert bookexport.page_count(html, FAMILYRPG / "content") >= 2
+
+
+from ttrpg_engine import export as export_mod
+
+
+def _familyrpg_src():
+    return export_mod.resolve_source(None, FAMILYRPG)
+
+
+def test_build_races_pdf():
+    pdf = bookexport.build_races(_familyrpg_src())
+    assert pdf.startswith(b"%PDF")
+    assert len(pdf) > 5000
+
+
+def test_build_bestiary_pdf():
+    pdf = bookexport.build_bestiary(_familyrpg_src())
+    assert pdf.startswith(b"%PDF")
+    assert len(pdf) > 5000
+
+
+def test_roster_card_omits_missing_image():
+    card = bookexport._roster_card("Orc", None, "<p>hi</p>")
+    assert "<img" not in card
+    assert "Orc" in card
