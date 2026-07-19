@@ -6,3 +6,4 @@ __pycache__/
 exports/
 .env
 .imagegen-ledger.json
+exports.sh

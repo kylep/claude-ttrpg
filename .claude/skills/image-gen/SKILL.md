@@ -5,10 +5,16 @@ description: Use when the operator wants art generated for the game — illustra
 
 # Generate images
 
-Drives `tools/imagegen.py`, a standalone script that calls OpenAI or Gemini
-image models. Every image costs real money, so this skill runs a cheap
-health check first and reports spend after every run — never skip either
-step.
+Drives `tools/imagegen.py`, a standalone script that calls **OpenAI**,
+**Google** (Gemini / Nano Banana; Imagen is gated for new keys), or **Black
+Forest Labs** (FLUX) image models. Every image costs real money, so this skill
+runs a cheap health check first and reports spend after every run — never skip
+either step.
+
+Run `uv run tools/imagegen.py --list-models` (free, no key needed) to see every
+model id, alias, and rough price. The default is the strongest flagship
+(`gpt-image-2`); pick others with `--model`, e.g. `--model nano-banana-pro`
+(Google) or `--model flux-2-max` (BFL).
 
 ## 1. Health check
 
@@ -23,14 +29,17 @@ the script runs at all. Do this before composing prompts, not after.
 
 If a generation attempt reports a missing or invalid API key, the tool
 exits 1 with a one-line message naming the env var (e.g. `Missing
-OPENAI_API_KEY for provider 'openai'. Set it in .env (see .env.sample) or
-export it before running.`). When that happens: **relay that message to
-the operator verbatim and stop.** Do not retry, do not silently fall back
-to the other provider, and do not attempt to read, guess, or generate a
-key. Setup is:
+OPENAI_API_KEY for provider 'openai'. Add it to exports.sh (export ...) or
+.env at the repo root, or export it in your shell, then retry.`). When that
+happens: **relay that message to the operator verbatim and stop.** Do not
+retry, do not silently fall back to another provider, and do not attempt to
+read, guess, or generate a key. Keys are read from the environment, then from
+`exports.sh` (`export OPENAI_API_KEY=... / GEMINI_API_KEY=... / BFL_API_KEY=...`),
+then from `.env` — all at the repo root, both gitignored. Setup is either:
 
 ```bash
-cp .env.sample .env   # then edit .env and add OPENAI_API_KEY and/or GEMINI_API_KEY
+# option A: exports.sh (what this repo uses) — export OPENAI_API_KEY / GEMINI_API_KEY / BFL_API_KEY
+# option B: cp .env.sample .env   # then add the keys you have
 ```
 
 ## 3. Compose prompts
@@ -55,9 +64,11 @@ Append it to every subject-specific prompt, e.g.:
 uv run tools/imagegen.py --prompt "<subject + style line>" --out <path>
 ```
 
-Override the provider for one run with `--model gemini` or `--model
-gemini-2.5-flash` (default is `openai`, or whatever `IMAGE_MODEL` is set to
-in `.env`). For several images in one invocation, use repeated
+Override the model for one run with `--model <id-or-alias>` (default
+`gpt-image-2`, or whatever `IMAGE_MODEL` is set to) — e.g. `--model
+nano-banana-pro`, `--model flux-2-max`, `--model gpt-image-1-mini`; run
+`--list-models` for the full map. Add `--quality low|medium|high` (OpenAI) and
+`--size WxH` as needed. For several images in one invocation, use repeated
 `--prompt`/`--out` pairs or `--batch prompts.json` (a JSON list of
 `{"prompt": ..., "out": ...}` objects) — but respect
 `IMAGEGEN_MAX_PER_RUN` (default 1): if the operator wants more art than the
