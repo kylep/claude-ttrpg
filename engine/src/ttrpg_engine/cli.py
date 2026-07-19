@@ -88,6 +88,88 @@ def d20_roll(modifier: int, adv: bool, dis: bool) -> tuple[int, int]:
     return nat, nat + modifier
 
 
+def _is_pc(root: Path, actor: str | None) -> bool:
+    """True when `actor` is a member of the party — a PC. Monster/NPC rolls
+    stay GM-only so a hidden foe isn't spoiled in the player feed."""
+    try:
+        party = worldfs.read_yaml(worldfs.state(root, "party"))
+        return actor in party.get("members", [])
+    except EngineError:
+        return False
+
+
+def _actor_display(root: Path, cid: str | None) -> str:
+    """A combatant's display name, best-effort — falls back to the id."""
+    try:
+        _, data, _ = combat.resolve_actor(root, cid)
+        return data.get("name", cid) or cid
+    except EngineError:
+        return cid or ""
+
+
+def _d20_expr(natural: int, total: int) -> str:
+    """Reconstruct the d20 expression from a roll's natural and total."""
+    mod = total - natural
+    return "d20" + (f"{mod:+d}" if mod else "")
+
+
+def _post_roll_safe(root: Path, **kw) -> None:
+    """Post a roll beat, swallowing any error — a feed post must never break
+    the command that produced the roll."""
+    try:
+        story_log.post_roll(root, **kw)
+    except Exception:
+        pass
+
+
+def _post_check_roll(root: Path, r: dict) -> None:
+    if "natural" not in r or "total" not in r:
+        return
+    actor = r.get("actor")
+    label = str(r.get("skill") or r.get("attr") or "check").replace("_", " ").title()
+    _post_roll_safe(root, actor=_actor_display(root, actor), label=label,
+                    expr=_d20_expr(r["natural"], r["total"]), total=r["total"],
+                    outcome="success" if r.get("success") else "fail",
+                    target_num=r.get("dc"), target_kind="DC",
+                    gm_only=not _is_pc(root, actor))
+
+
+def _post_attack_roll(root: Path, r: dict) -> None:
+    if "natural" not in r or "total" not in r:
+        return
+    attacker = r.get("attacker")
+    _post_roll_safe(root, actor=_actor_display(root, attacker),
+                    label=f"{r.get('attack', 'Attack')} vs {r.get('target')}",
+                    expr=_d20_expr(r["natural"], r["total"]), total=r["total"],
+                    outcome="hit" if r.get("hit") else "miss",
+                    target_num=r.get("vs_ac"), target_kind="AC",
+                    gm_only=not _is_pc(root, attacker))
+
+
+def _post_cast_roll(root: Path, r: dict) -> None:
+    spell = str(r.get("spell", "spell")).replace("_", " ")
+    atk = r.get("attack")
+    sv = r.get("save")
+    if isinstance(atk, dict) and "natural" in atk and "total" in atk:
+        caster = r.get("caster")
+        _post_roll_safe(root, actor=_actor_display(root, caster),
+                        label=f"{spell} vs {r.get('target')}",
+                        expr=_d20_expr(atk["natural"], atk["total"]), total=atk["total"],
+                        outcome="hit" if atk.get("hit") else "miss",
+                        target_num=atk.get("vs_ac"), target_kind="AC",
+                        gm_only=not _is_pc(root, caster))
+    elif isinstance(sv, dict) and "total" in sv:
+        # the target rolls its own save against the caster's DC; a resisted
+        # save reads as "success" for the roller (the target)
+        target = r.get("target")
+        _post_roll_safe(root, actor=_actor_display(root, target),
+                        label=f"{sv.get('attr', '')} save vs {spell}".strip(),
+                        expr="d20", total=sv["total"],
+                        outcome="success" if sv.get("success") else "fail",
+                        target_num=sv.get("dc"), target_kind="DC",
+                        gm_only=not _is_pc(root, target))
+
+
 @app.command()
 def roll(
     expr: str,
@@ -130,8 +212,10 @@ def check(
         sheet = guard(worldfs.read_yaml, worldfs.state(root, f"party/{actor}"))
         if not any(l["item"] == requires_item for l in sheet.get("inventory", [])):
             fail("needs_item", f"{actor} needs {requires_item} to attempt this")
-    emit(guard(checks.run, root, actor, attr.upper(), dc,
-               skill=skill, adv=adv, dis=dis, roll_fn=d20_roll))
+    result = guard(checks.run, root, actor, attr.upper(), dc,
+                   skill=skill, adv=adv, dis=dis, roll_fn=d20_roll)
+    _post_check_roll(root, result)
+    emit(result)
 
 
 world_app = typer.Typer()
@@ -297,6 +381,19 @@ def story_reveal(npc: str = typer.Option(None, help="id from canon/npcs.yaml"),
 char_app = typer.Typer()
 app.add_typer(char_app, name="char")
 
+party_app = typer.Typer()
+app.add_typer(party_app, name="party")
+
+
+@party_app.command("formation")
+def party_formation(order: str = typer.Option(..., "--order",
+                                              help="comma-separated PC ids, front to back")):
+    """Set the party's marching order; combat seats PCs by it."""
+    ids = split_csv(order)
+    if not ids:
+        fail("bad_formation", "--order needs at least one PC id")
+    emit(guard(worldfs.set_party_formation, require_root(), ids))
+
 
 def parse_kv_ints(spec: str) -> dict[str, int]:
     """Parse 'STR=10,DEX=15' into {attr: int}, upper-casing keys.
@@ -403,6 +500,25 @@ def encounter_end():
 effect_app = typer.Typer()
 app.add_typer(effect_app, name="effect")
 
+wound_app = typer.Typer()
+app.add_typer(wound_app, name="wound")
+
+
+@wound_app.command("add")
+def wound_add(actor: str = typer.Option(...),
+              text: str = typer.Option(..., help="the injury, e.g. 'arrow in the leg'"),
+              severity: str = typer.Option("serious", help="minor | serious | mortal")):
+    """Record a visible narrative wound on a PC or monster."""
+    emit(guard(combat.add_wound, require_root(), actor, text, severity))
+
+
+@wound_app.command("heal")
+def wound_heal(actor: str = typer.Option(...),
+               index: int | None = typer.Option(None, "--index", help="cure just this wound (0-based)"),
+               all: bool = typer.Option(False, "--all", help="cure every wound (the default)")):
+    """Cure a wound (default: all of them)."""
+    emit(guard(combat.heal_wounds, require_root(), actor, index=index))
+
 
 @app.command()
 def attack(
@@ -413,8 +529,10 @@ def attack(
     dis: bool = typer.Option(False, "--dis"),
 ):
     root = require_root()
-    emit(guard(combat.attack, root, attacker, target, attack_name=attack_name,
-               adv=adv, dis=dis, roll_fn=d20_roll, rng=rng))
+    result = guard(combat.attack, root, attacker, target, attack_name=attack_name,
+                   adv=adv, dis=dis, roll_fn=d20_roll, rng=rng)
+    _post_attack_roll(root, result)
+    emit(result)
 
 
 @app.command()
@@ -459,7 +577,9 @@ def cast(caster: str = typer.Option(...), spell: str = typer.Option(...),
          at: str | None = typer.Option(None, "--at", help="X,Y cell for area spells")):
     root, g = require_root_and_game()
     cell = guard(parse_xy, at, "--at") if at is not None else None
-    emit(guard(spells.cast, root, g, caster, spell, target, roll_fn=d20_roll, rng=rng, at=cell))
+    result = guard(spells.cast, root, g, caster, spell, target, roll_fn=d20_roll, rng=rng, at=cell)
+    _post_cast_roll(root, result)
+    emit(result)
 
 
 @app.command()

@@ -152,3 +152,38 @@ def test_auto_emits_across_a_session(wroot):
     assert "arrives at" in raw[-1]["md"]
     end = next(r for r in raw if r.get("event") == "end")
     assert "xp each" in end["md"]
+
+
+# ---------------------------------------------------------------------------
+# roll beats (feature A): transparency, with a GM-only lens filter
+# ---------------------------------------------------------------------------
+
+def test_post_roll_and_gm_only_filter(wroot):
+    story_log.post_roll(wroot, actor="Kyle", label="Perception", expr="d20+2",
+                        total=16, outcome="success", target_num=13,
+                        target_kind="DC", gm_only=False)
+    story_log.post_roll(wroot, actor="Goblin 1", label="Attack vs pc-borin",
+                        expr="d20+4", total=18, outcome="hit", target_num=15,
+                        target_kind="AC", gm_only=True)
+    gm = [e for e in story_log.read(wroot, lens="gm")[0] if e["type"] == "roll"]
+    assert len(gm) == 2
+    assert gm[0]["actor"] == "Kyle" and gm[0]["expr"] == "d20+2"
+    assert gm[0]["total"] == 16 and gm[0]["target_num"] == 13
+    assert gm[0]["target_kind"] == "DC" and gm[0]["outcome"] == "success"
+    # a hidden foe's roll must never reach the player feed
+    player = [e for e in story_log.read(wroot, lens="player")[0] if e["type"] == "roll"]
+    assert len(player) == 1 and player[0]["actor"] == "Kyle"
+
+
+def test_cli_check_posts_player_visible_roll(wroot):
+    make_pc()
+    res = runner.invoke(app, ["check", "--actor", "pc-borin", "--attr", "WIS",
+                              "--dc", "10", "--skill", "perception"])
+    assert res.exit_code == 0, res.stdout
+    rolls = [e for e in story_log.read(wroot, lens="player")[0] if e["type"] == "roll"]
+    assert len(rolls) == 1
+    r = rolls[0]
+    assert r["actor"] == "Borin"                 # display name, not the id
+    assert r["label"] == "Perception"
+    assert r["expr"].startswith("d20") and r["target_kind"] == "DC"
+    assert r["outcome"] in ("success", "fail")

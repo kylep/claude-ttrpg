@@ -202,6 +202,22 @@ def pc_location(sheet: dict, party: dict) -> str:
     return sheet.get("location", party["location"])
 
 
+def set_party_formation(root: Path, order: list[str]) -> dict:
+    """Set the party's marching order — an ordered list of PC ids, front to
+    back — which combat honors when seating PCs on the map. Every id must be a
+    current party member; duplicates are rejected."""
+    party = read_yaml(state(root, "party"))
+    members = party.get("members", [])
+    if len(set(order)) != len(order):
+        raise EngineError("bad_formation", "formation has duplicate ids")
+    for pid in order:
+        if pid not in members:
+            raise EngineError("not_found", f"{pid} is not a party member")
+    party["formation"] = order
+    write_yaml(state(root, "party"), party)
+    return {"formation": order}
+
+
 def load_game_for(root: Path) -> dict:
     manifest = read_yaml(root / "world.yaml")
     gi = manifest["game"]

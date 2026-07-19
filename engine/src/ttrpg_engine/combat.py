@@ -180,6 +180,21 @@ def ally_adjacent(root: Path, enc: dict, attacker: str, target: str) -> bool:
     return False
 
 
+def _spawns_front_to_back(emap: dict) -> list:
+    """PC spawn points ordered front (closest to the enemy side) to back. The
+    enemy side is the centroid of the map's monster spawns; each spawn is ranked
+    by its chebyshev distance to it, closest first. The sort is stable, so when
+    distances tie (or there are no monsters to orient by) the map's own
+    pc_spawns order is preserved — which authors write front-to-back."""
+    spawns = emap["pc_spawns"]
+    mons = emap.get("monsters", [])
+    if not mons:
+        return list(spawns)
+    cx = sum(m["pos"][0] for m in mons) / len(mons)
+    cy = sum(m["pos"][1] for m in mons) / len(mons)
+    return sorted(spawns, key=lambda s: max(abs(s[0] - cx), abs(s[1] - cy)))
+
+
 def start(root: Path, g: dict, map_rel: str, rng: Random, pcs: list[str] | None = None) -> dict:
     if (root / "state" / "encounter.yaml").exists():
         raise EngineError("encounter_active", "an encounter is already running")
@@ -230,7 +245,16 @@ def start(root: Path, g: dict, map_rel: str, rng: Random, pcs: list[str] | None 
                          "flying": entry.get("flying", False),
                          "effects": [], "dead": False}
         positions[mid] = list(spec["pos"])
-    for pc_id, spawn in zip(participants, emap["pc_spawns"]):
+    # a set marching order seats PCs front-to-back onto the front-to-back
+    # spawns; without one, keep the map's spawn order in party/participant order
+    formation = party.get("formation") or []
+    if formation:
+        ordered = ([p for p in formation if p in participants]
+                   + [p for p in participants if p not in formation])
+        spawns = _spawns_front_to_back(emap)
+    else:
+        ordered, spawns = participants, emap["pc_spawns"]
+    for pc_id, spawn in zip(ordered, spawns):
         positions[pc_id] = list(spawn)
     init = g.get("combat", {}).get("initiative", {})
     init_sides = int(str(init.get("die", "d20")).lstrip("dD"))
@@ -410,6 +434,45 @@ def apply_damage(root: Path, target: str, amount: int, source: str,
     return result
 
 
+WOUND_SEVERITIES = ("minor", "serious", "mortal")
+
+
+def add_wound(root: Path, target: str, text: str, severity: str = "serious") -> dict:
+    """Record a narrative wound (e.g. "arrow in the leg") on a PC or monster —
+    visible physical damage the GM and the viewer both read, beyond the numeric
+    HP. All wounds are curable (see heal_wounds / full-heal cleanup)."""
+    if severity not in WOUND_SEVERITIES:
+        raise EngineError("bad_severity",
+                          f"severity must be one of {', '.join(WOUND_SEVERITIES)}")
+    if not str(text).strip():
+        raise EngineError("empty_wound", "a wound needs a description")
+    kind, data, enc = resolve_actor(root, target)
+    data.setdefault("wounds", []).append({"text": str(text).strip(), "severity": severity})
+    _persist(root, kind, data, enc)
+    timeline.append_event(root, type_="wound", actors=[target],
+                          summary=f"{target} takes a {severity} wound: {text}")
+    return {"target": target, "wounds": data["wounds"]}
+
+
+def heal_wounds(root: Path, target: str, *, index: int | None = None) -> dict:
+    """Cure a wound. With `index`, cure just that one; otherwise cure them all."""
+    kind, data, enc = resolve_actor(root, target)
+    wounds = data.get("wounds", [])
+    if index is not None:
+        if not (0 <= index < len(wounds)):
+            raise EngineError("bad_index", f"no wound #{index} on {target}")
+        healed = [wounds.pop(index)]
+        data["wounds"] = wounds
+    else:
+        healed = list(wounds)
+        data["wounds"] = []
+    _persist(root, kind, data, enc)
+    if healed:
+        timeline.append_event(root, type_="wound", actors=[target],
+                              summary=f"{target} is treated ({len(healed)} wound(s) cured)")
+    return {"target": target, "wounds": data["wounds"], "healed": healed}
+
+
 def apply_heal(root: Path, target: str, amount: int, source: str) -> dict:
     kind, data, enc = resolve_actor(root, target)
     before = data["hp"]
@@ -418,6 +481,9 @@ def apply_heal(root: Path, target: str, amount: int, source: str) -> dict:
         data["effects"] = [e for e in data["effects"]
                            if e["name"] not in ("unconscious", "dying")]
         data.pop("death_saves", None)
+    # healed to full: the body mends — narrative wounds clear with the HP
+    if data["hp"] >= data["max_hp"] and data.get("wounds"):
+        data["wounds"] = []
     _persist(root, kind, data, enc)
     timeline.append_event(root, type_="heal", actors=[target],
                           summary=f"{target} heals {amount} ({source})",

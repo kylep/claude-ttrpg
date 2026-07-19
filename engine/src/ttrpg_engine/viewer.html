@@ -135,6 +135,18 @@
   .beat.choices li:first-child { border-top: 0; }
   .beat.choices li p { margin: 0; }
 
+  /* ---- rolls: a compact dice line --------------------------------------- */
+  .beat.roll { display: flex; align-items: baseline; gap: .5rem; margin: .5rem 0;
+    font-size: .8rem; color: var(--muted); }
+  .beat.roll .die { font-size: .95rem; }
+  .beat.roll .who { color: var(--parchment); }
+  .beat.roll .expr { font-family: var(--mono); font-size: .76rem; color: var(--gold);
+    letter-spacing: .03em; }
+  .beat.roll .for { color: var(--parchment); }
+  .beat.roll .vs { font-family: var(--mono); font-size: .72rem; }
+  .beat.roll .mark.win { color: var(--moss); }
+  .beat.roll .mark.lose { color: var(--blood); }
+
   /* ---- entity chips: cards in the flow of the story ---------------------- */
   .beat.entity { margin: .9rem 0; }
   .chip-card { display: flex; align-items: center; gap: .85rem; width: 100%;
@@ -281,6 +293,15 @@
   #legend .item.up { color: var(--ember); }
   #legend .item.up .swatch { box-shadow: 0 0 0 2px var(--ember); }
 
+  /* terrain key: what the map's coloured squares mean */
+  #terrain-legend { display: flex; flex-wrap: wrap; gap: .3rem .7rem;
+                    margin-top: .4rem; padding-top: .4rem; }
+  #terrain-legend:not(:empty) { border-top: 1px dashed var(--edge); }
+  #terrain-legend .item { display: flex; align-items: center; gap: .32rem;
+                          font-size: .72rem; color: var(--muted); }
+  #terrain-legend .swatch { width: 16px; height: 16px; border-radius: 3px;
+                            border: 1px solid var(--edge); flex: none; }
+
   .fighter { display: grid; grid-template-columns: 1fr auto; gap: .15rem .7rem;
              padding: .45rem .4rem; border-top: 1px solid var(--edge);
              margin: 0 -.4rem; border-radius: 3px; }
@@ -309,6 +330,11 @@
   .chip.warn { background: var(--blood); color: var(--parchment); }
   .chip.good { background: var(--moss); }
   .chip.aloft { background: var(--gold); }
+  /* narrative wounds — visible physical damage, severity by shade */
+  .chip.wound { background: #7a2e28; color: var(--parchment); }
+  .chip.wound.serious { background: #a33227; }
+  .chip.wound.mortal { background: #c2362a; font-weight: 600; }
+  .sheet .chip.wound { font-family: var(--serif); font-size: .74rem; }
   .hp { display: flex; align-items: center; gap: .5rem; font-family: var(--mono);
         font-size: .74rem; color: var(--muted); font-variant-numeric: tabular-nums; }
   .hp .bar { width: 84px; height: 7px; background: var(--ink); border-radius: 4px;
@@ -360,7 +386,8 @@
   <aside>
     <div class="card" id="map"><h2>Map</h2><div class="turn" id="turn" hidden></div>
       <div id="map-body"><p class="empty">No encounter running.</p></div>
-      <div id="legend"></div></div>
+      <div id="legend"></div>
+      <div id="terrain-legend"></div></div>
     <div class="card" id="party"><h2>Party</h2><div id="party-body"></div>
       <div id="purse" hidden></div></div>
     <div class="card" id="foes" hidden><h2>Opposition</h2><div id="foes-body"></div></div>
@@ -600,6 +627,12 @@ function buildSheet(card) {
       el("p", "desc muted", card.description)));
   if ((card.skills || []).length) sh.appendChild(sheetSection("Skills", tagRow(card.skills)));
   if ((card.effects || []).length) sh.appendChild(sheetSection("Effects", tagRow(card.effects, "warn")));
+  if ((card.wounds || []).length) {
+    const row = el("div", "tagrow");
+    for (const w of card.wounds)
+      row.appendChild(el("span", "chip wound " + (w.severity || "serious"), "🩹 " + w.text));
+    sh.appendChild(sheetSection("Wounds", row));
+  }
   if ((card.features || []).length) sh.appendChild(sheetSection("Features", tagRow(card.features)));
   const spellsSec = buildSpellsSection(card);
   if (spellsSec) sh.appendChild(spellsSec);
@@ -850,6 +883,26 @@ function renderEntry(e) {
     beat.appendChild(line);
     return beat;
   }
+  if (e.type === "roll") {
+    const beat = el("div", "beat new roll");
+    beat.appendChild(el("span", "die", "🎲"));
+    const line = el("span", "line");
+    line.appendChild(el("span", "who", e.actor || "?"));
+    line.appendChild(document.createTextNode(" rolled "));
+    line.appendChild(el("span", "expr", (e.expr || "") + " = " + (e.total ?? "")));
+    if (e.label) {
+      line.appendChild(document.createTextNode(" — "));
+      line.appendChild(el("span", "for", e.label));
+    }
+    if (e.target_num != null)
+      line.appendChild(el("span", "vs", " (vs " + (e.target_kind || "") + " " + e.target_num + ")"));
+    const win = ["hit", "success"].includes(e.outcome);
+    const lose = ["miss", "fail"].includes(e.outcome);
+    if (win || lose)
+      line.appendChild(el("span", "mark " + (win ? "win" : "lose"), win ? " ✓" : " ✗"));
+    beat.appendChild(line);
+    return beat;
+  }
   if (["character", "npc", "monster", "quest", "location"].includes(e.type) && e.ref) {
     const beat = el("div", "beat new entity");
     const kind = e.type === "character" ? "pc" : e.type;
@@ -895,6 +948,14 @@ function fighterRow(f, up) {
     const bad = ["poisoned", "frightened", "prone", "grappled", "restrained", "dying", "unconscious", "weakened"].includes(e);
     tags.appendChild(el("span", "chip" + (bad ? " warn" : e === "hidden" ? " good" : ""), e));
   }
+  const wounds = f.wounds || [];
+  if (wounds.length) {
+    const worst = wounds.some(w => w.severity === "mortal") ? "mortal"
+                : wounds.some(w => w.severity === "serious") ? "serious" : "minor";
+    const chip = el("span", "chip wound " + worst, "🩹 " + wounds.length);
+    chip.title = wounds.map(w => w.text).join("; ");
+    tags.appendChild(chip);
+  }
   if (tags.children.length) row.appendChild(tags);
   return row;
 }
@@ -909,6 +970,19 @@ function renderLegend(enc) {
     item.appendChild(sw);
     item.appendChild(el("span", null, t.name));
     item.addEventListener("click", () => openEntity(t.id));
+    box.appendChild(item);
+  }
+}
+
+function renderTerrainLegend(enc) {
+  const box = document.getElementById("terrain-legend");
+  box.replaceChildren();
+  for (const t of (enc && enc.terrain_legend) || []) {
+    const item = el("div", "item");
+    const sw = el("span", "swatch");
+    sw.style.background = t.color;
+    item.appendChild(sw);
+    item.appendChild(el("span", null, t.label));
     box.appendChild(item);
   }
 }
@@ -967,6 +1041,7 @@ function renderState(s) {
       hp: pc.hp, max_hp: pc.max_hp, ac: pc.ac, dead: false,
       gold: pc.gold,
       effects: (pc.effects || []).map(e => e.name),
+      wounds: pc.wounds || [],
       aloft: false,
     }, up));
   }
@@ -981,6 +1056,7 @@ function renderState(s) {
     turn.textContent = enc.name + " — round " + enc.round + " — up: " + enc.up;
     mapBody.innerHTML = s.map_svg;
     renderLegend(enc);
+    renderTerrainLegend(enc);
     foesBody.replaceChildren();
     let any = false;
     for (const f of enc.roster || []) {
@@ -997,11 +1073,13 @@ function renderState(s) {
     for (const node of mapBody.querySelectorAll("[data-ref]"))
       node.addEventListener("click", () => openEntity(node.dataset.ref));
     document.getElementById("legend").replaceChildren();
+    document.getElementById("terrain-legend").replaceChildren();
     foes.hidden = true;
   } else {
     turn.hidden = true;
     mapBody.replaceChildren(el("p", "empty", "No encounter running."));
     document.getElementById("legend").replaceChildren();
+    document.getElementById("terrain-legend").replaceChildren();
     foes.hidden = true;
   }
 

@@ -40,6 +40,26 @@ def test_ascii_map_contents():
     assert row1.split()[1:][1] == "B"  # x=1 on row y=1
 
 
+def test_terrain_legend_only_present_types():
+    # ENC has wall + difficult but no darkness -> legend omits darkness
+    legend = render.terrain_legend(ENC)
+    types = [t["type"] for t in legend]
+    assert types == ["difficult", "wall"]        # ordered background -> foreground
+    assert all("color" in t and t["label"] for t in legend)
+    labels = {t["type"]: t["label"] for t in legend}
+    assert labels["difficult"] == "difficult ground" and labels["wall"] == "wall"
+    # a swatch colour matches the fill the SVG actually draws for that type
+    for t in legend:
+        assert t["color"] == render.TERRAIN_STYLE[t["type"]]["fill"]
+
+
+def test_terrain_legend_counts_mapwide_dark():
+    enc = {**ENC, "terrain": [], "dark": True}
+    assert [t["type"] for t in render.terrain_legend(enc)] == ["dark"]
+    enc_empty = {**ENC, "terrain": [], "dark": False}
+    assert render.terrain_legend(enc_empty) == []
+
+
 def test_dead_monster_dropped_from_legend():
     # a dead monster leaves the board, so it must leave the legend too
     enc = {**ENC, "order": ["pc-brin", "goblin-1", "goblin-2"],

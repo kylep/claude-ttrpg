@@ -240,6 +240,36 @@ def test_monster_instance_card_carries_image_key(wroot):
     assert card["kind"] == "monster" and "image" in card and card["image"] is None
 
 
+def test_encounter_snapshot_carries_terrain_legend(wroot):
+    # skirmish.yaml has wall + difficult terrain (no darkness)
+    _start(wroot)
+    snap = viewer_data.state_snapshot(wroot, _game(wroot), "gm")
+    legend = snap["encounter"]["terrain_legend"]
+    assert [t["type"] for t in legend] == ["difficult", "wall"]
+    assert all(t["color"] and t["label"] for t in legend)
+
+
+def test_snapshot_forwards_wounds_to_roster_and_cards(wroot):
+    _start(wroot)
+    enc = _enc(wroot)
+    mid = next(iter(enc["monsters"]))
+    combat.add_wound(wroot, "pc-borin", "gash across the brow", "minor")
+    combat.add_wound(wroot, mid, "cracked skull", "serious")
+    # roster (both lenses) carries wounds; monster wounds are player-visible
+    for lens in ("gm", "player"):
+        snap = viewer_data.state_snapshot(wroot, _game(wroot), lens)
+        pc = _entry(snap, "pc-borin")
+        mon = _entry(snap, mid)
+        assert pc["wounds"][0]["text"] == "gash across the brow"
+        assert mon["wounds"][0]["severity"] == "serious"
+    # entity cards forward wounds too
+    pc_card = viewer_data.entity_card(wroot, _game(wroot), "pc-borin", "player")
+    assert pc_card["wounds"][0]["text"] == "gash across the brow"
+    mon_card = viewer_data.entity_card(wroot, _game(wroot), mid, "player")
+    assert mon_card["wounds"][0]["text"] == "cracked skull"
+    assert "hp" not in mon_card                   # player lens still hides foe HP
+
+
 class TestContentArtPath:
     """The shared fail-open art resolver behind monster portraits and location
     banners: a path resolves only when it is a non-empty string AND the file

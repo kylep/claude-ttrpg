@@ -44,6 +44,7 @@ def take(root: Path, g: dict, kind: str, rng: Random, pcs: list[str] | None = No
                 slot["current"] = slot["max"]
             sheet["effects"] = derive.equipment_effects(sheet, g)
             sheet.pop("death_saves", None)
+            sheet["wounds"] = []          # a full night's rest mends narrative wounds
         healed[pc_id] = [before, sheet["hp"]]
         worldfs.write_yaml(worldfs.state(root, f"party/{pc_id}"), sheet)
     clk = clock_mod.advance(worldfs.read_yaml(worldfs.state(root, "clock")), hours)

@@ -6,6 +6,31 @@ from ttrpg_engine.errors import EngineError
 
 _CELL = 40  # pixel size of one grid square in the rendered SVG
 
+# terrain fill palette, shared by the SVG renderer and the viewer's terrain
+# legend so a swatch always matches the square it explains. Colours are chosen
+# to read clearly against the parchment ground and apart from the blue/red
+# combatant tokens: a warm amber for difficult ground (was a washed-out tan
+# too close to the background), slate for darkness, near-black for walls.
+TERRAIN_STYLE = {
+    "difficult": {"fill": "#d59f3c", "opacity": 1.0, "label": "difficult ground"},
+    "dark":      {"fill": "#4b5563", "opacity": 0.6, "label": "darkness"},
+    "wall":      {"fill": "#3a352f", "opacity": 1.0, "label": "wall"},
+}
+
+
+def terrain_legend(enc: dict) -> list[dict]:
+    """The terrain types actually present on this map, each as {type, color,
+    label} — the key the viewer renders beside the map so its colours read
+    clearly. Only present types are returned; a map-wide `dark` also counts as
+    darkness. Ordered difficult, darkness, wall (background to foreground)."""
+    out = []
+    for t in ("difficult", "dark", "wall"):
+        present = bool(grid.cells_of(enc, t)) or (t == "dark" and enc.get("dark"))
+        if present:
+            style = TERRAIN_STYLE[t]
+            out.append({"type": t, "color": style["fill"], "label": style["label"]})
+    return out
+
 
 def load_encounter(root: Path) -> dict:
     path = root / "state" / "encounter.yaml"
@@ -169,12 +194,12 @@ def svg_map(enc: dict, *, caption: bool = True, status: dict | None = None,
     parts = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" '
              f'viewBox="0 0 {W} {H}" font-family="monospace">',
              f'<rect width="{W}" height="{H}" fill="#fafaf7"/>']
-    for x, y in grid.cells_of(enc, "difficult"):
-        parts.append(f'<rect x="{x*_CELL}" y="{y*_CELL}" width="{_CELL}" height="{_CELL}" fill="#d8c9a3"/>')
-    for x, y in grid.cells_of(enc, "dark"):
-        parts.append(f'<rect x="{x*_CELL}" y="{y*_CELL}" width="{_CELL}" height="{_CELL}" fill="#6b7280" opacity="0.55"/>')
-    for x, y in grid.cells_of(enc, "wall"):
-        parts.append(f'<rect x="{x*_CELL}" y="{y*_CELL}" width="{_CELL}" height="{_CELL}" fill="#44403c"/>')
+    for kind in ("difficult", "dark", "wall"):
+        style = TERRAIN_STYLE[kind]
+        op = f' opacity="{style["opacity"]}"' if style["opacity"] != 1.0 else ""
+        for x, y in grid.cells_of(enc, kind):
+            parts.append(f'<rect x="{x*_CELL}" y="{y*_CELL}" width="{_CELL}" '
+                         f'height="{_CELL}" fill="{style["fill"]}"{op}/>')
     for i in range(w + 1):
         parts.append(f'<line x1="{i*_CELL}" y1="0" x2="{i*_CELL}" y2="{h*_CELL}" stroke="#ccc"/>')
     for i in range(h + 1):

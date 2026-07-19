@@ -21,7 +21,8 @@ from ttrpg_engine.markdown_render import render_markdown
 # every type the feed knows how to render; post() rejects anything else so a
 # typo'd auto-emit fails loudly at write time, not silently at render time
 _TYPES = frozenset({"narration", "scene", "system", "choices", "action",
-                    "character", "npc", "monster", "quest", "location", "combat"})
+                    "character", "npc", "monster", "quest", "location", "combat",
+                    "roll"})
 
 
 def _path(root: Path) -> Path:
@@ -43,6 +44,17 @@ def post(root: Path, type_: str, **payload) -> dict:
     with p.open("a", encoding="utf-8") as f:
         f.write(json.dumps(entry, ensure_ascii=False) + "\n")
     return entry
+
+
+def post_roll(root: Path, *, actor: str, label: str, expr: str, total: int,
+              outcome: str | None = None, target_num: int | None = None,
+              target_kind: str | None = None, gm_only: bool = False) -> dict:
+    """Post a dice beat: who rolled, what for, the expression, the total, and
+    (optionally) the outcome and the number it was checked against. `gm_only`
+    keeps a hidden foe's roll out of the player feed (see read())."""
+    return post(root, "roll", actor=actor, label=label, expr=expr, total=total,
+                outcome=outcome, target_num=target_num, target_kind=target_kind,
+                gm_only=gm_only)
 
 
 def _rendered(rec: dict) -> dict | None:
@@ -75,6 +87,16 @@ def _rendered(rec: dict) -> dict | None:
         out["name"] = str(rec.get("name", ""))
         if rec.get("md"):
             out["html"] = render_markdown(str(rec["md"]))
+    elif t == "roll":
+        # plain values, inserted as textContent by the client — a dice beat is
+        # structured, not prose, so nothing here is markdown-rendered
+        out["actor"] = str(rec.get("actor", ""))
+        out["label"] = str(rec.get("label", ""))
+        out["expr"] = str(rec.get("expr", ""))
+        out["total"] = rec.get("total")
+        out["outcome"] = rec.get("outcome")
+        out["target_num"] = rec.get("target_num")
+        out["target_kind"] = rec.get("target_kind")
     else:
         return None
     return out
@@ -112,6 +134,10 @@ def read(root: Path, offset: int = 0, lens: str = "gm") -> tuple[list[dict], int
         except ValueError:
             continue
         if not isinstance(rec, dict):
+            continue
+        # a GM-only roll (a hidden foe's attack) must never reach a player lens —
+        # showing it would spoil an enemy the players can't yet see
+        if rec.get("type") == "roll" and rec.get("gm_only") and lens != "gm":
             continue
         entry = _rendered(rec)
         if entry is None:

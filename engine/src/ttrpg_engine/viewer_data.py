@@ -62,6 +62,7 @@ def _roster(root: Path, enc: dict, view: dict, lens: str) -> list[dict]:
             mon = enc["monsters"][cid]
             entry = {"id": cid, "name": mon["name"], "side": "monster",
                      "effects": [e["name"] for e in mon.get("effects", [])],
+                     "wounds": mon.get("wounds", []),
                      "aloft": aloft, "dead": bool(mon.get("dead"))}
             if lens == "gm":
                 entry["hp"] = mon["hp"]
@@ -73,7 +74,8 @@ def _roster(root: Path, enc: dict, view: dict, lens: str) -> list[dict]:
             sheet = worldfs.read_yaml(worldfs.state(root, f"party/{cid}"))
             names = [e["name"] for e in sheet.get("effects", [])]
             entry = {"id": cid, "name": sheet["name"], "side": "pc",
-                     "effects": names, "aloft": aloft, "dead": "dead" in names,
+                     "effects": names, "wounds": sheet.get("wounds", []),
+                     "aloft": aloft, "dead": "dead" in names,
                      "hp": sheet["hp"], "max_hp": sheet["max_hp"],
                      "ac": sheet.get("ac")}
         entries.append(entry)
@@ -145,6 +147,7 @@ def _pc_card(root: Path, ref: str, g: dict | None = None) -> dict:
         "played_by": sheet.get("played_by"),
         "attributes": sheet["attributes"], "skills": sheet["skills"],
         "effects": [e["name"] for e in sheet.get("effects", [])],
+        "wounds": sheet.get("wounds", []),
         "features": sheet.get("features", []),
         "spells_known": spells_known,
         "spells": spells,
@@ -217,6 +220,8 @@ def _monster_instance_card(g: dict, enc: dict, ref: str, lens: str) -> dict:
             "type": mon.get("type"), "description": " ".join(str(desc).split()),
             "image": _monster_image(g, entry),
             "effects": [e["name"] for e in mon.get("effects", [])],
+            # wounds are physical/observable — player-safe even for foes
+            "wounds": mon.get("wounds", []),
             "aloft": bool(enc.get("aloft", {}).get(ref)),
             "dead": bool(mon.get("dead"))}
     if lens == "gm":
@@ -364,7 +369,8 @@ def state_snapshot(root: Path, g: dict, lens: str) -> dict:
                    "side": r["side"]} for r in roster if r["id"] in syms]
         snap["encounter"] = {"id": enc["id"], "name": enc["name"],
                              "round": enc["round"], "up": up,
-                             "roster": roster, "legend": legend}
+                             "roster": roster, "legend": legend,
+                             "terrain_legend": render.terrain_legend(view)}
         # a hidden monster's turn passes up="???" (no real cid) -> no highlight
         snap["map_svg"] = render.svg_map(
             view, caption=False, status=_token_status(roster),
