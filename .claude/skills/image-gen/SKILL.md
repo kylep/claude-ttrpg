@@ -58,6 +58,20 @@ Append it to every subject-specific prompt, e.g.:
 > illustration, muted earth tones, ink-and-wash linework, no text or
 > watermarks"
 
+### House style — hero scene art (banners, covers, portraits)
+
+For scene banners and other hero art, lean into the evocative "old road"
+look: atmospheric, painterly storybook illustration with warm, golden light
+and a sense of place a young reader can step into. Favor depth and mood over
+busy detail — a lit path leading into misty woods reads better than a crowded
+tableau. Keep this style consistent across a world's banners so the set feels
+like one illustrated book.
+
+Preferred model for hero scene art (banners, covers, portraits) is
+`flux-2-pro` — pass `--model flux-2-pro`. It costs real money, so the existing
+`IMAGEGEN_MAX_PER_RUN` and `IMAGEGEN_SPEND_CAP_USD` caps still apply exactly as
+below; the model preference never overrides a cap refusal.
+
 ## 4. Run the tool
 
 ```bash

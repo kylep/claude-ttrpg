@@ -8,6 +8,10 @@ bess_tandy:
   location: millbrook
   role: rumor-monger
   disposition: friendly
+  description: >
+    A round, rosy-cheeked woman with her sleeves always pushed up and a rag
+    over one shoulder. She talks fast, laughs loud, and seems to know a little
+    something about everyone who walks in her door.
   wants: >
     Bess keeps the Travellers Tavern and knows everyone's business before they
     do. She wants a full common-room and a fresh story to tell it, and she
@@ -20,6 +24,10 @@ mabon_miller:
   location: millbrook
   role: quest-giver
   disposition: friendly
+  description: >
+    A big, tired man dusted head to toe in white flour, with worried eyes and
+    strong, floury hands. He keeps glancing at the floor like something might
+    be listening under it.
   wants: >
     Mabon runs the Old Mill and is losing sleep over it. Something has moved
     into the storage tunnels under his floor — gnawing in the dark, spoiling
@@ -32,6 +40,10 @@ jory:
   location: millbrook
   role: witness
   disposition: friendly
+  description: >
+    A skinny, freckled teenager with a mop of hair and flour on his knees.
+    He stands tall and tries to look brave, but his eyes go wide whenever
+    anyone mentions the dark cellars below the mill.
   wants: >
     Jory is Mabon's teenage mill-hand and the one who actually saw them: rats,
     "and something bigger, with too many legs," in the cellar tunnels. He wants
@@ -45,6 +57,10 @@ doran_cobb:
   disposition: neutral
   gold: 20
   inventory: [{item: healing_potion, qty: 1}]
+  description: >
+    A trim, sharp-eyed shopkeeper in a neat vest, forever counting coins and
+    tapping his foot. He's polite enough, but you can tell he'd rather be
+    selling something than chatting.
   wants: >
     Doran keeps the Trading Post and is furious the fallen statue has his supply
     wagons stuck outside the gate. He wants the mill road cleared and his goods
@@ -56,6 +72,10 @@ watchman_toft:
   location: millbrook
   role: guard
   disposition: friendly
+  description: >
+    A grey-whiskered old guard with a dented helmet and a spear he leans on
+    more than he holds. He's slow, friendly, and always happy to stop and
+    tell a long story about the old days.
   wants: >
     Toft is the one aging guard in Millbrook's shabby watchtower, and he watches
     the clouds more than the gate. He wants a quiet shift and someone to listen
@@ -69,6 +89,10 @@ headwoman_aldith:
   disposition: friendly
   gold: 50
   inventory: [{item: healing_potion, qty: 2}]
+  description: >
+    A straight-backed older woman with grey hair in a tight bun and a plain
+    grey dress. She looks you right in the eye and speaks plainly, like
+    someone used to being listened to.
   wants: >
     Aldith is Millbrook's plain-spoken elected elder. She wants her village safe
     and its one road open, keeps the notice board by the well, and speaks for
@@ -80,6 +104,10 @@ mother_wenna:
   location: millbrook
   role: guide
   disposition: friendly
+  description: >
+    A tiny, bird-like old woman in a patched shawl, with twigs and dried
+    flowers tucked in her white hair. Her smile is warm and kind, but her
+    pale eyes seem to look right through you.
   wants: >
     Wenna is the old hedge-priest who tends the open-air shrine and the little
     graveyard. Kind and a touch eerie, she wants the dead to rest — and lately
@@ -94,6 +122,10 @@ farmer_dobbin:
   disposition: friendly
   gold: 15
   inventory: [{item: healing_potion, qty: 1}]
+  description: >
+    A stout, red-faced farmer in muddy boots and a straw hat, wringing his
+    cap in his hands. He keeps sniffling and wiping his eyes, so upset about
+    his lost pig that he can barely get the words out.
   wants: >
     Dobbin works the north field and is beside himself: his prize pig Truffles
     broke her fence and wandered off. He raised her from a piglet, swears she is

@@ -4,3 +4,5 @@ description: A family-heroic tabletop ruleset — scary-but-beatable adventures 
 start_date: "0001-01-01"   # calendar is 12 months x 30 days
 start_hour: 9              # world clock at creation, 0-23
 start_location: millbrook  # region-map node id the party starts at (the starter village)
+audience: young            # narration aims at a young reading level; see content/voice.md
+tone: "warm, storybook-heroic — scary but beatable, death is soft"

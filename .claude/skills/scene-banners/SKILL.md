@@ -44,4 +44,7 @@ have one; only surface art that already exists in the content.
   `content/art/banners/millbrook.png`) however your interface displays images.
 
 See the `image-gen` skill only if the operator explicitly wants to CREATE new
-banner art; showing existing banners never needs it.
+banner art; showing existing banners never needs it. When you do create banner
+art, image-gen's "House style" note is the guide: the evocative, painterly
+"old road" look — warm light, storybook mood — is the house style for scene
+banners.

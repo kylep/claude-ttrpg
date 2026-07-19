@@ -14,7 +14,9 @@ description: Use when starting or resuming a claude-ttrpg play session in a worl
    status is fine — just proceed.
 2. Read `world.yaml`, `state/party.yaml`, `state/clock.yaml`, every
    sheet in `state/party/`, `house-rules.md` if it exists (the operator's
-   standing table rules — they bind you all session; see gm.md), and the
+   standing table rules — they bind you all session; see gm.md),
+   `canon/voice.md` if it exists (the game's narration brief — reading level
+   and tone; narrate to it all session, see gm.md "Naming & clarity"), and the
    latest `sessions/session-*/summary.md` if one exists.
 3. **Session zero** — if `state/party.yaml` has no members, build the
    party before anything else with the `party-create` skill: it walks
