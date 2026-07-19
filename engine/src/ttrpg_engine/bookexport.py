@@ -82,9 +82,10 @@ th, td {{ border: 1px solid {_PALETTE['frame']}; padding: 0.35rem 0.6rem;
 th {{ background: {_PALETTE['band']}; }}
 .fullbleed {{ page-break-before: always; text-align: center; }}
 .fullbleed img {{ max-width: 100%; max-height: 250mm; }}
-/* No float here: WeasyPrint 69 crashes paginating 2+ floated ::first-letter cards. */
-p.lead::first-letter {{ font-family: 'Cinzel', Georgia, serif; font-size: 1.6em;
-  padding: 0 0.03em 0 0; color: {_PALETTE['accent']}; }}
+/* Drop cap via a floated <span>, NOT ::first-letter — the pseudo-element form
+   crashes WeasyPrint 69 when 2+ cards paginate together; a real span is safe. */
+.dropcap {{ font-family: 'Cinzel', Georgia, serif; font-size: 3.1em; line-height: 0.68;
+  float: left; padding: 0.02em 0.09em 0 0; color: {_PALETTE['accent']}; }}
 """
 
 
@@ -128,6 +129,16 @@ def _title_case(tag):
     return tag.replace("_", " ").title()
 
 
+def _leadcap(text):
+    """A lead paragraph whose first letter is a floated drop cap. Empty text
+    yields no paragraph."""
+    text = (text or "").strip()
+    if not text:
+        return ""
+    return (f"<p class='lead'><span class='dropcap'>{esc(text[0])}</span>"
+            f"{esc(text[1:])}</p>")
+
+
 def _roster_card(name, img_rel, body_html):
     img = f'<img class="portrait" src="{esc(img_rel)}" alt="">' if img_rel else ""
     return f'<div class="card"><h3>{esc(name)}</h3>{img}{body_html}</div>'
@@ -143,7 +154,7 @@ def _races_body(src):
         appearance = entry.get("appearance", "").strip()
         bonuses = ", ".join(f"{k} +{v}" for k, v in race.get("bonuses", {}).items()) or "—"
         desc = esc(race.get("description", ""))
-        appear = f"<p class='lead'>{esc(appearance)}</p>" if appearance else ""
+        appear = _leadcap(appearance)
         body = (
             f"<p>{desc}</p>{appear}"
             f"<p><span class='tag'>Ability bonuses: {esc(bonuses)}</span>"
@@ -198,7 +209,7 @@ def _classes_body(src):
         skills = ", ".join(_title_case(s) for s in cls.get("skills", []))
         cards.append(
             f"<div class='card'><h3>{esc(name.title())}</h3>"
-            f"<p class='lead'>{esc(cls.get('description', '').strip())}</p>"
+            f"{_leadcap(cls.get('description', ''))}"
             f"<p><span class='tag'>Hit die d{esc(str(cls['hit_die']))}</span>"
             f"<span class='tag'>Start gold {esc(str(cls.get('starting_gold', 0)))} gp</span></p>"
             f"<p><strong>Starting gear:</strong> {esc(gear)}.</p>"
