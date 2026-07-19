@@ -65,3 +65,12 @@ def test_build_classes_pdf():
     pdf = bookexport.build_classes(_familyrpg_src())
     assert pdf.startswith(b"%PDF")
     assert len(pdf) > 5000
+
+
+def test_build_world_pdf():
+    pdf = bookexport.build_world(_familyrpg_src())
+    assert pdf.startswith(b"%PDF")
+    # cover + lore page + full-page painted map = at least 3 pages
+    src = _familyrpg_src()
+    html = bookexport._world_html(src)
+    assert bookexport.page_count(html, src["content_dir"]) >= 3

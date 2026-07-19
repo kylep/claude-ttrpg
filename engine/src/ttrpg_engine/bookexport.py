@@ -7,7 +7,7 @@ from pathlib import Path
 from weasyprint import HTML
 
 from ttrpg_engine import chargen, game as game_mod
-from ttrpg_engine.markdown_render import esc
+from ttrpg_engine.markdown_render import esc, render_markdown as _md
 
 _FONT_DIR = Path(__file__).parent / "assets" / "fonts"
 
@@ -198,3 +198,38 @@ def build_classes(src):
     body = "".join(cards)
     html = _document("Classes", src["world_name"] or g["meta"]["name"].title(), cover, body)
     return render_pdf(html, content_dir)
+
+
+def _world_lore_html(content_dir):
+    parts = []
+    for fname, heading in (("setting.md", "The Setting"), ("history.md", "History")):
+        path = content_dir / fname
+        if path.exists():
+            parts.append(f"<h3>{heading}</h3>{_md(path.read_text())}")
+    if not parts:
+        return "<p><em>World lore is still being written.</em></p>"
+    return "".join(parts)
+
+
+def _world_svg_html(content_dir):
+    svg_path = content_dir / "maps" / "world-map.svg"
+    if not svg_path.exists():
+        return ""
+    # Inline the SVG at a constrained size so it sits small at the top.
+    return f"<div style='max-width:120mm;margin:0 auto 1rem'>{svg_path.read_text()}</div>"
+
+
+def _world_html(src):
+    g, content_dir = src["g"], src["content_dir"]
+    cover = _content_image(content_dir, "art/covers/world.png")
+    svg = _world_svg_html(content_dir)
+    lore = _world_lore_html(content_dir)
+    body = f"{svg}{lore}"
+    painted = _content_image(content_dir, "maps/WorldMapPainted.png")
+    if painted:
+        body += f"<div class='fullbleed'><img src='{esc(painted)}' alt='World map'></div>"
+    return _document("The World", src["world_name"] or g["meta"]["name"].title(), cover, body)
+
+
+def build_world(src):
+    return render_pdf(_world_html(src), src["content_dir"])
