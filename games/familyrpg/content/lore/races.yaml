@@ -3,10 +3,13 @@
 # The MECHANICS (attribute bonuses, speed) live in `ruleset/races.yaml`; this is
 # the CONTENT/world-lore file, keyed by the same race ids so it sits "with the
 # race" without polluting the reusable ruleset. The engine does not read this
-# file — it's for the GM and for building out the world.
+# file — it's for the GM, for the world, and for feeding image prompts.
 #
 # Fields per race:
-#   appearance      — general physical look (kid-legible, family-heroic).
+#   appearance      — a short paragraph describing the SPECIES in general (not
+#                     one individual): build, features, coloring, dress, and any
+#                     capability worth being unambiguous about (esp. flight).
+#                     Image-prompt-ready.
 #   location        — where they live in this world: a homeland/capital, a
 #                     diaspora spread through friendlier peoples with no hold of
 #                     their own, or small towns not yet on the major map (we'll
@@ -17,19 +20,40 @@
 
 human:
   appearance: >
-    Ordinary folk of every shade and build, from wiry farmhands to broad
-    smiths to sharp-eyed merchants — no single look, which is rather the point.
+    Humans come in every shade, build, and bearing the world has to offer, and
+    that sheer variety is the whole of them — no two need look alike. Across the
+    Great Plains you will find them pale and freckled or dark and sun-worn,
+    lanky or broad, from wiry farmhands with cracked knuckles to soft-palmed
+    merchants in dyed wool to thick-armed city guards. On average they stand a
+    touch taller than a dwarf and shorter than an elf, with rounded ears, mobile
+    faces quick to grin or scowl, and hair and eyes across the full run of
+    browns, blacks, golds, greys, and reds. They dress to their weather and
+    their station — homespun and leather in the fields, brighter cloth and trim
+    in the free cities — and tend to carry themselves with a restless,
+    forward-leaning energy, forever after the next thing. They are wingless and
+    earthbound, getting about by foot, horse, cart, and the dwarves' rail like
+    most everyone else.
   location: >
-    Homeland: the Great Plains. The most numerous and widespread people,
-    holding the three free city-states (Kingsreach, Bridgeton, Eastharbor) and
-    the farm villages between them.
+    Homeland: the Great Plains. The most numerous and widespread people, holding
+    the three free city-states (Kingsreach, Bridgeton, Eastharbor) and the farm
+    villages between them.
   history: "Stub — historical lore TBD."
   notable_figures: "None"
 
 elf:
   appearance: >
-    Tall and slender, fair-featured and sharp-eared, moving with an unhurried
-    grace; their eyes miss very little.
+    Elves are tall and slender, standing a head above most humans yet lighter of
+    frame, with a poise that makes even standing still look considered. Their
+    faces are fine-boned and ageless — a young elf and an old one differ more in
+    the eyes than the skin — with high cheekbones, long upswept ears, and large
+    eyes in leaf-green, amber, grey, or deep river-blue. Their hair tends to run
+    dark or silver-fair, worn long and often braided with small tokens of the
+    wood. Skin ranges from warm brown to pale birch, sometimes faintly dappled
+    as if by light falling through leaves. They move quietly and economically,
+    equally at home stepping between roots and rooftops, and dress in soft
+    layered greens, greys, and earth-tones that blur into the Deepwoods behind
+    them. Elves are wingless and earthbound; their gift is grace and unhurried
+    patience, not flight, and they wear their long years lightly.
   location: >
     Homeland: the Deepwoods (east). Elf-towns sit deep beneath the old canopy;
     the frontier fort of Elfward marks their quiet border with the dwarves.
@@ -38,8 +62,19 @@ elf:
 
 dwarf:
   appearance: >
-    Short and broad, thick-limbed and strong, built like the stone they mine;
-    proud of their braided beards whatever their gender.
+    Dwarves are short and immensely solid — rarely more than four and a half
+    feet, but broad and dense enough to anchor a doorway, with thick limbs and
+    hands like a stoneworker's vice. Beards are a point of pride across all of
+    them, worn long, braided, and often clasped with iron or gold, and even
+    those who keep less hair still favor strong, weathered features and heavy
+    brows. Their skin runs in earthen tones — ruddy, tan, slate-grey — with
+    dark, steady eyes beneath. They dress practically and durably: banded
+    leathers, wool, and stout boots for the road, fine metalwork and deep
+    jewel-tones for the halls of Ironford. Everything about a dwarf suggests
+    permanence, from the planted set of the feet to the unhurried way they size
+    a thing up. They are wingless and firmly earthbound, and proud of it — no
+    glide, no leap, just sure footing and the patience to outlast whatever the
+    mountain throws at them.
   location: >
     Homeland: the White Cliff Mountains, capital Ironford; also the mixed-race
     port of Westharbor (under dwarf leadership) and the Ironline's frontier
@@ -49,8 +84,18 @@ dwarf:
 
 halfling:
   appearance: >
-    Small and soft-footed, round-faced and quick-fingered, rarely taller than a
-    human child but far harder to catch off guard.
+    Halflings are small and softly rounded, rarely taller than a human child of
+    ten, but sturdy and sure on their feet in a way children are not. They have
+    wide, friendly faces with ruddy cheeks, curly hair in browns and coppers,
+    and warm eyes that crinkle easily into a grin. Most go barefoot by choice,
+    on tough, leathery-soled feet with a curl of hair across the top. Their
+    fingers are quick and clever, whether at a pie-crust or a coin-trick. They
+    favor comfortable, homey clothes in cheerful earth-tones — waistcoats,
+    aprons, patched travel-cloaks — with plenty of pockets, and tend to keep
+    something to eat close at hand. For all their softness they are improbably
+    hard to startle and quicker than they look, moving with an unfussed,
+    low-to-the-ground ease. Halflings are wingless and earthbound; their talents
+    are nimbleness, luck, and going unnoticed, not any turn of speed or flight.
   location: >
     Diaspora — no hold of their own. Halflings live comfortably among the plains
     humans, snug in and around the farm villages and the free cities.
@@ -59,19 +104,40 @@ halfling:
 
 gnome:
   appearance: >
-    Small and bright-eyed, with clever hands and the permanent air of someone
-    who has just taken something apart to see how it works.
+    Gnomes are small and lively, standing about halfling-height but leaner and
+    more angular, with heads a touch large for their bodies and bright, darting
+    eyes that seem to be measuring everything. Their faces are quick and
+    expressive, often creased with concentration or delight, and their hair
+    grows in every direction at once unless bound down — frequently in colors no
+    other race manages, from copper to soft blue-white. Skin runs from warm tan
+    to woody brown. They tend to festoon themselves with the tools of tinkering:
+    goggles pushed up on the brow, belts of little instruments, pockets that
+    clink and whir. Their clothes are practical but rarely tidy, singed at the
+    cuffs and patched at the knees. Gnomes move in restless bursts, forever
+    leaning in for a closer look. They are wingless and earthbound — whatever
+    contraptions they dream up to leave the ground, a gnome's own two feet stay
+    firmly on it.
   location: >
     Homeland: the Northland Tundra, town of Cogwick; the dwarves' magitech
-    partners on the Ironline. A scatter of tinker-hamlets dot the tundra
-    (good candidates for future map nodes).
+    partners on the Ironline. A scatter of tinker-hamlets dot the tundra (good
+    candidates for future map nodes).
   history: "Stub — historical lore TBD."
   notable_figures: "None"
 
 half_orc:
   appearance: >
-    Big-shouldered and green-grey of skin, with jutting tusks and an easy
-    strength that people tend to underestimate right up until they shouldn't.
+    Half-orcs are tall and powerfully built, usually topping six feet, with
+    broad shoulders and long, strong limbs that make them the easiest folk in
+    any room to spot. Their skin runs in shades of green and grey, weathered and
+    tough, and a pair of small lower tusks juts from a heavy, expressive jaw.
+    Coarse dark hair, a strong brow, and eyes that are often warmer and more
+    thoughtful than strangers expect complete the picture. Many carry old nicks
+    and scars simply from a life of hard work and harder assumptions. They dress
+    plainly and for use — leather, wool, sturdy boots — and tend to move with a
+    deliberate, economical strength, careful not to break the things (or people)
+    they mean no harm. Half-orcs are wingless and earthbound; their gift is raw,
+    patient power and stamina, the kind that lifts a fallen gate off someone's
+    legs long after everyone else has given up.
   location: >
     Sparse and scattered — no town of their own. Found here and there among the
     humans and dwarves. (The pure-orc Warcamp out in the Wasteland is a menace,
@@ -81,8 +147,18 @@ half_orc:
 
 half_elf:
   appearance: >
-    Caught pleasantly between two looks — a shade too tall and fine for a
-    human, a shade too round-eared for an elf — and wholly at home being both.
+    Half-elves fall gracefully between their two parent peoples and never quite
+    settle on either. They stand tall and lightly built like elves but with a
+    human's warmer frame and quicker expressions, and their ears come to a soft,
+    modest point rather than a full sweep. Their features are handsome and
+    mobile, aging slower than a human's but without an elf's agelessness.
+    Coloring draws from both sides in any combination — dark human hair over
+    pale elven eyes, or fair elven silver over sun-brown skin — so that no two
+    look much alike. They tend to dress adaptably, picking up the styles of
+    wherever they happen to be welcome, whether a free-city coat or a woodland
+    cloak. Easy to talk to and quick to read a room, they carry themselves as
+    people used to bridging two sides at once. Half-elves are wingless and
+    earthbound, at home on any road but the sky.
   location: >
     Diaspora — no homeland. Equally at ease in the human cities and along the
     Deepwoods' edge (river towns like Rivergate). Natural go-betweens.
@@ -91,8 +167,18 @@ half_elf:
 
 dragonborn:
   appearance: >
-    Scaled and proud, standing tall on strong legs, with a draconic head and
-    a hide in the color of the wyrm-line they descend from.
+    Dragonborn stand tall and upright on two strong legs, broad through the
+    chest and a head taller than most humans, plainly the kin of dragons but
+    walking the earth rather than the air. Every inch of them is covered in
+    fine, hard scales in a single clan hue — brass, red, green, blue, or bronze
+    — brightest along the ridges of the face and dulling to a paler belly. Their
+    heads are truly draconic: a blunt snout, a crest of horns or frills sweeping
+    back from the brow, and slit-pupiled eyes that catch the light. Clawed hands
+    and feet and a thick, balancing tail complete them, and when one draws
+    breath to speak there is often the faint sense of held fire behind it. They
+    dress in strong, simple garments cut to fit around scale and tail.
+    Crucially, dragonborn have no wings and cannot fly — they are proud, grounded
+    warriors and speakers, dragon-blooded but firmly on two feet.
   location: >
     Homeland: Dragon Isle (west), the fishing town of Emberport, in service to
     the dragons who dwell there. Rarely seen on the mainland.
@@ -101,38 +187,83 @@ dragonborn:
 
 tortle:
   appearance: >
-    Turtle-folk who carry a thick natural shell on their broad backs;
-    slow-moving and calm, with beaked faces and patient, kindly eyes.
+    Tortles are broad, sturdy turtle-folk who carry a genuine thick shell fused
+    to back and chest — real armor, hard enough to turn a blade better than most
+    bought mail, into which they can draw head and limbs when hard-pressed.
+    Standing a little shorter than a human but far heavier, they move slowly and
+    deliberately on stout legs, with leathery green-brown or grey skin, blunt
+    beaked faces, and calm, deep-set eyes that rarely seem to hurry. Their hands
+    are thick and clawed but surprisingly careful. Tortles wear little more than
+    a harness, a satchel, or a light wrap — clothing sits awkwardly over the
+    shell, and the shell is protection enough — decorated at most with simple
+    carvings or paint. Everything about them reads as patient and unbothered.
+    Tortles are wingless and earthbound, and no fast movers besides; their
+    strength is endurance, steadiness, and a natural armored calm rather than
+    speed or flight.
   location: >
-    Homeland: the East Islands, village of Shellhaven; unhurried island-folk.
-    A few tortle families keep quiet coastal spots that may earn map nodes later.
+    Homeland: the East Islands, village of Shellhaven; unhurried island-folk. A
+    few tortle families keep quiet coastal spots that may earn map nodes later.
   history: "Stub — historical lore TBD."
   notable_figures: "None"
 
 tabaxi:
   appearance: >
-    Sleek cat-folk in spotted or striped fur, all whiskers and a flicking tail;
-    quick, restless, and endlessly, cheerfully curious.
+    Tabaxi are sleek, lithe cat-folk, a little taller than a human but far
+    lighter, built in a long line from twitching ears to the tip of a restless
+    tail. Soft fur covers them in feline patterns — spotted like a leopard,
+    striped like a tiger, or plain tawny, cream, or charcoal — over a limber,
+    quick-muscled frame. Their faces are unmistakably catlike: broad
+    cheekbones, whiskers, a small muzzle, and large slit-pupiled eyes in green,
+    gold, or amber that shine in low light. Retractable claws slide from padded
+    fingers, and that long tail lashes and coils with every shift of mood. They
+    favor light, colorful, well-traveled clothing that never hampers a leap,
+    hung with beads, charms, and trophies of the road. Endlessly curious and
+    rarely still, tabaxi are the quickest folk afoot in the known world. They
+    are wingless and earthbound — but they climb, pounce, and sprint so well
+    that they seldom seem to want the sky.
   location: >
     No fixed hold — wandering cat-folk found in trade towns and on the open
-    roads. They may gather in a small town or two off the major map (future nodes).
+    roads. They may gather in a small town or two off the major map (future
+    nodes).
   history: "Stub — historical lore TBD."
   notable_figures: "None"
 
 aarakocra:
   appearance: >
-    Feathered bird-folk with beaks and bright plumage, light on hollow bones;
-    built for high crags and short, darting glides.
+    Aarakocra are feathered bird-folk, tall but startlingly light, built on
+    hollow bones for a life spent as much in the air as on the ground. Bright
+    plumage covers them — slate and white, russet, or storm-grey — crowning into
+    a crest above a sharp beaked face and round, keen eyes made for spotting
+    movement far below. Their most striking feature is real: broad feathered
+    wings running from arm to flank, and taloned bird-feet made for gripping
+    crag and perch. Those wings genuinely work, but only in short measures —
+    aarakocra glide and beat aloft for brief, darting hops from cliff to cliff or
+    across a gorge, not the tireless soaring of a true eagle, tiring quickly and
+    landing often. They wear little that would bind the wings: light wraps,
+    harnesses, and feather-tokens. Unlike the flightless kenku, an aarakocra can
+    leave the ground — just never for long, and never far.
   location: >
     Cliff-dwellers of the high, windy places — likely the majority at the
-    storm-lashed rock port of Stormhaven, with eyries in the crags (future nodes).
+    storm-lashed rock port of Stormhaven, with eyries in the crags (future
+    nodes).
   history: "Stub — historical lore TBD."
   notable_figures: "None"
 
 goliath:
   appearance: >
-    Grey-skinned giants a full head taller than any human, stone-hard and
-    marked with pale, lichen-like patterns earned on the high peaks.
+    Goliaths are giants among the smaller folk, standing seven feet or more and
+    hewn like the mountains that raised them — heavy-boned, thick-muscled, and
+    broad enough to fill a doorway sideways. Their skin is a stony grey,
+    sometimes faintly bluish, marked from birth with darker patches and lines
+    like veins of ore or patches of lichen, patterns each of them reads as a
+    kind of story. Most are bald or keep only a topknot, with heavy brows,
+    strong jaws, and calm, deliberate eyes. Small bony growths stud their skin
+    here and there like natural studs of armor. They dress simply and warmly for
+    the high cold — hides, wool, and little ornament — and move with the
+    unhurried, planted certainty of things used to being the largest in any
+    room. Goliaths are wingless and firmly earthbound; their gift is sheer size,
+    strength, and stamina, and a competitor's eye that reckons a hard climb and
+    a hard fight as much the same thing.
   location: >
     Highland-folk of the tallest White Cliffs, above the dwarf holds; their
     scattered mountain camps could become map nodes as the world climbs higher.
@@ -141,8 +272,19 @@ goliath:
 
 lizardfolk:
   appearance: >
-    Cold-blooded reptile-folk with scaled hides, clawed hands, and unblinking
-    eyes; lean, patient, and famously hard to read.
+    Lizardfolk are lean, reptilian, and unnervingly still until they move.
+    Standing about a human's height but with a low, forward-set balance and a
+    long counter-weighting tail, they are covered head to foot in fine scales —
+    mottled green, brown, or swamp-grey — over cords of wiry muscle. Their heads
+    are frankly reptilian: a toothy blunt snout, a ridge of low spines or a
+    frill, and round, unblinking eyes with vertical pupils that give away almost
+    nothing. Clawed hands and feet grip and dig with ease. Being cold-blooded,
+    they slow and stiffen in real cold and bask to warm through, so you will
+    rarely meet a comfortable one in snow. They wear little, worked from what the
+    water gives — hide wraps, bone and shell ornaments, a well-kept spear or net.
+    Lizardfolk are wingless and earthbound, at home wading and swimming far more
+    than climbing; their strength is patience, toughness, and a hunter's cool
+    weighing of every leap.
   location: >
     Marsh- and water-folk. No wetland is drawn on the map yet — a swamp home
     (and a village node) can be added wherever it best fits later.
@@ -151,18 +293,41 @@ lizardfolk:
 
 firbolg:
   appearance: >
-    Gentle forest-giants, tall and shaggy, with broad kind faces and cow-like
-    ears, oddly soft-footed and quiet for their size.
+    Firbolgs are gentle giants of the deep wood, standing seven or eight feet
+    tall yet somehow easy to overlook, with a soft-footed quiet wholly at odds
+    with their bulk. Broad and shaggy, they have wide, kindly faces, long noses,
+    and big rounded ears set low and cow-like on the head, framed by thick hair
+    and often a heavy beard. Their skin runs blue-grey, mossy, or ruddy,
+    weathered like old bark, and their eyes are warm and slow to anger. Great
+    hands that could crush a shield instead tend to move with surprising care,
+    as if always mindful of small living things. Firbolgs dress in undyed wool,
+    hide, and woven leaf and root, hung with simple charms of the forest, and
+    carry themselves with a shy, watchful calm — they would far rather share
+    their bread than raise a fist. Firbolgs are wingless and earthbound,
+    deep-rooted forest folk whose strength is quiet and steady, shown only when
+    it truly must be.
   location: >
-    Reclusive giants of the deep Deepwoods, keeping apart even from the elves;
-    a hidden grove-hamlet could become a map node in time.
+    Reclusive giants of the deep Deepwoods, keeping apart even from the elves; a
+    hidden grove-hamlet could become a map node in time.
   history: "Stub — historical lore TBD."
   notable_figures: "None"
 
 kenku:
   appearance: >
-    Feathered crow-folk, dark of plumage and sharp of eye, who speak in
-    borrowed voices and perfectly mimicked sounds rather than words of their own.
+    Kenku are lean, humanoid crow-folk standing about the height of a slight
+    human, cloaked head to foot in sleek blue-black feathers that ripple with an
+    oily green-and-violet sheen wherever the light touches them. Their heads are
+    fully corvid — a broad, glossy black beak, a shaggy ruff of longer feathers
+    about the neck and brow, and round, bright eyes like beads of polished jet.
+    At the shoulders sit small, stunted wings, folded and all but useless: far
+    too little to lift a kenku off the ground, for their kind cannot fly at all,
+    managing only a clumsy flutter to break a fall. Their half-feathered hands
+    end in dark, nimble talons — restless hands, forever fidgeting with whatever
+    small thing is near — and they stand on scaled black bird-feet, tending
+    toward a watchful, slightly hunched posture with the head often tilted as if
+    catching sounds others can't. Kenku typically dress like road-worn
+    travelers: layered scavenged clothes, a patched hooded cloak, and a soft
+    clatter of pouches, keys, and trinkets.
   location: >
     Diaspora — no homeland. Kenku turn up wherever there is news to overhear:
     the free cities and, above all, the busy docks of Eastharbor.
@@ -171,8 +336,19 @@ kenku:
 
 tiefling:
   appearance: >
-    Horned and warm-skinned in deep reds and violets, with a lashing tail and
-    eyes that catch the light — visibly touched by the deep fire of their line.
+    Tieflings are unmistakable and warm to the touch, their skin running in
+    deep, striking hues — brick red, dusk purple, ember orange, or ashen grey —
+    as if lit from within by the deep fire in their blood. A pair of horns
+    crowns the head, curling, sweeping, or straight, and no two sets quite
+    alike, and a long, restless tail counter-balances every step. Their eyes are
+    solid pools of a single color — gold, red, black, silver — that catch and
+    hold the light, and some show small fangs when they grin. Otherwise they are
+    built much like humans, standing the same range of heights and dressing to
+    the same stations, though many favor bold colors and clasps that play up the
+    horns rather than hide them. Heat that would blister anyone else rolls off
+    them harmlessly. Tieflings have no wings and cannot fly; the fire in them is
+    warmth and resilience, not literal flame, and they walk on two feet like
+    anyone else — just proudly, and used to being stared at.
   location: >
     Homeland: Ashhaven, the walled town built right into the Volcano (west) —
     the tieflings' one and only stronghold, and proudly so.
