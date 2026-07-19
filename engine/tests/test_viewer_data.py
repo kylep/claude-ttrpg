@@ -197,3 +197,44 @@ def test_hidden_monsters_turn_is_masked_for_players(wroot):
     g = worldfs.load_game_for(wroot)
     assert viewer_data.state_snapshot(wroot, g, "player")["encounter"]["up"] == "???"
     assert viewer_data.state_snapshot(wroot, g, "gm")["encounter"]["up"] == "goblin-1"
+
+
+class TestMonsterImage:
+    """Bestiary portraits resolve from a bestiary entry's `image` field and
+    FAIL OPEN: a missing field, missing content dir, or missing image file all
+    yield None rather than raising — no monster is required to have art."""
+
+    def test_resolves_when_declared_and_file_exists(self, tmp_path):
+        g = {"content_dir": tmp_path / "content"}
+        img = tmp_path / "content" / "art" / "bestiary" / "goblin.png"
+        img.parent.mkdir(parents=True, exist_ok=True)
+        img.write_bytes(b"png")
+        assert viewer_data._monster_image(
+            g, {"image": "art/bestiary/goblin.png"}) == "art/bestiary/goblin.png"
+
+    def test_none_when_declared_but_file_missing(self, tmp_path):
+        g = {"content_dir": tmp_path / "content"}
+        assert viewer_data._monster_image(g, {"image": "art/bestiary/goblin.png"}) is None
+
+    def test_none_when_no_image_field(self, tmp_path):
+        g = {"content_dir": tmp_path / "content"}
+        assert viewer_data._monster_image(g, {"name": "Goblin"}) is None
+
+    def test_none_when_no_content_dir(self):
+        assert viewer_data._monster_image({}, {"image": "art/bestiary/goblin.png"}) is None
+
+
+def test_monster_type_card_carries_image_key(wroot):
+    # every monster type card exposes an `image`, fail-open to None when the
+    # game has no art for it (the fixture game has none).
+    g = _game(wroot)
+    card = viewer_data.entity_card(wroot, g, "goblin", "gm")
+    assert card["kind"] == "monster" and "image" in card and card["image"] is None
+
+
+def test_monster_instance_card_carries_image_key(wroot):
+    _start(wroot)
+    enc = _enc(wroot)
+    cid = next(iter(enc["monsters"]))
+    card = viewer_data.entity_card(wroot, _game(wroot), cid, "gm")
+    assert card["kind"] == "monster" and "image" in card and card["image"] is None

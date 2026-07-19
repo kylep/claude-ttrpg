@@ -141,16 +141,35 @@ def _pc_card(root: Path, ref: str) -> dict:
     }
 
 
+def _monster_image(g: dict, entry: dict) -> str | None:
+    """Resolve a bestiary entry's portrait path, failing open: returns the
+    declared (content-relative) image path ONLY when it is a non-empty string
+    AND the file actually exists under the game's content dir; otherwise None.
+    A missing field, missing content dir, or missing file all degrade to None
+    rather than raising — no monster is required to have art. The viewer serves
+    the resolved path under its guarded `/art/` route."""
+    content = g.get("content_dir")
+    img = entry.get("image") if isinstance(entry, dict) else None
+    if not (content is not None and isinstance(img, str) and img):
+        return None
+    try:
+        return img if (Path(content) / img).exists() else None
+    except OSError:
+        return None
+
+
 def _monster_instance_card(g: dict, enc: dict, ref: str, lens: str) -> dict:
     mon = enc["monsters"][ref]
     if lens != "gm" and "hidden" in effect_names(mon):
         raise EngineError("not_found", f"no entity {ref!r}")   # don't leak existence
     try:
-        desc = game_mod.bestiary_entry(g, mon["type"]).get("description", "")
+        entry = game_mod.bestiary_entry(g, mon["type"])
     except EngineError:
-        desc = ""
+        entry = {}
+    desc = entry.get("description", "")
     card = {"kind": "monster", "id": ref, "name": mon["name"],
             "type": mon.get("type"), "description": " ".join(str(desc).split()),
+            "image": _monster_image(g, entry),
             "effects": [e["name"] for e in mon.get("effects", [])],
             "aloft": bool(enc.get("aloft", {}).get(ref)),
             "dead": bool(mon.get("dead"))}
@@ -163,10 +182,11 @@ def _monster_instance_card(g: dict, enc: dict, ref: str, lens: str) -> dict:
     return card
 
 
-def _monster_type_card(entry: dict, ref: str, lens: str) -> dict:
+def _monster_type_card(g: dict, entry: dict, ref: str, lens: str) -> dict:
     card = {"kind": "monster", "id": ref,
             "name": entry.get("name", ref),
-            "description": " ".join(str(entry.get("description", "")).split())}
+            "description": " ".join(str(entry.get("description", "")).split()),
+            "image": _monster_image(g, entry)}
     if lens == "gm":
         card.update(hp=entry.get("hp"), max_hp=entry.get("hp"), ac=entry.get("ac"),
                     speed=entry.get("speed"), attributes=entry.get("attributes"),
@@ -249,7 +269,7 @@ def entity_card(root: Path, g: dict, ref: str, lens: str) -> dict:
             return _monster_instance_card(g, enc, ref, lens)
     bestiary = game_mod.bestiary(g)
     if ref in bestiary:
-        return _monster_type_card(bestiary[ref], ref, lens)
+        return _monster_type_card(g, bestiary[ref], ref, lens)
     npcs_path = root / "canon" / "npcs.yaml"
     if npcs_path.exists():
         npcs = worldfs.read_yaml(npcs_path)

@@ -183,3 +183,44 @@ def test_story_endpoint_carries_lens(live):
         status, body = _get(port, "/api/story?lens=" + lens)
         assert status == 200
         assert json.loads(body)["cursor"]["offset"] == 0
+
+
+def test_content_art_route_serves_and_guards(live):
+    wroot, port = live
+    content = worldfs.load_game_for(wroot)["content_dir"]
+    art_root = content / "art"
+    # the game content dir is a shared fixture on disk — track whether art/
+    # existed so the finally can fully remove anything this test created.
+    preexisting = art_root.exists()
+    (art_root / "bestiary").mkdir(parents=True, exist_ok=True)
+    png = art_root / "bestiary" / "__viewer_test__.png"
+    lore = art_root / "__viewer_test__.txt"
+    # JPEG magic bytes under a .png name — the route must trust the bytes
+    png.write_bytes(b"\xff\xd8\xff\xe0\x00\x10JFIF_fake_")
+    lore.write_text("not an image")
+    try:
+        conn = http.client.HTTPConnection("127.0.0.1", port, timeout=5)
+        conn.request("GET", "/art/bestiary/__viewer_test__.png")
+        resp = conn.getresponse()
+        body = resp.read()
+        ctype = resp.getheader("Content-Type")
+        conn.close()
+        assert resp.status == 200 and body.startswith(b"\xff\xd8\xff")
+        assert ctype == "image/jpeg"          # sniffed from bytes, not the .png suffix
+        # a non-image suffix under art/ is refused (never serve yaml/lore/text)
+        status, _ = _get(port, "/art/__viewer_test__.txt")
+        assert status == 404
+        # missing file, and path traversal out of the art dir
+        status, _ = _get(port, "/art/bestiary/nope.png")
+        assert status == 404
+        status, _ = _get(port, "/art/../../world.yaml")
+        assert status == 404
+        status, _ = _get(port, "/art/%2e%2e/%2e%2e/world.yaml")
+        assert status == 404
+    finally:
+        if preexisting:                     # leave a real art/ dir intact
+            png.unlink(missing_ok=True)
+            lore.unlink(missing_ok=True)
+        else:                               # we created art/ — remove it wholesale
+            import shutil
+            shutil.rmtree(art_root, ignore_errors=True)

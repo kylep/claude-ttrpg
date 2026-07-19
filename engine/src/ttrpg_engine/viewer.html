@@ -195,8 +195,8 @@
   .sheet .bio { margin-top: .95rem; border-top: 1px solid var(--edge); padding-top: .75rem; }
   .sheet .bio p { margin: 0 0 .55rem; }
   .sheet .artwork { margin: .8rem 0 .2rem; }
-  .sheet .artwork svg { display: block; width: 100%; height: auto; border-radius: 5px;
-                        border: 1px solid var(--edge); }
+  .sheet .artwork svg, .sheet .artwork img { display: block; width: 100%; height: auto;
+                        border-radius: 5px; border: 1px solid var(--edge); }
   .chip-card .disc.location, .sheet .head .disc.location { color: var(--gold); font-size: 1.25rem; }
   #map-body [data-ref]:hover text { fill: var(--ember); }
   .sheet .kv { display: flex; justify-content: space-between; gap: 1rem;
@@ -444,6 +444,16 @@ function buildSheet(card) {
   who.appendChild(el("div", "ln", chipLine(card)));
   head.appendChild(who);
   sh.appendChild(head);
+
+  if (card.kind === "monster" && card.image) {
+    const art = el("div", "artwork");
+    const img = document.createElement("img");
+    img.src = "/" + card.image;          // content-relative, served by the /art/ route
+    img.alt = card.name;
+    img.loading = "lazy";
+    art.appendChild(img);
+    sh.appendChild(art);
+  }
 
   const vitals = el("div", "vitals");
   for (const p of chipPills(card)) vitals.appendChild(p);

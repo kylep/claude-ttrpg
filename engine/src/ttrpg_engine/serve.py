@@ -21,6 +21,21 @@ _POLL_SECONDS = 0.3
 _PING_SECONDS = 15
 
 
+def _sniff_ctype(data: bytes) -> str | None:
+    """Recognize a raster image by its magic bytes, so a mislabeled file (e.g. a
+    JPEG saved with a .png name) is still served with the right Content-Type.
+    Returns None when unrecognized — the caller falls back to the extension."""
+    if data.startswith(b"\x89PNG\r\n\x1a\n"):
+        return "image/png"
+    if data.startswith(b"\xff\xd8\xff"):
+        return "image/jpeg"
+    if data.startswith((b"GIF87a", b"GIF89a")):
+        return "image/gif"
+    if data[:4] == b"RIFF" and data[8:12] == b"WEBP":
+        return "image/webp"
+    return None
+
+
 def _world_mtime(root: Path) -> float:
     """Newest mtime under the dirs whose changes the viewer cares about."""
     latest = 0.0
@@ -93,6 +108,8 @@ class _Handler(BaseHTTPRequestHandler):
                 self._events()
             elif path.startswith("/renders/"):
                 self._render_file(path.removeprefix("/renders/"))
+            elif path.startswith("/art/"):
+                self._content_art_file(path.removeprefix("/art/"))
             else:
                 self._json({"error": "not found"}, 404)
         except (BrokenPipeError, ConnectionResetError):
@@ -115,6 +132,31 @@ class _Handler(BaseHTTPRequestHandler):
                  "png": "image/png"}.get(target.suffix.lstrip("."),
                                          "application/octet-stream")
         self._send(200, target.read_bytes(), ctype)
+
+    def _content_art_file(self, name: str) -> None:
+        """Serve an image asset from the game's content/art dir (e.g. a bestiary
+        portrait a monster card points at). The resolved-path check rejects any
+        `name` that would escape it (path traversal), and only image suffixes
+        are served — never the game's yaml content. Read-only."""
+        content = self.game.get("content_dir")
+        if content is None:
+            self._json({"error": "not found"}, 404)
+            return
+        art = (Path(content) / "art").resolve()
+        target = (art / name).resolve()
+        if not target.is_relative_to(art) or not target.is_file():
+            self._json({"error": "not found"}, 404)
+            return
+        by_suffix = {"png": "image/png", "jpg": "image/jpeg", "jpeg": "image/jpeg",
+                     "webp": "image/webp", "gif": "image/gif",
+                     "svg": "image/svg+xml"}.get(target.suffix.lstrip(".").lower())
+        if by_suffix is None:                   # images only, not yaml/lore
+            self._json({"error": "not found"}, 404)
+            return
+        data = target.read_bytes()
+        # trust the bytes over the extension: our generated portraits are often
+        # JPEG saved as .png, and a wrong Content-Type is worth avoiding.
+        self._send(200, data, _sniff_ctype(data) or by_suffix)
 
     def _events(self) -> None:
         self.send_response(200)
