@@ -18,6 +18,40 @@ def _flavor(text) -> str:
     return " ".join((text or "").split())
 
 
+def _load_race_lore(g: dict) -> dict:
+    """Load the content-side race lore (content/lore/races.yaml), failing open
+    to {} if it's absent, unreadable, or not a mapping. This file is optional
+    world content — the engine works fine without it."""
+    content = g.get("content_dir")
+    if content is None:
+        return {}
+    lore_path = Path(content) / "lore" / "races.yaml"
+    if not lore_path.exists():
+        return {}
+    try:
+        data = worldfs.read_yaml(lore_path)
+    except Exception:
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
+def _race_image(g: dict, race_lore: dict, name: str):
+    """Resolve a race's portrait path from its lore metadata, failing open:
+    returns the declared (content-relative) image path ONLY when it is a
+    non-empty string AND the file actually exists under the content dir;
+    otherwise None. A missing field, missing lore file, or missing image file
+    all degrade to None rather than raising — no race is required to have art."""
+    content = g.get("content_dir")
+    entry = race_lore.get(name) if isinstance(race_lore, dict) else None
+    img = entry.get("image") if isinstance(entry, dict) else None
+    if not (content is not None and isinstance(img, str) and img):
+        return None
+    try:
+        return img if (Path(content) / img).exists() else None
+    except OSError:
+        return None
+
+
 def options(g: dict) -> dict:
     """Everything a party-creation wizard needs to present the game's choices,
     resolved from the ruleset: the standard array, each race
@@ -47,8 +81,10 @@ def options(g: dict) -> dict:
         ranked = sorted(array, reverse=True)          # highest score to highest priority
         return {attr: ranked[i] for i, attr in enumerate(pri)}
 
+    race_lore = _load_race_lore(g)
     races = {name: {"bonuses": r.get("bonuses", {}), "speed": r.get("speed"),
-                    "description": _flavor(r.get("description"))}
+                    "description": _flavor(r.get("description")),
+                    "image": _race_image(g, race_lore, name)}
              for name, r in g["races"].items()}
     classes = {}
     for name, c in g["classes"].items():

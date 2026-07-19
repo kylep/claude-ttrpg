@@ -144,3 +144,52 @@ def test_char_options_recommended_array_maps_priority():
     assert sorted(rec.values()) == sorted(opts["standard_array"])
     top = g["classes"]["fighter"]["attr_priority"][0]
     assert rec[top] == max(opts["standard_array"])             # best score to top priority
+
+
+class TestRaceImage:
+    """Race portraits resolve from content/lore/races.yaml and FAIL OPEN:
+    a missing field, missing lore file, or missing image file all yield None
+    rather than raising — no race is required to have art."""
+
+    def _game(self, tmp_path, lore=None):
+        cd = tmp_path / "content"
+        if lore is not None:
+            (cd / "lore").mkdir(parents=True, exist_ok=True)
+            worldfs.write_yaml(cd / "lore" / "races.yaml", lore)
+        return {"content_dir": cd}
+
+    def test_resolves_when_declared_and_file_exists(self, tmp_path):
+        g = self._game(tmp_path, {"kenku": {"image": "art/races/kenku.png"}})
+        img = tmp_path / "content" / "art" / "races" / "kenku.png"
+        img.parent.mkdir(parents=True, exist_ok=True)
+        img.write_bytes(b"png")
+        lore = chargen._load_race_lore(g)
+        assert chargen._race_image(g, lore, "kenku") == "art/races/kenku.png"
+
+    def test_none_when_declared_but_file_missing(self, tmp_path):
+        g = self._game(tmp_path, {"kenku": {"image": "art/races/kenku.png"}})
+        lore = chargen._load_race_lore(g)
+        assert chargen._race_image(g, lore, "kenku") is None
+
+    def test_none_when_no_image_field(self, tmp_path):
+        g = self._game(tmp_path, {"kenku": {"appearance": "a crow-folk"}})
+        lore = chargen._load_race_lore(g)
+        assert chargen._race_image(g, lore, "kenku") is None
+
+    def test_none_when_no_lore_file(self, tmp_path):
+        g = {"content_dir": tmp_path / "content"}
+        assert chargen._load_race_lore(g) == {}
+        assert chargen._race_image(g, {}, "kenku") is None
+
+    def test_none_when_no_content_dir(self):
+        assert chargen._load_race_lore({}) == {}
+        assert chargen._race_image({}, {}, "kenku") is None
+
+
+def test_char_options_races_carry_image_key(wroot):
+    # options() always exposes an `image` per race, fail-open to None when the
+    # game has no race art (the fixture game has none).
+    from conftest import FIXTURE_GAME
+    from ttrpg_engine import game
+    opts = chargen.options(game.load(FIXTURE_GAME))
+    assert opts["races"] and all("image" in r for r in opts["races"].values())
