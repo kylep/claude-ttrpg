@@ -224,3 +224,22 @@ def test_content_art_route_serves_and_guards(live):
         else:                               # we created art/ — remove it wholesale
             import shutil
             shutil.rmtree(art_root, ignore_errors=True)
+
+
+def test_glossary_manifest_and_lens(live):
+    _, port = live
+    status, body = _get(port, "/api/glossary")
+    assert status == 200
+    manifest = json.loads(body)
+    assert [s["id"] for s in manifest] == ["world", "classes", "races", "bestiary"]
+
+    sp, pbody = _get(port, "/api/glossary/bestiary?lens=player")
+    sg, gbody = _get(port, "/api/glossary/bestiary?lens=gm")
+    assert sp == 200 and sg == 200
+    player = json.loads(pbody)
+    gm = json.loads(gbody)
+    assert "HP " in gm["body_html"]
+    assert "HP " not in player["body_html"]
+
+    sx, _xb = _get(port, "/api/glossary/bogus")
+    assert sx == 404

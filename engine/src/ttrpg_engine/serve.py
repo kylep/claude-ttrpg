@@ -14,7 +14,8 @@ from importlib import resources
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-from ttrpg_engine import story_log, viewer_data, worldfs
+from ttrpg_engine import bookexport, story_log, viewer_data, worldfs
+from ttrpg_engine import export as export_mod
 from ttrpg_engine.errors import EngineError
 
 _POLL_SECONDS = 0.3
@@ -110,6 +111,17 @@ class _Handler(BaseHTTPRequestHandler):
                 self._render_file(path.removeprefix("/renders/"))
             elif path.startswith("/art/"):
                 self._content_art_file(path.removeprefix("/art/"))
+            elif path == "/api/glossary":
+                src = export_mod.resolve_source(self.root, None)
+                self._json(bookexport.glossary_manifest(src))
+            elif path.startswith("/api/glossary/"):
+                name = path.removeprefix("/api/glossary/")
+                lens = "gm" if query.get("lens", ["player"])[0] == "gm" else "player"
+                src = export_mod.resolve_source(self.root, None)
+                try:
+                    self._json(bookexport.glossary_section(src, name, lens))
+                except KeyError:
+                    self._json({"error": "not found"}, 404)
             else:
                 self._json({"error": "not found"}, 404)
         except (BrokenPipeError, ConnectionResetError):
