@@ -6,7 +6,7 @@ from pathlib import Path
 
 import typer
 
-from ttrpg_engine import chargen, checks, combat, dice, export as export_mod, game as game_mod, inventory, level as level_mod, quests as quests_mod, region_map, render, rest as rest_mod, serve as serve_mod, spells, story_log, timeline, travel as travel_mod, worldfs
+from ttrpg_engine import bookexport, chargen, checks, combat, dice, export as export_mod, game as game_mod, inventory, level as level_mod, quests as quests_mod, region_map, render, rest as rest_mod, serve as serve_mod, spells, story_log, timeline, travel as travel_mod, worldfs
 from ttrpg_engine.errors import EngineError
 
 app = typer.Typer(add_completion=False, no_args_is_help=True)
@@ -730,3 +730,25 @@ def export_campaign_cmd(
     game: Path | None = typer.Option(None, "--game", help="Game repo path (repo-side, no world needed)."),
 ):
     _run_export("campaign", out, game)
+
+
+@export_app.command("book")
+def export_book_cmd(
+    section: str = typer.Argument(..., help="world | classes | races | bestiary | all"),
+    out: Path = typer.Option(Path("exports"), "--out", help="Output directory."),
+    game: Path | None = typer.Option(None, "--game", help="Game repo path (repo-side, no world needed)."),
+):
+    names = list(bookexport.SECTIONS) if section == "all" else [section]
+    unknown = [n for n in names if n not in bookexport.SECTIONS]
+    if unknown:
+        raise typer.BadParameter(f"unknown section(s): {', '.join(unknown)}")
+    root = None if game is not None else require_root()
+    src = guard(export_mod.resolve_source, root, game)
+    out_dir = Path(out)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    for name in names:
+        builder, filename = bookexport.SECTIONS[name]
+        pdf = guard(builder, src)
+        path = (out_dir / filename).resolve()
+        path.write_bytes(pdf)
+        emit({"file": str(path)})

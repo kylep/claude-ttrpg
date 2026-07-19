@@ -74,3 +74,32 @@ def test_build_world_pdf():
     src = _familyrpg_src()
     html = bookexport._world_html(src)
     assert bookexport.page_count(html, src["content_dir"]) >= 3
+
+
+def test_sections_registry_covers_all_four():
+    assert set(bookexport.SECTIONS) == {"world", "classes", "races", "bestiary"}
+    for _name, (builder, filename) in bookexport.SECTIONS.items():
+        assert callable(builder)
+        assert filename.endswith(".pdf")
+
+
+from typer.testing import CliRunner
+from ttrpg_engine.cli import app
+
+
+def test_cli_export_book_all_writes_pdfs(tmp_path):
+    out = tmp_path / "exports"
+    res = CliRunner().invoke(
+        app, ["export", "book", "all", "--game", "games/familyrpg", "--out", str(out)]
+    )
+    assert res.exit_code == 0, res.stdout
+    for fn in ("world.pdf", "classes.pdf", "races.pdf", "bestiary.pdf"):
+        assert (out / fn).exists(), fn
+        assert (out / fn).read_bytes().startswith(b"%PDF")
+
+
+def test_cli_export_book_rejects_unknown_section(tmp_path):
+    res = CliRunner().invoke(
+        app, ["export", "book", "bogus", "--game", "games/familyrpg", "--out", str(tmp_path)]
+    )
+    assert res.exit_code != 0

@@ -233,3 +233,11 @@ def _world_html(src):
 
 def build_world(src):
     return render_pdf(_world_html(src), src["content_dir"])
+
+
+SECTIONS = {
+    "world": (build_world, "world.pdf"),
+    "classes": (build_classes, "classes.pdf"),
+    "races": (build_races, "races.pdf"),
+    "bestiary": (build_bestiary, "bestiary.pdf"),
+}
