@@ -82,10 +82,7 @@ th, td {{ border: 1px solid {_PALETTE['frame']}; padding: 0.35rem 0.6rem;
 th {{ background: {_PALETTE['band']}; }}
 .fullbleed {{ page-break-before: always; text-align: center; }}
 .fullbleed img {{ max-width: 100%; max-height: 250mm; }}
-/* Drop cap via a floated <span>, NOT ::first-letter — the pseudo-element form
-   crashes WeasyPrint 69 when 2+ cards paginate together; a real span is safe. */
-.dropcap {{ font-family: 'Cinzel', Georgia, serif; font-size: 3.1em; line-height: 0.68;
-  float: left; padding: 0.02em 0.09em 0 0; color: {_PALETTE['accent']}; }}
+.lead {{ margin: 0.6rem 0; }}
 """
 
 
