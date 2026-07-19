@@ -75,7 +75,7 @@ def test_symbols_collision_walks_alphabet():
     }
     syms = render.symbols(enc)
     assert syms["pc-brin"] == "B"
-    assert syms["pc-borin"] == "C"      # collision walked B -> C
+    assert syms["pc-borin"] == "O"      # collision uses Borin's own next letter (b->o)
     assert syms["goblin-1"] == "g"
     assert syms["gnoll-1"] == "h"       # collision walked g -> h
     assert len(set(syms.values())) == 4  # all glyphs unique

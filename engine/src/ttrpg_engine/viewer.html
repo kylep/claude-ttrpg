@@ -234,6 +234,17 @@
     text-transform: uppercase; letter-spacing: .18em; font-weight: 400;
     margin-bottom: .32rem; }
   .sheet .tagrow { display: flex; flex-wrap: wrap; gap: .3rem; }
+  /* a known spell you can click through to its card */
+  .sheet .chip.spell { background: var(--gold); cursor: pointer; }
+  .sheet .chip.spell:hover { background: var(--ember); }
+  /* spell-slot pips: one per level, dimmed when the level is spent out */
+  .sheet .slots { display: flex; flex-wrap: wrap; gap: .35rem; }
+  .sheet .slots .slot { font-family: var(--mono); font-size: .68rem; color: var(--parchment);
+    background: var(--ink); border: 1px solid var(--gold); border-radius: 3px;
+    padding: .1rem .45rem; }
+  .sheet .slots .slot b { color: var(--gold); font-weight: 600; }
+  .sheet .slots .slot.spent { border-color: var(--edge); color: var(--muted); opacity: .6; }
+  .sheet .slots .slot.spent b { color: var(--muted); }
   .sheet .desc { color: var(--parchment); }
   .sheet .desc.muted { color: var(--muted); }
   .sheet .bio { margin-top: .95rem; border-top: 1px solid var(--edge); padding-top: .75rem; }
@@ -242,6 +253,7 @@
   .sheet .artwork svg, .sheet .artwork img { display: block; width: 100%; height: auto;
                         border-radius: 5px; border: 1px solid var(--edge); }
   .chip-card .disc.location, .sheet .head .disc.location { color: var(--gold); font-size: 1.25rem; }
+  .chip-card .disc.spell, .sheet .head .disc.spell { color: var(--gold); background: var(--edge); }
   #map-body [data-ref]:hover text { fill: var(--ember); }
   .sheet .kv { display: flex; justify-content: space-between; gap: 1rem;
     font-family: var(--mono); font-size: .74rem; padding: .2rem 0;
@@ -281,6 +293,9 @@
   #purse { font-family: var(--mono); font-size: .74rem; color: var(--gold);
            margin-top: .6rem; padding-top: .55rem; border-top: 1px solid var(--edge); }
   #purse .stash { color: var(--muted); }
+  #purse .pooled { color: var(--parchment); font-size: .72rem; margin-top: .3rem; }
+  #purse .pooled b { color: var(--gold); }
+  #purse .pooled .breakdown { color: var(--muted); }
   #internals .row { display: flex; justify-content: space-between; gap: 1rem;
                     font-family: var(--mono); font-size: .72rem; color: var(--muted);
                     padding: .18rem 0; border-top: 1px solid var(--edge); }
@@ -295,12 +310,19 @@
   .chip.good { background: var(--moss); }
   .chip.aloft { background: var(--gold); }
   .hp { display: flex; align-items: center; gap: .5rem; font-family: var(--mono);
-        font-size: .74rem; color: var(--muted); }
+        font-size: .74rem; color: var(--muted); font-variant-numeric: tabular-nums; }
   .hp .bar { width: 84px; height: 7px; background: var(--ink); border-radius: 4px;
-             overflow: hidden; }
+             overflow: hidden; flex: none; }
   .hp .bar i { display: block; height: 100%; }
-  .hp .ac { color: var(--gold); }
+  /* fixed-width, right-aligned numbers so "9/10" and "120/140" line up and the
+     AC that follows sits in the same column across every row */
+  .hp .num { min-width: 4.8em; text-align: right; flex: none; }
+  .hp .ac { color: var(--gold); min-width: 2.6em; text-align: right; flex: none; }
   .hp .ac::before { content: "⛊ "; }
+  /* a PC's personal purse, tucked under their HP in the same column */
+  .fighter .gold { grid-column: 2; justify-self: end; font-family: var(--mono);
+                   font-size: .68rem; color: var(--gold); }
+  .fighter .gold::before { content: "◈ "; }
   .status { font-family: var(--mono); font-size: .72rem; }
   .status.healthy { color: var(--moss); } .status.wounded { color: var(--gold); }
   .status.bloodied { color: var(--blood); } .status.down { color: var(--muted); }
@@ -383,7 +405,7 @@ async function fetchEntity(ref) {
 function disc(kind, name) {
   const d = el("span", "disc " + kind);
   d.textContent = kind === "quest" ? "❧" : kind === "npc" ? "☺"
-    : kind === "location" ? "⌖" : (name || "?").slice(0, 1);
+    : kind === "location" ? "⌖" : kind === "spell" ? "✦" : (name || "?").slice(0, 1);
   return d;
 }
 
@@ -409,6 +431,9 @@ function chipLine(card) {
   if (card.kind === "quest") return card.status;
   if (card.kind === "location")
     return [card.terrain, card.rumored ? "rumored" : card.party_here ? "the party is here" : null]
+      .filter(Boolean).join(" · ");
+  if (card.kind === "spell")
+    return [card.level === 0 ? "cantrip" : "level " + card.level, card.resolve]
       .filter(Boolean).join(" · ");
   return "";
 }
@@ -476,6 +501,52 @@ function kvRow(k, v) {
   return r;
 }
 
+function spellChip(name) {
+  // a known spell, clickable through to its own card in the same overlay
+  const c = el("span", "chip spell", (name || "").replace(/_/g, " "));
+  c.addEventListener("click", () => openEntity("spell:" + name));
+  return c;
+}
+
+function buildSpellsSection(card) {
+  // spell slots (remaining/max per level) plus known spells grouped cantrip vs
+  // leveled; returns a fragment, or null when this character casts nothing
+  const frag = document.createDocumentFragment();
+  const slots = card.spell_slots;
+  if (slots && Object.keys(slots).length) {
+    const box = el("div", "slots");
+    for (const lvl of Object.keys(slots).sort((a, b) => a - b)) {
+      const s = slots[lvl] || {};
+      const cur = s.current ?? 0, max = s.max ?? 0;
+      const slot = el("span", "slot" + (cur === 0 ? " spent" : ""));
+      slot.appendChild(el("b", null, "L" + lvl));
+      slot.appendChild(document.createTextNode(" " + cur + "/" + max));
+      box.appendChild(slot);
+    }
+    frag.appendChild(sheetSection("Spell slots", box));
+  }
+  const spells = (card.spells && card.spells.length) ? card.spells
+    : (card.spells_known || []).map(n => ({ name: n, level: null }));
+  if (spells.length) {
+    const groups = new Map();
+    for (const sp of spells) {
+      const key = (sp.level == null) ? "?" : sp.level;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(sp.name);
+    }
+    const keys = [...groups.keys()].sort((a, b) =>
+      a === "?" ? 1 : b === "?" ? -1 : a - b);
+    for (const key of keys) {
+      const title = key === "?" ? "Spells"
+        : key === 0 ? "Cantrips (at will)" : "Level " + key + " spells";
+      const row = el("div", "tagrow");
+      for (const n of groups.get(key)) row.appendChild(spellChip(n));
+      frag.appendChild(sheetSection(title, row));
+    }
+  }
+  return frag.childNodes.length ? frag : null;
+}
+
 function buildSheet(card) {
   const sh = el("div", "sheet");
   const close = el("button", "close", "✕");
@@ -530,15 +601,44 @@ function buildSheet(card) {
   if ((card.skills || []).length) sh.appendChild(sheetSection("Skills", tagRow(card.skills)));
   if ((card.effects || []).length) sh.appendChild(sheetSection("Effects", tagRow(card.effects, "warn")));
   if ((card.features || []).length) sh.appendChild(sheetSection("Features", tagRow(card.features)));
-  if ((card.spells_known || []).length) sh.appendChild(sheetSection("Spells", tagRow(card.spells_known)));
+  const spellsSec = buildSpellsSection(card);
+  if (spellsSec) sh.appendChild(spellsSec);
   if ((card.equipped || []).length) sh.appendChild(sheetSection("Equipped",
       tagRow(card.equipped.map(i => i.replace(/_/g, " ")))));
+  // the full pack, not just what's in hand — equipped items marked, quantities shown
+  if ((card.inventory || []).length) {
+    const row = el("div", "tagrow");
+    for (const it of card.inventory) {
+      const label = it.item.replace(/_/g, " ") + (it.qty > 1 ? " ×" + it.qty : "");
+      row.appendChild(el("span", "chip" + (it.equipped ? " good" : ""), label));
+    }
+    sh.appendChild(sheetSection("Carried", row));
+  }
   if ((card.attacks || []).length) {
     const box = el("div");
     for (const a of card.attacks)
       box.appendChild(kvRow(a.name, "+" + a.attack_mod + " · " + a.damage +
                             (a.range > 1 ? " · range " + a.range : "")));
     sh.appendChild(sheetSection("Attacks", box));
+  }
+  if (card.kind === "spell") {
+    const box = el("div");
+    box.appendChild(kvRow("level", card.level === 0 ? "cantrip (no slot)" : String(card.level)));
+    if (card.action) box.appendChild(kvRow("action", card.action));
+    if (card.range != null)
+      box.appendChild(kvRow("range", card.range <= 1 ? "touch / melee" : card.range + " squares"));
+    if (card.resolve) {
+      const r = card.resolve === "save" && card.save_attr ? card.save_attr + " save"
+        : card.resolve === "attack" ? "spell attack"
+        : card.resolve === "auto" ? "always lands" : card.resolve;
+      box.appendChild(kvRow("resolve", r));
+    }
+    if (card.on_save) box.appendChild(kvRow("on save", card.on_save));
+    if (card.damage) box.appendChild(kvRow("damage", card.damage));
+    if (card.heal) box.appendChild(kvRow("heal", card.heal));
+    if (card.area) box.appendChild(kvRow("area", (card.area.shape || "burst") + ", radius " + card.area.radius));
+    if (card.effect) box.appendChild(kvRow("effect", card.effect.name + " (" + card.effect.duration + " rounds)"));
+    sh.appendChild(sheetSection("Spell", box));
   }
   if (card.kind === "npc") {
     const box = el("div");
@@ -770,7 +870,7 @@ function hpBar(hp, max, ac) {
   fill.style.background = frac > 2 / 3 ? "var(--moss)" : frac > 1 / 3 ? "var(--gold)" : "var(--blood)";
   bar.appendChild(fill);
   wrap.appendChild(bar);
-  wrap.appendChild(el("span", null, hp + "/" + max));
+  wrap.appendChild(el("span", "num", hp + "/" + max));
   if (ac != null) wrap.appendChild(el("span", "ac", String(ac)));
   return wrap;
 }
@@ -788,6 +888,7 @@ function fighterRow(f, up) {
   row.appendChild(name);
   if ("hp" in f) row.appendChild(hpBar(f.hp, f.max_hp, f.ac));
   else if (f.status) row.appendChild(el("span", "status " + f.status, f.status));
+  if (f.gold != null) row.appendChild(el("span", "gold", f.gold + " gp"));
   const tags = el("span", "tags");
   if (f.aloft) tags.appendChild(el("span", "chip aloft", "aloft"));
   for (const e of f.effects || []) {
@@ -815,10 +916,19 @@ function renderLegend(enc) {
 function renderPurse(s) {
   const purse = document.getElementById("purse");
   const gold = s.party_gold, n = (s.stash || []).length;
-  if (gold === undefined && !n) { purse.hidden = true; return; }
+  const personal = (s.party || []).reduce((t, pc) => t + (pc.gold || 0), 0);
+  const pooled = (gold || 0) + personal;   // what the table has if everyone chips in
+  if (gold === undefined && !n && !personal) { purse.hidden = true; return; }
   purse.replaceChildren();
-  purse.appendChild(el("span", null, (gold || 0) + " gp"));
+  purse.appendChild(el("span", null, (gold || 0) + " gp party"));
   if (n) purse.appendChild(el("span", "stash", "  ·  " + n + " in stash"));
+  if (personal) {
+    const pool = el("div", "pooled");
+    pool.appendChild(el("b", null, "pooled " + pooled + " gp"));
+    pool.appendChild(el("span", "breakdown",
+      "  (party " + (gold || 0) + " + purses " + personal + ")"));
+    purse.appendChild(pool);
+  }
   purse.hidden = false;
 }
 
@@ -855,6 +965,7 @@ function renderState(s) {
       id: pc.id,
       name: pc.name + "  ·  " + pc.race + " " + pc.class + " " + pc.level,
       hp: pc.hp, max_hp: pc.max_hp, ac: pc.ac, dead: false,
+      gold: pc.gold,
       effects: (pc.effects || []).map(e => e.name),
       aloft: false,
     }, up));

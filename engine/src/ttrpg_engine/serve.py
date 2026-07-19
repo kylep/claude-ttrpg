@@ -12,7 +12,7 @@ from functools import partial
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from importlib import resources
 from pathlib import Path
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qs, unquote, urlparse
 
 from ttrpg_engine import bookexport, story_log, viewer_data, worldfs
 from ttrpg_engine import export as export_mod
@@ -100,7 +100,9 @@ class _Handler(BaseHTTPRequestHandler):
                 self._json({"entries": entries, "cursor": {"offset": offset}})
             elif path.startswith("/api/entity/"):
                 lens = "gm" if query.get("lens", ["player"])[0] == "gm" else "player"
-                ref = path.removeprefix("/api/entity/")
+                # unquote so refs carrying reserved chars (e.g. "spell:fire_bolt",
+                # percent-encoded by the client) resolve to their real ref
+                ref = unquote(path.removeprefix("/api/entity/"))
                 try:
                     self._json(viewer_data.entity_card(self.root, self.game, ref, lens))
                 except EngineError as e:

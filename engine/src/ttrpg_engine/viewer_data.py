@@ -122,9 +122,16 @@ def _timeline_tail(root: Path) -> list[dict]:
 # One resolver for everything a feed card or a roster click can reference.
 # Cards read live state at request time, so an open card is always current.
 
-def _pc_card(root: Path, ref: str) -> dict:
+def _pc_card(root: Path, ref: str, g: dict | None = None) -> dict:
     sheet = worldfs.read_yaml(worldfs.state(root, f"party/{ref}"))
     bio = root / "canon" / "party" / f"{ref}.md"
+    spells_known = sheet.get("spells_known", [])
+    # each known spell's level, resolved from the ruleset when we have it, so the
+    # sheet can group cantrips (level 0) apart from leveled spells and the chips
+    # can deep-link to a spell card. Missing/unknown spells simply omit a level.
+    spell_defs = (g or {}).get("spells", {})
+    spells = [{"name": s, "level": spell_defs.get(s, {}).get("level")}
+              for s in spells_known]
     return {
         "kind": "pc", "id": ref, "name": sheet["name"],
         "race": sheet["race"], "class": sheet["class"], "level": sheet["level"],
@@ -134,10 +141,40 @@ def _pc_card(root: Path, ref: str) -> dict:
         "attributes": sheet["attributes"], "skills": sheet["skills"],
         "effects": [e["name"] for e in sheet.get("effects", [])],
         "features": sheet.get("features", []),
-        "spells_known": sheet.get("spells_known", []),
+        "spells_known": spells_known,
+        "spells": spells,
+        "spell_slots": sheet.get("spell_slots") or None,
+        # the full carried inventory, not just what's equipped — the operator
+        # needs to see the shortbow/torches/rope they just bought
+        "inventory": [{"item": l["item"], "qty": l.get("qty", 1),
+                       "equipped": bool(l.get("equipped"))}
+                      for l in sheet.get("inventory", [])],
         "equipped": [l["item"] for l in sheet.get("inventory", []) if l.get("equipped")],
         "gold": sheet.get("gold", 0),
         "bio_html": render_markdown(bio.read_text()) if bio.exists() else None,
+    }
+
+
+def _spell_card(g: dict, name: str) -> dict:
+    """A spell definition as a card. Spell data is player-safe (no GM-only
+    fields), so the same card serves both lenses."""
+    spell = (g or {}).get("spells", {}).get(name)
+    if spell is None:
+        raise EngineError("not_found", f"no spell {name!r}")
+    return {
+        "kind": "spell", "id": f"spell:{name}", "spell_name": name,
+        "name": name.replace("_", " ").title(),
+        "level": spell.get("level", 0),
+        "action": spell.get("action"),
+        "range": spell.get("range"),
+        "resolve": spell.get("resolve"),
+        "save_attr": spell.get("save_attr"),
+        "on_save": spell.get("on_save"),
+        "damage": spell.get("damage"),
+        "heal": spell.get("heal"),
+        "area": spell.get("area"),
+        "effect": spell.get("effect"),
+        "description": " ".join(str(spell.get("description", "")).split()) or None,
     }
 
 
@@ -264,9 +301,11 @@ def entity_card(root: Path, g: dict, ref: str, lens: str) -> dict:
     lens-aware card of its live state. Raises not_found for anything unknown,
     including monsters and locations a player lens isn't allowed to see."""
     lens = "gm" if lens == "gm" else "player"
+    if ref.startswith("spell:"):
+        return _spell_card(g, ref.removeprefix("spell:"))
     if ref.startswith("pc-"):
         if worldfs.state(root, f"party/{ref}").exists():
-            return _pc_card(root, ref)
+            return _pc_card(root, ref, g)
         raise EngineError("not_found", f"no entity {ref!r}")
     if (root / "state" / "encounter.yaml").exists():
         enc = render.load_encounter(root)

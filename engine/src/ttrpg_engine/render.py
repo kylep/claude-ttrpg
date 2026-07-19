@@ -17,20 +17,38 @@ def load_encounter(root: Path) -> dict:
 _GLYPH_FALLBACK = "0123456789@%&*+=<>"  # once a case's 26 letters are all taken
 
 
+def _pick_glyph(name: str, is_pc: bool, used: set) -> str:
+    """One unused glyph for `name`. PCs first try each distinct letter of their
+    own name in order (so the token letter matches the player, and a shared
+    first initial falls through to the next real letter of the name — Brin=B,
+    Borin=O — rather than a stranger's letter); then both PCs and monsters walk
+    the alphabet from the first initial, and finally spill into the fallback
+    pool. Case keeps PC letters (upper) distinct from monsters (lower)."""
+    def cased(c: str) -> str:
+        return c.upper() if is_pc else c.lower()
+    if is_pc:  # prefer a letter the player actually has in their name
+        for ch in name:
+            if ch.isalpha() and cased(ch) not in used:
+                return cased(ch)
+    first = next((c for c in name if c.isalpha()), "a")
+    glyph = cased(first)
+    tries = 0
+    while glyph in used and tries < 26:  # collision: walk the alphabet, bounded
+        nxt = chr(ord(glyph) + 1)
+        glyph = nxt if nxt.isalpha() else ("A" if is_pc else "a")
+        tries += 1
+    if glyph in used:  # every letter of this case is taken — fall back
+        glyph = next((c for c in _GLYPH_FALLBACK if c not in used), "?")
+    return glyph
+
+
 def symbols(enc: dict) -> dict[str, str]:
-    """Deterministic map of combatant id -> single glyph."""
+    """Deterministic map of combatant id -> single glyph, unique per encounter."""
     out, used = {}, set()
     for cid in enc["order"]:
         is_pc = cid.startswith("pc-")
-        glyph = cid.removeprefix("pc-")[0]
-        glyph = glyph.upper() if is_pc else glyph.lower()
-        tries = 0
-        while glyph in used and tries < 26:  # collision: walk the alphabet, bounded
-            nxt = chr(ord(glyph) + 1)
-            glyph = nxt if nxt.isalpha() else ("A" if is_pc else "a")
-            tries += 1
-        if glyph in used:  # every letter of this case is taken — fall back
-            glyph = next((c for c in _GLYPH_FALLBACK if c not in used), "?")
+        name = cid.removeprefix("pc-") if is_pc else cid
+        glyph = _pick_glyph(name, is_pc, used)
         used.add(glyph)
         out[cid] = glyph
     return out
