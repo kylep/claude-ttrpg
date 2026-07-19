@@ -8,3 +8,4 @@ exports/
 .imagegen-ledger.json
 exports.sh
 tmp/
+.playwright-mcp/
