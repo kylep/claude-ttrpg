@@ -31,6 +31,12 @@ _NODE_R = 30       # icon clearance radius: roads stop here, labels avoid it
 _INK = "#4a3527"; _FAINT = "#8a7a5f"; _EMBER = "#a33d2f"; _PALE = "#efe6d2"
 _PARCH = "#e8dcc0"; _BLOTCH = "#d8c9a6"
 
+# GM-only zone-index overlay (see region.yaml band/status). Ring COLOUR encodes
+# the level band; ring LINE STYLE encodes content status. Rendered hidden in the
+# GM SVG and toggled on client-side; players never receive it.
+_BAND_COLOR = {"1-3": "#3f7a4e", "4-7": "#c98a2b", "8+": "#8f2d3a"}
+_STATUS_DASH = {"playable": "", "seeded": "7 5", "stub": "1.5 5"}
+
 # summaries written by travel.go before events carried a structured delta
 _TRAVEL_RE = re.compile(r"travels? (\S+) -> (\S+)")
 
@@ -185,6 +191,70 @@ def _label_pos(nid, text, pt, drawn_edges, W, party_at):
     return best[1], best[2]
 
 
+# --- GM-only zone-index overlay ----------------------------------------------
+
+def _zone_legend():
+    """Fixed top-left key for the zone overlay. Static text, no escaping needed."""
+    bx, by, bw, rh = 30, 30, 176, 19
+    rows = [
+        ("head", "ZONE INDEX"),
+        ("sub", "level — ring colour"),
+        ("band", "1-3", "1–3   low"),
+        ("band", "4-7", "4–7   mid"),
+        ("band", "8+", "8+   high"),
+        ("sub", "status — ring line"),
+        ("stat", "playable", "playable"),
+        ("stat", "seeded", "seeded"),
+        ("stat", "stub", "stub"),
+    ]
+    o = [f'<rect x="{bx}" y="{by}" width="{bw}" height="{16 + rh * len(rows)}" '
+         f'fill="{_PARCH}" stroke="{_INK}" stroke-width="1.4" opacity=".97"/>']
+    y = by + 22
+    for row in rows:
+        if row[0] == "head":
+            o.append(f'<text x="{bx+12}" y="{y}" font-size="13" fill="{_INK}" '
+                     f'font-weight="700" letter-spacing=".08em">{row[1]}</text>')
+        elif row[0] == "sub":
+            o.append(f'<text x="{bx+12}" y="{y}" font-size="10.5" fill="{_FAINT}" '
+                     f'font-style="italic">{row[1]}</text>')
+        elif row[0] == "band":
+            o.append(f'<circle cx="{bx+22}" cy="{y-4}" r="7" fill="none" '
+                     f'stroke="{_BAND_COLOR[row[1]]}" stroke-width="3.5"/>')
+            o.append(f'<text x="{bx+40}" y="{y}" font-size="12" fill="{_INK}">{row[2]}</text>')
+        elif row[0] == "stat":
+            dash = _STATUS_DASH.get(row[1], "")
+            da = f' stroke-dasharray="{dash}"' if dash else ""
+            cap = ' stroke-linecap="round"' if row[1] == "stub" else ""
+            o.append(f'<line x1="{bx+12}" y1="{y-4}" x2="{bx+34}" y2="{y-4}" '
+                     f'stroke="{_INK}" stroke-width="3"{da}{cap}/>')
+            o.append(f'<text x="{bx+40}" y="{y}" font-size="12" fill="{_INK}">{row[2]}</text>')
+        y += rh
+    return "".join(o)
+
+
+def _zone_overlay(nodes, shown, pts):
+    """GM-only zone layer: a band-coloured ring per node (colour = level band,
+    line style = content status) plus a legend, wrapped in a group the viewer
+    toggles. Fails open — nodes without a known band are skipped."""
+    o = ['<g class="zone-overlay" style="display:none">']
+    for nid in nodes:
+        if nid not in shown:
+            continue
+        color = _BAND_COLOR.get(nodes[nid].get("band"))
+        if not color:
+            continue
+        x, y = pts[nid]
+        status = nodes[nid].get("status")
+        dash = _STATUS_DASH.get(status, "")
+        da = f' stroke-dasharray="{dash}"' if dash else ""
+        cap = ' stroke-linecap="round"' if status == "stub" else ""
+        o.append(f'<circle cx="{x:.0f}" cy="{y:.0f}" r="{_NODE_R+4}" fill="none" '
+                 f'stroke="{color}" stroke-width="3.5"{da}{cap} opacity=".9"/>')
+    o.append(_zone_legend())
+    o.append('</g>')
+    return "".join(o)
+
+
 # --- the renderer ------------------------------------------------------------
 
 def svg(root: Path, g: dict, lens: str = "gm") -> str:
@@ -291,5 +361,7 @@ def svg(root: Path, g: dict, lens: str = "gm") -> str:
     out.append(f'<rect x="{bx+5}" y="{by+5}" width="{bw-10}" height="{bh-10}" fill="none" stroke="{_INK}" stroke-width=".8"/>')
     out.append(f'<text x="{W/2}" y="{by+bh/2+6}" text-anchor="middle" font-size="17" fill="{_INK}" '
                f'font-weight="600" letter-spacing=".12em">{escape(title)}</text>')
+    if lens == "gm":
+        out.append(_zone_overlay(nodes, shown, pts))
     out.append('</svg>')
     return "".join(out)

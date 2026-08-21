@@ -47,6 +47,14 @@
   }
   header #gloss-btn:hover { background: var(--gold); color: var(--ink); }
 
+  /* GM-only zone-index overlay toggle on the Map card */
+  #zone-toggle { float: right; margin-top: -1.7rem; font-family: var(--mono);
+    font-size: .68rem; letter-spacing: .04em; color: var(--gold);
+    background: transparent; border: 1px solid var(--gold); border-radius: 4px;
+    padding: .12rem .5rem; cursor: pointer; }
+  #zone-toggle:hover { background: var(--gold); color: var(--ink); }
+  #zone-toggle.active { background: var(--gold); color: var(--ink); }
+
   .table { display: grid; grid-template-columns: minmax(0, 7fr) minmax(320px, 4fr);
            gap: 1.4rem; padding: 1.2rem; max-width: 1500px; margin: 0 auto;
            align-items: start; }
@@ -399,7 +407,9 @@
   </main>
 
   <aside>
-    <div class="card" id="map"><h2>Map</h2><div class="turn" id="turn" hidden></div>
+    <div class="card" id="map"><h2>Map</h2>
+      <button id="zone-toggle" type="button" hidden>Zone index</button>
+      <div class="turn" id="turn" hidden></div>
       <div id="map-body"><p class="empty">No encounter running.</p></div>
       <div id="legend"></div>
       <div id="terrain-legend"></div></div>
@@ -422,6 +432,19 @@ const LENS = GM ? "gm" : "player";
 const lensEl = document.getElementById("lens");
 lensEl.textContent = GM ? "GM TABLE" : "PLAYER TABLE";
 if (GM) lensEl.classList.add("gm");
+
+// GM-only zone-index overlay. The overlay group ships inside the GM world-map
+// SVG (players never receive it); this only flips its visibility. State is kept
+// in a JS var so it survives the wholesale map re-render on every SSE tick.
+let zonesOn = false;
+const zoneToggle = document.getElementById("zone-toggle");
+function applyZones() {
+  if (zoneToggle) zoneToggle.classList.toggle("active", zonesOn);
+  const ov = document.querySelector("#map-body .zone-overlay");
+  if (ov) ov.style.display = zonesOn ? "" : "none";
+}
+if (zoneToggle)
+  zoneToggle.addEventListener("click", () => { zonesOn = !zonesOn; applyZones(); });
 
 let cursor = { offset: 0 };
 let fetchingStory = false;
@@ -1092,6 +1115,7 @@ function renderState(s) {
   const foesBody = document.getElementById("foes-body");
   if (enc && s.map_svg) {
     turn.hidden = false;
+    if (zoneToggle) zoneToggle.hidden = true;
     turn.textContent = enc.name + " — round " + enc.round + " — up: " + enc.up;
     mapBody.innerHTML = s.map_svg;
     renderLegend(enc);
@@ -1111,11 +1135,14 @@ function renderState(s) {
     mapBody.innerHTML = s.region_svg;
     for (const node of mapBody.querySelectorAll("[data-ref]"))
       node.addEventListener("click", () => openEntity(node.dataset.ref));
+    if (zoneToggle) zoneToggle.hidden = !GM;
+    applyZones();
     document.getElementById("legend").replaceChildren();
     document.getElementById("terrain-legend").replaceChildren();
     foes.hidden = true;
   } else {
     turn.hidden = true;
+    if (zoneToggle) zoneToggle.hidden = true;
     mapBody.replaceChildren(el("p", "empty", "No encounter running."));
     document.getElementById("legend").replaceChildren();
     document.getElementById("terrain-legend").replaceChildren();

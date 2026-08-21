@@ -91,6 +91,48 @@ def test_cli_map_region(wroot):
 
 
 # ---------------------------------------------------------------------------
+# GM-only zone-index overlay
+# ---------------------------------------------------------------------------
+
+def test_zone_overlay_gm_only_and_hidden_by_default(wroot):
+    make_pc()
+    gm = region_map.svg(wroot, _g(), "gm")
+    # the overlay group ships in the GM map, hidden until the client toggles it
+    assert 'class="zone-overlay"' in gm
+    assert 'style="display:none"' in gm
+    assert "ZONE INDEX" in gm
+    # players must NEVER receive the overlay (server is the trust boundary)
+    player = region_map.svg(wroot, _g(), "player")
+    assert "zone-overlay" not in player
+    assert "ZONE INDEX" not in player
+    assert region_map._BAND_COLOR["4-7"] not in player
+
+
+def test_zone_overlay_rings_encode_band_and_status(wroot):
+    make_pc()
+    gm = region_map.svg(wroot, _g(), "gm")
+    # town is 1-3/playable, cave is 4-7/stub (fixture) — each colour appears on a
+    # node ring AND its legend swatch, so >= 2 occurrences
+    assert gm.count(region_map._BAND_COLOR["1-3"]) >= 2
+    assert gm.count(region_map._BAND_COLOR["4-7"]) >= 2
+    # stub status renders a dotted ring (dash "1.5 5"): cave ring + legend key
+    assert gm.count('stroke-dasharray="1.5 5"') >= 2
+
+
+def test_zone_overlay_fails_open_on_untagged_node(wroot):
+    # a node with no band must be skipped, not crash the render
+    region_path = wroot / "canon" / "maps" / "region.yaml"
+    region = worldfs.read_yaml(region_path)
+    region["nodes"]["mystery"] = {"name": "Mystery", "coords": [3, 5],
+                                  "terrain": "settlement"}
+    worldfs.write_yaml(region_path, region)
+    make_pc()
+    gm = region_map.svg(wroot, _g(), "gm")          # no exception
+    assert 'class="zone-overlay"' in gm
+    assert "Mystery" in gm                           # node still on the base map
+
+
+# ---------------------------------------------------------------------------
 # location entity cards
 # ---------------------------------------------------------------------------
 
