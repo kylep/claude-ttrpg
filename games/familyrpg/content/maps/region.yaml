@@ -13,6 +13,8 @@ nodes:
     description: "A cozy mill-village where the West Road leaves the Great Plains for the dwarf-mountains — a quiet, friendly place for green adventurers to begin. Town sub-map: content/maps/millbrook.yaml."}
   kingsreach: {name: Kingsreach, coords: [8.0, 9.9], terrain: coast,
     description: "Walled castle-city on the southern shore, seat of a Duke and the lead voice among the free human cities; the trade roads all answer to Kingsreach."}
+  tidewrack: {name: Tidewrack Cove, coords: [6.5, 10.4], terrain: coast,
+    description: "A barnacled cliff-town on a hidden cove of the southern shore, a day's sail west of Kingsreach and off the trade lanes — which is why smugglers favor it. Wreck-divers, tide-pools, and lights in the sea-cave at night. One of two quiet places for green adventurers to begin (the other is Millbrook)."}
   greenhollow: {name: Greenhollow, coords: [10.1, 8.7], terrain: farmland,
     description: "A small farming village on the Free Road between Kingsreach and Bridgeton, where the Duskhold Road branches off south into worse country."}
   bridgeton: {name: Bridgeton, coords: [9.0, 7.2], terrain: river-crossing,
@@ -72,6 +74,7 @@ edges:
   - {between: [wasteland_outpost, cogwick], hours: 30} # surfaces in the tundra
   - {between: [cogwick, elfward], hours: 21}
   # --- Sea lanes (ship) ---
+  - {between: [kingsreach, tidewrack], hours: 30}     # the Kingsreach packet-boat, a day's sail
   - {between: [westharbor, emberport], hours: 18}
   - {between: [eastharbor, shellhaven], hours: 30}
   - {between: [eastharbor, stormhaven], hours: 18}

@@ -151,3 +151,147 @@ farmer_dobbin:
     broke her fence and wandered off. He raised her from a piglet, swears she is
     far cleverer than a pig has any business being, and wants her home ALIVE. He
     will pay what he can spare plus a healing draught a cleric once left with him.
+
+# --- Tidewrack Cove (the coastal starter; location: tidewrack) ---------------
+
+nessa_coble:
+  name: Nessa Coble
+  location: tidewrack
+  role: rumor-monger
+  disposition: friendly
+  description: >
+    A wiry woman with salt-and-pepper hair tied back in a scarf and a ladle
+    never far from her hand. She misses nothing that comes through her door,
+    and she smells of chowder and pipe-smoke.
+  wants: >
+    Nessa keeps The Salt Kettle, the harbor tavern, and hears every rumor on
+    the cove before it's cold. She wants a full common-room and honest folk to
+    fill it, and she steers newcomers to the notice board by the door —
+    lowering her voice about the lights that burn in the tide-cave on the
+    nights cargo goes missing. She is the party's first friendly face and the
+    softest nudge toward the sea-cave.
+
+reeve_sula:
+  name: Reeve Sula Brine
+  location: tidewrack
+  role: quest-giver
+  disposition: friendly
+  gold: 50
+  inventory: [{item: healing_potion, qty: 2}]
+  description: >
+    A broad-shouldered woman in a sea-green coat with a brass whistle on a
+    cord, the cove's one law-keeper. She stands like a dock-post in a gale and
+    talks plainly, but there's worry under it.
+  wants: >
+    Sula is the reeve — Tidewrack's harbormaster and its only law. She wants
+    her cove honest and its cargo safe, and she is out of her depth: strangers'
+    lanterns burn in the tide-cave at low tide, and goods vanish on those
+    nights. She holds the town purse the tide-cave reward is paid from, and
+    posts the board's jobs. (A reeve is a town's law-keeper.)
+
+old_pell:
+  name: Old Pell
+  location: tidewrack
+  role: witness
+  disposition: friendly
+  description: >
+    A leathery old wreck-diver with a white beard stiff with salt and a bad
+    knee he blames on every weather. He talks slow and squints like he's
+    always looking out past the Teeth.
+  wants: >
+    Pell has dived every wreck on this coast for forty years and knows the
+    tide-cave better than his own attic. He saw the lantern-lights close up —
+    "and heard 'em, digging" — and it scared him off the water. He wants to be
+    believed, and he'll draw the party a map of the cave in spilled chowder if
+    they'll listen: shallows, the lantern-shelf, and the deep black pool he
+    won't go near.
+
+tam_rigg:
+  name: Tam Rigg
+  location: tidewrack
+  role: merchant
+  disposition: neutral
+  gold: 20
+  inventory: [{item: healing_potion, qty: 1}]
+  # stock is what he SELLS (the viewer's shop card reads this; prices come from
+  # ruleset/items.yaml). inventory above is what he physically holds / escrows.
+  stock:
+    - {item: dagger, qty: 3}
+    - {item: club, qty: 2}
+    - {item: handaxe, qty: 2}
+    - {item: spear, qty: 2}
+    - {item: sling, qty: 3}
+    - {item: shortbow, qty: 1}
+    - {item: padded, qty: 2}
+    - {item: leather, qty: 2}
+    - {item: wooden_shield, qty: 2}
+    - {item: torch, qty: 10}
+    - {item: rope, qty: 4}
+    - {item: rations, qty: 20}
+    - {item: healers_kit, qty: 2}
+    - {item: thieves_tools, qty: 1}
+    - {item: healing_potion, qty: 2}
+    - {item: antitoxin, qty: 1}
+  description: >
+    A stooped, tar-stained chandler with reading-glasses shoved up on his bald
+    head and ink on his fingers from tallying stock. Polite, but he'd rather be
+    counting rope than making small talk.
+  wants: >
+    Tam keeps the Chandlery, the cove's one shop, and frets that the smuggling
+    is scaring off the honest Kingsreach packet his good stock rides in on. He
+    wants trade flowing again and will sell the party what they need. He buys
+    and sells at the list prices in ruleset/items.yaml; his predefined stock is
+    in content/adventure.md.
+
+granny_winkle:
+  name: Granny Winkle
+  location: tidewrack
+  role: quest-giver
+  disposition: friendly
+  gold: 15
+  inventory: [{item: healing_potion, qty: 1}]
+  description: >
+    A tiny, round old woman in a dozen shawls, shaking a fist at the gulls from
+    her cliff-top cottage. Sharp-tongued and soft-hearted, she always has a
+    warm bun for a polite child.
+  wants: >
+    Granny keeps the cliff cottage above the docks and a running war with the
+    gulls. The worst of them — the huge, bold one the cove calls the Gull King —
+    stole her late husband's brass compass right off the sill, and she wants it
+    back more than anything. She'll pay what she's saved plus a healing draught,
+    and she does NOT want the bird hurt if it can be helped; "he's a rascal, not
+    a villain."
+
+doff_keel:
+  name: Doff Keel
+  location: tidewrack
+  role: quest-giver
+  disposition: friendly
+  gold: 20
+  inventory: [{item: healing_potion, qty: 1}]
+  description: >
+    A big, sunburnt boatwright with forearms like cable and sawdust in his
+    beard, forever glaring at the cove mouth. Slow to anger but past it now.
+  wants: >
+    Doff builds and moors half the boats in Tidewrack, and every one of them is
+    stuck: a wrecked skiff and a tangle of old nets block the channel at low
+    tide. He wants it cleared so his boats can sail — and he's suspicious,
+    because that skiff was sound last week and did not sink itself. He'll pay
+    from his own purse to get the cove mouth open.
+
+little_bree:
+  name: Little Bree
+  location: tidewrack
+  role: guide
+  disposition: friendly
+  description: >
+    A barefoot, gap-toothed girl of about nine, always down at the tide-pools
+    with a bucket and a scab on one knee. Fearless, curious, and full of
+    cove-lore no grown-up bothers to know.
+  wants: >
+    Bree knows every rock, crab, and secret of the tide-pools, and she's the
+    only one who'll say out loud that the old lighthouse "went dark the same
+    week the lights started in the cave." She wants a friend her own size to
+    show it all to — and she can guide a kind hero to the low-tide cave mouth,
+    the Gull King's cliff-nest, or the tide-pools' chatty hermit crab. A soft,
+    friendly face for the youngest player to bond with.

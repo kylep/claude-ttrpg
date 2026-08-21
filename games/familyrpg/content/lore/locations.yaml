@@ -63,3 +63,11 @@ reeking_marsh:
   is_node: false
   note: A drawn-later wetland (also the intended lizardfolk homeland); trolls and
     boggy things.
+tidewrack_tidecave:
+  name: the Tide-Cave
+  near: tidewrack
+  kind: sea-cave
+  is_node: false
+  note: The tidal sea-cave under Tidewrack's docks — smugglers' lantern-shelf,
+    shallows with rats and a giant frog, and a deep pool a will-o'-wisp haunts.
+    Floods at high tide. The coastal starter's first dungeon.
