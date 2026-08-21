@@ -5,49 +5,54 @@
 #
 # nodes: travel destinations. coords are the source-map position (viewBox/100,
 #   also image-gen hints); terrain is flavor.
+#   band: intended party level for the zone — "1-3" (low), "4-7" (mid), "8+"
+#     (high). status: content readiness — playable (full chapter + hooks),
+#     seeded (lore/hooks exist, no chapter yet), stub (name + description only).
+#     These drive the GM-only zone-index overlay in the viewer; players never
+#     see them.
 # edges: undirected routes; `hours` advances the world clock on `engine travel`.
 #   Travel model (first pass, tunable): foot ~1h per mile (a day's march ~24mi);
 #   the Ironline rail ~5x faster; sea passage ~2.5x faster.
 nodes:
-  millbrook: {name: Millbrook, coords: [6.4, 9.0], terrain: farmland, banner: art/banners/millbrook.png,
+  millbrook: {name: Millbrook, coords: [6.4, 9.0], terrain: farmland, band: "1-3", status: playable, banner: art/banners/millbrook.png,
     description: "A cozy mill-village where the West Road leaves the Great Plains for the dwarf-mountains — a quiet, friendly place for green adventurers to begin. Town sub-map: content/maps/millbrook.yaml."}
-  kingsreach: {name: Kingsreach, coords: [8.0, 9.9], terrain: coast,
+  kingsreach: {name: Kingsreach, coords: [8.0, 9.9], terrain: coast, band: "4-7", status: seeded,
     description: "Walled castle-city on the southern shore, seat of a Duke and the lead voice among the free human cities; the trade roads all answer to Kingsreach."}
-  tidewrack: {name: Tidewrack Cove, coords: [6.5, 10.4], terrain: coast,
+  tidewrack: {name: Tidewrack Cove, coords: [6.5, 10.4], terrain: coast, band: "1-3", status: playable,
     description: "A barnacled cliff-town on a hidden cove of the southern shore, a day's sail west of Kingsreach and off the trade lanes — which is why smugglers favor it. Wreck-divers, tide-pools, and lights in the sea-cave at night. One of two quiet places for green adventurers to begin (the other is Millbrook)."}
-  greenhollow: {name: Greenhollow, coords: [10.1, 8.7], terrain: farmland,
+  greenhollow: {name: Greenhollow, coords: [10.1, 8.7], terrain: farmland, band: "4-7", status: stub,
     description: "A small farming village on the Free Road between Kingsreach and Bridgeton, where the Duskhold Road branches off south into worse country."}
-  bridgeton: {name: Bridgeton, coords: [9.0, 7.2], terrain: river-crossing,
+  bridgeton: {name: Bridgeton, coords: [9.0, 7.2], terrain: river-crossing, band: "4-7", status: stub,
     description: "A free human city and Duke's seat guarding the great bridge where the East River leaves Heartmere; every road east or west runs through it. The river itself is no shortcut — its current runs fast and deadly, so folk cross by the bridge, never by boat."}
-  rivergate: {name: Rivergate, coords: [11.2, 7.0], terrain: river,
+  rivergate: {name: Rivergate, coords: [11.2, 7.0], terrain: river, band: "4-7", status: stub,
     description: "A river and logging town on the East River at the eaves of the Deepwoods, where the Forest Road turns north into elf-country."}
-  eastharbor: {name: Eastharbor, coords: [14.3, 7.2], terrain: coast,
+  eastharbor: {name: Eastharbor, coords: [14.3, 7.2], terrain: coast, band: "4-7", status: stub,
     description: "The easternmost free city, a busy port ruled by the Duchess; ships leave here for the Storm rock and the Tortle isles."}
-  duskhold: {name: Duskhold, coords: [11.8, 9.5], terrain: ruins,
+  duskhold: {name: Duskhold, coords: [11.8, 9.5], terrain: ruins, band: "8+", status: seeded,
     description: "A cursed, broken city and castle shunned by the living, reached only by a lonely spur of road; something old still keeps its halls."}
-  ironford: {name: Ironford, coords: [5.0, 7.8], terrain: mountains,
+  ironford: {name: Ironford, coords: [5.0, 7.8], terrain: mountains, band: "4-7", status: stub,
     description: "Capital of the dwarves, built where the West River meets the mountains over the great bridge they keep; southern terminus of the Ironline rail."}
-  stonewatch: {name: Stonewatch, coords: [5.7, 8.3], terrain: mountain-pass,
+  stonewatch: {name: Stonewatch, coords: [5.7, 8.3], terrain: mountain-pass, band: "4-7", status: seeded,
     description: "A dwarven checkpoint watching the mouth of the mountain pass, where the West Road climbs from the plains toward Ironford. These days the gate is shut to outsiders: only dwarves and gnomes pass freely, and everyone else needs a soulbound Friend of the Dwarves token. Going around by water is no help — the river runs fast, cold, and deadly."}
-  westharbor: {name: Westharbor, coords: [2.3, 9.0], terrain: coast,
+  westharbor: {name: Westharbor, coords: [2.3, 9.0], terrain: coast, band: "4-7", status: stub,
     description: "A dwarf-led but mixed-race port where the West River spills into the western sea at the foot of the mountains; ships sail from here to Dragon Isle."}
-  ashhaven: {name: Ashhaven, coords: [3.0, 6.6], terrain: volcano,
+  ashhaven: {name: Ashhaven, coords: [3.0, 6.6], terrain: volcano, band: "4-7", status: stub,
     description: "A walled tiefling town built right into the living volcano — warm, proud, and unbothered by the fire that would drive anyone else out."}
-  wastewall: {name: Wastewall, coords: [4.5, 6.2], terrain: fort,
+  wastewall: {name: Wastewall, coords: [4.5, 6.2], terrain: fort, band: "8+", status: stub,
     description: "A dwarven fort at the mouth of the Ironline's wasteland tunnel, standing watch over the border with the badlands and the orcs beyond."}
-  wasteland_outpost: {name: Wasteland Outpost, coords: [4.3, 5.45], terrain: wasteland,
+  wasteland_outpost: {name: Wasteland Outpost, coords: [4.3, 5.45], terrain: wasteland, band: "8+", status: stub,
     description: "A lonely fortified rail-stop deep in the wastes, where the underground Ironline surfaces briefly to breathe; the last safe roof before the Orc Warcamp."}
-  orc_warcamp: {name: Orc Warcamp, coords: [3.5, 5.8], terrain: wasteland,
+  orc_warcamp: {name: Orc Warcamp, coords: [3.5, 5.8], terrain: wasteland, band: "8+", status: stub,
     description: "A hostile war-camp of the pure orcs out in the badlands — tents, banners, and trouble; no place for the unready to wander."}
-  cogwick: {name: Cogwick, coords: [7.7, 5.45], terrain: tundra,
+  cogwick: {name: Cogwick, coords: [7.7, 5.45], terrain: tundra, band: "4-7", status: stub,
     description: "A gnome town on the Ironline where the rail crosses the North River on a great fancy bridge, guarded by the gnomish fort of Gearwatch."}
-  elfward: {name: Elfward, coords: [10.1, 5.45], terrain: forest-edge,
+  elfward: {name: Elfward, coords: [10.1, 5.45], terrain: forest-edge, band: "4-7", status: stub,
     description: "A quiet frontier fort where the Ironline ends at the border of the Deepwoods — the peaceful, watchful line between dwarf iron and elf green."}
-  emberport: {name: Emberport, coords: [1.5, 9.6], terrain: island,
+  emberport: {name: Emberport, coords: [1.5, 9.6], terrain: island, band: "8+", status: stub,
     description: "A small dragonborn fishing town on Dragon Isle, in the shadow of the wyrms their people serve; reached only by ship from Westharbor."}
-  shellhaven: {name: Shellhaven, coords: [14.5, 9.0], terrain: island,
+  shellhaven: {name: Shellhaven, coords: [14.5, 9.0], terrain: island, band: "4-7", status: stub,
     description: "A tortle village among the East Islands, unhurried and welcoming, where travelers trade news and dry out between sea-crossings."}
-  stormhaven: {name: Stormhaven, coords: [15.2, 7.8], terrain: island,
+  stormhaven: {name: Stormhaven, coords: [15.2, 7.8], terrain: island, band: "8+", status: stub,
     description: "A lonely storm-lashed rock port far out in the eastern waters, wind-scoured and half-wild, where few stay longer than the weather forces."}
 edges:
   # --- Great Plains: the Free Road & spurs (foot) ---
