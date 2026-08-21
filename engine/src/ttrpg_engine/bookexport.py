@@ -4,8 +4,6 @@ mutation. Images resolve fail-open — a missing file degrades to text."""
 
 from pathlib import Path
 
-from weasyprint import HTML
-
 from ttrpg_engine import chargen, game as game_mod
 from ttrpg_engine.markdown_render import esc, render_markdown as _md
 
@@ -116,10 +114,14 @@ def _document(title, subtitle, cover_rel, body):
 
 
 def render_pdf(html, content_dir):
+    from weasyprint import HTML  # deferred: keep the core CLI importable without WeasyPrint's system libs
+
     return HTML(string=html, base_url=str(content_dir)).write_pdf()
 
 
 def page_count(html, content_dir):
+    from weasyprint import HTML  # deferred: see render_pdf
+
     return len(HTML(string=html, base_url=str(content_dir)).render().pages)
 
 
