@@ -9,6 +9,11 @@ _RULESET_FILES = ["core", "attributes", "races", "spells", "effects",
                   "features"]
 ATTRS = ["STR", "DEX", "CON", "INT", "WIS", "CHA"]
 
+# Encounter-map terrain feature types the grid/render layer understands (see
+# grid.cells_of and render.TERRAIN_STYLE). A typo silently no-ops at play time,
+# so validate() rejects unknown types up front.
+_TERRAIN_TYPES = {"wall", "difficult", "dark"}
+
 
 def _read(path: Path):
     if not path.exists():
@@ -76,6 +81,18 @@ def validate(path: Path) -> list[str]:
                     errors.append(f"region edge references unknown node {end}")
     else:
         errors.append("missing content/maps/region.yaml")
+    enc_dir = g["content_dir"] / "maps" / "encounters"
+    if enc_dir.is_dir():
+        bestiary_ids = set(_bestiary(g))
+        for f in sorted(enc_dir.glob("*.yaml")):
+            emap = yaml.safe_load(f.read_text()) or {}
+            eid = emap.get("id", f.stem)
+            for feature in emap.get("terrain", []):
+                if feature.get("type") not in _TERRAIN_TYPES:
+                    errors.append(f"encounter {eid}: unknown terrain type {feature.get('type')}")
+            for mon in emap.get("monsters", []):
+                if mon.get("type") not in bestiary_ids:
+                    errors.append(f"encounter {eid}: unknown monster {mon.get('type')}")
     return errors
 
 

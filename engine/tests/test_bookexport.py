@@ -17,7 +17,10 @@ def test_font_face_css_present_when_fonts_bundled():
 
 from pathlib import Path
 
-FAMILYRPG = Path("games/familyrpg")
+# Anchor to the repo root (engine/tests/ -> parents[2]) so these tests pass
+# regardless of the cwd pytest runs from; a bare relative "games/familyrpg"
+# only resolved when run from the repo root, not the documented engine/ cwd.
+FAMILYRPG = Path(__file__).resolve().parents[2] / "games" / "familyrpg"
 
 
 def test_content_image_failopen(tmp_path):
@@ -103,7 +106,7 @@ from ttrpg_engine.cli import app
 def test_cli_export_book_all_writes_pdfs(tmp_path):
     out = tmp_path / "exports"
     res = CliRunner().invoke(
-        app, ["export", "book", "all", "--game", "games/familyrpg", "--out", str(out)]
+        app, ["export", "book", "all", "--game", str(FAMILYRPG), "--out", str(out)]
     )
     assert res.exit_code == 0, res.stdout
     for fn in ("world.pdf", "classes.pdf", "races.pdf", "bestiary.pdf"):
@@ -113,7 +116,7 @@ def test_cli_export_book_all_writes_pdfs(tmp_path):
 
 def test_cli_export_book_rejects_unknown_section(tmp_path):
     res = CliRunner().invoke(
-        app, ["export", "book", "bogus", "--game", "games/familyrpg", "--out", str(tmp_path)]
+        app, ["export", "book", "bogus", "--game", str(FAMILYRPG), "--out", str(tmp_path)]
     )
     assert res.exit_code != 0
 

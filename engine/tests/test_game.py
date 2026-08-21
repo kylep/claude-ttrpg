@@ -43,6 +43,24 @@ def test_validate_catches_unknown_feature_tag(tmp_path):
     assert any("class fighter: unknown feature nonexistent_feature" in e for e in errors)
 
 
+def test_validate_catches_unknown_terrain_type(tmp_path):
+    broken = tmp_path / "broken"
+    shutil.copytree(FIXTURE_GAME, broken)
+    emap = broken / "content" / "maps" / "encounters" / "skirmish.yaml"
+    emap.write_text(emap.read_text().replace("type: difficult", "type: dificult"))
+    errors = game.validate(broken)
+    assert any("skirmish" in e and "dificult" in e for e in errors), errors
+
+
+def test_validate_catches_unknown_encounter_monster(tmp_path):
+    broken = tmp_path / "broken"
+    shutil.copytree(FIXTURE_GAME, broken)
+    emap = broken / "content" / "maps" / "encounters" / "skirmish.yaml"
+    emap.write_text(emap.read_text().replace("type: goblin", "type: gremlin"))
+    errors = game.validate(broken)
+    assert any("skirmish" in e and "gremlin" in e for e in errors), errors
+
+
 def test_cli_validate():
     res = runner.invoke(app, ["game", "validate", str(FIXTURE_GAME)])
     assert res.exit_code == 0
