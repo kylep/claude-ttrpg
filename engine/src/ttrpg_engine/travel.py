@@ -56,8 +56,15 @@ def go(root: Path, dest: str, pcs: list[str] | None = None) -> dict:
         for pid in movers:
             sheets[pid]["location"] = dest
             worldfs.write_yaml(worldfs.state(root, f"party/{pid}"), sheets[pid])
-        summary = (f"{', '.join(movers)} travel {here} -> {dest} ({edge['hours']}h); "
-                   "rest of the party stays behind")
+        if set(movers) == set(party["members"]):
+            # The whole roster moved, just named PC-by-PC — keep the party's
+            # canonical location in step so it can't go stale behind the sheets.
+            party["location"] = dest
+            worldfs.write_yaml(worldfs.state(root, "party"), party)
+            summary = f"party travels {here} -> {dest} ({edge['hours']}h)"
+        else:
+            summary = (f"{', '.join(movers)} travel {here} -> {dest} ({edge['hours']}h); "
+                       "rest of the party stays behind")
 
     timeline.append_event(root, type_="travel", actors=movers, summary=summary,
                           delta={"from": here, "to": dest})
