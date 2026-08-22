@@ -201,16 +201,38 @@ def build_bestiary(src):
     return render_pdf(html, src["content_dir"])
 
 
+_ATTR_NAMES = {
+    "STR": "Strength", "DEX": "Dexterity", "CON": "Constitution",
+    "INT": "Intelligence", "WIS": "Wisdom", "CHA": "Charisma",
+}
+
+
+def _primary_stat(cls):
+    """The class's key attribute: the first entry of attr_priority (the stat the
+    standard array fills highest), falling back to its casting stat. Returns a
+    display name like 'Wisdom (WIS)', or None if neither is defined."""
+    pri = cls.get("attr_priority")
+    code = pri[0] if pri else cls.get("cast_attr")
+    if not code:
+        return None
+    return f"{_ATTR_NAMES.get(code, code)} ({code})"
+
+
 def _classes_body(src):
     g = src["g"]
     cards = []
     for name, cls in sorted(g["classes"].items()):
         gear = ", ".join(_title_case(i) for i in cls.get("starting_gear", [])) or "—"
         skills = ", ".join(_title_case(s) for s in cls.get("skills", []))
+        primary = _primary_stat(cls)
+        primary_tag = (
+            f"<span class='tag'>Primary stat {esc(primary)}</span>" if primary else ""
+        )
         cards.append(
             f"<div class='card'><h3>{esc(name.title())}</h3>"
             f"{_leadcap(cls.get('description', ''))}"
-            f"<p><span class='tag'>Hit die d{esc(str(cls['hit_die']))}</span>"
+            f"<p>{primary_tag}"
+            f"<span class='tag'>Hit die d{esc(str(cls['hit_die']))}</span>"
             f"<span class='tag'>Start gold {esc(str(cls.get('starting_gold', 0)))} gp</span></p>"
             f"<p><strong>Starting gear:</strong> {esc(gear)}.</p>"
             f"<p><strong>Skills:</strong> choose {cls.get('skill_choices', 0)} from {esc(skills)}.</p>"
