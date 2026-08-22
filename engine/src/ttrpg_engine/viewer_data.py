@@ -367,9 +367,10 @@ def _feature_card(g: dict, fid: str) -> dict:
     ft = (g.get("features") or {}).get(fid)
     if ft is None:
         raise EngineError("not_found", f"no feature {fid!r}")
-    # `blurb` is the player-facing text; until one is authored, show a gentle
-    # placeholder rather than the GM/engine-facing `description`.
-    blurb = ft.get("blurb") or "A special knack this hero has. (Player description coming soon.)"
+    # player-facing text lives in feature_blurbs.yaml (kept apart from the
+    # GM/engine-facing `description`); until one is authored, show a placeholder.
+    blurb = ((g.get("feature_blurbs") or {}).get(fid)
+             or "A special knack this hero has. (Player description coming soon.)")
     return _term_card(f"feature:{fid}", _pretty(fid), "feature", blurb)
 
 
