@@ -255,6 +255,7 @@
   #lightbox img { max-width: 100%; max-height: 100%; object-fit: contain;
     border-radius: 8px; border: 1px solid var(--edge);
     box-shadow: 0 12px 48px rgba(0, 0, 0, .6); }
+  #lightbox svg { width: 100%; height: 100%; }
   @media (max-width: 720px) {
     #gloss { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); }
     .gl-side { flex-direction: row; flex-wrap: wrap; border-right: 0; border-bottom: 1px solid var(--edge); }
@@ -322,7 +323,7 @@
   .card h2 { font-size: .72rem; font-family: var(--mono); font-weight: 400;
              color: var(--muted); letter-spacing: .14em; text-transform: uppercase;
              margin-bottom: .6rem; }
-  #map svg { max-width: 100%; height: auto; border-radius: 3px; }
+  #map svg { max-width: 100%; height: auto; border-radius: 3px; cursor: zoom-in; }
   #map .empty { color: var(--muted); font-style: italic; font-size: .9rem; }
   #map .turn { font-family: var(--mono); font-size: .78rem; color: var(--gold);
                margin-bottom: .5rem; }
@@ -820,18 +821,25 @@ document.addEventListener("keydown", e => { if (e.key === "Escape") closeOverlay
 
 const glossEl = document.getElementById("gloss");
 
-/* ---- click-to-enlarge lightbox: any banner or portrait opens full-size --- */
+/* ---- click-to-enlarge lightbox: banners, portraits, and the map ---------- */
 const lightbox = el("div", null); lightbox.id = "lightbox"; lightbox.hidden = true;
-const lightboxImg = el("img"); lightbox.append(lightboxImg);
 document.body.append(lightbox);
-function openLightbox(src, alt) {
-  lightboxImg.src = src; lightboxImg.alt = alt || ""; lightbox.hidden = false;
+function openLightboxContent(node) { lightbox.replaceChildren(node); lightbox.hidden = false; }
+function openLightboxImage(src, alt) {
+  const img = el("img"); img.src = src; img.alt = alt || ""; openLightboxContent(img);
 }
-function closeLightbox() { lightbox.hidden = true; lightboxImg.removeAttribute("src"); }
+function closeLightbox() { lightbox.hidden = true; lightbox.replaceChildren(); }
 lightbox.addEventListener("click", closeLightbox);
 glossEl.addEventListener("click", e => {
   const img = e.target.closest("img.gl-banner, img.portrait");
-  if (img && img.src) openLightbox(img.src, img.alt);
+  if (img && img.src) openLightboxImage(img.src, img.alt);
+});
+// Click the map (anywhere but a location node, which handles its own click)
+// to open it big. #map-body is a stable element; its svg is re-rendered each
+// tick, so we clone the current svg at click time.
+document.getElementById("map-body").addEventListener("click", () => {
+  const svg = document.querySelector("#map-body svg");
+  if (svg) openLightboxContent(svg.cloneNode(true));
 });
 document.addEventListener("keydown", e => {
   if (e.key === "Escape" && !lightbox.hidden) { e.stopImmediatePropagation(); closeLightbox(); }
@@ -1174,7 +1182,7 @@ function renderState(s) {
     turn.hidden = true;
     mapBody.innerHTML = s.region_svg;
     for (const node of mapBody.querySelectorAll("[data-ref]"))
-      node.addEventListener("click", () => openEntity(node.dataset.ref));
+      node.addEventListener("click", e => { e.stopPropagation(); openEntity(node.dataset.ref); });
     if (zoneToggle) zoneToggle.hidden = !GM;
     applyZones();
     document.getElementById("legend").replaceChildren();
