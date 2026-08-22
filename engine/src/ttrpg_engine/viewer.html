@@ -480,6 +480,11 @@ function el(tag, cls, text) {
   return n;
 }
 
+// UI-facing label for an id like "sneak_attack" -> "Sneak Attack".
+function pretty(s) {
+  return String(s ?? "").replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+}
+
 /* ---- entity cards ------------------------------------------------------- */
 
 async function fetchEntity(ref) {
@@ -592,7 +597,7 @@ function kvRow(k, v) {
 
 function spellChip(name) {
   // a known spell, clickable through to its own card in the same overlay
-  const c = el("span", "chip spell", (name || "").replace(/_/g, " "));
+  const c = el("span", "chip spell", pretty(name));
   c.addEventListener("click", () => openEntity("spell:" + name));
   return c;
 }
@@ -687,7 +692,7 @@ function buildSheet(card) {
 
   if (card.description) sh.appendChild(sheetSection("Description",
       el("p", "desc muted", card.description)));
-  if ((card.skills || []).length) sh.appendChild(sheetSection("Skills", tagRow(card.skills)));
+  if ((card.skills || []).length) sh.appendChild(sheetSection("Skills", tagRow(card.skills.map(pretty))));
   if ((card.effects || []).length) sh.appendChild(sheetSection("Effects", tagRow(card.effects, "warn")));
   if ((card.wounds || []).length) {
     const row = el("div", "tagrow");
@@ -695,16 +700,16 @@ function buildSheet(card) {
       row.appendChild(el("span", "chip wound " + (w.severity || "serious"), "🩹 " + w.text));
     sh.appendChild(sheetSection("Wounds", row));
   }
-  if ((card.features || []).length) sh.appendChild(sheetSection("Features", tagRow(card.features)));
+  if ((card.features || []).length) sh.appendChild(sheetSection("Features", tagRow(card.features.map(pretty))));
   const spellsSec = buildSpellsSection(card);
   if (spellsSec) sh.appendChild(spellsSec);
   if ((card.equipped || []).length) sh.appendChild(sheetSection("Equipped",
-      tagRow(card.equipped.map(i => i.replace(/_/g, " ")))));
+      tagRow(card.equipped.map(pretty))));
   // the full pack, not just what's in hand — equipped items marked, quantities shown
   if ((card.inventory || []).length) {
     const row = el("div", "tagrow");
     for (const it of card.inventory) {
-      const label = it.item.replace(/_/g, " ") + (it.qty > 1 ? " ×" + it.qty : "");
+      const label = pretty(it.item) + (it.qty > 1 ? " ×" + it.qty : "");
       row.appendChild(el("span", "chip" + (it.equipped ? " good" : ""), label));
     }
     sh.appendChild(sheetSection("Carried", row));
