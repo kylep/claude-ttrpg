@@ -112,7 +112,9 @@ class _Handler(BaseHTTPRequestHandler):
             elif path.startswith("/renders/"):
                 self._render_file(path.removeprefix("/renders/"))
             elif path.startswith("/art/"):
-                self._content_art_file(path.removeprefix("/art/"))
+                self._content_image_file("art", path.removeprefix("/art/"))
+            elif path.startswith("/maps/"):
+                self._content_image_file("maps", path.removeprefix("/maps/"))
             elif path == "/api/glossary":
                 src = export_mod.resolve_source(self.root, None)
                 self._json(bookexport.glossary_manifest(src))
@@ -147,18 +149,19 @@ class _Handler(BaseHTTPRequestHandler):
                                          "application/octet-stream")
         self._send(200, target.read_bytes(), ctype)
 
-    def _content_art_file(self, name: str) -> None:
-        """Serve an image asset from the game's content/art dir (e.g. a bestiary
-        portrait a monster card points at). The resolved-path check rejects any
-        `name` that would escape it (path traversal), and only image suffixes
-        are served — never the game's yaml content. Read-only."""
+    def _content_image_file(self, subdir: str, name: str) -> None:
+        """Serve an image asset from one of the game's content subdirs — art/
+        (portraits, covers, banners) or maps/ (the painted world map). The
+        resolved-path check rejects any `name` that would escape it (path
+        traversal), and only image suffixes are served — never the game's yaml
+        content. Read-only."""
         content = self.game.get("content_dir")
         if content is None:
             self._json({"error": "not found"}, 404)
             return
-        art = (Path(content) / "art").resolve()
-        target = (art / name).resolve()
-        if not target.is_relative_to(art) or not target.is_file():
+        base = (Path(content) / subdir).resolve()
+        target = (base / name).resolve()
+        if not target.is_relative_to(base) or not target.is_file():
             self._json({"error": "not found"}, 404)
             return
         by_suffix = {"png": "image/png", "jpg": "image/jpeg", "jpeg": "image/jpeg",

@@ -245,7 +245,7 @@
     margin: 0 .3rem .3rem 0; }
   .glossary .lead { margin: .4rem 0; }
   .glossary .fullbleed { text-align: center; margin: 1.4rem 0; }
-  .glossary .fullbleed img { max-width: 100%; border-radius: 8px; }
+  .glossary .fullbleed img { max-width: 100%; border-radius: 8px; cursor: zoom-in; }
   .glossary svg { max-width: 100%; height: auto; }
   /* ---- click-to-enlarge lightbox ----------------------------------------- */
   #lightbox { position: fixed; inset: 0; background: rgba(8, 6, 4, .9); z-index: 20;
@@ -864,7 +864,7 @@ function openLightboxImage(src, alt) {
 function closeLightbox() { lightbox.hidden = true; lightbox.replaceChildren(); }
 lightbox.addEventListener("click", closeLightbox);
 glossEl.addEventListener("click", e => {
-  const img = e.target.closest("img.gl-banner, img.portrait");
+  const img = e.target.closest("img.gl-banner, img.portrait, .fullbleed img");
   if (img && img.src) openLightboxImage(img.src, img.alt);
 });
 // Click the map (anywhere but a location node, which handles its own click)
