@@ -219,8 +219,18 @@
   .gl-side .gl-close { margin-top: auto; color: var(--muted); font-family: var(--mono);
     font-size: .72rem; }
   .glossary { overflow-y: auto; padding: 0 0 3rem; }
-  .glossary .gl-banner { width: 100%; max-height: 320px; object-fit: cover;
-    object-position: center top; display: block; cursor: zoom-in; }
+  /* Covers are tall 2:3 portraits with subjects composed differently per image,
+     so any fixed crop loses someone's head. Show the whole cover uncropped,
+     centered over a blurred fill of itself so a wide screen has no dead bands;
+     the lightbox gives the full-size view. Height scales with the viewport. */
+  .glossary .gl-banner-wrap { position: relative; display: flex; justify-content: center;
+    align-items: center; max-height: 72vh; overflow: hidden; background: var(--ink);
+    border-bottom: 1px solid var(--edge); }
+  .glossary .gl-banner-wrap::before { content: ""; position: absolute; inset: 0;
+    background: var(--cover) center / cover no-repeat;
+    filter: blur(30px) brightness(.4); transform: scale(1.2); }
+  .glossary .gl-banner { position: relative; display: block; max-width: 100%;
+    max-height: 72vh; width: auto; height: auto; cursor: zoom-in; }
   .glossary .gl-head { padding: 1.2rem 2rem .2rem; }
   .glossary h1 { font-family: var(--serif); font-size: 2rem; color: var(--gold); margin: 0; }
   .glossary .gl-body { padding: 1rem 2rem; max-width: 860px; }
@@ -835,7 +845,10 @@ async function loadGlossSection(id, sideButtons) {
   if (!r.ok) { content.append(el("p", "gl-body", "Could not load this section.")); return; }
   const sec = await r.json();
   if (sec.cover) {
-    const img = el("img", "gl-banner"); img.src = sec.cover; img.alt = ""; content.append(img);
+    const wrap = el("div", "gl-banner-wrap");
+    wrap.style.setProperty("--cover", `url("${sec.cover}")`);
+    const img = el("img", "gl-banner"); img.src = sec.cover; img.alt = "";
+    wrap.append(img); content.append(wrap);
   }
   const head = el("div", "gl-head"); head.append(el("h1", null, sec.title)); content.append(head);
   const bodyWrap = el("div", "gl-body");
