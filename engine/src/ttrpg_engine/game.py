@@ -28,6 +28,9 @@ def load(path: Path) -> dict:
     g = {"meta": _read(path / "game.yaml"), "content_dir": path / "content"}
     for name in _RULESET_FILES:
         g[name] = _read(path / "ruleset" / f"{name}.yaml")
+    # skills are optional: a game without a skills.yaml still loads (g["skills"] == {})
+    skills_path = path / "ruleset" / "skills.yaml"
+    g["skills"] = (yaml.safe_load(skills_path.read_text()) or {}) if skills_path.exists() else {}
     g["classes"] = {}
     classes_dir = path / "ruleset" / "classes"
     if not classes_dir.is_dir():

@@ -344,14 +344,74 @@ def _location_card(root: Path, g: dict, region: dict, ref: str, lens: str) -> di
     return card
 
 
+_ATTR_NAMES = {"STR": "Strength", "DEX": "Dexterity", "CON": "Constitution",
+               "INT": "Intelligence", "WIS": "Wisdom", "CHA": "Charisma"}
+
+
+def _term_card(ref: str, name: str, subtitle: str | None, description) -> dict:
+    """A small reference card for a rules term — a skill, feature, item, or
+    ability score — shown when a player clicks its chip on a sheet."""
+    return {"kind": "term", "id": ref, "name": name,
+            "subtitle": subtitle, "description": " ".join(str(description).split()) or None}
+
+
+def _item_card(g: dict, iid: str) -> dict:
+    it = (g.get("items") or {}).get(iid)
+    if it is None:
+        raise EngineError("not_found", f"no item {iid!r}")
+    return _term_card(f"item:{iid}", _pretty(it.get("name") or iid),
+                      it.get("type") or "item", it.get("description", ""))
+
+
+def _feature_card(g: dict, fid: str) -> dict:
+    ft = (g.get("features") or {}).get(fid)
+    if ft is None:
+        raise EngineError("not_found", f"no feature {fid!r}")
+    # `blurb` is the player-facing text; until one is authored, show a gentle
+    # placeholder rather than the GM/engine-facing `description`.
+    blurb = ft.get("blurb") or "A special knack this hero has. (Player description coming soon.)"
+    return _term_card(f"feature:{fid}", _pretty(fid), "feature", blurb)
+
+
+def _skill_card(g: dict, sid: str) -> dict:
+    sk = (g.get("skills") or {}).get(sid)
+    if sk is None:
+        raise EngineError("not_found", f"no skill {sid!r}")
+    stat = sk.get("stat")
+    subtitle = f"{_ATTR_NAMES.get(stat, stat)} skill" if stat else "skill"
+    return _term_card(f"skill:{sid}", _pretty(sid), subtitle, sk.get("description", ""))
+
+
+def _stat_card(g: dict, code: str) -> dict:
+    code = code.upper()
+    attrs = g.get("attributes") or {}
+    if code not in (attrs.get("order") or game_mod.ATTRS):
+        raise EngineError("not_found", f"no ability score {code!r}")
+    name = (attrs.get("names") or {}).get(code) or _ATTR_NAMES.get(code, code)
+    return _term_card(f"stat:{code}", name, "ability score",
+                      (attrs.get("descriptions") or {}).get(code, ""))
+
+
+def _pretty(ref: str) -> str:
+    return str(ref).replace("_", " ").title()
+
+
 def entity_card(root: Path, g: dict, ref: str, lens: str) -> dict:
     """Resolve `ref` — a PC id, an encounter combatant, a bestiary type, an
-    NPC key from canon/npcs.yaml, a quest id, or a region node — into a
-    lens-aware card of its live state. Raises not_found for anything unknown,
-    including monsters and locations a player lens isn't allowed to see."""
+    NPC key from canon/npcs.yaml, a quest id, a region node, or a rules term
+    (skill:/feature:/item:/stat:) — into a lens-aware card. Raises not_found for
+    anything unknown, including monsters and locations a player lens can't see."""
     lens = "gm" if lens == "gm" else "player"
     if ref.startswith("spell:"):
         return _spell_card(g, ref.removeprefix("spell:"))
+    if ref.startswith("item:"):
+        return _item_card(g, ref.removeprefix("item:"))
+    if ref.startswith("feature:"):
+        return _feature_card(g, ref.removeprefix("feature:"))
+    if ref.startswith("skill:"):
+        return _skill_card(g, ref.removeprefix("skill:"))
+    if ref.startswith("stat:"):
+        return _stat_card(g, ref.removeprefix("stat:"))
     if ref.startswith("shop:"):
         return _shop_card(root, g, ref.removeprefix("shop:"), lens)
     if ref.startswith("pc-"):

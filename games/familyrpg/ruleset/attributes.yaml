@@ -1,1 +1,31 @@
 order: [STR, DEX, CON, INT, WIS, CHA]  # the six attributes; modifier = (score - 10) / 2, rounded down
+
+# The six ability scores, in a young player's words. Each score sets a modifier
+# (score - 10, halved) that gets added to rolls that use it.
+names:
+  STR: Strength
+  DEX: Dexterity
+  CON: Constitution
+  INT: Intelligence
+  WIS: Wisdom
+  CHA: Charisma
+
+descriptions:
+  STR: >-
+    How strong you are. Swinging a heavy weapon, forcing a door, climbing, and
+    carrying a lot all lean on Strength.
+  DEX: >-
+    How quick and nimble you are. Aiming a bow, dodging, sneaking, and keeping
+    your balance all lean on Dexterity.
+  CON: >-
+    How tough and healthy you are. It sets how much health you have and helps you
+    shrug off poison, cold, and exhaustion.
+  INT: >-
+    How much you know and how well you reason. Wizards' magic, puzzles, and
+    remembering facts lean on Intelligence.
+  WIS: >-
+    How sharp your senses and good sense are. Noticing things, healing, tracking,
+    and clerics' and druids' magic lean on Wisdom.
+  CHA: >-
+    How much force of personality you have. Convincing, cheering, and leading
+    people lean on Charisma.

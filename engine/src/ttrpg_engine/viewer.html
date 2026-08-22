@@ -285,6 +285,9 @@
   .sheet .attrs .a .k { font-family: var(--mono); font-size: .58rem; color: var(--muted);
                         letter-spacing: .08em; }
   .sheet .attrs .a .v { font-size: .95rem; }
+  .sheet .attrs .a.term { cursor: pointer; }
+  .sheet .attrs .a.term:hover { border-color: var(--gold); }
+  .sheet .attrs .a.term:hover .k { color: var(--gold); }
   .sheet .sec { margin-top: .85rem; }
   .sheet .sec h4 { font-family: var(--mono); font-size: .62rem; color: var(--muted);
     text-transform: uppercase; letter-spacing: .18em; font-weight: 400;
@@ -293,6 +296,9 @@
   /* a known spell you can click through to its card */
   .sheet .chip.spell { background: var(--gold); cursor: pointer; }
   .sheet .chip.spell:hover { background: var(--ember); }
+  /* a rules term (skill/feature/item/stat) you can click for its description */
+  .sheet .chip.term { cursor: pointer; }
+  .sheet .chip.term:hover { background: var(--gold); }
   /* spell-slot pips: one per level, dimmed when the level is spent out */
   .sheet .slots { display: flex; flex-wrap: wrap; gap: .35rem; }
   .sheet .slots .slot { font-family: var(--mono); font-size: .68rem; color: var(--parchment);
@@ -529,6 +535,7 @@ function chipLine(card) {
       .filter(Boolean).join(" · ");
   if (card.kind === "shop")
     return [(card.items || []).length + " for sale", card.location].filter(Boolean).join(" · ");
+  if (card.kind === "term") return card.subtitle || "";
   return "";
 }
 
@@ -599,6 +606,15 @@ function spellChip(name) {
   // a known spell, clickable through to its own card in the same overlay
   const c = el("span", "chip spell", pretty(name));
   c.addEventListener("click", () => openEntity("spell:" + name));
+  return c;
+}
+
+// a clickable chip for a rules term (skill/feature/item/stat) — opens its
+// description card in the same overlay. `label` is display text, `ref` the
+// entity ref like "skill:stealth"; `extra` adds a chip class (e.g. "good").
+function termChip(label, ref, extra) {
+  const c = el("span", "chip term" + (extra ? " " + extra : ""), label);
+  c.addEventListener("click", () => openEntity(ref));
   return c;
 }
 
@@ -682,9 +698,10 @@ function buildSheet(card) {
   if (card.attributes) {
     const grid = el("div", "attrs");
     for (const [k, v] of Object.entries(card.attributes)) {
-      const a = el("div", "a");
+      const a = el("div", "a term");
       a.appendChild(el("div", "k", k));
       a.appendChild(el("div", "v", String(v)));
+      a.addEventListener("click", () => openEntity("stat:" + k));
       grid.appendChild(a);
     }
     sh.appendChild(grid);
@@ -692,7 +709,11 @@ function buildSheet(card) {
 
   if (card.description) sh.appendChild(sheetSection("Description",
       el("p", "desc muted", card.description)));
-  if ((card.skills || []).length) sh.appendChild(sheetSection("Skills", tagRow(card.skills.map(pretty))));
+  if ((card.skills || []).length) {
+    const row = el("div", "tagrow");
+    for (const s of card.skills) row.appendChild(termChip(pretty(s), "skill:" + s));
+    sh.appendChild(sheetSection("Skills", row));
+  }
   if ((card.effects || []).length) sh.appendChild(sheetSection("Effects", tagRow(card.effects, "warn")));
   if ((card.wounds || []).length) {
     const row = el("div", "tagrow");
@@ -700,17 +721,24 @@ function buildSheet(card) {
       row.appendChild(el("span", "chip wound " + (w.severity || "serious"), "🩹 " + w.text));
     sh.appendChild(sheetSection("Wounds", row));
   }
-  if ((card.features || []).length) sh.appendChild(sheetSection("Features", tagRow(card.features.map(pretty))));
+  if ((card.features || []).length) {
+    const row = el("div", "tagrow");
+    for (const f of card.features) row.appendChild(termChip(pretty(f), "feature:" + f));
+    sh.appendChild(sheetSection("Features", row));
+  }
   const spellsSec = buildSpellsSection(card);
   if (spellsSec) sh.appendChild(spellsSec);
-  if ((card.equipped || []).length) sh.appendChild(sheetSection("Equipped",
-      tagRow(card.equipped.map(pretty))));
+  if ((card.equipped || []).length) {
+    const row = el("div", "tagrow");
+    for (const i of card.equipped) row.appendChild(termChip(pretty(i), "item:" + i));
+    sh.appendChild(sheetSection("Equipped", row));
+  }
   // the full pack, not just what's in hand — equipped items marked, quantities shown
   if ((card.inventory || []).length) {
     const row = el("div", "tagrow");
     for (const it of card.inventory) {
       const label = pretty(it.item) + (it.qty > 1 ? " ×" + it.qty : "");
-      row.appendChild(el("span", "chip" + (it.equipped ? " good" : ""), label));
+      row.appendChild(termChip(label, "item:" + it.item, it.equipped ? "good" : null));
     }
     sh.appendChild(sheetSection("Carried", row));
   }

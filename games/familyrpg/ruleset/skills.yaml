@@ -1,0 +1,58 @@
+# Skills — the things a hero is especially good at. Each one leans on a single
+# ability score, and being trained in a skill makes you better whenever it comes
+# up. Descriptions are written for a young player at the table.
+
+athletics:
+  stat: STR
+  description: >-
+    Climbing, jumping, swimming, and raw pushing and pulling. When a hero needs
+    their muscles, this is the skill.
+
+acrobatics:
+  stat: DEX
+  description: >-
+    Balance and nimble moves — walking a narrow ledge, tumbling past a foe, or
+    twisting away and landing on your feet.
+
+stealth:
+  stat: DEX
+  description: >-
+    Moving quietly and keeping out of sight, so no one hears or spots you coming.
+
+arcana:
+  stat: INT
+  description: >-
+    Knowing about magic — spells, enchanted items, and strange magical creatures.
+
+investigation:
+  stat: INT
+  description: >-
+    Searching for clues and working out how things fit together, like a detective
+    reading a room.
+
+nature:
+  stat: WIS
+  description: >-
+    Knowing the wild — plants, animals, weather, and the way the land works.
+
+medicine:
+  stat: WIS
+  description: >-
+    Caring for the hurt and the sick: stopping bleeding, easing pain, and telling
+    what's wrong.
+
+perception:
+  stat: WIS
+  description: >-
+    Noticing what's around you — a faint sound, a hidden door, the smell of smoke.
+
+survival:
+  stat: WIS
+  description: >-
+    Tracking footprints, finding food and water, reading the weather, and never
+    losing your way.
+
+persuasion:
+  stat: CHA
+  description: >-
+    Winning people over with kind, honest, friendly words.
