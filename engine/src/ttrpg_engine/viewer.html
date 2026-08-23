@@ -331,8 +331,35 @@
              margin-bottom: .6rem; }
   #map svg { max-width: 100%; height: auto; border-radius: 3px; cursor: zoom-in; }
   #map .empty { color: var(--muted); font-style: italic; font-size: .9rem; }
-  #map .turn { font-family: var(--mono); font-size: .78rem; color: var(--gold);
+  #map .turn { display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem;
                margin-bottom: .5rem; }
+  #map .turn .t-round { font-family: var(--mono); font-size: .72rem;
+    color: var(--muted); letter-spacing: .1em; text-transform: uppercase; }
+  #map .turn .t-up { font-family: var(--serif); font-size: 1rem; font-weight: 700;
+    color: var(--gold); }
+  /* the initiative order, current turn called out */
+  #turnorder { margin-bottom: .6rem; }
+  #turnorder .to-title { font-family: var(--mono); font-size: .62rem; color: var(--muted);
+    text-transform: uppercase; letter-spacing: .16em; margin-bottom: .3rem; }
+  #turnorder .to-list { list-style: none; margin: 0; padding: 0;
+    counter-reset: turn; display: flex; flex-direction: column; gap: 1px; }
+  #turnorder .to-item { counter-increment: turn; display: flex; align-items: center;
+    gap: .5rem; padding: .22rem .45rem; border-radius: 4px; font-size: .82rem;
+    color: var(--parchment); border: 1px solid transparent; }
+  #turnorder .to-item::before { content: counter(turn); font-family: var(--mono);
+    font-size: .66rem; color: var(--muted); width: 1rem; text-align: right; flex: none; }
+  #turnorder .to-item.click { cursor: pointer; }
+  #turnorder .to-item.click:hover { background: var(--edge); }
+  #turnorder .to-dot { width: .6rem; height: .6rem; border-radius: 50%; flex: none; }
+  #turnorder .to-name { min-width: 0; overflow: hidden; text-overflow: ellipsis;
+    white-space: nowrap; }
+  #turnorder .to-item.current { background: rgba(212, 160, 74, .16);
+    border-color: var(--gold); }
+  #turnorder .to-item.current .to-name { color: var(--gold); font-weight: 700; }
+  #turnorder .to-now { margin-left: auto; font-family: var(--mono); font-size: .62rem;
+    color: var(--gold); letter-spacing: .08em; flex: none; }
+  #turnorder .to-item.dead { opacity: .45; }
+  #turnorder .to-item.dead .to-name { text-decoration: line-through; }
   #legend { display: flex; flex-wrap: wrap; gap: .3rem .7rem; margin-top: .55rem; }
   #legend .item { display: flex; align-items: center; gap: .32rem; font-size: .74rem;
                   cursor: pointer; }
@@ -437,6 +464,7 @@
     <div class="card" id="map"><h2>Map</h2>
       <button id="zone-toggle" type="button" hidden>Zone index</button>
       <div class="turn" id="turn" hidden></div>
+      <div id="turnorder" hidden></div>
       <div id="map-body"><p class="empty">No encounter running.</p></div>
       <div id="legend"></div>
       <div id="terrain-legend"></div></div>
@@ -1103,6 +1131,30 @@ function fighterRow(f, up) {
   return row;
 }
 
+// The initiative order, top to bottom, with the current turn called out. The
+// roster already arrives in turn order; hidden foes are absent for players.
+function renderTurnOrder(enc, up) {
+  const box = document.getElementById("turnorder");
+  box.replaceChildren();
+  const roster = (enc && enc.roster) || [];
+  if (!roster.length) { box.hidden = true; return; }
+  box.hidden = false;
+  box.appendChild(el("div", "to-title", "Turn order"));
+  const list = el("ol", "to-list");
+  roster.forEach(f => {
+    const li = el("li", "to-item"
+      + (f.id === up ? " current" : "") + (f.dead ? " dead" : ""));
+    const dot = el("span", "to-dot");
+    dot.style.background = f.side === "pc" ? "#2563eb" : "#dc2626";
+    li.appendChild(dot);
+    li.appendChild(el("span", "to-name", f.name));
+    if (f.id === up) li.appendChild(el("span", "to-now", "◀ up now"));
+    if (f.id) { li.classList.add("click"); li.addEventListener("click", () => openEntity(f.id)); }
+    list.appendChild(li);
+  });
+  box.appendChild(list);
+}
+
 function renderLegend(enc) {
   const box = document.getElementById("legend");
   box.replaceChildren();
@@ -1197,7 +1249,12 @@ function renderState(s) {
   if (enc && s.map_svg) {
     turn.hidden = false;
     if (zoneToggle) zoneToggle.hidden = true;
-    turn.textContent = enc.name + " — round " + enc.round + " — up: " + enc.up;
+    const upEntry = (enc.roster || []).find(r => r.id === enc.up);
+    const upName = upEntry ? upEntry.name : (enc.up === "???" ? "A hidden enemy" : enc.up);
+    turn.replaceChildren(
+      el("span", "t-round", "Round " + enc.round),
+      el("span", "t-up", upName + " — up now"));
+    renderTurnOrder(enc, enc.up);
     mapBody.innerHTML = s.map_svg;
     renderLegend(enc);
     renderTerrainLegend(enc);
@@ -1213,6 +1270,7 @@ function renderState(s) {
     // between fights the map pane shows the world: fogged for players,
     // complete for the GM; visited nodes open their location cards
     turn.hidden = true;
+    document.getElementById("turnorder").hidden = true;
     mapBody.innerHTML = s.region_svg;
     for (const node of mapBody.querySelectorAll("[data-ref]"))
       node.addEventListener("click", e => { e.stopPropagation(); openEntity(node.dataset.ref); });
@@ -1223,6 +1281,7 @@ function renderState(s) {
     foes.hidden = true;
   } else {
     turn.hidden = true;
+    document.getElementById("turnorder").hidden = true;
     if (zoneToggle) zoneToggle.hidden = true;
     mapBody.replaceChildren(el("p", "empty", "No encounter running."));
     document.getElementById("legend").replaceChildren();
