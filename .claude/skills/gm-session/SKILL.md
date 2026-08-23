@@ -16,7 +16,8 @@ description: Use when starting or resuming a claude-ttrpg play session in a worl
    sheet in `state/party/`, `house-rules.md` if it exists (the operator's
    standing table rules — they bind you all session; see gm.md),
    `canon/voice.md` if it exists (the game's narration brief — reading level
-   and tone; narrate to it all session, see gm.md "Naming & clarity"), and the
+   and tone; it guides the operator's voice, and you hold the facts you hand
+   up to its reading level, see gm.md "Naming & clarity"), and the
    latest `sessions/session-*/summary.md` if one exists.
 3. **Session zero** — if `state/party.yaml` has no members, build the
    party before anything else with the `party-create` skill: it walks
@@ -38,15 +39,17 @@ description: Use when starting or resuming a claude-ttrpg play session in a worl
    both URLs — player lens at http://127.0.0.1:8787/ and GM lens at
    /gm. If the port is taken (`port_busy`), a viewer is already
    running from a previous session; just re-share the URLs.
-9. Recap the previous summary to the players in 3-5 sentences, state
-   the party's location and date, then open the scene. For a brand-new
-   world there is nothing to recap: open at the game's start location
-   with the first beat of `canon/adventure.md`. Post the opening to the
-   story log before you say it (see gm.md, "The table record"):
+9. Open the scene — you set the stage, the operator narrates it (see
+   gm.md, "The handoff" and "The table record"). Post the structure:
    `engine story scene --title <location> --subtitle "<in-world date>"`,
-   then the opening prose via `engine story narrate --text -` (heredoc),
    `engine story reveal --location <node-id>` for the place itself, and
-   `engine story reveal --npc <id>` for anyone on stage.
+   `engine story reveal --npc <id>` for anyone on stage. Then hand the
+   operator the opening as facts — where the party is, the date, a 1-2
+   line recap of last session (nothing to recap in a brand-new world),
+   and the opening situation from the first beat of `canon/adventure.md`
+   (who/what is here, the hook) — for them to narrate. When they narrate
+   back, post their prose with `engine story narrate --text -` (heredoc).
+   Do not write the opening prose yourself.
 10. After opening, give the operator a short **"what you can do right
     now"** list grounded in the current state — the NPCs and hooks
     present in this scene, quests on the board (`engine quest list`), the

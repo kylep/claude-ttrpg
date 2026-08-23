@@ -14,9 +14,10 @@ description: Use when combat starts in a claude-ttrpg session - runs the encount
    fenced code blocks from the story feed (an ASCII map shows hidden
    monsters and true positions), so a pasted map is GM-facing only.
    The encounter's start and end land in the story feed automatically;
-   your round narration does not — post each round's table-facing beat
-   with `engine story narrate --text -` before you give it to the
-   operator, exactly as in open play.
+   a round's prose does not — hand the operator each round's beat as facts
+   (who did what, hits and damage in words, who's up next), and post THEIR
+   narration back with `engine story narrate --text -`, exactly as in open
+   play. You never write the round's prose yourself.
 3. On each turn (order comes from `engine encounter next`):
    After `engine encounter start`, the first combatant in the order is
    already up — run their turn before the first `engine encounter next`.
@@ -24,12 +25,13 @@ description: Use when combat starts in a claude-ttrpg session - runs the encount
    combatant: `controls` on start, `up_control` each turn — `"monster"`,
    a player's name, or `"GM"`. **Use it to decide who acts:**
    - **PC controlled by a human** (`up_control` is that player's name):
-     ask that player for their action; execute it; narrate the JSON.
+     ask that player for their action; execute it; hand the operator the
+     result as facts to narrate.
    - **PC controlled by the GM / an AI companion** (`up_control` is `"GM"`)
      **or a monster**: *you* choose a tactically sensible action (attack in
      range; else `engine move` toward the nearest threat, then attack if
-     now in range), execute, narrate. Never ask the operator to take a turn
-     for a PC they don't play.
+     now in range), execute, and hand up the result as facts. Never ask the
+     operator to take a turn for a PC they don't play.
    - If `up_control` is `null` (a sheet made before played-by existed),
      fall back to the session's played-by line; a PC the human never
      claimed is yours to run. Retrofit it once with
@@ -44,7 +46,7 @@ description: Use when combat starts in a claude-ttrpg session - runs the encount
    - Spells: `engine cast --caster X --spell s [--target Y | --at X,Y]`.
      The engine resolves the spell's attack/save, damage, and effects —
      never grep the ruleset or read files to look up what a spell does;
-     cast it and narrate the JSON. (Unsure of a command? `engine <group>
+     cast it and hand up the result as facts. (Unsure of a command? `engine <group>
      --help`. The encounter commands are only `start`, `next`, `end`;
      read live combat state with `engine state get encounter` or
      `engine map render` — there is no `encounter status`.)
@@ -111,14 +113,15 @@ except that when the toggle is on and no `--roll` is given they return
 `{"manual_roll": {...}}` instead of resolving. No HP, slot, or death-save
 state changes on that call — ask the operator for the die it names (a
 d20, or two-keep-highest for advantage / keep-lowest for disadvantage),
-then re-run the identical command with `--roll <natural>` and narrate the
-result. Initiative and contests (grapple/escape/shove/hide) stay
+then re-run the identical command with `--roll <natural>` and hand up the
+result as facts. Initiative and contests (grapple/escape/shove/hide) stay
 auto-rolled even in manual mode; damage is always engine-rolled — only the
 d20 is operator-supplied. Full rules in the gm agent's "Manual dice".
 6. Never move a token, change HP, or decide a hit outside the engine.
-7. Narrate for the room, not the spreadsheet. Players may be reading the
+7. Give the room facts, not the spreadsheet. Players may be reading the
    player web lens, which hides monster HP behind words
    (healthy/wounded/bloodied) and hides hidden enemies entirely. Keep
-   exact enemy HP and hidden-enemy positions out of player-facing prose
-   — describe a wound, don't quote the number. Engine JSON and the GM
-   lens carry the real figures.
+   exact enemy HP and hidden-enemy positions out of anything player-facing
+   — the facts you hand up, and the operator's prose you post, give a wound
+   in words, never the number. Engine JSON and the GM lens carry the real
+   figures.
