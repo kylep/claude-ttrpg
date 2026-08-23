@@ -1020,7 +1020,7 @@ function renderEntry(e) {
     const beat = el("div", "beat new combat");
     const mid = el("span", "mid");
     mid.appendChild(document.createTextNode(
-      (e.event === "end" ? "⚔ " : "⚔ ") +
+      (e.event === "end" ? "🏁 " : "⚔ ") +
       (e.event === "end" ? e.name + " — the dust settles" : e.name)));
     if (e.html) {
       const spoils = el("span", "spoils");
@@ -1187,7 +1187,7 @@ function renderPurse(s) {
   const gold = s.party_gold, n = (s.stash || []).length;
   const personal = (s.party || []).reduce((t, pc) => t + (pc.gold || 0), 0);
   const pooled = (gold || 0) + personal;   // what the table has if everyone chips in
-  if (gold === undefined && !n && !personal) { purse.hidden = true; return; }
+  if (!gold && !n && !personal) { purse.hidden = true; return; }
   purse.replaceChildren();
   purse.appendChild(el("span", null, (gold || 0) + " gp party"));
   if (n) purse.appendChild(el("span", "stash", "  ·  " + n + " in stash"));

@@ -110,11 +110,11 @@ class _Handler(BaseHTTPRequestHandler):
             elif path == "/events":
                 self._events()
             elif path.startswith("/renders/"):
-                self._render_file(path.removeprefix("/renders/"))
+                self._render_file(unquote(path.removeprefix("/renders/")))
             elif path.startswith("/art/"):
-                self._content_image_file("art", path.removeprefix("/art/"))
+                self._content_image_file("art", unquote(path.removeprefix("/art/")))
             elif path.startswith("/maps/"):
-                self._content_image_file("maps", path.removeprefix("/maps/"))
+                self._content_image_file("maps", unquote(path.removeprefix("/maps/")))
             elif path == "/api/glossary":
                 src = export_mod.resolve_source(self.root, None)
                 self._json(bookexport.glossary_manifest(src))
