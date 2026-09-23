@@ -28,6 +28,12 @@ def test_hosted_player_cannot_choose_gm_lens_or_bypass_login(wroot, monkeypatch)
         reader = {"X-AP-User": "player", "X-AP-Role": "reader"}
         status, page = _req(port, "GET", "/apps/ttrpg/", headers=reader)
         assert status == 200 and b'VIEW_ROOT' in page
+        assert b'Start 4 turns' in page
+        status, raw = _req(port, "GET", "/apps/ttrpg/api/session", headers=reader)
+        assert status == 200 and json.loads(raw)["can_control"] is False
+        status, raw = _req(port, "GET", "/apps/ttrpg/api/session", headers={
+            "X-AP-User": "owner", "X-AP-Role": "admin"})
+        assert status == 200 and json.loads(raw)["can_control"] is True
         assert _req(port, "GET", "/apps/ttrpg/gm", headers=reader)[0] == 403
         status, raw = _req(port, "GET", "/apps/ttrpg/api/state?lens=gm", headers=reader)
         assert status == 200

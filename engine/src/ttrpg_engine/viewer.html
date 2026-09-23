@@ -46,6 +46,14 @@
     border-radius: 4px; padding: .2rem .7rem; cursor: pointer; letter-spacing: .04em;
   }
   header #gloss-btn:hover { background: var(--gold); color: var(--ink); }
+  #table-session { display: flex; align-items: center; gap: .5rem; margin-left: auto;
+    font-family: var(--mono); font-size: .72rem; }
+  #table-session[hidden] { display: none; }
+  #table-session a, #table-session button { color: var(--gold); background: transparent;
+    border: 1px solid var(--edge); border-radius: 4px; padding: .2rem .55rem;
+    font: inherit; text-decoration: none; cursor: pointer; }
+  #table-session a:hover, #table-session button:hover { border-color: var(--gold); }
+  #table-session [hidden] { display: none; }
 
   /* GM-only zone-index overlay toggle on the Map card */
   #zone-toggle { float: right; margin-top: -1.7rem; font-family: var(--mono);
@@ -451,6 +459,11 @@
   <span class="where" id="where"></span>
   <span class="pulse" id="pulse" title="live — updates automatically"></span>
   <span class="lens" id="lens"></span>
+  <div id="table-session" hidden>
+    <span id="table-status"></span>
+    <a id="table-relay" hidden>Watch in Relay ↗</a>
+    <button id="table-action" type="button" hidden></button>
+  </div>
   <button id="gloss-btn" type="button">Glossary</button>
 </header>
 
@@ -483,6 +496,47 @@
 
 <script>
 const VIEW_ROOT = location.pathname.startsWith("/apps/ttrpg") ? "/apps/ttrpg" : "";
+const tableSession = document.getElementById("table-session");
+const tableStatus = document.getElementById("table-status");
+const tableRelay = document.getElementById("table-relay");
+const tableAction = document.getElementById("table-action");
+let tableNextAction = null;
+async function refreshTableSession() {
+  if (!VIEW_ROOT) return;
+  try {
+    const r = await fetch(VIEW_ROOT + "/api/session");
+    if (!r.ok) return;
+    const s = await r.json();
+    tableSession.hidden = false;
+    tableStatus.textContent = "Table: " + (s.state || "idle")
+      + (s.player_turns ? ` · ${s.player_turns}/${s.max_player_turns} player turns` : "");
+    tableRelay.hidden = !s.channel_id;
+    if (s.channel_id) tableRelay.href = "/relay?channel=" + encodeURIComponent(s.channel_id);
+    tableNextAction = !s.can_control ? null
+      : (["active", "waiting"].includes(s.state) ? "pause"
+         : s.state === "paused" ? "resume" : "start");
+    tableAction.hidden = !tableNextAction;
+    tableAction.textContent = tableNextAction === "start" ? "Start 4 turns"
+      : tableNextAction === "pause" ? "Pause" : "Resume";
+  } catch (e) { /* the live view can keep working through an API restart */ }
+}
+tableAction.addEventListener("click", async () => {
+  if (!tableNextAction) return;
+  tableAction.disabled = true;
+  const action = tableNextAction;
+  try {
+    const r = await fetch(VIEW_ROOT + "/api/session", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(action === "start"
+        ? { action, max_player_turns: 4, max_minutes: 25 } : { action }),
+    });
+    if (!r.ok) tableStatus.textContent = "Table: " + (await r.json()).error;
+    else await refreshTableSession();
+  } catch (e) { tableStatus.textContent = "Table: connection lost"; }
+  finally { tableAction.disabled = false; }
+});
+refreshTableSession();
+setInterval(refreshTableSession, 5000);
 const GM = location.pathname.replace(/\/+$/, "") === VIEW_ROOT + "/gm";
 const LENS = GM ? "gm" : "player";
 const lensEl = document.getElementById("lens");

@@ -89,7 +89,8 @@ class _HostedHandler(serve._Handler):
             if not self.headers.get("X-AP-User", "").strip():
                 self._json({"error": "unauthorized"}, 401)
             else:
-                self._json(read_control(self.root))
+                self._json({**read_control(self.root),
+                            "can_control": self.headers.get("X-AP-Role") == "admin"})
             return
         if self.path == "/_internal/view":
             if not self._caller():
