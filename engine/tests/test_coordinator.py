@@ -10,6 +10,17 @@ def test_session_starts_with_active_pc(wroot, monkeypatch):
             "ttrpg-squakee", "ttrpg-spike", "ttrpg-meowcicles"]
 
 
+def test_monster_keeps_gm_on_floor_until_pc_is_up(wroot, monkeypatch):
+    monkeypatch.setattr(co, "_current_actor", lambda root: "giant_rat-3")
+    control = {"gm": "ttrpg-gm", "players": ["ttrpg-squakee", "ttrpg-spike"],
+               "step": 4, "last_actor": "gm", "player_turns": 1}
+    assert co._next_target(control, wroot) == "ttrpg-gm"
+    monkeypatch.setattr(co, "_current_actor", lambda root: "pc-spike")
+    assert co._next_target(control, wroot) == "ttrpg-spike"
+    control["last_actor"] = "player"
+    assert co._next_target(control, wroot) == "ttrpg-gm"
+
+
 def test_coordinator_calls_one_turn_at_a_time_and_stops_on_quota(wroot, monkeypatch):
     monkeypatch.setenv("TTRPG_GM_AGENT", "pilot-gm")
     monkeypatch.setenv("TTRPG_PLAYERS", "pilot-a,pilot-b")
@@ -48,6 +59,7 @@ def test_coordinator_calls_one_turn_at_a_time_and_stops_on_quota(wroot, monkeypa
     co.write_control(wroot, waiting)
     c.tick()
     assert co.read_control(wroot)["step"] == 1
+    assert co.read_control(wroot)["last_actor"] == "gm"
     c.tick()
     assert len(sent) == 2 and sent[1].startswith("@pilot-a")
     used["value"] = 0.91

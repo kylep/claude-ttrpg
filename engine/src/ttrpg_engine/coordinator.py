@@ -83,17 +83,32 @@ def _start_with_active_pc(root: Path, players: list[str]) -> list[str]:
     The pilot's player agent names mirror their PC ids. Outside combat (or
     with a different cast naming scheme) the configured order remains valid.
     """
-    from ttrpg_engine import viewer_data, worldfs
-    state = viewer_data.state_snapshot(root, worldfs.load_game_for(root), "player")
-    up = (state.get("encounter") or {}).get("up")
+    up = _current_actor(root)
     for index, agent in enumerate(players):
         if up == "pc-" + agent.removeprefix("ttrpg-"):
             return players[index:] + players[:index]
     return players
 
 
-def _target(step: int, gm: str, players: list[str]) -> str:
-    return gm if step % 2 == 0 else players[((step - 1) // 2) % len(players)]
+def _current_actor(root: Path) -> str | None:
+    from ttrpg_engine import viewer_data, worldfs
+    state = viewer_data.state_snapshot(root, worldfs.load_game_for(root), "player")
+    return (state.get("encounter") or {}).get("up")
+
+
+def _next_target(control: dict, root: Path) -> str:
+    gm, players = control["gm"], control["players"]
+    if control["step"] == 0 or control.get("last_actor") == "player":
+        return gm
+    up = _current_actor(root)
+    if up:
+        for agent in players:
+            if up == "pc-" + agent.removeprefix("ttrpg-"):
+                return agent
+        # The engine has the floor for a monster/NPC. Give that turn to the GM
+        # instead of asking a player to act out of initiative.
+        return gm
+    return players[control["player_turns"] % len(players)]
 
 
 def _invitation(step: int, target: str, gm: str, players: list[str]) -> str:
@@ -102,8 +117,10 @@ def _invitation(step: int, target: str, gm: str, players: list[str]) -> str:
                "check the engine state, tell the table what is happening, and "
                "leave a clear choice to the party. Do not decide for any PC.")
     elif target == gm:
-        ask = ("Resolve the preceding player's intent with the engine. State the "
-               "outcome and what changes. Give the next player room to act. "
+        ask = ("Read the encounter's active actor. Resolve the preceding player's "
+               "intent if pending; if a monster is up, play its turn. Use the "
+               "engine and advance initiative until a PC has the floor. State "
+               "the actual outcome and next active PC. "
                "If the game/UI/tool feels wrong, file a Ticket while it is fresh.")
     else:
         ask = ("Read the current player view with the ttrpg tool, then make one "
@@ -134,6 +151,7 @@ class Coordinator:
             cursor = latest[0]["id"] if latest else None
             control = {"state": "active", "channel_id": channel_id,
                        "gm": gm, "players": players, "step": 0,
+                       "player_turns": 0, "last_actor": None,
                        "max_player_turns": max_player_turns,
                        "deadline": time.time() + max_minutes * 60,
                        "cursor": cursor, "awaiting": None}
@@ -175,13 +193,19 @@ class Coordinator:
                 write_control(self.root, c)
                 return
             if c["state"] == "active":
-                if c["step"] > c["max_player_turns"] * 2:
+                if (c["player_turns"] >= c["max_player_turns"]
+                        and c.get("last_actor") == "gm"):
                     c["state"] = "complete"
                     write_control(self.root, c)
                     _api("POST", f"/api/relay/channels/{c['channel_id']}/messages",
                          {"body": "Session complete. The table is paused for review and ticket triage."})
                     return
-                target = _target(c["step"], c["gm"], c["players"])
+                if c["step"] >= c["max_player_turns"] * 4 + 8:
+                    c["state"] = "paused"
+                    c["reason"] = "too many GM turns without reaching the next PC"
+                    write_control(self.root, c)
+                    return
+                target = _next_target(c, self.root)
                 # Mark the invitation as in-flight BEFORE posting it. An
                 # ambiguous timeout stops here for inspection; no double wake.
                 c["state"] = "posting"
@@ -209,6 +233,9 @@ class Coordinator:
                         c["state"] = "paused"
                         c["reason"] = f"{c['awaiting']} run {run['state']}"
                     else:
+                        c["last_actor"] = ("gm" if c["awaiting"] == c["gm"] else "player")
+                        if c["last_actor"] == "player":
+                            c["player_turns"] += 1
                         c["step"] += 1
                         c["awaiting"] = None
                         c["candidate_run_id"] = None
