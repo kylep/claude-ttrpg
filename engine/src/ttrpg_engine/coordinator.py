@@ -127,6 +127,8 @@ def _next_target(control: dict, root: Path) -> str:
         # The engine has the floor for a monster/NPC. Give that turn to the GM
         # instead of asking a player to act out of initiative.
         return gm
+    if control.get("next_player"):
+        return control["next_player"]
     return players[control["player_turns"] % len(players)]
 
 
@@ -162,11 +164,42 @@ class Coordinator:
             control = {"state": "active", "channel_id": channel_id,
                        "gm": gm, "players": players, "step": 0,
                        "player_turns": 0, "last_actor": None,
+                       "last_player": None, "next_player": None,
                        "max_player_turns": max_player_turns,
                        "deadline": time.time() + max_minutes * 60,
                        "cursor": cursor, "awaiting": None}
             write_control(self.root, control)
         return control
+
+    def set_floor(self, *, player: str, retry: bool, run_id: str) -> dict:
+        """Let the GM choose the next exploration voice or return an unresolved
+        action to its owner. The run ID makes a repeated tool call harmless.
+        """
+        with self.lock:
+            c = read_control(self.root)
+            if c.get("state") != "waiting" or c.get("awaiting") != c.get("gm"):
+                raise ValueError("the GM does not currently have the floor")
+            if player not in c["players"]:
+                raise ValueError("player is not at this table")
+            if retry and c.get("last_player") != player:
+                raise ValueError("only the last player's unresolved action can be retried")
+            up = _current_actor(self.root)
+            if up and up != "pc-" + player.removeprefix("ttrpg-"):
+                raise ValueError(f"combat turn belongs to {up}")
+            previous = c.get("floor_set_by")
+            if previous == run_id:
+                if c.get("next_player") != player or c.get("floor_retry") != retry:
+                    raise ValueError("floor choice already committed for this run")
+            else:
+                c["next_player"] = player
+                c["floor_retry"] = retry
+                c["floor_set_by"] = run_id
+                if retry:
+                    # An invalid declaration was not a completed player choice.
+                    c["player_turns"] = max(0, c["player_turns"] - 1)
+                write_control(self.root, c)
+            return {"next_player": player, "retry": retry,
+                    "player_turns": c["player_turns"]}
 
     def pause(self) -> dict:
         with self.lock:
@@ -237,6 +270,9 @@ class Coordinator:
                               {"body": _invitation(c["step"], target, c["gm"], c["players"])})
                 c["invite_id"] = result["id"]
                 c["cursor"] = result["id"]
+                if target != c["gm"]:
+                    c["next_player"] = None
+                    c["floor_retry"] = False
                 c["state"] = "waiting"
                 write_control(self.root, c)
                 return
@@ -276,6 +312,7 @@ class Coordinator:
                     else:
                         c["last_actor"] = ("gm" if c["awaiting"] == c["gm"] else "player")
                         if c["last_actor"] == "player":
+                            c["last_player"] = c["awaiting"]
                             c["player_turns"] += 1
                         c["step"] += 1
                         c["awaiting"] = None

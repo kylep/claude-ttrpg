@@ -82,6 +82,30 @@ def _safe_argv(argv: object) -> list[str] | None:
     return argv
 
 
+def _player_action_hints(state: dict, caller: str) -> dict | None:
+    """Give an agent its visible grid distances without claiming a legal path.
+
+    The player snapshot has already removed hidden foes. Terrain, cover and
+    pathfinding still belong to the engine/GM when an action is resolved.
+    """
+    enc = state.get("encounter") or {}
+    actor = "pc-" + caller.removeprefix("ttrpg-")
+    positions = enc.get("positions") or {}
+    origin = positions.get(actor)
+    if not origin:
+        return None
+    targets = []
+    for row in enc.get("roster", []):
+        target = positions.get(row["id"])
+        if row.get("side") != "monster" or row.get("dead") or not target:
+            continue
+        distance = max(abs(origin[0] - target[0]), abs(origin[1] - target[1]))
+        targets.append({"id": row["id"], "name": row["name"],
+                        "grid_distance": distance, "melee_in_range": distance <= 1})
+    return {"actor": actor, "position": origin, "targets": targets,
+            "note": "Grid distance only; terrain and line of sight may still block an action."}
+
+
 class _HostedHandler(serve._Handler):
     command_lock = threading.Lock()
     coordinator: Coordinator
@@ -111,13 +135,15 @@ class _HostedHandler(serve._Handler):
                             "can_control": self.headers.get("X-AP-Role") == "admin"})
             return
         if self.path == "/_internal/view":
-            if not self._caller():
+            caller = self._caller()
+            if not caller:
                 self._json({"error": "unauthorized"}, 401)
                 return
             from ttrpg_engine import story_log, viewer_data
             state = viewer_data.state_snapshot(self.root, self.game, "player")
             entries, _ = story_log.read(self.root, 0, lens="player")
-            self._json({"state": state, "story": entries[-12:]})
+            self._json({"state": state, "story": entries[-12:],
+                        "action_hints": _player_action_hints(state, caller)})
             return
         if self.path == "/_internal/gm-view":
             if self._caller() != os.environ.get("TTRPG_GM_AGENT", "ttrpg-gm"):
@@ -187,6 +213,28 @@ class _HostedHandler(serve._Handler):
                 else:
                     raise ValueError("action must be start, pause, resume or stop")
             except (ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
+                self._json({"error": str(exc)}, 400)
+            else:
+                self._json(result)
+            return
+        if self.path == "/_internal/floor":
+            caller = self._caller()
+            run_id = self.headers.get("X-Tool-Run-ID", "")
+            if (caller != os.environ.get("TTRPG_GM_AGENT", "ttrpg-gm")
+                    or not re.fullmatch(r"[0-9a-f]{32}", run_id)):
+                self._json({"error": "GM run identity required"}, 403)
+                return
+            try:
+                size = int(self.headers.get("Content-Length", "0"))
+                if not 0 < size <= 256:
+                    raise ValueError("invalid floor request")
+                body = json.loads(self.rfile.read(size))
+                player, retry = body.get("player"), body.get("retry", False)
+                if not isinstance(player, str) or type(retry) is not bool:
+                    raise ValueError("player and boolean retry required")
+                result = self.coordinator.set_floor(player=player, retry=retry,
+                                                    run_id=run_id)
+            except (ValueError, TypeError, json.JSONDecodeError) as exc:
                 self._json({"error": str(exc)}, 400)
             else:
                 self._json(result)

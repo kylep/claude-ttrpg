@@ -5,6 +5,7 @@ import threading
 from types import SimpleNamespace
 
 from ttrpg_engine import host
+from ttrpg_engine import coordinator as co
 
 
 def _req(port, method, path, *, headers=None, body=None):
@@ -118,3 +119,43 @@ def test_player_roll_is_owned_once_per_run_and_gm_can_verify(wroot, monkeypatch)
     finally:
         server.shutdown()
         server.server_close()
+
+
+def test_only_gm_can_choose_or_retry_the_next_player(wroot, monkeypatch):
+    monkeypatch.setenv("AP_API_TOKEN", "test-app-key")
+    monkeypatch.setenv("TTRPG_GM_AGENT", "ttrpg-gm")
+    co.write_control(wroot, {"state": "waiting", "gm": "ttrpg-gm",
+                                "players": ["ttrpg-meowcicles", "ttrpg-spike"],
+                                "awaiting": "ttrpg-gm", "last_player": "ttrpg-spike",
+                                "player_turns": 2})
+    server = host.run(wroot, 0)
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    port = server.server_address[1]
+    body = {"player": "ttrpg-spike", "retry": True}
+    base = {"Authorization": "Bearer test-app-key", "Content-Type": "application/json",
+            "X-Tool-Run-ID": "a" * 32}
+    try:
+        assert _req(port, "POST", "/_internal/floor", headers={
+            **base, "X-Tool-Caller-Agent": "ttrpg-meowcicles"}, body=body)[0] == 403
+        gm = {**base, "X-Tool-Caller-Agent": "ttrpg-gm"}
+        status, raw = _req(port, "POST", "/_internal/floor", headers=gm, body=body)
+        assert status == 200 and json.loads(raw)["player_turns"] == 1
+        assert _req(port, "POST", "/_internal/floor", headers=gm, body=body)[0] == 200
+        assert co.read_control(wroot)["player_turns"] == 1
+    finally:
+        server.shutdown()
+        server.server_close()
+
+
+def test_player_action_hints_use_only_visible_grid_positions():
+    state = {"encounter": {"positions": {"pc-fluffy": [3, 4],
+                                         "rat-near": [4, 4], "rat-far": [7, 4]},
+                           "roster": [{"id": "rat-near", "name": "Near rat", "side": "monster"},
+                                      {"id": "rat-far", "name": "Far rat", "side": "monster"},
+                                      {"id": "hidden-rat", "name": "Hidden rat", "side": "monster"}]}}
+    hints = host._player_action_hints(state, "ttrpg-fluffy")
+    assert hints["actor"] == "pc-fluffy"
+    assert [(t["id"], t["grid_distance"], t["melee_in_range"])
+            for t in hints["targets"]] == [
+                ("rat-near", 1, True), ("rat-far", 4, False)]

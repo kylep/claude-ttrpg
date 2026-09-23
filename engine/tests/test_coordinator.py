@@ -28,6 +28,36 @@ def test_table_invites_are_short_and_name_the_actor():
     assert invite == "@ttrpg-fluffy 🎭 Your move, Fluffy."
 
 
+def test_gm_returns_unresolved_exploration_action_to_same_player(wroot, monkeypatch):
+    monkeypatch.setattr(co, "_current_actor", lambda root: None)
+    c = co.Coordinator(wroot)
+    co.write_control(wroot, {"state": "waiting", "gm": "ttrpg-gm",
+                                "players": ["ttrpg-meowcicles", "ttrpg-spike"],
+                                "awaiting": "ttrpg-gm", "last_actor": "player",
+                                "last_player": "ttrpg-spike", "player_turns": 2,
+                                "step": 4})
+    first = c.set_floor(player="ttrpg-spike", retry=True, run_id="a" * 32)
+    again = c.set_floor(player="ttrpg-spike", retry=True, run_id="a" * 32)
+    assert first == again == {"next_player": "ttrpg-spike", "retry": True,
+                               "player_turns": 1}
+    control = co.read_control(wroot)
+    control["last_actor"] = "gm"
+    assert co._next_target(control, wroot) == "ttrpg-spike"
+
+
+def test_gm_cannot_reassign_another_players_unresolved_turn(wroot, monkeypatch):
+    monkeypatch.setattr(co, "_current_actor", lambda root: None)
+    c = co.Coordinator(wroot)
+    co.write_control(wroot, {"state": "waiting", "gm": "ttrpg-gm",
+                                "players": ["ttrpg-meowcicles", "ttrpg-spike"],
+                                "awaiting": "ttrpg-gm", "last_player": "ttrpg-spike",
+                                "player_turns": 2})
+    import pytest
+    with pytest.raises(ValueError, match="last player"):
+        c.set_floor(player="ttrpg-meowcicles", retry=True, run_id="a" * 32)
+    assert co.read_control(wroot)["player_turns"] == 2
+
+
 def test_relay_budget_refusal_pauses_without_waiting_for_a_run(wroot, monkeypatch):
     monkeypatch.setattr(co, "_quota_ok", lambda: True)
     monkeypatch.setattr(co, "_messages", lambda *args: [{
