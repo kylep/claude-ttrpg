@@ -51,6 +51,22 @@ def test_relay_budget_refusal_pauses_without_waiting_for_a_run(wroot, monkeypatc
     assert c.stop()["state"] == "complete"
 
 
+def test_budget_notice_consumed_before_rollout_is_recovered(wroot, monkeypatch):
+    monkeypatch.setattr(co, "_quota_ok", lambda: True)
+    notice = {"id": "budget-notice", "author": "system:relay",
+              "body": "⏸️ paused: this room has used its hourly agent budget (30/hour)"}
+    monkeypatch.setattr(co, "_messages",
+                        lambda channel, after: [] if after else [notice])
+    co.write_control(wroot, {"state": "waiting", "channel_id": "room", "gm": "ttrpg-gm",
+                                "players": ["ttrpg-fluffy"], "step": 1,
+                                "player_turns": 0, "max_player_turns": 4,
+                                "last_actor": "gm", "deadline": time.time() + 600,
+                                "cursor": "budget-notice", "invite_id": "invitation",
+                                "awaiting": "ttrpg-fluffy"})
+    co.Coordinator(wroot).tick()
+    assert co.read_control(wroot)["state"] == "paused"
+
+
 def test_coordinator_calls_one_turn_at_a_time_and_stops_on_quota(wroot, monkeypatch):
     monkeypatch.setenv("TTRPG_GM_AGENT", "pilot-gm")
     monkeypatch.setenv("TTRPG_PLAYERS", "pilot-a,pilot-b")

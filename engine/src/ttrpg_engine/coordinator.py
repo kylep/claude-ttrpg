@@ -42,6 +42,19 @@ def _pause(control: dict, reason: str) -> None:
     control["reason"] = reason
 
 
+def _is_budget_notice(message: dict) -> bool:
+    return (message.get("author") == "system:relay"
+            and (message.get("body") or "").startswith(
+                "⏸️ paused: this room has used its hourly agent budget"))
+
+
+def _pause_for_budget(control: dict) -> None:
+    _pause(control, "Relay channel hourly agent budget exhausted")
+    control["awaiting"] = None
+    control["candidate_run_id"] = None
+    control["invite_id"] = None
+
+
 def _api(method: str, path: str, body: dict | None = None):
     base = os.environ.get("AP_API_URL", "http://agent-platform-api:8000").rstrip("/")
     token = os.environ["AP_API_TOKEN"]
@@ -228,17 +241,26 @@ class Coordinator:
                 write_control(self.root, c)
                 return
             messages = _messages(c["channel_id"], c.get("cursor"))
+            # A previous coordinator version may already have advanced past
+            # the refusal notice before a rollout. Inspect that cursor once
+            # on resume, then remember it so waiting does not poll history on
+            # every tick. The normal path below sees a fresh notice directly.
+            if (not c.get("candidate_run_id") and c.get("cursor") != c.get("invite_id")
+                    and c.get("checked_cursor") != c.get("cursor")):
+                c["checked_cursor"] = c["cursor"]
+                previous = next((m for m in _messages(c["channel_id"], None)
+                                 if m["id"] == c["cursor"]), None)
+                if previous and _is_budget_notice(previous):
+                    _pause_for_budget(c)
+                    write_control(self.root, c)
+                    return
             for msg in messages:
                 c["cursor"] = msg["id"]
-                if (msg.get("author") == "system:relay"
-                        and (msg.get("body") or "").startswith("⏸️ paused: this room has used its hourly agent budget")):
+                if _is_budget_notice(msg):
                     # The router refused this invitation, so no run can ever
                     # answer it. Re-issue a new mention only AFTER the hour's
                     # budget has reset and an operator resumes the session.
-                    _pause(c, "Relay channel hourly agent budget exhausted")
-                    c["awaiting"] = None
-                    c["candidate_run_id"] = None
-                    c["invite_id"] = None
+                    _pause_for_budget(c)
                     write_control(self.root, c)
                     return
                 if msg.get("author") == "agent:" + c["awaiting"] and msg.get("run_id"):
