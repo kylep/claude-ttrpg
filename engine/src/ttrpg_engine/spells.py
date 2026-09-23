@@ -65,6 +65,20 @@ def cast(root: Path, g: dict, caster: str, spell_name: str, target: str | None,
     castmod = attr_mod(sheet["attributes"][cast_attr])
     level = spell["level"]
 
+    # Utility magic can affect a described object rather than a combatant.
+    # Record the cast, then leave the physical outcome to the GM; the engine
+    # cannot infer whether a particular door is movable or within reach.
+    if spell.get("narrative_target"):
+        if not target or not target.strip():
+            raise EngineError("needs_target", f"{spell_name} needs a described target")
+        _spend_slot(root, sheet, level)
+        result = {"caster": caster, "spell": spell_name, "target": target.strip(),
+                  "slot_level": level or None, "requires_adjudication": True}
+        _reveal_caster(root, enc, caster, sheet, result)
+        timeline.append_event(root, type_="cast", actors=[caster],
+                              summary=f"{caster} casts {spell_name} at {target.strip()}")
+        return result
+
     if area:
         if enc is None:
             raise EngineError("no_encounter", "area spells require an active encounter")

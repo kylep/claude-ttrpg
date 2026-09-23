@@ -54,6 +54,7 @@ arc_mage_hand:
   action: action
   range: 6
   resolve: auto
+  narrative_target: true
   description: >
     A spectral, glowing hand blinks into being at the caster's command,
     ready to tug a lever, flip a page, or fetch a dropped coin.

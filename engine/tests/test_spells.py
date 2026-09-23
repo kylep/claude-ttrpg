@@ -156,3 +156,19 @@ def test_out_of_range_cast_does_not_burn_slot(wroot):
     assert json.loads(res.stdout)["error"]["code"] == "out_of_range"
     sheet = worldfs.read_yaml(wroot / "state" / "party" / "pc-mira.yaml")
     assert sheet["spell_slots"][1]["current"] == 2   # slot NOT burned
+
+
+def test_narrative_spell_can_target_a_described_object(wroot):
+    make_pc(**CLERIC)
+    g = worldfs.load_game_for(wroot)
+    g["spells"]["mage_hand"] = {"level": 0, "range": 6, "resolve": "auto",
+                                  "narrative_target": True}
+    sheet = worldfs.read_yaml(wroot / "state" / "party" / "pc-mira.yaml")
+    sheet["spells_known"].append("mage_hand")
+    worldfs.write_yaml(wroot / "state" / "party" / "pc-mira.yaml", sheet)
+
+    result = spells.cast(wroot, g, "pc-mira", "mage_hand", "thin stone door",
+                         roll_fn=fixed(10), rng=random.Random(1))
+    assert result["target"] == "thin stone door"
+    assert result["requires_adjudication"] is True
+    assert "damage" not in result
