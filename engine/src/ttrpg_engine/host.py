@@ -163,8 +163,10 @@ class _HostedHandler(serve._Handler):
                     result = self.coordinator.pause()
                 elif action == "resume":
                     result = self.coordinator.resume()
+                elif action == "stop":
+                    result = self.coordinator.stop()
                 else:
-                    raise ValueError("action must be start, pause or resume")
+                    raise ValueError("action must be start, pause, resume or stop")
             except (ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
                 self._json({"error": str(exc)}, 400)
             else:

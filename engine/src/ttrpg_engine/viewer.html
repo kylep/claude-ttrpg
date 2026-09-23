@@ -463,6 +463,7 @@
     <span id="table-status"></span>
     <a id="table-relay" hidden>Watch in Relay ↗</a>
     <button id="table-action" type="button" hidden></button>
+    <button id="table-stop" type="button" hidden>End session</button>
   </div>
   <button id="gloss-btn" type="button">Glossary</button>
 </header>
@@ -500,6 +501,7 @@ const tableSession = document.getElementById("table-session");
 const tableStatus = document.getElementById("table-status");
 const tableRelay = document.getElementById("table-relay");
 const tableAction = document.getElementById("table-action");
+const tableStop = document.getElementById("table-stop");
 let tableNextAction = null;
 async function refreshTableSession() {
   if (!VIEW_ROOT) return;
@@ -509,13 +511,15 @@ async function refreshTableSession() {
     const s = await r.json();
     tableSession.hidden = false;
     tableStatus.textContent = "Table: " + (s.state || "idle")
-      + (s.player_turns ? ` · ${s.player_turns}/${s.max_player_turns} player turns` : "");
+      + (s.player_turns ? ` · ${s.player_turns}/${s.max_player_turns} player turns` : "")
+      + (s.state === "paused" && s.reason ? ` · ${s.reason}` : "");
     tableRelay.hidden = !s.channel_id;
     if (s.channel_id) tableRelay.href = "/relay?channel=" + encodeURIComponent(s.channel_id);
     tableNextAction = !s.can_control ? null
       : (["active", "waiting"].includes(s.state) ? "pause"
          : s.state === "paused" ? "resume" : "start");
     tableAction.hidden = !tableNextAction;
+    tableStop.hidden = !s.can_control || s.state !== "paused";
     tableAction.textContent = tableNextAction === "start" ? "Start 4 turns"
       : tableNextAction === "pause" ? "Pause" : "Resume";
   } catch (e) { /* the live view can keep working through an API restart */ }
@@ -534,6 +538,18 @@ tableAction.addEventListener("click", async () => {
     else await refreshTableSession();
   } catch (e) { tableStatus.textContent = "Table: connection lost"; }
   finally { tableAction.disabled = false; }
+});
+tableStop.addEventListener("click", async () => {
+  tableStop.disabled = true;
+  try {
+    const r = await fetch(VIEW_ROOT + "/api/session", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "stop" }),
+    });
+    if (!r.ok) tableStatus.textContent = "Table: " + (await r.json()).error;
+    else await refreshTableSession();
+  } catch (e) { tableStatus.textContent = "Table: connection lost"; }
+  finally { tableStop.disabled = false; }
 });
 refreshTableSession();
 setInterval(refreshTableSession, 5000);

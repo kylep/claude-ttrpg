@@ -36,6 +36,12 @@ def write_control(root: Path, value: dict) -> None:
     tmp.replace(path)
 
 
+def _pause(control: dict, reason: str) -> None:
+    control["remaining_seconds"] = max(0, control["deadline"] - time.time())
+    control["state"] = "paused"
+    control["reason"] = reason
+
+
 def _api(method: str, path: str, body: dict | None = None):
     base = os.environ.get("AP_API_URL", "http://agent-platform-api:8000").rstrip("/")
     token = os.environ["AP_API_TOKEN"]
@@ -154,7 +160,7 @@ class Coordinator:
             control = read_control(self.root)
             if control.get("state") not in {"active", "waiting"}:
                 raise ValueError("no active session")
-            control["state"] = "paused"
+            _pause(control, "paused by operator")
             write_control(self.root, control)
             return control
 
@@ -165,7 +171,22 @@ class Coordinator:
                 raise ValueError("session is not paused")
             if not _quota_ok():
                 raise ValueError("Codex weekly quota is at/above 90% used or unavailable")
+            control["deadline"] = time.time() + control.pop("remaining_seconds", 300)
+            control.pop("reason", None)
             control["state"] = "waiting" if control.get("awaiting") else "active"
+            write_control(self.root, control)
+            return control
+
+    def stop(self) -> dict:
+        """End a paused run without rolling back any of its world changes."""
+        with self.lock:
+            control = read_control(self.root)
+            if control.get("state") != "paused":
+                raise ValueError("pause the session before ending it")
+            control["state"] = "complete"
+            control["reason"] = "ended by operator"
+            control["awaiting"] = None
+            control.pop("remaining_seconds", None)
             write_control(self.root, control)
             return control
 
@@ -175,11 +196,9 @@ class Coordinator:
             if c.get("state") not in {"active", "waiting"}:
                 return
             if time.time() > c["deadline"]:
-                c["state"] = "paused"
-                c["reason"] = "session time limit"
+                _pause(c, "session time limit")
             elif not _quota_ok():
-                c["state"] = "paused"
-                c["reason"] = "Codex weekly allowance below 10% free or unavailable"
+                _pause(c, "Codex weekly allowance below 10% free or unavailable")
             if c["state"] == "paused":
                 write_control(self.root, c)
                 return
@@ -192,8 +211,7 @@ class Coordinator:
                          {"body": "⏸️ The table pauses here. The next chapter is ready when we are."})
                     return
                 if c["step"] >= c["max_player_turns"] * 4 + 8:
-                    c["state"] = "paused"
-                    c["reason"] = "too many GM turns without reaching the next PC"
+                    _pause(c, "too many GM turns without reaching the next PC")
                     write_control(self.root, c)
                     return
                 target = _next_target(c, self.root)
@@ -212,6 +230,17 @@ class Coordinator:
             messages = _messages(c["channel_id"], c.get("cursor"))
             for msg in messages:
                 c["cursor"] = msg["id"]
+                if (msg.get("author") == "system:relay"
+                        and (msg.get("body") or "").startswith("⏸️ paused: this room has used its hourly agent budget")):
+                    # The router refused this invitation, so no run can ever
+                    # answer it. Re-issue a new mention only AFTER the hour's
+                    # budget has reset and an operator resumes the session.
+                    _pause(c, "Relay channel hourly agent budget exhausted")
+                    c["awaiting"] = None
+                    c["candidate_run_id"] = None
+                    c["invite_id"] = None
+                    write_control(self.root, c)
+                    return
                 if msg.get("author") == "agent:" + c["awaiting"] and msg.get("run_id"):
                     c["candidate_run_id"] = msg["run_id"]
                     c["candidate_at"] = time.time()
@@ -221,8 +250,7 @@ class Coordinator:
                 run = _api("GET", "/api/runs/" + c["candidate_run_id"])
                 if run.get("state") in {"succeeded", "failed", "cancelled", "rejected"}:
                     if run["state"] != "succeeded":
-                        c["state"] = "paused"
-                        c["reason"] = f"{c['awaiting']} run {run['state']}"
+                        _pause(c, f"{c['awaiting']} run {run['state']}")
                     else:
                         c["last_actor"] = ("gm" if c["awaiting"] == c["gm"] else "player")
                         if c["last_actor"] == "player":

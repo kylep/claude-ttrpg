@@ -1,3 +1,5 @@
+import time
+
 from ttrpg_engine import coordinator as co
 
 
@@ -24,6 +26,29 @@ def test_monster_keeps_gm_on_floor_until_pc_is_up(wroot, monkeypatch):
 def test_table_invites_are_short_and_name_the_actor():
     invite = co._invitation(3, "ttrpg-fluffy", "ttrpg-gm", ["ttrpg-fluffy"])
     assert invite == "@ttrpg-fluffy 🎭 Your move, Fluffy."
+
+
+def test_relay_budget_refusal_pauses_without_waiting_for_a_run(wroot, monkeypatch):
+    monkeypatch.setattr(co, "_quota_ok", lambda: True)
+    monkeypatch.setattr(co, "_messages", lambda *args: [{
+        "id": "budget-notice", "author": "system:relay",
+        "body": "⏸️ paused: this room has used its hourly agent budget (30/hour); try again later"}])
+    c = co.Coordinator(wroot)
+    co.write_control(wroot, {"state": "waiting", "channel_id": "room", "gm": "ttrpg-gm",
+                                "players": ["ttrpg-fluffy"], "step": 1,
+                                "player_turns": 0, "max_player_turns": 4,
+                                "last_actor": "gm", "deadline": time.time() + 600,
+                                "cursor": "invitation", "awaiting": "ttrpg-fluffy"})
+    c.tick()
+    paused = co.read_control(wroot)
+    assert paused["state"] == "paused"
+    assert paused["awaiting"] is None
+    assert 0 < paused["remaining_seconds"] <= 600
+    resumed = c.resume()
+    assert resumed["state"] == "active"
+    assert resumed["deadline"] > time.time() + 590
+    c.pause()
+    assert c.stop()["state"] == "complete"
 
 
 def test_coordinator_calls_one_turn_at_a_time_and_stops_on_quota(wroot, monkeypatch):
