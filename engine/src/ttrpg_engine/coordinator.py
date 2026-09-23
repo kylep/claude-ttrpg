@@ -113,21 +113,12 @@ def _next_target(control: dict, root: Path) -> str:
 
 def _invitation(step: int, target: str, gm: str, players: list[str]) -> str:
     if step == 0:
-        ask = ("Open a short scene from the current world. Read the player view, "
-               "check the engine state, tell the table what is happening, and "
-               "leave a clear choice to the party. Do not decide for any PC.")
+        ask = "🎲 Set the scene and give the party its first choice."
     elif target == gm:
-        ask = ("Read the encounter's active actor. Resolve the preceding player's "
-               "intent if pending; if a monster is up, play its turn. Use the "
-               "engine and advance initiative until a PC has the floor. State "
-               "the actual outcome and next active PC. "
-               "If the game/UI/tool feels wrong, file a Ticket while it is fresh.")
+        ask = "🎲 Play the world, resolve the last move, and show what happens."
     else:
-        ask = ("Read the current player view with the ttrpg tool, then make one "
-               "specific choice for your own PC. Speak to the table in character "
-               "if it helps. You may file a Ticket during play if something is "
-               "confusing or broken. Do not invent a roll or mutate the world.")
-    return f"@{target} — Table turn {step + 1}: {ask}"
+        ask = f"🎭 Your move, {target.removeprefix('ttrpg-').title()}."
+    return f"@{target} {ask}"
 
 
 class Coordinator:
@@ -198,7 +189,7 @@ class Coordinator:
                     c["state"] = "complete"
                     write_control(self.root, c)
                     _api("POST", f"/api/relay/channels/{c['channel_id']}/messages",
-                         {"body": "Session complete. The table is paused for review and ticket triage."})
+                         {"body": "⏸️ The table pauses here. The next chapter is ready when we are."})
                     return
                 if c["step"] >= c["max_player_turns"] * 4 + 8:
                     c["state"] = "paused"

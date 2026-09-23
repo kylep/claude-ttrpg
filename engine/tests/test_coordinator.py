@@ -21,6 +21,11 @@ def test_monster_keeps_gm_on_floor_until_pc_is_up(wroot, monkeypatch):
     assert co._next_target(control, wroot) == "ttrpg-gm"
 
 
+def test_table_invites_are_short_and_name_the_actor():
+    invite = co._invitation(3, "ttrpg-fluffy", "ttrpg-gm", ["ttrpg-fluffy"])
+    assert invite == "@ttrpg-fluffy 🎭 Your move, Fluffy."
+
+
 def test_coordinator_calls_one_turn_at_a_time_and_stops_on_quota(wroot, monkeypatch):
     monkeypatch.setenv("TTRPG_GM_AGENT", "pilot-gm")
     monkeypatch.setenv("TTRPG_PLAYERS", "pilot-a,pilot-b")
