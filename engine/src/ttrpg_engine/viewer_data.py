@@ -472,6 +472,8 @@ def state_snapshot(root: Path, g: dict, lens: str) -> dict:
         snap["encounter"] = {"id": enc["id"], "name": enc["name"],
                              "round": enc["round"], "up": up,
                              "roster": roster, "legend": legend,
+                             "positions": {r["id"]: view["positions"][r["id"]]
+                                           for r in roster if r["id"] in view["positions"]},
                              "terrain_legend": render.terrain_legend(view)}
         # a hidden monster's turn passes up="???" (no real cid) -> no highlight
         snap["map_svg"] = render.svg_map(

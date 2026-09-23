@@ -71,6 +71,9 @@ def test_player_lens_hides_hidden_monster_gm_sees_it(wroot):
     snap = viewer_data.state_snapshot(wroot, _game(wroot), "player")
     assert "goblin-1" not in _roster_ids(snap)
     assert "goblin-2" in _roster_ids(snap)
+    assert "goblin-1" not in snap["encounter"]["positions"]
+    assert "goblin-2" in snap["encounter"]["positions"]
+    assert "pc-borin" in snap["encounter"]["positions"]
     # the viewer SVG carries only glyphs; identity lives in the legend. The
     # masking must reach the drawn map: one token per visible roster entry.
     assert "goblin-1" not in _legend_ids(snap)
