@@ -1,6 +1,15 @@
 from ttrpg_engine import coordinator as co
 
 
+def test_session_starts_with_active_pc(wroot, monkeypatch):
+    from ttrpg_engine import viewer_data
+    monkeypatch.setattr(viewer_data, "state_snapshot",
+                        lambda *args: {"encounter": {"up": "pc-squakee"}})
+    assert co._start_with_active_pc(wroot,
+        ["ttrpg-meowcicles", "ttrpg-squakee", "ttrpg-spike"]) == [
+            "ttrpg-squakee", "ttrpg-spike", "ttrpg-meowcicles"]
+
+
 def test_coordinator_calls_one_turn_at_a_time_and_stops_on_quota(wroot, monkeypatch):
     monkeypatch.setenv("TTRPG_GM_AGENT", "pilot-gm")
     monkeypatch.setenv("TTRPG_PLAYERS", "pilot-a,pilot-b")

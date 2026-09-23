@@ -77,6 +77,21 @@ def _cast() -> tuple[str, list[str]]:
     return gm, players
 
 
+def _start_with_active_pc(root: Path, players: list[str]) -> list[str]:
+    """Begin a new bounded session with the PC whose combat turn is active.
+
+    The pilot's player agent names mirror their PC ids. Outside combat (or
+    with a different cast naming scheme) the configured order remains valid.
+    """
+    from ttrpg_engine import viewer_data, worldfs
+    state = viewer_data.state_snapshot(root, worldfs.load_game_for(root), "player")
+    up = (state.get("encounter") or {}).get("up")
+    for index, agent in enumerate(players):
+        if up == "pc-" + agent.removeprefix("ttrpg-"):
+            return players[index:] + players[:index]
+    return players
+
+
 def _target(step: int, gm: str, players: list[str]) -> str:
     return gm if step % 2 == 0 else players[((step - 1) // 2) % len(players)]
 
@@ -107,6 +122,7 @@ class Coordinator:
         if not 1 <= max_player_turns <= 12 or not 5 <= max_minutes <= 120:
             raise ValueError("turns must be 1–12 and minutes 5–120")
         gm, players = _cast()
+        players = _start_with_active_pc(self.root, players)
         with self.lock:
             old = read_control(self.root)
             if old.get("state") in {"active", "waiting", "paused"}:
