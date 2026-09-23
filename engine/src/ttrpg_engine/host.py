@@ -99,6 +99,19 @@ class _HostedHandler(serve._Handler):
             entries, _ = story_log.read(self.root, 0, lens="player")
             self._json({"state": state, "story": entries[-12:]})
             return
+        if self.path == "/_internal/gm-view":
+            if self._caller() != os.environ.get("TTRPG_GM_AGENT", "ttrpg-gm"):
+                self._json({"error": "forbidden"}, 403)
+                return
+            from ttrpg_engine import story_log, viewer_data
+            state = viewer_data.state_snapshot(self.root, self.game, "gm")
+            entries, _ = story_log.read(self.root, 0, lens="gm")
+            house = self.root / "house-rules.md"
+            voice = self.root / "canon" / "voice.md"
+            self._json({"state": state, "story": entries[-12:],
+                        "house_rules": house.read_text()[:5_000] if house.exists() else "",
+                        "voice": voice.read_text()[:5_000] if voice.exists() else ""})
+            return
         if not self.path.startswith(PREFIX + "/") and self.path != PREFIX:
             self._json({"error": "not found"}, 404)
             return

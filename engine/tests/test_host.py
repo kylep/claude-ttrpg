@@ -38,6 +38,8 @@ def test_hosted_player_cannot_choose_gm_lens_or_bypass_login(wroot, monkeypatch)
         status, raw = _req(port, "GET", "/_internal/view", headers={
             "Authorization": "Bearer test-app-key", "X-Tool-Caller-Agent": "pc-fluffy"})
         assert status == 200 and "state" in json.loads(raw)
+        assert _req(port, "GET", "/_internal/gm-view", headers={
+            "Authorization": "Bearer test-app-key", "X-Tool-Caller-Agent": "pc-fluffy"})[0] == 403
     finally:
         server.shutdown()
         server.server_close()
