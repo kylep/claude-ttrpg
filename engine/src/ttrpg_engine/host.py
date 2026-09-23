@@ -26,6 +26,7 @@ PREFIX = "/apps/ttrpg"
 MAX_BODY = 16_384
 MAX_ARGV = 32
 MAX_ARG = 2_000
+MAX_REQUEST_ID = 160  # tool prefixes the agent's id with its 32-character run id
 DENIED_TOP_LEVEL = {"world", "game", "export", "override", "serve", "dice"}
 DENIED_FLAGS = {"--world", "--game", "--out", "--seed"}
 
@@ -181,11 +182,12 @@ class _HostedHandler(serve._Handler):
             body = json.loads(self.rfile.read(size))
             request_id = body["request_id"]
             argv = _safe_argv(body.get("argv"))
-            if (not isinstance(request_id, str) or len(request_id) > 80
-                    or not request_id or argv is None):
-                raise ValueError("invalid command")
-        except (ValueError, KeyError, TypeError, json.JSONDecodeError):
-            self._json({"error": "invalid request"}, 400)
+            if not isinstance(request_id, str) or not 1 <= len(request_id) <= MAX_REQUEST_ID:
+                raise ValueError(f"request_id must be 1–{MAX_REQUEST_ID} characters")
+            if argv is None:
+                raise ValueError("invalid command arguments")
+        except (ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
+            self._json({"error": str(exc) or "invalid request"}, 400)
             return
         with self.command_lock:
             ledger = _read_ledger(self.root)

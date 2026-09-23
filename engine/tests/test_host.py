@@ -69,9 +69,14 @@ def test_only_gm_commands_and_retries_are_idempotent(wroot, monkeypatch):
         assert status == 200 and json.loads(raw)["exit_code"] == 0
         assert _req(port, "POST", "/_internal/command", headers=gm, body=body)[0] == 200
         assert len(calls) == 1
+        prefixed = {"request_id": "a" * 32 + ":" + "quarterstaff-giant-rat-4" * 2,
+                    "argv": ["attack", "--attacker", "pc-meowcicles",
+                             "--target", "giant_rat-4"]}
+        assert _req(port, "POST", "/_internal/command", headers=gm, body=prefixed)[0] == 200
+        assert len(calls) == 2
         bad = {"request_id": "turn-2", "argv": ["export", "book", "--out", "/tmp"]}
         assert _req(port, "POST", "/_internal/command", headers=gm, body=bad)[0] == 400
-        assert len(calls) == 1
+        assert len(calls) == 2
     finally:
         server.shutdown()
         server.server_close()
