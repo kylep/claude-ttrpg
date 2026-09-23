@@ -86,3 +86,35 @@ def test_only_gm_commands_and_retries_are_idempotent(wroot, monkeypatch):
     finally:
         server.shutdown()
         server.server_close()
+
+
+def test_player_roll_is_owned_once_per_run_and_gm_can_verify(wroot, monkeypatch):
+    monkeypatch.setenv("AP_API_TOKEN", "test-app-key")
+    monkeypatch.setenv("TTRPG_PLAYERS", "ttrpg-meowcicles,ttrpg-fluffy")
+    monkeypatch.setenv("TTRPG_GM_AGENT", "ttrpg-gm")
+    monkeypatch.setattr(host.secrets, "randbelow", lambda n: 11)
+    server = host.run(wroot, 0)
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    port = server.server_address[1]
+    try:
+        base = {"Authorization": "Bearer test-app-key", "Content-Type": "application/json",
+                "X-Tool-Run-ID": "a" * 32}
+        player = {**base, "X-Tool-Caller-Agent": "ttrpg-meowcicles"}
+        assert _req(port, "POST", "/_internal/roll", headers={
+            **base, "X-Tool-Caller-Agent": "ttrpg-gm"}, body={"count": 1})[0] == 403
+        status, raw = _req(port, "POST", "/_internal/roll", headers=player,
+                           body={"count": 1})
+        assert status == 200
+        result = json.loads(raw)
+        assert result["pc"] == "pc-meowcicles" and result["values"] == [12]
+        assert json.loads(_req(port, "POST", "/_internal/roll", headers=player,
+                               body={"count": 1})[1]) == result
+        assert _req(port, "POST", "/_internal/roll", headers=player,
+                    body={"count": 2})[0] == 409
+        status, raw = _req(port, "GET", "/_internal/gm-view", headers={
+            **base, "X-Tool-Caller-Agent": "ttrpg-gm"})
+        assert status == 200 and json.loads(raw)["player_rolls"] == [result]
+    finally:
+        server.shutdown()
+        server.server_close()

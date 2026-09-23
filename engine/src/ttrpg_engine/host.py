@@ -12,6 +12,8 @@ from __future__ import annotations
 import hmac
 import json
 import os
+import re
+import secrets
 import subprocess
 import threading
 from functools import partial
@@ -33,6 +35,22 @@ DENIED_FLAGS = {"--world", "--game", "--out", "--seed"}
 
 def _ledger_path(root: Path) -> Path:
     return root / "state" / "host-commands.json"
+
+
+def _roll_path(root: Path) -> Path:
+    return root / "state" / "table-rolls.json"
+
+
+def _read_rolls(root: Path) -> dict:
+    path = _roll_path(root)
+    return json.loads(path.read_text()) if path.exists() else {}
+
+
+def _write_rolls(root: Path, rolls: dict) -> None:
+    path = _roll_path(root)
+    temp = path.with_name(path.name + ".tmp")
+    temp.write_text(json.dumps(rolls, separators=(",", ":")))
+    temp.replace(path)
 
 
 def _read_ledger(root: Path) -> dict:
@@ -112,7 +130,8 @@ class _HostedHandler(serve._Handler):
             voice = self.root / "canon" / "voice.md"
             self._json({"state": state, "story": entries[-12:],
                         "house_rules": house.read_text()[:5_000] if house.exists() else "",
-                        "voice": voice.read_text()[:5_000] if voice.exists() else ""})
+                        "voice": voice.read_text()[:5_000] if voice.exists() else "",
+                        "player_rolls": list(_read_rolls(self.root).values())[-10:]})
             return
         if not self.path.startswith(PREFIX + "/") and self.path != PREFIX:
             self._json({"error": "not found"}, 404)
@@ -171,6 +190,39 @@ class _HostedHandler(serve._Handler):
                 self._json({"error": str(exc)}, 400)
             else:
                 self._json(result)
+            return
+        if self.path == "/_internal/roll":
+            caller = self._caller()
+            players = {x.strip() for x in os.environ.get("TTRPG_PLAYERS", "").split(",")}
+            run_id = self.headers.get("X-Tool-Run-ID", "")
+            if caller not in players or not re.fullmatch(r"[0-9a-f]{32}", run_id):
+                self._json({"error": "player run identity required"}, 403)
+                return
+            try:
+                size = int(self.headers.get("Content-Length", "0"))
+                if not 0 < size <= 128:
+                    raise ValueError("invalid roll request")
+                count = json.loads(self.rfile.read(size)).get("count", 1)
+                if type(count) is not int or count not in (1, 2):
+                    raise ValueError("count must be 1 or 2 d20")
+            except (ValueError, TypeError, json.JSONDecodeError) as exc:
+                self._json({"error": str(exc)}, 400)
+                return
+            with self.command_lock:
+                rolls = _read_rolls(self.root)
+                existing = rolls.get(run_id)
+                if existing:
+                    if existing["agent"] != caller or len(existing["values"]) != count:
+                        self._json({"error": "roll already committed for this run"}, 409)
+                        return
+                    result = existing
+                else:
+                    result = {"agent": caller, "pc": "pc-" + caller.removeprefix("ttrpg-"),
+                              "run_id": run_id, "dice": "d20",
+                              "values": [secrets.randbelow(20) + 1 for _ in range(count)]}
+                    rolls[run_id] = result
+                    _write_rolls(self.root, dict(list(rolls.items())[-100:]))
+            self._json(result)
             return
         if self.path != "/_internal/command":
             self._json({"error": "not found"}, 404)
