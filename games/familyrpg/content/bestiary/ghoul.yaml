@@ -1,8 +1,8 @@
 name: Ghoul
 description: >
-  A ravenous, once-human corpse that hunts the dark for living flesh; it fights
-  in a frenzy of raking claws, and its bite carries a numbing chill that can
-  freeze a victim mid-step long enough for the pack to swarm.
+  A restless creature risen from an old tomb that prowls dark places in packs.
+  It strikes with quick claws, and its chilly bite can leave a hero too stiff
+  to move for a moment.
 ac: 12     # armor class attacks must meet or beat
 hp: 22     # hit points per spawned instance
 speed: 6   # grid squares per combat turn
@@ -14,15 +14,11 @@ xp: 200    # party pool sized for 4 PCs; split evenly at `engine encounter end`
 loot: {gold: null, items: []}  # rolled per instance at encounter end, into the party pool
 difficulty: standard  # GM guidance only
 appearance: >
-  Ghouls are the risen dead gone feral — gaunt, hunched, roughly person-shaped
-  figures with skin drawn tight and grey-green over sharp bone, hanging in loose
-  folds at the joints. The fingers have lengthened into blackened claws and the
-  jaw juts with a mouth of jagged, overlong teeth stained from feeding. Tufts of
-  brittle hair cling to a scabbed scalp, and the eyes are sunken and milk-pale,
-  lit with a mindless, starving hunger. They still wear the rags of whatever they
-  died in — a farmer's smock, a traveler's cloak — filthy and rotted. Earthbound
-  and quick in short bursts, they scuttle low to the ground on all fours as often
-  as not, sniffing for the warm smell of the living.
+  Ghouls are thin, hunched figures with pale grey-green skin and watchful eyes.
+  They wear patched cloaks from their earlier lives, and their fingers end in
+  short dark claws. They move quickly and quietly among old stones, sometimes
+  pausing with a curious tilt of the head before darting into the shadows.
+  Their quiet footfalls make them easy to miss until they are close.
 image: art/bestiary/ghoul.png
 habitat:  # world locations found in; coined minor spots tracked in content/lore/locations.yaml
   - the Barrow-downs
