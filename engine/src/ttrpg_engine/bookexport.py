@@ -161,7 +161,7 @@ def _races_body(src):
             f"<span class='tag'>Speed {esc(str(race['speed']))}</span></p>"
         )
         cards.append(_roster_card(name.title(), img, body))
-    return f"<div class='roster'>{''.join(cards)}</div>"
+    return f"<div class='roster races-roster'>{''.join(cards)}</div>"
 
 
 def build_races(src):

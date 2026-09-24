@@ -143,7 +143,7 @@ def test_glossary_section_returns_body_and_raises_unknown():
     src = _familyrpg_src()
     sec = bookexport.glossary_section(src, "races", "player")
     assert sec["id"] == "races" and sec["title"] == "Races"
-    assert "<div class='roster'>" in sec["body_html"]
+    assert "<div class='roster races-roster'>" in sec["body_html"]
     import pytest
     with pytest.raises(KeyError):
         bookexport.glossary_section(src, "bogus", "player")
